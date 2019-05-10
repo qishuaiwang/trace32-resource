@@ -1,0 +1,75 @@
+system.mode down
+global &sys_sel
+local &mem_tpye &CUR_DIR
+
+&mem_tpye="EAXI"
+local 
+&CUR_DIR=os.ppd()
+
+
+if ("&sys_sel"=="os_sys")
+(
+	
+	system.Option EnReset off
+	system.Option TRST off
+	TrOnchip.Set RESET OFF
+	TrOnchip.Set UNDEF OFF
+)
+else
+(
+	system.reset
+	system.Option EnReset on
+	system.Option ResBreak off
+	system.option waitReset on
+) 
+
+system.jtagclock 5mhz
+
+system.cpu CORTEXR5 
+;system.config CORENUMBER 1.
+;core.assign 1
+
+sys.config corebase 	 0x80110000
+SYS.config ctibase       0x80118000
+sys.config etmbase       0x8011c000
+
+
+system.config MEMORYACCESSPORT		0
+system.config DEBUGACCESSPORT 		1
+system.config AXIACCESSPORT		0
+system.config AHBACCESSPORT		0
+system.config APBACCESSPORT		1
+
+system.multicore SWDP ON ;2 Wire JTAG switch
+system.cpuaccess enable
+system.memaccess dap
+sys.Mode.prepare
+
+if ("&sys_sel"=="os_sys")
+(
+	sys.Mode.Attach
+	
+)
+ELSE
+(
+	gosub BOOT
+	system.mode up
+	print "CR5 JTAG OK" 
+	do &CUR_DIR\cr5_mpu.cmm   ;MPU INIT
+	print "CR5 MPU INIT OK"
+)
+ENDDO
+
+BOOT:
+	D.S &mem_tpye:0x402B2048 %LE %Long 1<<25. 
+	D.S &mem_tpye:0x402B2048 %LE %Long 1<<24. 
+	D.S &mem_tpye:0x402B20cc %LE %Long 1<<18. 
+	D.S &mem_tpye:0x402B10b0 %LE %Long 1<<1. 
+	D.S &mem_tpye:0x402e1284 %LE %Long 1<<10. 
+	wait 50ms
+	D.S &mem_tpye:0x402B20b0 %LE %Long 1<<1. 
+	D.S &mem_tpye:0x402e2284 %LE %Long 1<<10. 
+	RETURN
+
+
+

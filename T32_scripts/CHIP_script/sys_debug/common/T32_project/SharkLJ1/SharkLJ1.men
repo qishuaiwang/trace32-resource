@@ -1,0 +1,88 @@
+
+;add mode is required, as we want to add new items to the existing menu
+ADD
+;&CUR_DIR=OS.PPD()
+;definition of the main pulldown menu bar
+MENU
+(
+    separator
+    POPUP "SharkLJ1"
+    (    
+ 
+		POPUP    "EDIT_CMM"
+		(
+			MENUITEM "edit AP"				"menuedit A53_J"
+			MENUITEM "edit CP"				"menuedit R5"
+			MENUITEM "edit SP"				"menuedit ARM7"
+			MENUITEM "edit boot"	"menuedit boot_all"
+			MENUITEM "edit DDR"				"menuedit ddr"
+			MENUITEM "edit AutoSave"				"menuedit DEBUG\sys\regsave"
+		)      
+		IF (CPUFAMILY()=="ARM")
+		(
+			POPUP "A53 Javelin"
+			(
+				MENUITEM "AP"			"menuap 6"
+				MENUITEM "A53"			"menuap 2"
+				MENUITEM "Javelin"			"menuap 4"
+				separator
+				MENUITEM "A53 C0"			"menuap 1 0"
+				MENUITEM "A53 C1"			"menuap 1 1"
+				MENUITEM "Javelin C0T0"			"menuap 1 2"
+				MENUITEM "Javelin C0T1"			"menuap 1 3"
+				MENUITEM "Javelin C1T0"			"menuap 1 4"
+				MENUITEM "Javelin C1T1"			"menuap 1 5"
+			)
+			POPUP "A53 Dump"
+			(
+				MENUITEM "A53 Dump"			"menudmp"
+				MENUITEM "RegDump"			"menureg ALL EZAXI"
+				MENUITEM "RegRead"			"menureg READ"
+				MENUITEM "RegTrig via AXI"			"menureg TRIG EZAXI"
+				MENUITEM "RegTrig via CPU"			"menureg TRIG D"
+			)
+			separator
+			POPUP "CPs"
+			(
+				MENUITEM "PCP"		"menupcp"
+				separator
+				MENUITEM "SP"			"menusp"
+			)
+			POPUP "Bare Metal"
+			(
+				MENUITEM "EXTRSTB"		"menusrst"
+				separator
+				MENUITEM "INITDDR"		"menuddr"  
+				separator
+				MENUITEM "BOOTDSP"		"menudsp" 
+				separator
+				MENUITEM "RegSave"		"menusave" 
+			)
+			separator
+			MENUITEM "CHECK EAXI"		"menuchk EAXI"
+			MENUITEM "CHECK CPU"		"menuchk D"
+			MENUITEM "Py"		"menupy" 
+			separator
+			MENUITEM "DBUS EAXI"    	"menudbg EAXI"
+			MENUITEM "DBUS CPU"    		"menudbg D"
+			POPUP "BUSMON"
+			(
+				MENUITEM "Busmon All En"    "menubma 1"
+				MENUITEM "Busmon All Dis"   "menubma 0"
+				MENUITEM "Busmon Addr Cfg"  "menubmb"
+				MENUITEM "Busmon Addr Scan" "menubmc"
+				MENUITEM "Busmon Reg Read" "menubmd"
+			)
+		)
+		IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")	
+		(
+				MENUITEM "TGDSP"		"menutg"
+				MENUITEM "LTEDSP"		"menulte"
+				separator
+				MENUITEM "EXTRSTB"		"menusrst"
+		)
+		separator
+		MENUITEM "Linux"		"menulnx"
+		MENUITEM "ReConfig"		"menure"
+    )
+)

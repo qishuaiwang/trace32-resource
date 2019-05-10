@@ -1,0 +1,56 @@
+;config replicator for ETR & TPIU
+
+ENTRY &trace_output
+
+ON ERROR CONTinue
+WAIT 200.MS
+
+;corinth replicator
+IF ("&trace_output"=="CPU_ETR")
+(
+	DIALOG.MESSAGE "ETR test, don't forget init ddr!"
+	;apcpu etr -> 1M
+	D.S EDAP:0x82006004 %Long 0x100000
+	;DBALO
+	D.S EDAP:0x82006118 %Long 0x80000000
+	
+	; Port0 PASS
+	D.S EDAP:0x82007000 %LE %Long 0
+	D.S EDAP:0x82007004 %LE %Long 0xFFFFFFFF
+)
+ELSE
+(
+	; Port1 PASS
+	D.S EDAP:0x82007000 %LE %Long 0xFFFFFFFF
+	D.S EDAP:0x82007004 %LE %Long 0
+)
+
+;soc replicator
+IF ("&trace_output"=="SoC_ETR")
+(
+	DIALOG.MESSAGE "ETR test, don't forget init ddr!"
+	;soc etr -> 1M
+	D.S EDAP:0x80005004 %Long 0x100000
+	;DBALO
+	D.S EDAP:0x80005118 %Long 0x80000000
+	
+	; Port1 PASS
+	D.S EDAP:0x80004000 %LE %Long 0xFFFFFFFF
+	D.S EDAP:0x80004004 %LE %Long 0
+)
+ELSE IF ("&trace_output"=="TPIU")
+(
+	; Port0 PASS
+	D.S EDAP:0x80004000 %LE %Long 0
+	D.S EDAP:0x80004004 %LE %Long 0xFFFFFFFF
+)
+ELSE
+(
+	; all block
+	D.S EDAP:0x80004000 %LE %Long 0xFFFFFFFF
+	D.S EDAP:0x80004004 %LE %Long 0xFFFFFFFF
+)
+
+ON ERROR
+
+ENDDO

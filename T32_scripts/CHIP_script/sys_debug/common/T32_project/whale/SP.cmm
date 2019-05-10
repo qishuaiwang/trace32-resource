@@ -1,0 +1,17 @@
+;Friday, Sep 05, 2014  20:45:50
+
+system.mode down
+system.reset
+
+system.jtagclock 5.0Mhz
+
+system.cpu CORTEXM3 
+
+system.config MEMORYACCESSPORT 3
+system.config AHBACCESSPORT   3
+system.config DEBUGACCESSPORT 0
+
+;system.mode Prepare
+system.config SWDP ON
+system.mode Up
+ENDDO

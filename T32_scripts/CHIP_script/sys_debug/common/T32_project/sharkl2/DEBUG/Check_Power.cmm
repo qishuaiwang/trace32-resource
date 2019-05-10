@@ -1,0 +1,281 @@
+; for sharkl2 A7 Checker
+&SPRDCHIP="SharkL2"
+&CPUNAME="CORTEXA7"
+&CHIPID_ADDR=0x402E00FC
+&CHIPID_VAL=0x96330000
+&AXIPORT=0
+&AHBPORT=0
+&AHBACC_FAIL=0x2300000023000000
+
+&PMU_PWR_ST_A7_TOP=0x402B00BC
+&PMU_PWR_ST_A7_TOP_MASK=0x0000000F
+
+&PMU_PWR_ST_PUBCP=0x402B00C4
+&PMU_PWR_ST_PUBCP_MASK=(0xf<<8.)
+
+&PMU_PWR_ST_DSP=0x402B00C0
+&PMU_PWR_ST_TGDSP_MASK=(0xf<<8.)
+&PMU_PWR_ST_LDSP_MASK=(0xf<<12.)
+
+&PMU_PWR_ST_C0=&PMU_PWR_ST_A7_TOP
+&PMU_PWR_ST_C0_MASK=(&PMU_PWR_ST_A7_TOP_MASK<<4.)
+&PMU_PWR_ST_C1=&PMU_PWR_ST_A7_TOP
+&PMU_PWR_ST_C1_MASK=(&PMU_PWR_ST_C0_MASK<<4.)
+&PMU_PWR_ST_C2=&PMU_PWR_ST_A7_TOP
+&PMU_PWR_ST_C2_MASK=(&PMU_PWR_ST_C1_MASK<<4.)
+&PMU_PWR_ST_C3=&PMU_PWR_ST_A7_TOP
+&PMU_PWR_ST_C3_MASK=(&PMU_PWR_ST_C2_MASK<<4.)
+
+
+
+
+&COREDEBUG_BASE=0x80250000
+&COREDEBUG_OFFSET=0x00002000
+
+&PC_L_OFFSET=0xA0
+
+&UNLOCK_TEST_OFFSET=0x0304
+&UNLOCK_OFFSET=0x0300
+
+
+; Power design by ken.kuang/huigui.liu
+; @ 2016-12-20
+
+
+
+AREA.CREATE Checker 160. 1024.
+AREA.SELECT Checker
+AREA.VIEW Checker
+
+IF SYSTEM.MODE()==0
+(
+	PRINT "[T]The Trace32 Mode change from Down to Prepare"
+
+	sys.cpu CortexA7
+	SYS.CONFIG SWDP  ON 
+	SYStem.Mode Prepare
+)
+
+SYStem.CONFIG.AXIACCESSPORT &AXIPORT
+SYStem.CONFIG.AHBACCESSPORT &AHBPORT
+LOCAL &AHBACC
+&AHBACC=0
+GOSUB CHECK_ID EAHB &AHBACC_FAIL
+ENTRY &AHBACC
+LOCAL &MEM_TYPE
+IF &AHBACC==1
+(
+	&MEM_TYPE="EAHB"
+)
+ELSE
+(
+	PRINT "[T]The EAHB can't access, try to use EAXI"
+	&MEM_TYPE="EAXI"
+)
+
+LOCAL &LIT_P &BIT_P &CP0 &CP1 &CP2 &CP3 &C4_P &C5_P &C6_P &C7_P 
+
+GOSUB CHECK_POWER_STATUS &MEM_TYPE
+GOSUB CHECK_CORE_STATUS
+
+
+ENDCHECKER:
+AREA.SELECT A000
+PRINT "check done!"
+AREA.CLOSE Checker
+
+ENDDO
+
+CHECK_CORE_STATUS:
+	LOCAL &PC_L &PC_H &REG
+	LOCAL &CI &IS_E
+	&CI=0
+	&PC_H=0.
+	&LIT_P=1
+	&BIT_P=0
+	
+	WHILE &CI<4.
+	(
+		if &CI==0
+			&CPx=&CP0
+		else if &CI==1
+			&CPx=&CP1
+		else if &CI==2
+			&CPx=&CP2
+		else if &CI==3
+			&CPx=&CP3
+				
+		IF (((&CI<4)&&(&LIT_P!=0))||((&CI>=4)&&(&BIT_P!=0)))
+		(
+			&REG=(&COREDEBUG_BASE+&CI*&COREDEBUG_OFFSET)
+			&IS_E=0
+			D.S EDAP:(&REG+&UNLOCK_OFFSET) %LE %Long 0     ; WRITE 0XC5ACCE55 TO LOCK
+			&IS_E=(Data.Long(EDAP:(&REG+&UNLOCK_TEST_OFFSET)))
+			IF (((&IS_E)&(1<<1.))==0)&&(&CPx==1.)
+			(
+			&PC_L=Data.Long(EDAP:(&REG+&PC_L_OFFSET))
+			PRINT "AP Core" &CI " at " FORMAT.HEX(16., ((&PC_H<<32.)|&PC_L)-1)   ;1 is flag
+			)
+			ELSE
+			(
+			PRINT "AP Core" &CI " at N/A  debug locked : " &IS_E
+			)
+			D.S EDAP:(&REG+&UNLOCK_OFFSET) %LE %Long 0XC5ACCE55     ; WRITE 0XC5ACCE55 TO LOCK
+			&CI=&CI+1
+		)
+		else
+			PRINT "AP Core" &CI " at N/A"
+	)
+
+	RETURN
+;END CHECK_CORE_STATUS
+_ERROR_:
+	&IS_E=1
+	&PC_L=0
+	&PC_H=0
+	RETURN
+;END _ERROR_
+	
+;END CHECK_CORE_STATUS
+
+
+
+CHECK_POWER_STATUS:
+	LOCAL &MEM_TYPE &STATUS
+	ENTRY &MEM_TYPE
+
+	PRINT "====== The Power Status =======|"
+	PRINT "-------------------------------|"
+	PRINT "           CA7_TOP            "
+	PRINT "-------------------------------|"
+	&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_A7_TOP)
+	IF ((&STATUS&&PMU_PWR_ST_A7_TOP_MASK)!=0)
+	(
+		PRINT "          Power Down           |"
+		&A7_P=0
+	)
+	ELSE
+	(
+		PRINT "           Power Up            |"
+		&A7_P=1
+	)
+
+	PRINT "-------------------------------|"
+	PRINT " Core0 | Core1 | Core2 | Core3 "
+	PRINT "-------|-------|-------|-------"
+	&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_C0)
+	IF ((&STATUS&&PMU_PWR_ST_C0_MASK)!=0)
+	(
+		PRINT "   Dn  |"
+		&CP0=0
+	)
+	ELSE
+	(
+		PRINT "   Up  |"
+		&CP0=1
+	)
+	IF &PMU_PWR_ST_C1!=&PMU_PWR_ST_C0
+		&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_C1)
+	IF ((&STATUS&&PMU_PWR_ST_C1_MASK)!=0)
+	(
+		PRINT %CONTinue "   Dn  |"
+		&CP1=0
+	)
+	ELSE
+	(
+		PRINT %CONTinue "   Up  |"
+		&CP1=1
+	)
+	IF &PMU_PWR_ST_C2!=&PMU_PWR_ST_C1
+		&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_C2)
+	IF ((&STATUS&&PMU_PWR_ST_C2_MASK)!=0)
+	(
+		PRINT %CONTinue "   Dn  |"
+		&CP2=0
+	)
+	ELSE
+	(
+		PRINT %CONTinue "   Up  |"
+		&CP2=1
+	)
+	IF &PMU_PWR_ST_C3!=&PMU_PWR_ST_C2
+		&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_C3)
+	IF ((&STATUS&&PMU_PWR_ST_C3_MASK)!=0)
+	(
+		PRINT %CONTinue "   Dn  |"
+		&CP3=0
+	)
+	ELSE
+	(
+		PRINT %CONTinue "   Up  |"
+		&CP3=1
+	)
+	PRINT "-------------------------------|"
+	PRINT "-------------------------------|"
+	PRINT "           PUBCP               "
+	PRINT "-------------------------------|"
+	&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_PUBCP)
+	IF ((&STATUS&&PMU_PWR_ST_PUBCP_MASK)!=0)
+	(
+		PRINT "              Dn               |"
+		&PUBCP=0
+	)
+	ELSE
+	(
+		PRINT "              Up               |"
+		&PUBCP=1
+	)
+	PRINT "-------------------------------|"
+	PRINT "           LDSP               "
+	PRINT "-------------------------------|"
+	&STATUS=Data.Long(&MEM_TYPE:&PMU_PWR_ST_DSP)
+	IF ((&STATUS&&PMU_PWR_ST_LDSP_MASK)!=0)
+	(
+		PRINT "              Dn               |"
+		&LDSP=0
+	)
+	ELSE
+	(
+		PRINT "              Up               |"
+		&LDSP=1
+	)	
+	PRINT "-------------------------------|"
+	PRINT "           TGDSP               "
+	PRINT "-------------------------------|"
+	IF ((&STATUS&&PMU_PWR_ST_TGDSP_MASK)!=0)
+	(
+		PRINT "              Dn               |"
+		&TGDSP=0
+	)
+	ELSE
+	( 
+		PRINT "              Up               |"
+		&TGDSP=1
+	)	
+	RETURN
+;END CHECK_POWER_STATUS
+
+
+CHECK_ID:
+	LOCAL &MEM_TYPE &FAIL &RET
+	ENTRY &MEM_TYPE &FAIL
+	LOCAL &CHIP_ID
+	&CHIP_ID=Data.LONG(&MEM_TYPE:&CHIPID_ADDR)
+	IF &CHIP_ID==&FAIL
+	(
+		&RET=0
+	)
+	ELSE IF &CHIP_ID==&CHIPID_VAL
+	(
+		&RET=1
+	)
+	ELSE
+	(
+		PRINT %ERROR "Make sure the chip is &SPRDCHIP!"
+		GOTO ENDCHECKER
+	)
+	RETURN &RET
+;END CHECK_ID
+
+
+;;;;;;;;EOF;;;;;;;;;;;

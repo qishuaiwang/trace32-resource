@@ -1,0 +1,256 @@
+; by Ken.Kuang
+LOCAL &core_num &core_id &trace_output &delay_times
+
+GLOBAL &target
+IF "X&target"=="X"
+(
+	&target="CHIP"
+	;&target="FPGA"
+	;&target="PXP"
+	;&target="Protium"
+)
+
+
+ENTRY &core_num &core_id &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=8
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC ETB"
+	;&trace_output="A55 ETB"
+	;&trace_output="ETR"
+	;&trace_output="TPIU"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+ON ERROR GOTO TIPS_UPDATE
+SYStem.CPU CortexA55
+GOTO NEXT
+TIPS_UPDATE:
+PRINT %ERROR "Please update your Trace32 Software!"
+NEXT:
+ON ERROR
+SYStem.CONFIG CoreNumber &core_num
+
+IF "&target"=="FPGA"
+(
+	SYStem.JtagClock 5MHz
+	&delay_times=2
+)
+ELSE IF "&target"=="PXP"
+(
+	SYStem.JtagClock 150KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+	&delay_times=5
+)
+ELSE IF "&target"=="Protium"
+(
+	SYStem.JtagClock 500KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+	&delay_times=3
+)
+ELSE
+(
+	SYStem.JtagClock 20MHz
+	&delay_times=1
+)
+
+
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+TrOnchip.Set RESET OFF
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.ETF1.Base 0x80003000
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+SYStem.CONFIG.TPIU.Base 0x80004000
+SYStem.CONFIG.ETR1.Base 0x80005000
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+SYStem.CONFIG.ETR1.ATBSource ETF1
+SYStem.CONFIG.TPIU.ATBSource ETF1 
+TPIU.PortMode Wrapped
+
+; A55
+SYStem.CONFIG.FUNNEL2.Base 0x82001000
+SYStem.CONFIG.ETF2.Base 0x82002000
+SYStem.CONFIG.ETF3.Base 0x82003000
+SYStem.CONFIG.FUNNEL4.Base 0x82004000
+SYStem.CONFIG.FUNNEL3.Base 0x82005000
+SYStem.CONFIG.FUNNEL4.ATBSource ETF2 0 ETF3 1
+SYStem.CONFIG.ETF2.ATBSource FUNNEL2
+SYStem.CONFIG.ETF3.ATBSource FUNNEL3
+
+;PTM 2
+SYStem.CONFIG.FUNNEL1.ATBSource FUNNEL4 0 STM1 4
+
+
+
+IF (&core_num==8)
+(
+	CORE.ASSIGN 1 2 3 4 5 6 7 8
+	SYStem.CONFIG.COREDEBUG.Base (0x83010000) (0x83110000) (0x83210000) (0x83310000) (0x83410000) (0x83510000) (0x83610000) (0x83710000)
+	SYStem.CONFIG.BMC.Base (0x83030000) (0x83130000) (0x83230000) (0x83330000) (0x83430000) (0x83530000) (0x83630000) (0x83730000)
+	SYStem.CONFIG.CTI.Base (0x83020000) (0x83120000) (0x83220000) (0x83320000) (0x83420000) (0x83520000) (0x83620000) (0x83720000)
+	SYStem.CONFIG.ETM.Base (0x83040000) (0x83140000) (0x83240000) (0x83340000) (0x83440000) (0x83540000) (0x83640000) (0x83740000)
+	SYStem.CONFIG.CTI.Config ARMV8V2
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3
+	SYStem.CONFIG.FUNNEL3.ATBSource ETM.4 0 ETM.5 1 ETM.6 2 ETM.7 3
+)
+ELSE
+(
+	CORE.ASSIGN 1
+	PRIVATE &offset
+	&offset=0x00100000*&core_id
+	SYStem.CONFIG.COREDEBUG.Base (0x83010000+&offset)
+	SYStem.CONFIG.BMC.Base (0x83030000+&offset)
+	SYStem.CONFIG.CTI.Base (0x83020000+&offset)
+	SYStem.CONFIG.ETM.Base (0x83040000+&offset)
+	SYStem.CONFIG.CTI.Config ARMV8V2
+
+	IF (&core_id>3)
+	(
+		SYStem.CONFIG.FUNNEL3.ATBSource ETM 0
+	)
+	ELSE
+	(
+		SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+	)
+)
+
+IF ("&trace_output"=="SoC ETB")
+(
+	Onchip.TraceCONNECT ETF1
+)
+ELSE IF ("&trace_output"=="A55 ETB")
+(
+	Onchip.TraceCONNECT ETF2
+	;Onchip.TraceCONNECT ETF3
+)
+ELSE IF ("&trace_output"=="ETR")
+(
+	Onchip.TraceCONNECT ETR1
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+SYStem.CONFIG SWDPTargetSel 0x0
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+ON ERROR CONTinue
+SYStem.CONFIG SWDP OFF
+ON ERROR
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+
+D.S EDAP:0x80008000 %LE %Long 0xFFFFFFFF
+D.S EDAP:0x80008004 %LE %Long 0xFFFFFFFF
+IF ("&trace_output"=="ETR")
+(
+	D.S EDAP:0x80008004 %LE %Long 0
+)
+ELSE IF ("&trace_output"=="TPIU")
+(
+	D.S EDAP:0x80008000 %LE %Long 0
+)
+
+IF "&target"=="FPGA"
+	D.S EAXI:0x402B06FC %LE %Long 0x03FFED80
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=1||&core_id!=0
+	(
+		GOSUB BOOT
+		WAIT &delay_times*500.MS
+	)
+	;ON ERROR CONTinue
+	;AREA.OPEN A000 c:\step_log.txt
+	;AREA.CLEAR A000
+	;SYStem.POLLING DEFault OFF
+	;diag 0x30E0 1.
+	;diag 0x3208 1.
+	;SYStem.Mode Attach
+	;diag 0x30E0 0.
+	;diag 0x3208 0.
+	;SYStem.POLLING DEFault DEFault
+	;AREA.CLOSE A000
+	;ON ERROR DEFault
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" AP_MP_CORE_BOOT 1
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO
+
+
+
+
+
+
+

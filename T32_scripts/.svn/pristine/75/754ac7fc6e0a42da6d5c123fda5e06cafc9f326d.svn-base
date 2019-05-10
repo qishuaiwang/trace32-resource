@@ -1,0 +1,162 @@
+&clk=2.5
+; iSharkL2
+; 0: 26M 1: 192M 2: 256M 3: 307.2M
+&pti_clk=0
+
+&mem_type="AND"
+
+D.S &mem_type:0xe410902c %LE %Long 0x00022002
+WAIT 10.MS
+D.S &mem_type:0xe4109010 %LE %Long 0x0000000f
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00410800
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00410802
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00410806
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00610806
+WAIT 10.MS
+D.S &mem_type:0xe41c0058 %LE %Long 0x40000020
+WAIT 10.MS
+D.S &mem_type:0xe41c0018 %LE %Long 0x13
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00710806
+WAIT 10.MS
+D.S &mem_type:0xe41c0058 %LE %Long 0x40000020
+WAIT 10.MS
+D.S &mem_type:0xe41c0018 %LE %Long 0x13
+WAIT 10.MS
+IF (&clk==2.5);NEW TOOL TEST OK
+(
+	D.S &mem_type:0xe41c0004 %LE %Long 0x2A29
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0300 %LE %Long 0x60
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0308 %LE %Long 0x09d89d;0x17a17a
+	WAIT 10.MS
+	D.S &mem_type:0xe41c030c %LE %Long 0x10003
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0310 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0314 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0318 %LE %Long 0x10804
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0320 %LE %Long 0x70022
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0324 %LE %Long 0x2030A
+)
+ELSE IF (&clk==2.0);NEW TOOL TEST OK
+(
+	D.S &mem_type:0xe41c0004 %LE %Long 0x2A39
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0300 %LE %Long 0x73
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0308 %LE %Long 0x189D89;0x17a17a
+	WAIT 10.MS
+	D.S &mem_type:0xe41c030c %LE %Long 0x10002
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0310 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0314 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0318 %LE %Long 0x10905
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0320 %LE %Long 0x70022
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0324 %LE %Long 0x2030A
+)
+ELSE IF (&clk==1.0)
+(
+	D.S &mem_type:0xe41c0004 %LE %Long 0x2A11
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0300 %LE %Long 0x74
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0308 %LE %Long 0x13B13B
+	WAIT 10.MS
+	D.S &mem_type:0xe41c030c %LE %Long 0x10002
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0310 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0314 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0318 %LE %Long 0x10905
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0320 %LE %Long 0x70022
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0324 %LE %Long 0x2030A
+)
+ELSE IF (&clk==1.5)
+(
+	D.S &mem_type:0xe41c0004 %LE %Long 0x2A01
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0300 %LE %Long 0x73
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0308 %LE %Long 0x189d19 ;0x3C0FC0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c030c %LE %Long 0x10002
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0310 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0314 %LE %Long 0x0
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0318 %LE %Long 0x10905
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0320 %LE %Long 0x70022
+	WAIT 10.MS
+	D.S &mem_type:0xe41c0324 %LE %Long 0x2030A
+)
+
+WAIT 10.MS
+D.S &mem_type:0xe4109000 %LE %Long 0x00790806
+WAIT 10.MS
+D.S &mem_type:0xe41c0000 %LE %Long 0x00000004
+WAIT 10.MS
+D.S &mem_type:0xe4109004 %LE %Long 0x040f000f
+;D.S &mem_type:0xe4109004 %LE %Long 0x000f000f
+WAIT 10.MS
+D.S &mem_type:0xe4109004 %LE %Long 1<<25.|(DATA.LONG(&mem_type:0xe4109004))
+
+
+
+D.S &mem_type:0xe42e1000 %LE %Long 1<<28.
+
+D.S &mem_type:0xE44F0010 %LE %Long 0x20
+
+D.S &mem_type:0xE44F0008 %LE %Long 0
+D.S &mem_type:0xE44F0004 %LE %Long 0x8000
+D.S &mem_type:0xE44F0008 %LE %Long 1
+D.S &mem_type:0xE44F0000 %LE %Long 0x1
+
+IF (&clk<2.0)
+	;DIALOG.OK "Please use test.exe match LVDS button!"
+
+D.S &mem_type:0xE44F0004 %LE %Long 0x000010
+
+SYStem.CONFIG STM1.Mode STP64
+Trace.METHOD Analyzer
+Trace.THreshold 0.9
+Trace.Init
+STM.PortSize 16.
+STM.PortEndianess big
+;PTI clk
+; iWhale2
+;D.S &mem_type:0xe2213008 %LE %Long 0x0000FFFE
+;D.S &mem_type:0xe2000074 %LE %Long 0x1
+;&temp=data.long(&mem_type:0xe7b00000)
+;&temp=&temp|0x100000
+;D.S &mem_type:0xe7b00000 %LE %Long &temp
+; iSharkL2 
+D.S &mem_type:0xe2000084 %LE %Long &pti_clk
+
+; PTI Enable, 8BIT
+;D.S &mem_type:0xF0009000 %LE %Long 0x0003E524
+; PTI Enable, 16BIT
+;D.S &mem_type:0xF0009000 %LE %Long 0x00002544
+; PTI Enable, 32BIT
+D.S &mem_type:0xF0009000 %LE %Long 0x00002534
+
+;Trace.Arm
+
+ENDDO

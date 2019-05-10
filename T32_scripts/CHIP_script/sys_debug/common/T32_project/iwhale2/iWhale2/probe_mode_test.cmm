@@ -1,0 +1,791 @@
+LOCAL &TAP &BIA &DAP
+LOCAL &TAP_IR &BIA_IR &DAP_IR
+LOCAL &CURR_SETTING
+LOCAL &CONFIG ;BIT0:BIA BIT1:DAP
+LOCAL &BYPASS
+LOCAL &configure_bia
+LOCAL &exit_probe_flag 
+LOCAL &CONFIG_INPUT &bia_input
+ENTRY &CONFIG_INPUT &bia_input 
+
+&configure_bia="ResetBreak"
+&TAP=0x100000000
+&BIA=0x1
+&DAP=0x2
+&BIA_VNN=0x4
+&BIA_BFD=0x8
+&TAP_IR=2.
+&BIA_IR=8.
+&BIA_VNN_IR=8.
+&BIA_BFD_IR=7.
+&DAP_IR=4.
+&BYPASS=0xFFFFFFFF
+;Data.LOAD.Elf E:\Guanglei.Zhang\isharkL\minicode\out\iSharkL_FPGA\ap\bin\bia\bia.elf
+;go main ;go main
+IF ("&CONFIG_INPUT"=="")
+(
+	&CONFIG=&TAP|&BIA|&DAP ;&BIA ;&DAP &BIA|&DAP
+)
+ELSE
+(
+	&CONFIG=&CONFIG_INPUT
+)
+&CURR_SETTING=0
+
+
+LOCAL &power
+LOCAL &nTRST
+LOCAL &idcode
+LOCAL &temp_val
+; Some Trace32 Software had BUG
+ON ERROR CONTinue
+IF (!SYStem.UP())
+(
+	SYStem.Mode Prepare
+	SYStem.Mode Down
+)
+ON ERROR
+JTAG.LOCK
+
+JTAG.PIN ENable  
+
+JTAG.LOCK
+
+JTAG.PIN ENable 
+
+&power=JTAG.PIN(VTREF)
+
+IF (&power==0)
+(
+	PRINT %ERROR "Please power up!"
+	ENDDO
+)
+
+JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+
+LOCAL &total_ir_len
+&total_ir_len=0
+GOSUB detect_setting
+ENTRY &total_ir_len
+print "start ir_len: &total_ir_len"
+;&exit_probe_flag="entry_probe_mode"
+&exit_probe_flag="exit_probe_mode"
+IF ("&exit_probe_flag"=="entry_probe_mode")
+(	
+	JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+	GOSUB select_ir 0x311F 14.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+	JTAG.SHIFTREG 0
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	
+	GOSUB detect_setting
+	ENTRY &total_ir_len  ;&total_ir_len=22
+	print "add RDU TAP ir_len=14+8: &total_ir_len"
+	
+	GOSUB select_ir 0x3FF0CF 22.
+	JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x0 35. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+	&RDU_VNN_TAP=&dap_ret>>1.
+	print "RDU idcode: &RDU_VNN_TAP"
+	
+	GOSUB select_ir 0x3FF11F 22.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 1 0 1 0
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTREG 0
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	
+	GOSUB detect_setting
+	ENTRY &total_ir_len ;&total_ir_len=36
+	print "add BF0 and BF1 TAP ir_len=22+14: &total_ir_len"
+
+
+	GOSUB select_ir 0xFFFFfA7FF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>2.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "before probe mode0 status low bit 62:0:  &dap_ret"
+        print "before probe mode0 status low bit 86:63:  &dap_ret_h"
+        print "before probe mode0 status:  &probe_mode_status"
+
+        GOSUB select_ir 0xFFFFfFF4F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>1.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "before probe mode1 status low bit 62:0:  &dap_ret"
+        print "before probe mode1 status low bit 86:63:  &dap_ret_h"
+        print "before probe mode1 status:  &probe_mode_status"
+	
+	GOSUB select_ir 0xFFFFC810F 36.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	GOSUB shift_n_bits_row_reg 0x00202 20. 0x0
+	;ENTRY &dap_ret &dap_ret_h
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	
+	GOSUB select_ir 0xFFFFfA7FF 36.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+	ENTRY &dap_ret &dap_ret_h
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle	
+	&dap_ret=&dap_ret>>2.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "probe mode0 status low bit 62:0:  &dap_ret"
+        print "probe mode0 status low bit 86:63:  &dap_ret_h"
+        print "probe mode0 status:  &probe_mode_status"
+
+
+	GOSUB select_ir 0xFFFFfFF4F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>1.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "probe mode1 status low bit 62:0:  &dap_ret"
+        print "probe mode1 status low bit 86:63:  &dap_ret_h"
+        print "probe mode1 status:  &probe_mode_status"
+
+
+	GOSUB select_ir 0xFFFFC17FF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 37. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &BFD0_TAP_IDCODE=&dap_ret>>2.
+        print "BFD0_TAP_IDCODE:  &BFD0_TAP_IDCODE"
+
+	GOSUB select_ir 0xFFFFFF82F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 37. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &BFD1_TAP_IDCODE=&dap_ret>>1.
+        print "BFD1_TAP_IDCODE:  &BFD1_TAP_IDCODE"
+
+	GOSUB select_ir 0xFFC47FFFF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        JTAG.SHIFTTDI 0 0
+	JTAG.SHIFTTDI 0
+        JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0
+        JTAG.SHIFTTDI 0
+        JTAG.SHIFTREG 0
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+        GOSUB detect_setting
+        ENTRY &total_ir_len ;&total_ir_len=29
+        print "reduce BF0 and BF1 TAP ir_len=36-14: &total_ir_len"
+
+	JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+        GOSUB select_ir 0x311FFF 22.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        JTAG.SHIFTTDI 0 0
+        JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        JTAG.SHIFTREG 0
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+        GOSUB detect_setting
+        ENTRY &total_ir_len  ;&total_ir_len=14
+        print "reduce RDU TAP ir_len=22-8: &total_ir_len"
+
+)
+IF ("&exit_probe_flag"=="exit_probe_mode")
+(	
+	JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+	GOSUB select_ir 0x311F 14.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 1 0 0 0
+	JTAG.SHIFTREG 0
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	
+	GOSUB detect_setting
+	ENTRY &total_ir_len  ;&total_ir_len=22
+	print "add RDU TAP ir_len=14+8: &total_ir_len"
+
+	GOSUB select_ir 0x3FF0CF 22.
+	JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 35. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+	&RDU_VNN_TAP=&dap_ret>>1.
+        print "RDU idcode: &RDU_VNN_TAP"
+
+	
+	GOSUB select_ir 0x3FF11F 22.
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 1 0 1 0
+	JTAG.SHIFTTDI 0
+	JTAG.SHIFTREG 0
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	
+	GOSUB detect_setting
+	ENTRY &total_ir_len ;&total_ir_len=29
+	print "add BF0 and BF1 TAP ir_len=22+14: &total_ir_len"
+
+	GOSUB select_ir 0xFFFFfA7FF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>2.   
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "before probe mode0 status low bit 62:0:  &dap_ret"
+        print "before probe mode0 status low bit 86:63:  &dap_ret_h"
+        print "before probe mode0 status:  &probe_mode_status"
+
+        GOSUB select_ir 0xFFFFfFF4F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>1.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "before probe mode1 status low bit 62:0:  &dap_ret"
+        print "before probe mode1 status low bit 86:63:  &dap_ret_h"
+        print "before probe mode1 status:  &probe_mode_status"
+
+	GOSUB select_ir 0xFFFFC810F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00000 20. 0x0
+        ;ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+	GOSUB select_ir 0xFFFFfA7FF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>2.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "probe mode0 status low bit 62:0:  &dap_ret"
+        print "probe mode0 status low bit 86:63:  &dap_ret_h"
+        print "probe mode0 status:  &probe_mode_status"
+
+	GOSUB select_ir 0xFFFFfFF4F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 91. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &dap_ret=&dap_ret>>1.
+        &probe_mode_status=(&dap_ret&0x4000000)>>26.
+        print "probe mode1 status low bit 62:0:  &dap_ret"
+        print "probe mode1 status low bit 86:63:  &dap_ret_h"
+        print "probe mode1 status:  &probe_mode_status"
+
+	GOSUB select_ir 0xFFFFC17FF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 37. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &BFD0_TAP_IDCODE=&dap_ret>>2.
+        print "BFD0_TAP_IDCODE:  &BFD0_TAP_IDCODE"
+
+        GOSUB select_ir 0xFFFFFF82F 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        GOSUB shift_n_bits_row_reg 0x00 37. 0x0
+        ENTRY &dap_ret &dap_ret_h
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+        &BFD1_TAP_IDCODE=&dap_ret>>1.
+        print "BFD1_TAP_IDCODE:  &BFD1_TAP_IDCODE"
+	
+	GOSUB select_ir 0xFFC47FFFF 36.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        JTAG.SHIFTTDI 0 0
+        JTAG.SHIFTTDI 0
+        JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0
+        JTAG.SHIFTTDI 0
+        JTAG.SHIFTREG 0
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+        GOSUB detect_setting
+        ENTRY &total_ir_len ;&total_ir_len=22
+        print "reduce BF0 TAP and BF1 TAP ir_len=36-14: &total_ir_len"
+
+
+	JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+        GOSUB select_ir 0x311FFF 22.
+        JTAG.SHIFTTMS 1 0 0     ; goto SHIFT-DR
+        JTAG.SHIFTTDI 0 0
+        JTAG.SHIFTTDI 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        JTAG.SHIFTREG 0
+        JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+
+        GOSUB detect_setting
+        ENTRY &total_ir_len  ;&total_ir_len=22
+        print "reduce RDU TAP ir_len=14: &total_ir_len"
+
+)
+;sys.m.a
+;JTAG.SHIFTTMS 1 1 1 1 1 ; goto Test-Logic-Reset
+
+JTAG.PIN DISable
+JTAG.UNLOCK
+WAIT 100.MS
+ENDDO
+
+jtag_chain_config:
+	IF (&CURR_SETTING!=0)
+	(
+		IF (CPUFAMILY()=="ARM")
+		(
+			&temp_val=&CURR_SETTING&&DAP
+			IF (&temp_val==0)
+			(
+				PRINT %ERROR "ARM not pull in the JTAG daisy chain!"
+				ENDDO
+			)
+			PRINT "DAP was in the JTAG daisy chain!"
+			&temp_val=&CURR_SETTING&&BIA
+			IF (&temp_val!=0)
+			(
+				SYStem.CONFIG DAPIRPOST &TAP_IR+&BIA_IR
+				SYStem.CONFIG DAPDRPOST 2.
+			)
+			ELSE
+			(
+				SYStem.CONFIG DAPIRPOST &TAP_IR
+				SYStem.CONFIG DAPDRPOST 1.
+			)
+			SYStem.Option TRST OFF
+			SYStem.Option IntelSOC ON
+		)
+		ELSE IF (CPUFAMILY()=="I386")
+		(
+			&temp_val=&CURR_SETTING&&BIA
+			IF (&temp_val==0)
+			(
+				PRINT %ERROR "BIA not pull in the JTAG daisy chain!"
+				ENDDO
+			)
+			PRINT "BIA was in the JTAG daisy chain!"
+			&temp_val=&CURR_SETTING&&DAP
+			IF (&temp_val!=0)
+			(
+				SYStem.CONFIG IRPOST &TAP_IR
+				SYStem.CONFIG DRPOST 1.
+				SYStem.CONFIG IRPRE &DAP_IR
+				SYStem.CONFIG DRPRE 1.
+			)
+			ELSE
+			(
+				SYStem.CONFIG IRPOST &TAP_IR
+				SYStem.CONFIG DRPOST 1.
+			)
+			;SYStem.Option TRST OFF
+		)
+	)
+	RETURN
+;end jtag_chain_config
+
+bia_orange_unlock:
+	;Orange check
+	PRINT "Orange check"
+	LOCAL &bia_val &bia_val_h
+	GOSUB shift_cmd &BYPASS 0 0 0x34 0x0 72. &BYPASS 0 0
+	ENTRY &temp_val &bia_val &temp_val &temp_val &bia_val_h &temp_val
+	PRINT "The BIA 0x34 is H(&bia_val_h) L(&bia_val)"
+	
+	; iSharkL:0xB8FFB65FF39158D5(from neil)
+	; iSharkL:0xB8FFB65FF39158D580000000(from FPGA script)
+	GOSUB shift_cmd &BYPASS 0 0 0xF3 0xF39158D580000000 96. &BYPASS 0 0 0 0xB8FFB65F 0
+	ENTRY &temp_val &bia_val &temp_val &temp_val &bia_val_h &temp_val
+	PRINT "The BIA 0xF3 is &bia_val"
+	
+	;GOSUB shift_cmd &BYPASS 0 0 0xF4 0x1 1. &BYPASS 0 0
+	;ENTRY &temp_val &bia_val &temp_val &temp_val &bia_val_h &temp_val
+	;PRINT "The BIA 0xF4 is &bia_val"
+	
+	GOSUB shift_cmd &BYPASS 0 0 0x34 0x0 72. &BYPASS 0 0
+	ENTRY &temp_val &bia_val &temp_val &temp_val &bia_val_h &temp_val
+	PRINT "The BIA 0x34 is H(&bia_val_h) L(&bia_val)"
+
+	RETURN
+;end bia_orange_unlock
+
+
+jtag_reset:
+	JTAG.PIN NRESET HIGH
+	JTAG.PIN NTRST LOW
+	WAIT 50.MS
+	JTAG.PIN NTRST HIGH
+	WAIT 150.MS
+	RETURN
+;end jtag_reset
+
+;detect current setting
+detect_setting:
+	LOCAL &test_ir &ret_len
+	&ret_len=0
+	;JTAG.SHIFTTMS 1 1 1 1 1 0 0 ; goto Run-Test/Idle
+	JTAG.SHIFTTMS 1 1 0 0	; goto SHIFT-IR
+	&test_ir=(0xFFFFFFFF)
+	JTAG.SHIFTTDI %Long &test_ir &test_ir
+	&temp_val=JTAG.SHIFT()
+	&test_ir=(0)
+	JTAG.SHIFTREG %Long &test_ir &test_ir
+	&temp_val=JTAG.SHIFT()
+	IF (&temp_val==0)
+	(
+		&CURR_SETTING=0
+		RETURN &ret_len
+	)
+	&temp_val=&temp_val+1
+	&ret_len=&TAP_IR
+	WHILE (((&temp_val>>&ret_len)&0x1)==0)
+	(
+		&ret_len=&ret_len+1
+	)
+
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	IF (&ret_len==(&TAP_IR+&BIA_IR+&DAP_IR))
+	(
+		&CURR_SETTING=&TAP|&DAP|&BIA
+	)
+	ELSE IF (&ret_len==(&TAP_IR+&BIA_IR))
+	(
+		&CURR_SETTING=&TAP|&BIA
+	)
+	ELSE IF (&ret_len==(&TAP_IR+&DAP_IR))
+	(
+		&CURR_SETTING=&TAP|&DAP
+	)
+	ELSE
+	(
+		&CURR_SETTING=0
+	)
+	RETURN &ret_len
+;end detect_setting
+
+
+;tap bia dap
+shift_cmd:
+	LOCAL &temp_val
+	LOCAL &cmd &data
+	LOCAL &TAP_IR_LEN &TAP_DR_LEN
+	LOCAL &tap_ret &dap_ret &bia_ret
+	LOCAL &tap_ret_h &dap_ret_h &bia_ret_h
+	LOCAL &tap_val &dap_val &bia_val
+	LOCAL &tap_val_h &dap_val_h &bia_val_h
+	LOCAL &tap_val_size &dap_val_size &bia_val_size
+	LOCAL &tap_cmd &dap_cmd &bia_cmd
+	ENTRY &tap_cmd &tap_val &tap_val_size &bia_cmd &bia_val &bia_val_size &dap_cmd &dap_val &dap_val_size &tap_val_h &bia_val_h &dap_val_h
+	GOSUB calc_ir_len &CURR_SETTING &tap_cmd &dap_cmd &bia_cmd
+	ENTRY &cmd &TAP_IR_LEN &TAP_DR_LEN
+	&tap_ret=0
+	&dap_ret=0
+	&bia_ret=0
+	&tap_ret_h=0
+	&dap_ret_h=0
+	&bia_ret_h=0
+	GOSUB select_ir &cmd &TAP_IR_LEN
+	LOCAL &tap_end &bia_end &dap_end
+	&temp_val=&CURR_SETTING&&TAP
+	IF ("&tap_val_h"=="")
+	(
+		&tap_val_h=0x0
+	)
+	IF ("&bia_val_h"=="")
+	(
+		&bia_val_h=0x0
+	)
+	IF ("&dap_val_h"=="")
+	(
+		&dap_val_h=0x0
+	)
+	
+	IF (&temp_val!=0)
+	(
+		&tap_end=1
+	)
+	IF ("&tap_end"=="")
+	(
+		&temp_val=&CURR_SETTING&&BIA
+		IF (&temp_val!=0)
+		(
+			&bia_end=1
+		)
+		IF ("&bia_end"=="")
+		(
+			&temp_val=&CURR_SETTING&&DAP
+			IF (&temp_val!=0)
+			(
+				&dap_end=1
+			)
+		)
+	)
+
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+
+	&temp_val=&CURR_SETTING&&DAP
+	IF (&temp_val!=0)
+	(
+		IF (&dap_cmd==&BYPASS)
+		(
+			IF ("&dap_end"=="")
+			(
+				JTAG.SHIFTTDI 0
+			)
+			ELSE
+			(
+				JTAG.SHIFTREG 0
+			)
+			&dap_ret=JTAG.SHIFT()
+		)
+		ELSE
+		(
+			GOSUB shift_n_bit_pure &dap_val_size &dap_val &dap_val_h &dap_end
+			ENTRY &dap_ret &dap_ret_h
+		)
+	)
+	&temp_val=&CURR_SETTING&&BIA
+	IF (&temp_val!=0)
+	(
+		IF (&bia_cmd==&BYPASS)
+		(
+			IF ("&bia_end"=="")
+			(
+				JTAG.SHIFTTDI 0
+			)
+			ELSE
+			(
+				JTAG.SHIFTREG 0
+			)
+			&bia_ret=JTAG.SHIFT()
+		)
+		ELSE
+		(
+			GOSUB shift_n_bit_pure &bia_val_size &bia_val &bia_val_h &bia_end
+			ENTRY &bia_ret &bia_ret_h
+		)
+	)
+	&temp_val=&CURR_SETTING&&TAP
+	IF (&temp_val!=0)
+	(
+		IF (&tap_cmd==&BYPASS)
+		(
+			IF ("&tap_end"=="")
+			(
+				JTAG.SHIFTTDI 0
+			)
+			ELSE
+			(
+				JTAG.SHIFTREG 0
+			)
+			&tap_ret=JTAG.SHIFT()
+		)
+		ELSE
+		(
+			GOSUB shift_n_bit_pure &tap_val_size &tap_val &tap_val_h &tap_end
+			ENTRY &tap_ret &tap_ret_h
+		)
+	)
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	RETURN &tap_ret &bia_ret &dap_ret &tap_ret_h &bia_ret_h &dap_ret_h
+;end shift_cmd
+
+
+
+calc_ir_len:
+	LOCAL &temp_val
+	LOCAL &val &cmd &dap_cmd &bia_cmd
+	ENTRY &val &cmd &dap_cmd &bia_cmd
+	LOCAL &temp_ir &tap_cmd &ir_len &dr_len &temp_cmd
+	&ir_len=0
+	&dr_len=0
+	&tap_cmd=0
+	;order important
+	&temp_val=&val&&TAP
+	IF (&temp_val!=0)
+	(
+		&tap_cmd=&cmd
+		&ir_len=&ir_len+&TAP_IR
+		&dr_len=&dr_len+1
+	)
+	&temp_val=&val&&BIA
+	IF (&temp_val!=0)
+	(
+		&temp_ir=&BIA_IR
+		&temp_cmd=&bia_cmd
+		&ir_len=&ir_len+&temp_ir
+		&dr_len=&dr_len+1
+		&tap_cmd=&tap_cmd<<&temp_ir
+		&temp_cmd=&temp_cmd&((1<<&temp_ir)-1)
+		&tap_cmd=&tap_cmd+&temp_cmd
+	)
+	&temp_val=&val&&DAP
+	IF (&temp_val!=0)
+	(
+		&temp_ir=&DAP_IR
+		&temp_cmd=&dap_cmd
+		&ir_len=&ir_len+&temp_ir
+		&dr_len=&dr_len+1
+		&tap_cmd=&tap_cmd<<&temp_ir
+		&temp_cmd=&temp_cmd&((1<<&temp_ir)-1)
+		&tap_cmd=&tap_cmd+&temp_cmd
+	)
+	
+	RETURN &tap_cmd &ir_len &dr_len
+;end calc_ir_len
+
+shift_n_bits_row:
+	LOCAL &temp_val
+	LOCAL &ret_val &ret_val_high
+	LOCAL &val &size &val_h
+	ENTRY &val &size &val_h
+	LOCAL &idx &use_h
+	&idx=0
+	&use_h=0
+	&ret_val=0
+	&ret_val_high=0
+	WHILE (&idx<(&size))
+	(
+		&temp_val=&val&(0x1<<&idx)
+		IF (&temp_val==0)
+		(
+			JTAG.SHIFTTDI 0
+		)
+		ELSE
+		(
+			JTAG.SHIFTTDI 1
+		)
+		&temp_val=JTAG.SHIFT()
+		IF (&use_h==1)
+		(
+			&ret_val_high=(&ret_val_high)+((&temp_val&0x1)<<(&idx))
+		)
+		ELSE
+		(
+			&ret_val=(&ret_val)+((&temp_val&0x1)<<(&idx))
+		)
+		&idx=&idx+1
+		IF (&idx>=64.)
+		(
+			&use_h=1
+			&idx=0
+			&val=&val_h
+			&size=&size-64.
+		)
+	)
+	RETURN &ret_val &ret_val_high
+;end shift_n_bits_row
+
+shift_n_bits_row_reg:
+	LOCAL &temp_val &idx
+	LOCAL &ret_val &ret_val_high
+	LOCAL &val &size
+	ENTRY &val &size &val_h
+	&idx=&size-1
+	GOSUB shift_n_bits_row &val &idx &val_h
+	ENTRY &ret_val &ret_val_high
+	IF (&idx>=64.)
+	(
+		&temp_val=&val_h&(0x1<<&idx-64.)
+	)
+	ELSE
+	(
+		&temp_val=&val&(0x1<<&idx)
+	)
+	IF (&temp_val==0)
+	(
+		JTAG.SHIFTREG 0
+	)
+	ELSE
+	(
+		JTAG.SHIFTREG 1
+	)
+	&temp_val=JTAG.SHIFT()
+	IF (&idx>=64.)
+	(
+		&ret_val_high=(&ret_val_high)+((&temp_val&0x1)<<(&idx-64.))
+	)
+	ELSE
+	(
+		&ret_val=(&ret_val)+((&temp_val&0x1)<<(&idx))
+	)
+	RETURN &ret_val &ret_val_high
+;end shift_n_bits_row_reg
+
+
+select_ir:
+	LOCAL &temp_val
+	LOCAL &val &size &val_h
+	ENTRY &val &size &val_h
+	LOCAL &ret
+	JTAG.SHIFTTMS 1 1 0 0	; goto SHIFT-IR
+	GOSUB shift_n_bits_row_reg &val &size &val_h
+	ENTRY &ret &temp_val
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	RETURN &ret
+;end select_ir
+
+shift_n_bit_pure:
+	LOCAL &size &val &val_h &end
+	ENTRY &size &val &val_h &end
+	IF ("&val"=="")
+	(
+		&val=0x0
+	)
+	IF ("&val_h"=="")
+	(
+		&val_h=0x0
+	)
+	LOCAL &ret &ret_h
+	IF ("&end"=="")
+	(
+		GOSUB shift_n_bits_row &val &size &val_h
+	)
+	ELSE
+	(
+		GOSUB shift_n_bits_row_reg &val &size &val_h
+	)
+	ENTRY &ret &ret_h
+	RETURN &ret &ret_h
+;end shift_n_bit_pure
+
+shift_n_bit:
+	LOCAL &size &val &ret &ret_h &val_h
+	ENTRY &size &val &val_h
+	IF ("&val"=="")
+	(
+		&val=0x0
+	)
+	IF ("&val_h"=="")
+	(
+		&val_h=0x0
+	)
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-DR
+	GOSUB shift_n_bits_row_reg &val &size &val_h
+	ENTRY &ret &ret_h
+	JTAG.SHIFTTMS 1 0 0 ; goto Run-Test/Idle
+	RETURN &ret &ret_h
+;end shift_n_bit
+
+shift_32bit_pure:
+	LOCAL &val &ret &end
+	ENTRY &val &end
+	GOSUB shift_n_bit_pure 32. &val 0 &end
+	ENTRY &ret &temp_val
+	RETURN &ret
+;end shift_32bit_pure
+
+shift_32bit:
+	LOCAL &val &ret
+	ENTRY &val
+	GOSUB shift_n_bit 32. &val
+	ENTRY &ret &temp_val
+	RETURN &ret
+;end shift_32bit

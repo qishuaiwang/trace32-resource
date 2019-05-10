@@ -1,0 +1,65 @@
+;---------------------------------------------------------------------------------------
+; for ChipVLD, AutoScript
+; filename: ChipVLD.cmm
+; parameter: [SubSys:AP,PUBCP,SP,GNSS,WIFI,LDSP,TDDSP,AUDDSP,eSE]
+;---------------------------------------------------------------------------------------
+GLOBAL &g_proj_dir &os_sel &target
+ENTRY &subsys &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+LOCAL &temp
+
+&target="CHIP"
+;&target="FPGA"
+;&target="PXP"
+
+&temp=OS.PPD()
+&g_proj_dir="&temp"
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+LOCAL &ss
+&ss=STRing.UPpeR("&subsys")
+
+IF ("X&ss"=="X")||("X&ss"=="XAP")
+(
+	CD.DO "&g_proj_dir/A55_A75.cmm" &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XPUBCP")
+(
+	CD.DO "&g_proj_dir/R5.cmm" &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XSP")
+(
+	CD.DO "&g_proj_dir/CM4.cmm" &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XGNSS")
+(
+	PRINT %ERROR "DO NOT SUPPORT by this Project!"
+	;CD.DO "&g_proj_dir/CM4.cmm" 5 &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XWIFI")
+(
+	PRINT %ERROR "DO NOT SUPPORT by this Project!"
+	;CD.DO "&g_proj_dir/CM4.cmm" 4 &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XLDSP")
+(
+	CD.DO "&g_proj_dir/TL420.cmm" 1 &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XTDDSP")
+(
+	CD.DO "&g_proj_dir/TL420.cmm" 2 &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XAUDDSP")
+(
+	CD.DO "&g_proj_dir/TL420.cmm" 3 TL420-RTL310 &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+ELSE IF ("X&ss"=="XESE")
+(
+	CD.DO "&g_proj_dir/eSE.cmm" &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9
+)
+
+
+ENDDO

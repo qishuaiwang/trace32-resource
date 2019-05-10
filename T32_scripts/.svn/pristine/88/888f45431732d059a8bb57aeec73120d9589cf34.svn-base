@@ -1,0 +1,119 @@
+; by Ken.Kuang
+LOCAL &JTAG_PORT
+ENTRY &JTAG_PORT
+
+IF "X&JTAG_PORT"=="X"
+(
+	&JTAG_PORT=1.
+)
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+IF "X&target"=="X"
+(
+	&target="CHIP"
+	;&target="FPGA"
+	;&target="PXP"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+ON ERROR CONTinue
+IF "&target"=="FPGA"
+	SYStem.JtagClock 500KHz
+ELSE IF "&target"=="PXP"
+	SYStem.JtagClock 50KHz
+ELSE
+	SYStem.JtagClock 1MHz
+ON ERROR
+
+SYStem.CPU TL420-RTL201 ;TL420-RTL111
+
+
+Break.SELect.Program Onchip
+Break.SELect.Read Onchip
+Break.SELect.Write Onchip
+
+SYStem.CONFIG JTAGACCESSPORT 2
+SYStem.CONFIG COREJTAGPORT &JTAG_PORT ; ARM7 3 ; LDSP 1 ; TGDSP 2
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+SYStem.CONFIG SWDPTargetSel 0x0
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+ON ERROR CONTinue
+SYStem.CONFIG SWDP OFF
+ON ERROR
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Mode.Down
+	PRINT "Trace32 Prepared!"
+)
+ELSE
+(
+	;GOSUB BOOT
+	;WAIT 500.MS
+	ON ERROR GOSUB DSP_A_ERR
+	SYStem.Mode.Down
+	SYStem.Mode Attach
+	Break
+	ON ERROR
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" DSP_BOOT
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO
+
+DSP_A_ERR:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Please BOOT DSP by ARM before you connect DSP. or, Maybe Hardware Error!"
+	)
+	ENDDO
+

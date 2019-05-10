@@ -1,0 +1,35 @@
+;---------------------------------------------------------------------------------------
+; GLOBAL SETTING
+;---------------------------------------------------------------------------------------
+GLOBAL &target &jtag_clock &is_swd &delay_times &target_id
+&target="CHIP"
+;&target="PXP"
+;&target="HAPS"
+;&target="FPGA"
+
+&is_swd=(1==1)
+&target_id=((0x0<<28.)|0x1)
+IF ("&target"=="HAPS")||("&target"=="FPGA")
+(
+	; KHz
+	&jtag_clock=5000.
+	&delay_times=2
+)
+ELSE IF "&target"=="PXP"
+(
+	; KHz
+	&jtag_clock=150.
+	ON ERROR CONTinue
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+	SYStem.Option TRST OFF
+	ON ERROR
+	&delay_times=5
+	&is_swd=(0==1)
+)
+ELSE
+(
+	; KHz
+	&jtag_clock=20000.
+	&delay_times=1
+)

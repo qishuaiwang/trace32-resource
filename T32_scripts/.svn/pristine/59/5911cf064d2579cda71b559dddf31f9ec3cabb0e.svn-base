@@ -1,0 +1,446 @@
+; ken.kuang for DAP access jtag-ap
+LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+
+LOCAL &DBG_BASE_ADDR
+&DBG_BASE_ADDR=0x40000000
+GLOBAL &s_c_indx &s_c_val
+IF "X&s_c_indx"=="X"
+	&s_c_indx=0
+IF "X&s_c_val"=="X"
+	&s_c_val=0
+
+ON CMD dap_wr_10 GOSUB
+(
+	LOCAL &addr &val
+	ENTRY &addr &val
+	&s_c_val=(&s_c_val)|((&val)<<((&s_c_indx)<<3))
+	&s_c_indx=(&s_c_indx)+1
+	IF ((&s_c_indx)==4)
+	(
+		D.S EDBG:((&addr)+0x1C) %LE %Long &s_c_val
+		&s_c_indx=0
+		&s_c_val=0
+	)
+	RETURN
+)
+
+ON CMD dap_w_f GOSUB
+(
+	LOCAL &jtag_port &addr &csw
+	ENTRY &jtag_port
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+	IF ((&s_c_val)==0)&&((&s_c_indx)==0)
+		RETURN
+
+	IF ((&s_c_indx)==1)
+	(
+		D.S EDBG:((&addr)+0x10) %LE %Long &s_c_val
+	)
+	ELSE IF ((&s_c_indx)==2)
+	(
+		D.S EDBG:((&addr)+0x14) %LE %Long &s_c_val
+	)
+	ELSE IF ((&s_c_indx)==3)
+	(
+		D.S EDBG:((&addr)+0x18) %LE %Long &s_c_val
+	)
+	&s_c_indx=0
+	&s_c_val=0
+	&csw=DATA.LONG(EDBG:((&addr)+0x00))
+	WHILE ((&csw)&0xF0000000)!=0
+		&csw=DATA.LONG(EDBG:((&addr)+0x00))
+	RETURN
+)
+
+
+ON CMD dap_ntrst GOSUB
+(
+	LOCAL &jtag_port &core_port
+	ENTRY &jtag_port &core_port
+	dap_tms &jtag_port &core_port 5. 0x1F
+	RETURN
+)
+
+
+ON CMD dap_nsr_p GOSUB
+(
+	LOCAL &jtag_port &psel &addr &csw &temp &i
+	ENTRY &jtag_port &psel
+
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+
+	D.S EDBG:((&addr)+0x04) %LE %Long &psel
+
+	&csw=DATA.LONG(EDBG:((&addr)+0x00))
+	D.S EDBG:((&addr)+0x00) %LE %Long ((&csw)|(1<<0))
+	&i=0
+	WHILE ((&i)<2.)
+	(
+		&temp=DATA.LONG(EDBG:((&addr)+0x00))
+		&i=(&i)+1
+	)
+	D.S EDBG:((&addr)+0x00) %LE %Long ((&csw)&~(1<<0))
+	RETURN
+)
+
+ON CMD dap_nsrst GOSUB
+(
+	LOCAL &jtag_port &core_port &addr &csw &temp &i
+	ENTRY &jtag_port &core_port
+	dap_nsr_p &jtag_port (1<<(&core_port))
+	RETURN
+)
+
+ON CMD dap_tms GOSUB
+(
+	LOCAL &jtag_port &core_port &len &val &csw &s_len &s_val &tdi
+	ENTRY &jtag_port &core_port &len &val &tdi
+	IF "X&tdi"=="X"
+		&tdi=0
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8)
+
+	D.S EDBG:((&addr)+0x04) %LE %Long (1<<(&core_port))
+
+	&s_len=0
+	WHILE (&s_len)<(&len)
+	(
+		LOCAL &tms_len
+		&tms_len=(&len)-(&s_len)
+		IF (&tms_len)>5.
+		(
+			&tms_len=5.
+		)
+		&s_val=(&val)&((1<<(&tms_len))-1)
+		&s_val=(&s_val)|(1<<(&tms_len))|((&tdi)<<6.)
+		dap_wr_10 &addr (&s_val)&0xFF
+		&val=(&val)>>(&tms_len)
+		&s_len=(&s_len)+(&tms_len)
+	)
+	RETURN
+)
+
+ON CMD dap_sh_i GOSUB
+(
+	LOCAL &jtag_port &core_port &len &val &val2 &csw &s_len &s_val &tms &rtdo &tdi &utdi &rval &rval2
+	ENTRY &jtag_port &core_port &tms &rtdo &tdi &utdi &len &val &val2
+	Var.NEWLOCAL unsigned char[16] \rval
+	LOCAL &rid
+	&rid=0
+	IF (&len)>128.
+	(
+		//PRINT %ERROR Please make the length less than 128!
+		RETURN -1
+	)
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+
+	D.S EDBG:((&addr)+0x04) %LE %Long (1<<(&core_port))
+	dap_wr_10 &addr (0x80|((&tms)<<3)|((&rtdo)<<2)|((&tdi)<<1)|(&utdi))
+	IF ((&len)>6.)||((&utdi)==1)
+	(
+		&s_val=(&len)-1
+		dap_wr_10 &addr (&s_val&0xFF)
+		IF (&utdi)==0
+		(
+			&s_len=0
+			WHILE (&s_len)<(&len)
+			(
+				LOCAL &temp
+				&s_val=&val
+				dap_wr_10 &addr (&s_val&0xFF)
+				&s_len=(&s_len)+8.
+				IF &s_len==64.
+					&val=&val2
+				ELSE
+					&val=(&val)>>8.
+				IF ((&rtdo)==1)
+				(
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+					IF ((((&csw)>>24.)&0x7)>=4.)
+					(
+						//&temp=DATA.LONG.BigEndian(EDBG:((&addr)+0x1C))
+						&temp=DATA.LONG(EDBG:((&addr)+0x1C))
+						Var.Assign \rval[(&rid)+0]=(&temp>>0.)&0xFF
+						Var.Assign \rval[(&rid)+1]=(&temp>>8.)&0xFF
+						Var.Assign \rval[(&rid)+2]=(&temp>>16.)&0xFF
+						Var.Assign \rval[(&rid)+3]=(&temp>>24.)&0xFF
+						&rid=(&rid)+4
+					)
+				)
+			)
+		)
+	)
+	ELSE
+	(
+		&s_val=(&val)&((1<<(&len))-1)
+		&s_val=(&s_val)|(1<<(&len))|(1<<7.)
+		dap_wr_10 &addr (&s_val&0xFF)
+	)
+	IF (&rtdo)==1
+	(
+		LOCAL &temp &left
+		dap_w_f &jtag_port
+		&left=(&len)-((&rid)<<3.)
+		WHILE ((&left)>0)
+		(
+			IF ((&left)>=32.)
+			(
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				WHILE (((&csw)&0x07000000)<0x04000000)
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				&temp=(DATA.LONG(EDBG:((&addr)+0x1C)))
+				Var.Assign \rval[(&rid)+0]=(&temp>>0.)&0xFF
+				Var.Assign \rval[(&rid)+1]=(&temp>>8.)&0xFF
+				Var.Assign \rval[(&rid)+2]=(&temp>>16.)&0xFF
+				Var.Assign \rval[(&rid)+3]=(&temp>>24.)&0xFF
+				&rid=(&rid)+4
+			)
+			ELSE IF ((&left)>=16.)
+			(
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				WHILE (((&csw)&0x07000000)<0x02000000)
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				&temp=(DATA.LONG(EDBG:((&addr)+0x14))&0xFFFF)
+				Var.Assign \rval[(&rid)+0]=(&temp>>0.)&0xFF
+				Var.Assign \rval[(&rid)+1]=(&temp>>8.)&0xFF
+				&rid=(&rid)+2
+			)
+			ELSE
+			(
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				WHILE (((&csw)&0x07000000)<0x01000000)
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				&temp=(DATA.LONG(EDBG:((&addr)+0x10))&0xFF)
+				Var.Assign \rval[&rid]=&temp&0xFF
+				&rid=(&rid)+1
+			)
+			&left=(&len)-((&rid)<<3.)
+		)
+		&s_len=0
+		&val=0
+		&val2=0
+		WHILE (&s_len)<(&rid)
+		(
+			IF (&s_len)<8.
+			(
+				&rval=(&val)|(Var.VALUE(\rval[&s_len])<<((&s_len)*8.))
+				&val=&rval
+			)
+			ELSE
+			(
+				&rval2=(&val2)|(Var.VALUE(\rval[&s_len])<<((&s_len)*8.))
+				&val2=&rval2
+			)
+			&s_len=(&s_len)+1
+		)
+	)
+	RETURN &rval &rval2
+)
+
+ON CMD dap_ir GOSUB
+(
+	LOCAL &jtag_port &core_port &len &val &val2 &idr &rval &rval2
+	ENTRY &jtag_port &core_port &len &val &val2
+	IF "X&val"=="X"
+		&val=0
+	IF "X&val2"=="X"
+		&val2=0
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+	&idr=DATA.LONG(EDBG:((&addr)+0xFC))
+	IF (((&idr)&0x0FFFFF0F)!=0x04760000)
+	(
+		//PRINT %ERROR "Please make sure the JTAG port(&jtag_port) is right!"
+		RETURN -1
+	)
+	dap_ntrst &jtag_port &core_port
+	dap_tms &jtag_port &core_port 5. 0x6
+	dap_sh_i &jtag_port &core_port 1 0 0 0 &len &val &val2
+	ENTRY &rval &rval2
+	dap_tms &jtag_port &core_port 5. 0x1
+	RETURN 0 &rval &rval2
+)
+
+ON CMD dap_dr GOSUB
+(
+	LOCAL &jtag_port &core_port &len &val &val2 &idr &tdi &utdi &rval &rval2
+	ENTRY &jtag_port &core_port &len &utdi &tdi &val &val2
+	IF "X&utdi"=="X"
+		&utdi=1
+	IF "X&tdi"=="X"
+		&tdi=0
+	IF "X&val"=="X"
+		&val=0
+	IF "X&val2"=="X"
+		&val2=0
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+	&idr=DATA.LONG(EDBG:((&addr)+0xFC))
+	IF (((&idr)&0x0FFFFF0F)!=0x04760000)
+	(
+		//PRINT %ERROR "Please make sure the JTAG port(&jtag_port) is right!"
+		RETURN -1
+	)
+	dap_tms &jtag_port &core_port 3. 0x1
+	//dap_w_f &jtag_port
+	dap_sh_i &jtag_port &core_port 1 1 &tdi &utdi &len &val &val2
+	ENTRY &rval &rval2
+	dap_tms &jtag_port &core_port 2 0x1
+	RETURN 0 &rval &rval2
+)
+
+ON CMD dap_scan GOSUB
+(
+	LOCAL &jtag_port &core_port &len &file_name &inv &detect_lenght &p_len
+	ENTRY &jtag_port &core_port &len &file_name &inv &detect_lenght &p_len
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+	&idr=DATA.LONG(EDBG:((&addr)+0xFC))
+	IF (((&idr)&0x0FFFFF0F)!=0x04760000)
+	(
+		//PRINT %ERROR "Please make sure the JTAG port(&jtag_port) is right!"
+		RETURN -1
+	)
+	dap_tms &jtag_port &core_port 3. 0x1
+	dap_w_f &jtag_port
+	dap_sh_si &jtag_port &core_port &len &file_name &inv &detect_lenght &p_len
+	dap_tms &jtag_port &core_port 2 0x1
+	RETURN 0
+)
+
+ON CMD dap_sh_si GOSUB
+(
+	LOCAL &jtag_port &core_port &len &file_name &inv &detect_lenght &p_len &val &csw &s_len &tms &rtdo &tdi &utdi &rval &per_max_len &c_len &per_len &s_val &mod_len
+	ENTRY &jtag_port &core_port &len &file_name &inv &detect_lenght &p_len
+	&tms=0
+	&rtdo=1
+	&tdi=0
+	&utdi=0
+	&val=0
+	IF "X&inv"=="X"
+		&inv=0
+	IF "X&detect_lenght"=="X"
+		&detect_lenght=0
+	IF "X&p_len"=="X"
+		&p_len=0
+	IF (&detect_lenght)==1
+		&s_val=0xFA5A5A5F
+	&s_len=0
+	OPEN #16 "&file_name" /Create
+	&addr=&DBG_BASE_ADDR+((&jtag_port)<<8.)
+	D.S EDBG:((&addr)+0x04) %LE %Long (1<<(&core_port))
+
+	IF (&p_len==0)
+	(
+		&per_max_len=128.
+		&mod_len=(&len)&0x1F
+		&len=(&len)&(~0x1F)
+		WHILE (&s_len<&len)
+		(
+			&c_len=&len-&s_len
+			IF &c_len>&per_max_len
+				&c_len=&per_max_len
+			&s_len=&s_len+&c_len
+			D.S EDBG:((&addr)+0x14) %LE %Long (((&c_len)-1)<<8.)|(0x80|((&tms)<<3)|((&rtdo)<<2)|((&tdi)<<1)|(&utdi))
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			WHILE ((&csw)&0x70000000)!=0
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+
+			&per_len=0
+			WHILE (&per_len)<(&c_len)
+			(
+				IF (&detect_lenght)==0
+					&s_val=&val
+				D.S EDBG:((&addr)+0x1C) %LE %Long &s_val
+				&per_len=(&per_len)+32.
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				WHILE ((&csw)&0x70000000)!=0
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				WHILE (((&csw)>>24.)&0x7)!=4
+					&csw=DATA.LONG(EDBG:((&addr)+0x00))
+				&val=DATA.LONG(EDBG:((&addr)+0x1C))
+				IF (&inv)==1
+					&val=(~(&val))&0xFFFFFFFF
+				WRITE #16 "0x" FORMAT.HEX(8, &val)
+			)
+		)
+
+		&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		WHILE ((&csw)&0xF7000000)!=0
+		(
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		)
+
+		&tms=1
+		D.S EDBG:((&addr)+0x14) %LE %Long (((&mod_len)+32.-1)<<8.)|(0x80|((&tms)<<3)|((&rtdo)<<2)|((&tdi)<<1)|(&utdi))
+		&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		WHILE ((&csw)&0x70000000)!=0
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		IF (&detect_lenght)==0
+			&s_val=&val
+		D.S EDBG:((&addr)+0x1C) %LE %Long &s_val
+		&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		WHILE ((&csw)&0x70000000)!=0
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		IF ((&mod_len)!=0)
+		(
+			WHILE (((&csw)>>24.)&0x7)!=4
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			&val=DATA.LONG(EDBG:((&addr)+0x1C))
+			IF (&inv)==1
+				&val=(~(&val))&0xFFFFFFFF
+			WRITE #16 "0x" FORMAT.HEX(8, &val)
+			IF (&detect_lenght)==0
+				&s_val=&val
+			D.S EDBG:((&addr)+0x1C) %LE %Long ((&s_val)&((1<<(&mod_len))-1))
+		)
+
+		&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		WHILE ((&csw)&0xF7000000)!=0
+		(
+			IF (((&csw)>>24.)&0x7)!=0
+				&val=DATA.LONG(EDBG:((&addr)+0x10))
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+		)
+	)
+	ELSE
+	(
+		&tms=1
+		LOCAL &c &reg_offset
+		&c=(&p_len)&0x7
+		IF &c!=0
+			&c=((&p_len)>>3.)+1
+		ELSE
+			&c=((&p_len)>>3.)
+		&reg_offset=(0x10+((&c-1)<<2))
+		WHILE (&s_len<&len)
+		(
+			D.S EDBG:((&addr)+0x14) %LE %Long (((&p_len)-1)<<8.)|(0x80|((&tms)<<3)|((&rtdo)<<2)|((&tdi)<<1)|(&utdi))
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			WHILE ((&csw)&0x70000000)!=0
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+
+			IF (&detect_lenght)==0
+				&s_val=&val
+			D.S EDBG:((&addr)+&reg_offset) %LE %Long &s_val
+
+			&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			WHILE ((&csw)&0x70000000)!=0
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			WHILE (((&csw)>>24.)&0x7)!=&c
+				&csw=DATA.LONG(EDBG:((&addr)+0x00))
+			&val=DATA.LONG(EDBG:((&addr)+&reg_offset))
+
+			WRITE #16 "0x" FORMAT.HEX(8, &val)
+
+			D.S EDBG:((&addr)+0x10) %LE %Long 0x13
+			&s_len=&s_len+1
+		)
+	)
+
+	CLOSE #16
+	RETURN
+)
+
+
+&cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10

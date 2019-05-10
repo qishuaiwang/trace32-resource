@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+
+<config>
+    <dumppath>C:\TEMP\DebugDump\</dumppath>
+    <logfile>C:\TEMP\py.log</logfile>
+    <format>[%(asctime)s | %(filename)-15s: %(lineno)-6d %(levelname)-8s] %(message)s</format>
+    <date_format>%Y-%m-%d %H:%M</date_format>
+</config>

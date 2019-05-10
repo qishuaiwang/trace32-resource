@@ -1,0 +1,25 @@
+system.mode down
+system.reset
+&cur_path_local=OS.PSD()
+system.jtagclock 5Mhz
+
+system.cpu CORTEXA53 
+system.config CORENUMBER 1.
+core.assign 1
+
+sys.config corebase 0x81410000
+SYS.CONFIG.CTIBase       0x81420000
+sys.config.bmc.base       0x81430000
+sys.config.etm.base       0x81440000
+
+;system.multiCore JTAGACCESSPORT 0
+;system.multicore COREJTAGPORT 0
+system.config MEMORYACCESSPORT 0
+;system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+;system.mode Prepare
+system.config SWDP ON
+
+system.mode Up
+cd.do &cur_path_local\demo\SPRD\&project_sel\Whale_Boot_ALL.cmm

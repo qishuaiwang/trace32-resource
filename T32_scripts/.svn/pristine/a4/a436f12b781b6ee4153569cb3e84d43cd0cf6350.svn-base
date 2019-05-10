@@ -1,0 +1,45 @@
+system.mode down
+system.reset
+
+system.jtagclock 5Mhz
+system.option.palladium on
+system.option.memstatuscheck ON
+system.cpu cortexr8
+
+
+sys.config corebase 0x80330000
+sys.config ctibase 0x80338000
+sys.config etmbase 0x8033c000
+
+
+system.multicore jtagaccessport 2
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+system.config swdptargetsel (0<<28.)|0x01000001 ;Instant_ID
+
+sys.config swdp on
+
+;sys.option enreset off
+system.mode prepare
+
+d.s eaxi:0x8:0x5000 %le %long 0xEAFFFFFE
+d.s eaxi:0x8:0x5004 %le %long 0xEAFFFFFE
+d.s eaxi:0x8:0x5020 %le %long 0xEAFFFFFE
+d.s eaxi:0x8:0x5024 %le %long 0xEAFFFFFE
+
+d.s eaxi:0x8:0x64010018 %le %long 0x207006
+d.s eaxi:0x8:0x63170040 %le %long 0x0
+d.s eaxi:0x8:0x640100b0 %le %long 0x0
+d.s eaxi:0x8:0x64020218 %le %long 0x0
+d.s eaxi:0x8:0x64010704 %le %long 0x1155503
+d.s eaxi:0x8:0x64010250 %le %long 0x1
+d.s eaxi:0x8:0x64010544 %le %long 0x0
+
+;system.mode up
+system.mode attach
+ 

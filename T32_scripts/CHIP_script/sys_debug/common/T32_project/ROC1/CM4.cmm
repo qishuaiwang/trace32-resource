@@ -1,0 +1,67 @@
+; by Ken.Kuang
+LOCAL &AHB_PORT &TargetID
+ENTRY &AHB_PORT &TargetID
+
+IF "X&AHB_PORT"=="X"
+(
+	&AHB_PORT=3.
+)
+
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+SYStem.Mode Down
+SYStem.RESet
+SYStem.CPU CORTEXM4
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+IF "X&TargetID"=="X"
+(
+	&TargetID=&target_id
+)
+
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+
+SYStem.CONFIG MEMORYACCESSPORT &AHB_PORT
+SYStem.CONFIG DEBUGACCESSPORT 1.
+
+SYStem.CONFIG AXIACCESSPORT   0.
+SYStem.CONFIG APBACCESSPORT   1.
+SYStem.CONFIG AHBACCESSPORT   3.
+SYStem.MemAccess.DAP
+
+DO "&CUR_DIR/Prepare.cmm" &TargetID
+
+IF ("&os_sel"=="os_sys")
+(
+
+	WAIT 1.MS
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" CM4_BOOT &AHB_PORT 1
+	RETURN
+; end of BOOT

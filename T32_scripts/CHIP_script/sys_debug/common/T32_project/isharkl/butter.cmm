@@ -1,0 +1,28 @@
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+system.mode down
+system.reset
+sys.CPU BUTTER2
+SYStem.Option.IGnoreSOC ON
+core.number 1
+sys.JtagClock 2000000.
+;sys.debugportprobe.open "probe.ad" TIMEEXACT /JTAG /cmm "probe.cmm" /BufferSize 2000000. /parkRTI
+;sys.debugportprobe.arm
+;sys.Option.CLTAPOnly OFF
+sys.Option.CLTAPOnly ON
+sys.Option.JTAGOnly ON
+sys.Option.JTAGDirectCPU ON
+area
+diag 0x3020 1                       ; verbose messages: for testing only
+
+&CUR_DIR=OS.PPD()
+CD.DO "&CUR_DIR/jtagv0.cmm"
+
+
+sys.Mode.Attach
+
+Break
+;sys.debugportprobe.close

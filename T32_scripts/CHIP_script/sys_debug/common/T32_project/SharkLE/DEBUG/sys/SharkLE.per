@@ -1,0 +1,398 @@
+; Ken.Kuang for SharkLE Debug information
+; 2017
+; Version @ 0000
+ASSERT SOFTWARE.BUILD.BASE()>=57080. "The Trace32 software too old"
+
+;cp_pub_address
+;0x02000000
+;cp_wtl_address
+;0x32000000
+;ap_address
+;0x40000000
+;aon_address
+;0xA1000000
+
+;share IRAM
+;0x00010000
+ENTRY &MEM_TYPE="EAXI" &AON_SIRAM_ADDR=0x00010000 &AON_BASE_ADDR=0x40000000 &DMC_BASE_ADDR=0x30000000
+ASSERT DATA.LONG(AVM:0x0)==0x5577 "Please use Per_Preload.cmm!"
+
+CONFIG 16. 8.
+WIDTH 23.
+
+; ############################ START OF DJTAG ############################
+BASE EAPB:0x0
+TREE "DJTAG Scan"
+TREE "DEBUG SIGNAL"
+	include djtag_chain_sharkle.per
+
+TREE.END
+TREE "BUSMON BUS STATUS"
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+TREE "AON BUS STATUS"
+SGROUP "AON"
+	TEXTLINE ""
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x03012680,0)
+	LINE.LONG 0x00 " AP , AP(M0) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03022680,0)
+	LINE.LONG 0x00 " WTLCP , WTLCP(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03032680,0)
+	LINE.LONG 0x00 " PUBCP , PUBCP(M2) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03042680,0)
+	LINE.LONG 0x00 " WCN , WCN(M3) "
+	include BusMon_status.per
+
+TREE.END
+
+TREE "WTLCP BUS STATUS"
+SGROUP "WTLCP"
+	TEXTLINE ""
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x05022680,0)
+	LINE.LONG 0x00 " LDSP D , LDSP D(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05052680,0)
+	LINE.LONG 0x00 " LDSP DMA , LDSP DMA(M4) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05042680,0)
+	LINE.LONG 0x00 " TGDSP D , TGDSP D(M3) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05062680,0)
+	LINE.LONG 0x00 " TGDSP DMA , TGDSP DMA(M5) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05082680,0)
+	LINE.LONG 0x00 " LTE ACC , LTE ACC(M7) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05312680,0)
+	LINE.LONG 0x00 " WDMA1 , WDMA1(M1)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05322680,0)
+	LINE.LONG 0x00 " CR5_S4 , CR5_S4(M2)"
+	include BusMon_status.per
+
+TREE.END
+
+
+TREE.END
+; ----------------------------------------------------------
+TREE "BUSMON Control"
+
+TREE "AON Control"
+SGROUP "AON"
+	TEXTLINE ""
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x03010880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x03010800,0x1000)
+	LINE.LONG 0x00 " AP , AP(M0) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03020880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x03020800,0x1000)
+	LINE.LONG 0x00 " WTLCP , WTLCP(M1) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03030880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x03030800,0x1000)
+	LINE.LONG 0x00 " PUBCP , PUBCP(M2) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x03040880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x03040800,0x1000)
+	LINE.LONG 0x00 " WCN , WCN(M3) "
+	include BusMon_Chn_int.per
+
+
+TREE.END
+
+TREE "WTLCP Control"
+SGROUP "WTLCP"
+	TEXTLINE ""
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x05020880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05020800,0x1000)
+	LINE.LONG 0x00 " LDSP D , LDSP D(M1) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05050880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05050800,0x1000)
+	LINE.LONG 0x00 " LDSP DMA , LDSP DMA(M4) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05040880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05040800,0x1000)
+	LINE.LONG 0x00 " TGDSP D , TGDSP D(M3) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05060880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05060800,0x1000)
+	LINE.LONG 0x00 " TGDSP DMA , TGDSP DMA(M5) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05080880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05080800,0x1000)
+	LINE.LONG 0x00 " LTE ACC , LTE ACC(M7) "
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05310880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05310800,0x1000)
+	LINE.LONG 0x00 " WDMA1 , WDMA1(M1)"
+	include BusMon_Chn_int.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05320880,0)
+	WRITEBACK
+	SETX AVM:0x1000 %l 0x00
+	VARX 0x08 %l DJTAG.EXECUTE(0x05320800,0x1000)
+	LINE.LONG 0x00 " CR5_S4 , CR5_S4(M2)"
+	include BusMon_Chn_int.per
+
+TREE.END
+
+TREE.END
+
+;----------------------------------------------------
+
+
+TREE "VOLTAGE DOMAIN STATUS"
+TEXTLINE "if TAPID == 0x2381C5FF, It's On, else is Off"
+SGROUP "AP Voltage Domain"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x00000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "MM Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x01000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "GPU Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x02000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "AON Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x03000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "PUB Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x04000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "WTLCP Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x05000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "PUBCP Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x06080180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+SGROUP "WCN Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x07000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+
+TREE.END
+
+
+TREE.END
+; ############################ END OF DJTAG ############################
+
+include LE_A53.per
+
+
+TREE "DDR"
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x002B0000)
+RGROUP.LONG 0x250++0x03 "PMU"
+TEXTLINE ""
+LINE.LONG 0x00 " PUB_ACC_RDY , PUB_ACC_RDY "
+BITFLD.LONG 0x00 0.      " RDY , PUB_ACC_RDY "
+RGROUP.LONG 0x254++0x03
+TEXTLINE ""
+LINE.LONG 0x00 " PUB_CLK_RDY , PUB_CLK_RDY "
+BITFLD.LONG 0x00 0.      " RDY , PUB_CLK_RDY "
+
+
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x002E0000)
+RGROUP.LONG 0x8C++0x03 "DFS"
+TEXTLINE ""
+LINE.LONG 0x00 " DFS_CLK_GATE , DFS_CLK_GATE_CFG "
+
+RGROUP.LONG 0xAC++0x03
+TEXTLINE ""
+LINE.LONG 0x00 " HARD_DFS_CTRL , HARD_DFS_CTRL "
+
+
+BASE &MEM_TYPE:(&DMC_BASE_ADDR)
+include DMC.per
+
+TREE.END
+
+
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+; ############################ START OF PMU ############################
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2B0000)
+TREE "PMU Info"
+	RGROUP.LONG 0xD4++0x03 "SUBSYS Sleep&Power Status"
+	TEXTLINE ""
+	LINE.LONG 0x00 " Sleep Status, SLEEP_STATUS "
+	BITFLD.LONG 0x00 20.--23. "    SP , SP_SLP_STATUS"  "DSleep,XTLWait,XTLBUFWait,DSleepXTLOn,PLLPWRWait,WakeUp,WakeUpLock,%x..."
+	BITFLD.LONG 0x00 12.--15. "   WCN , WCN_SLP_STATUS"  "DSleep,XTLWait,XTLBUFWait,DSleepXTLOn,PLLPWRWait,WakeUp,WakeUpLock,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.--11.  " PUBCP , PUBCP_SLP_STATUS"  "DSleep,XTLWait,XTLBUFWait,DSleepXTLOn,PLLPWRWait,WakeUp,WakeUpLock,%x..."
+	BITFLD.LONG 0x00 4.--7.   " WTLCP , WTLCP_SLP_STATUS"   "DSleep,XTLWait,XTLBUFWait,DSleepXTLOn,PLLPWRWait,WakeUp,WakeUpLock,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 0.--3.   "    AP , AP_SLP_STATUS"    "DSleep,XTLWait,XTLBUFWait,DSleepXTLOn,PLLPWRWait,WakeUp,WakeUpLock,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0xBC++0x03
+	LINE.LONG 0x00 " Power Status 0, PWR_STATUS0_DBG "
+	BITFLD.LONG 0x00 5.--9.   "   CA53_C0 , PD_CA53_C0_STATE"     "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,PowerOnDCDC,PowerOnD,,,,DBGPWRUPCLR,ShutDownDCDC,,,DBGPWRUPSET,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 10.--14. "   CA53_C1 , PD_CA53_C1_STATE"     "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,PowerOnDCDC,PowerOnD,,,,DBGPWRUPCLR,ShutDownDCDC,,,DBGPWRUPSET,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 0.--4.   "  CA53_TOP , PD_CA53_TOP_STATE"      "WakeUP,PowerOnSEQ,,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,,,,,PowerOnDCDC,,,,,,ShutDownDCDC,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 15.--19. "   CA53_C2 , PD_CA53_C2_STATE"     "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,PowerOnDCDC,PowerOnD,,,,DBGPWRUPCLR,ShutDownDCDC,,,DBGPWRUPSET,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 20.--24. "   CA53_C3 , PD_CA53_C3_STATE"     "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,PowerOnDCDC,PowerOnD,,,,DBGPWRUPCLR,ShutDownDCDC,,,DBGPWRUPSET,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 25.--29. "    AP_SYS , PD_AP_SYS_STATE" "PowerOn,,,,,,,PowerOff   ,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0xC0++0x03
+	LINE.LONG 0x00 " Power Status 1, PWR_STATUS1_DBG "
+	BITFLD.LONG 0x00 10.--14. "  WTL_LDSP , PD_WTLCP_LDSP_STATE"     "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 5.--9.   " WTL_TGDSP , PD_WTLCP_TGDSP_STATE"   "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 0.--4.   " WTL_HU3GE , PD_WTLCP_HU3GE_STATE"    "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25.--29. "    LTE_P1 , PD_WTLCP_LTE_P1_STATE"   "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 15.--19. "      WIFI , PD_WIFI_WRAP_STATE"      "PowerOn,,,,,,,PowerOff   ,%x..."
+	BITFLD.LONG 0x00 20.--24. "    LTE_P2 , PD_WTLCP_LTE_P2_STATE"  "Reserve,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0xC4++0x03
+	LINE.LONG 0x00 " Power Status 2, PWR_STATUS2_DBG "
+	BITFLD.LONG 0x00 25.--29. "      GNSS , PD_GNSS_WRAP_STATE"  "PowerOn,,,,,,,PowerOff   ,%x..."
+	BITFLD.LONG 0x00 20.--24. "   PUB_SYS , PD_PUB_SYS_STATE"      "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 15.--19. "    LTE_P4 , PD_WTLCP_LTE_P4_STATE"  "Reserve,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 5.--9.   " PUBCP_SYS , PD_PUBCP_SYS_STATE"    "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 0.--4.   "   WTL_SYS , PD_WTLCP_SYS_STATE"    "WakeUP,PowerOnSEQ,PowerOnM,RSTAssert,,,ISOOff,ShutDown,Active,StandBy,ISOOn,RSTDeassert,,PowerOffM,BISRRST,BISRPROC,,,PowerOnD,,,,,,,,,,,PowerOffD,%x..."
+	BITFLD.LONG 0x00 10.--14. "    LTE_P3 , PD_WTLCP_LTE_P3_STATE"  "Reserve,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x10C++0x03
+	LINE.LONG 0x00 " Power Status 3, PWR_STATUS3_DBG "
+	BITFLD.LONG 0x00 10.--14. "    MM_TOP , PD_MM_TOP_STATE"  "PowerOn,,,,,,,PowerOff   ,%x..."
+	BITFLD.LONG 0x00 5.--9.   "   GPU_TOP , PD_GPU_TOP_STATE"       "PowerOn,,,,,,,PowerOff   ,%x..."
+	BITFLD.LONG 0x00 0.--4.   "   WCN_SYS , PD_WCN_SYS_STATE"     "PowerOn,,,,,,,PowerOff   ,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x30C4++0x03 "DDR State"
+	LINE.LONG 0x00 " DDR SLP Ctrl State, DDR_SLP_CTRL_STATE "
+	BITFLD.LONG 0x00 0.--3.   "     State , DDR_SLP_CTRL_STATE"     "%x..."
+
+	RGROUP.LONG 0x250++0x03
+	LINE.LONG 0x00 " DDR Access Ready, PUB_ACC_RDY "
+	BITFLD.LONG 0x00 0.       "       RDY , PUB_ACC_RDY"
+
+	TEXTLINE ""
+	GROUP.LONG 0x274++0x03 "SUBSYS Sleep Counter Clear"
+	LINE.LONG 0x00 "   CLR, SLEEP_CNT_CLR "
+
+	TEXTLINE ""
+	RGROUP.LONG 0x3064++0x03 "SUBSYS Sleep Counter"
+	LINE.LONG 0x00 "    AP, AP_SYS_SLEEP_CNT "
+	RGROUP.LONG 0x3068++0x03
+	LINE.LONG 0x00 " WTLCP, WTLCP_SYS_SLEEP_CNT "
+	RGROUP.LONG 0x306C++0x03
+	LINE.LONG 0x00 " PUBCP, PUBCP_SYS_SLEEP_CNT "
+	RGROUP.LONG 0x3070++0x03
+	LINE.LONG 0x00 "   WCN, WCN_SYS_SLEEP_CNT "
+
+	TEXTLINE ""
+	RGROUP.LONG 0x3078++0x03 "SUBSYS Deep Sleep Counter"
+	LINE.LONG 0x00 "    AP, AP_DEEP_SLEEP_CNT "
+	RGROUP.LONG 0x307C++0x03
+	LINE.LONG 0x00 "    SP, SP_SYS_DEEP_SLEEP_CNT "
+	RGROUP.LONG 0x3080++0x03
+	LINE.LONG 0x00 " WTLCP, WTLCP_DEEP_SLEEP_CNT "
+	RGROUP.LONG 0x3084++0x03
+	LINE.LONG 0x00 " PUBCP, PUBCP_DEEP_SLEEP_CNT "
+	RGROUP.LONG 0x3088++0x03
+	LINE.LONG 0x00 "   WCN, WCN_SYS_DEEP_SLEEP_CNT "
+	RGROUP.LONG 0x308C++0x03
+	LINE.LONG 0x00 "   PUB, PUB_SYS_DEEP_SLEEP_CNT "
+
+	TEXTLINE ""
+	RGROUP.LONG 0x3090++0x03 "SUBSYS Light Sleep Counter"
+	LINE.LONG 0x00 "    AP, AP_LIGHT_SLEEP_CNT "
+	RGROUP.LONG 0x3094++0x03
+	LINE.LONG 0x00 " WTLCP, WTLCP_LIGHT_SLEEP_CNT "
+	RGROUP.LONG 0x3098++0x03
+	LINE.LONG 0x00 " PUBCP, PUBCP_LIGHT_SLEEP_CNT "
+	RGROUP.LONG 0x309C++0x03
+	LINE.LONG 0x00 "   WCN, WCN_LIGHT_SLEEP_CNT "
+	RGROUP.LONG 0x30A0++0x03
+	LINE.LONG 0x00 "   AON, AON_LIGHT_SLEEP_CNT "
+	RGROUP.LONG 0x3074++0x03
+	LINE.LONG 0x00 "   PUB, PUB_SYS_LIGHT_SLEEP_CNT "
+
+TREE.END
+; ############################ END OF PMU ############################
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+
+include PMIC.per
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+
+
+
+

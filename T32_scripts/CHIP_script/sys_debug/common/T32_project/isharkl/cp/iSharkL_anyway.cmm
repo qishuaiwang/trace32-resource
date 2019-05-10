@@ -1,0 +1,28 @@
+LOCAL &SUBSYS
+ENTRY &SUBSYS
+PRINT "&SUBSYS anyway connect!"
+&CMM_PATH="~~/demo/SPRD/iSharkL"
+ON ERROR CONTinue
+CD.DO "&CMM_PATH/cosight_arm926_CP0_arm0.cmm"
+ON ERROR
+SYStem.Mode Prepare
+CD.DO "&CMM_PATH/DAP_or_AP_release_cp_arm7.cmm"
+
+IF ("&SUBSYS"=="CP1")
+(
+	CD.DO "&CMM_PATH/cosight_cp1_cortexa5.cmm"
+)
+ELSE IF ("&SUBSYS"=="ARM1")
+(
+	CD.DO "&CMM_PATH/cosight_arm926_CP0_arm0.cmm"
+	CD.DO "&CMM_PATH/cp0_arm0_release_arm1.cmm"
+	CD.DO "&CMM_PATH/cosight_arm926_cp0_arm1.cmm"
+)
+ELSE IF ("&SUBSYS"=="ARM0")
+(
+	CD.DO "&CMM_PATH/cosight_arm926_CP0_arm0.cmm"
+)
+ELSE IF ("&SUBSYS"=="ARM7")
+(
+	CD.DO "&CMM_PATH/cosight_arm7.cmm"
+)

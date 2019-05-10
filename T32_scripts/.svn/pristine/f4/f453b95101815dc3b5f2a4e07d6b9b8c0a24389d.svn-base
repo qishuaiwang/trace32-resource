@@ -1,0 +1,116 @@
+; by Ken.Kuang
+LOCAL &AHB_PORT &TargetID
+ENTRY &AHB_PORT &TargetID
+
+IF "X&target"=="X"
+(
+	&target="CHIP"
+	;&target="FPGA"
+	;&target="PXP"
+)
+
+IF "X&AHB_PORT"=="X"
+(
+	&AHB_PORT=3.
+)
+
+IF "X&TargetID"=="X"
+(
+	&TargetID=((0x0<<28.)|0x1)
+)
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+SYStem.Mode Down
+SYStem.RESet
+ON ERROR CONTinue
+IF "&target"=="FPGA"
+	SYStem.JtagClock 5MHz
+ELSE IF "&target"=="PXP"
+(
+	SYStem.JtagClock 150KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+)
+ELSE IF "&target"=="Protium"
+(
+	SYStem.JtagClock 500KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+)
+ELSE
+	SYStem.JtagClock 20MHz
+ON ERROR
+
+SYStem.CPU CORTEXM4
+
+SYStem.CONFIG MEMORYACCESSPORT &AHB_PORT
+SYStem.CONFIG DEBUGACCESSPORT 1.
+
+SYStem.CONFIG AXIACCESSPORT   0.
+SYStem.CONFIG APBACCESSPORT   1.
+SYStem.CONFIG AHBACCESSPORT   3.
+SYStem.MemAccess.DAP
+
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+SYStem.CONFIG SWDPTargetSel &TargetID
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+ON ERROR CONTinue
+SYStem.CONFIG SWDP OFF
+ON ERROR
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+
+IF ("&os_sel"=="os_sys")
+(
+
+	WAIT 1.MS
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" CM4_BOOT &AHB_PORT 1
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO

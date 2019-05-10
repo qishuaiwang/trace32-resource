@@ -1,0 +1,68 @@
+;---------------------------------------------------------------------------------------
+; Menu reprogram, add customized bottons and menus
+;---------------------------------------------------------------------------------------
+GLOBAL &g_proj_dir &os_sel
+LOCAL &sys_script &debug
+LOCAL &debug &TAP_SEL &sel_flag
+ENTRY &sys_sel
+;PLIST
+;STOP
+
+&CUR_DIR=OS.PPD()
+&g_proj_dir="&CUR_DIR"
+
+
+GLOBALON CMD menuedit do "&g_proj_dir/EDIT_CMM.cmm"
+;GLOBALON CMD menutrst do "&g_proj_dir/jtag_nTRST.cmm"
+GLOBALON CMD menusrst do "&g_proj_dir/jtag_SRST.cmm"
+GLOBALON CMD menuap do "&g_proj_dir/A7.cmm"
+GLOBALON CMD menupcp do "&g_proj_dir/R5.cmm"
+GLOBALON CMD menusp do "&g_proj_dir/ARM7.cmm"
+GLOBALON CMD menuag do "&g_proj_dir/AGDSP_TL420.cmm"
+GLOBALON CMD menutg do "&g_proj_dir/TGDSP_TL420.cmm"
+GLOBALON CMD menulte do "&g_proj_dir/LTEDSP_TL420.cmm"
+GLOBALON CMD menudap DO "&g_proj_dir/DAP.cmm"
+GLOBALON CMD menuddr DO "&g_proj_dir/DDR.cmm"
+GLOBALON CMD menudsp DO "&g_proj_dir/boot_dsp.cmm"
+GLOBALON CMD menucheck DO "&g_proj_dir/DEBUG/Check_Power.cmm"
+GLOBALON CMD menure do "&g_main_path/main.cmm"
+GLOBALON CMD menuchk DO "&g_proj_dir/DEBUG/sys/Per_Preload.cmm"
+MENU.RESET
+(&
+    MENU.REPROGRAM
+    (&
+      ADD
+      TOOLBAR
+      (
+			IF (CPUFAMILY()=="ARM")
+			(
+				toolitem "AP" "AP,a"			"DO &g_proj_dir/A7.cmm"
+				toolitem "PCP" "CP,a"			"DO &g_proj_dir/R5.cmm"
+				toolitem "SP" "SP,c"			"DO &g_proj_dir/ARM7.cmm"
+				separator
+				toolitem "CHECK DAP" "CK,a"			"DO &g_proj_dir/DEBUG/check_dap.cmm"
+				toolitem "DAP" "DP,a"			"DO &g_proj_dir/DAP.cmm"
+				;toolitem "DAP" "DP,a"			"menudap"
+				toolitem "Reset SYS" "RS,r"			"menusrst"
+				toolitem "init DDR" "DR,b"			"menuddr"
+				toolitem "DSP" "BD,r"			"DO &g_proj_dir/boot_dsp.cmm"
+				SEPARATOR
+				TOOLITEM "Check via EAXI" "CK,g" "menuchk EAXI"
+				TOOLITEM "Check via EAHB" "CA,r" "menuchk EAHB"
+			)
+			IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")
+			(
+				;toolitem "AGDSP" "AG,b"			"DO &g_proj_dir/AGDSP_TL420.cmm"
+				toolitem "TGDSP" "TD,b"			"DO &g_proj_dir/TGDSP_TL420.cmm"
+				toolitem "LTEDSP" "LT,b"		"DO &g_proj_dir/LTEDSP_TL420.cmm"
+				separator
+				toolitem "Reset SYS" "RS,r"			"menusrst"
+			)
+      )
+    )
+    MENU.ReProgram "&g_proj_dir/Sharkl2.men"
+)
+ENDDO
+cancel:
+  DIALOG.END
+  ENDDO

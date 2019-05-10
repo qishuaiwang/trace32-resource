@@ -1,0 +1,49 @@
+
+LOCAL &op_sel &mem_sel &cur_path_dir
+ENTRY &op_sel &mem_sel 
+&cur_path_dir=os.ppd()
+IF "x&op_sel"=="x"
+	&op_sel="Start"
+IF "x&mem_sel"=="x"
+	&mem_sel="stmbuffer"
+IF "&op_sel"=="Start"
+(
+	SYStemTrace.RESet
+	SYStem.CONFIG.STM1.Base 0x80006000
+	SYStem.CONFIG.STM1.Type ARM
+	SYStem.CONFIG.STM1.Mode STPv2
+	SYStem.CONFIG.FUNNEL1.Base 0x80001000
+	SYStem.CONFIG.FUNNEL1.ATBSource STM1 1
+
+	if "&mem_sel"=="stmbuffer"
+	(
+		SYStem.CONFIG.ETB1.Base 0x80003000
+		SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+	)
+	else
+	(
+		SYStem.CONFIG.ETF1.Base 0x80003000 
+		SYStem.CONFIG.ETR1.Base 0x80005000
+		SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+		SYStem.CONFIG.ETR1.ATBSource ETF1
+		do &lib_etr_utility ETR1 set DAB (0x80000000+0x5E000000) ;punit trace stm2ddr address base
+		do &lib_etr_utility ETR1 set RSZ (0x1000000)>>2. ;buffer address
+		do &lib_etr_utility ETR1 set AXICTL 0x00000000 0x00000FBF 
+		do &lib_etr_utility
+		onchip.traceconnect ETR1
+	)
+	SYStemTrace
+	;SYStemTrace.RESet	
+	SYStemTrace.METHOD Onchip
+	STM.ON
+	SYStem.Mode.Attach
+	SYStemTrace.Arm
+)
+ELSE
+(
+	SYStemTrace.OFF
+	SYStemTrace.List
+)
+ENDDO
+
+

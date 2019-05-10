@@ -1,0 +1,24 @@
+ENTRY &trace_output
+
+DO "&CUR_DIR/Orca_Trace_Path_config.cmm"
+
+;plist
+;stop
+
+SYStem.CONFIG.COREDEBUG.Base (&v3phy_coredebug_base)
+;	SYStem.CONFIG.BMC.Base (&v3phy_pmu_base)
+SYStem.CONFIG.CTI.Base (&v3phy_cti_base)
+SYStem.CONFIG.ETM.Base (&v3phy_etm_base)
+
+; V3PHY
+SYStem.CONFIG.FUNNEL2.Base &v3_funnel
+SYStem.CONFIG.ETF2.Base &v3phy_etf
+
+; connect trace path
+SYStem.CONFIG.ETF2.ATBSource ETM
+SYStem.CONFIG.FUNNEL2.ATBSource ETF2 0
+
+;config replicator, soc, etc
+DO "&CUR_DIR/Orca_Trace_Path_common.cmm" &trace_output FUNNEL2 2 ETF2
+
+ENDDO

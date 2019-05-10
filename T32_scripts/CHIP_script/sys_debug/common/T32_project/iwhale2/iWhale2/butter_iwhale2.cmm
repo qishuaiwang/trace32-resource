@@ -1,0 +1,97 @@
+GLOBAL &CONFIG_INPUT &RESET_INPUT &SIGNAL_INPUT &PROBE_MODE_INPUT &RTIT_INPUT &DST_DIR &os_sel &iwhale2_num
+LOCAL &core_flags &temp &jtag_clk &core_number
+ENTRY &core_flags
+IF "X&iwhale2_num"=="X"
+(
+	&iwhale2_num=0x1
+)
+IF "X&core_flags"=="X"
+(
+	&core_flags="BIA"
+	;&core_flags="DAPWKA"
+)
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+IF "X&CONFIG_INPUT"=="X"
+(
+	&CONFIG_INPUT="BIA"
+)
+LOCAL &CUR_DIR
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+system.mode down
+system.reset
+SYStem.CONFIG.TAPState 7.
+&core_number=8.
+&CUR_DIR=OS.PPD() 
+IF &iwhale2_num==0x0
+(
+DO &CUR_DIR/orange_unlock.cmm pdaj124ad4
+;DO &CUR_DIR/orange_unlock_run.cmm pdaj124ad4JTAG
+;DO &CUR_DIR/butter_fuse.cmm
+;write orange;write primary tap chain0=0x0
+;DO &CUR_DIR/orange_unlock/jtagv0.cmm 0x0
+;write orange;rst primary tap chain0
+;write orange;rst primary tap chain0
+;IF (OS.File("&CUR_DIR/orange_unlock_run.cmm"))
+;(
+;	DO &CUR_DIR/orange_unlock_run.cmm pdaj124ad4JTAG
+;)
+;DO &CUR_DIR/iWhale2_JTAG.cmm "BIA"
+
+DO &CUR_DIR/iWhale2_JTAG.cmm "RST"
+SYStem.CONFIG IRPOST 0x0
+SYStem.CONFIG DRPOST 0x0
+SYStem.CONFIG IRPRE 0x0
+SYStem.CONFIG DRPRE 0x0
+)
+sys.CPU iwhale2
+
+;SYStem.Option.IGnoreSOC ON
+;SYStem.Option.cltapSOC ON
+core.number &core_number
+sys.JtagClock 20000.khz
+;sys.Option.CLTAPOnly ON
+;sys.Option.JTAGOnly ON
+sys.Option.JTAGDirectCPU OFF
+sys.o.InstrSUBmitTimeout 50.
+sys.ma dap
+;sys.config.AHBACCESSPORT 3.
+sys.config.AXIACCESSPORT 0.
+area
+diag 0x3020 1                       ; verbose messages: for testing only
+
+&temp=STRing.SCAN("&core_flags", "DAP", 0)
+IF &temp!=-1
+(
+	SYStem.Mode.Prepare
+	&temp=STRing.SCAN("&core_flags", "WKA", 0)
+	IF &temp!=-1
+	(
+		IF &iwhale2_num==0x0
+		(
+			DO &CUR_DIR/work_around_iwhale2.cmm EA
+			&iwhale2_num=&iwhale2_num+0x1
+		)
+	)
+	ELSE
+	(
+		ENDDO
+	)
+)
+&temp=STRing.SCAN("&CONFIG_INPUT", "BIA", 0)
+IF &temp!=-1
+(
+	if ("&os_sel"=="small_sys")
+	(
+		sys.Mode.Attach
+		Break
+		;DO &CUR_DIR/ap_release_r5_cm4.cmm 
+	)
+)
+ENDDO

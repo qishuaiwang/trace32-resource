@@ -1,0 +1,1237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DJTAG>
+  <Debug T32_EXT="1">DAP</Debug>
+  <IDCODE IR="1">0x2381C5FF</IDCODE>
+  <USERCODE IR="2">0x2381C548</USERCODE>
+  <CHANSTART>8</CHANSTART>
+  <SubSystem>
+    <AP sel="0" tag_cloud="AP;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="djtag_chain_pi_eb_slp;">
+          <BIT sel="0" tag_cloud="spi0_eb | spi1_eb | spi2_eb;">all_spi_eb</BIT>
+          <BIT sel="1" tag_cloud="iis0_eb | iis1_eb | iis3_eb;">       all_i2s_eb</BIT>
+          <BIT sel="2" tag_cloud="i2c0_eb | i2c1_eb | i2c2_eb | i2c3_eb | i2c4_eb;">all_i2c_eb</BIT>
+          <BIT sel="3" tag_cloud="uart0_eb | uart1_eb | uart2_eb | uart3_eb | uart4_eb;">all_uart_eb</BIT>
+          <BIT sel="5:4" tag_cloud="reserved;">reserved  </BIT>
+          <BIT sel="6" tag_cloud="dispc_busy;">dispc_busy</BIT>
+          <BIT sel="7" tag_cloud="dsi_eb;">dsi_eb    </BIT>
+          <BIT sel="8" tag_cloud="dispc_eb;">dispc_eb   </BIT>
+          <BIT sel="9" tag_cloud="gsp_eb;">gsp_eb    </BIT>
+          <BIT sel="10" tag_cloud="nandc_eb;">       nandc_eb  </BIT>
+          <BIT sel="11" tag_cloud="otg_eb;">otg_eb    </BIT>
+          <BIT sel="12" tag_cloud="dma_eb;">dma_eb     </BIT>
+          <BIT sel="13" tag_cloud="dma_busy;">dma_busy  </BIT>
+          <BIT sel="14" tag_cloud="sdio0_eb;">       sdio0_eb  </BIT>
+          <BIT sel="15" tag_cloud="sdio1_eb;">sdio1_eb  </BIT>
+          <BIT sel="16" tag_cloud="sdio2_eb;">sdio2_eb   </BIT>
+          <BIT sel="17" tag_cloud="emmc_eb;">emmc_eb   </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="1" tag_cloud="djtag_chain_pi_deep_slp;">
+          <BIT sel="0" tag_cloud="mmtx_sleep_ch1;">mmtx_sleep_ch1</BIT>
+          <BIT sel="1" tag_cloud="mmtx_sleep_ch2;">mmtx_sleep_ch2  </BIT>
+          <BIT sel="2" tag_cloud="mmtx_sleep_ch3;">mmtx_sleep_ch3      </BIT>
+          <BIT sel="3" tag_cloud="mmtx_sleep_ch4;">mmtx_sleep_ch4   </BIT>
+          <BIT sel="4" tag_cloud="mmtx_sleep_ch5;">mmtx_sleep_ch5</BIT>
+          <BIT sel="5" tag_cloud="mmtx_sleep_ch6;">mmtx_sleep_ch6  </BIT>
+          <BIT sel="6" tag_cloud="mmtx_sleep_ch7;">mmtx_sleep_ch7      </BIT>
+          <BIT sel="7" tag_cloud="mmtx_sleep_ch8;">mmtx_sleep_ch8   </BIT>
+          <BIT sel="8" tag_cloud="mmtx_sleep_ch9;">mmtx_sleep_ch9</BIT>
+          <BIT sel="9" tag_cloud="lp_stat_s2;">lp_stat_s2      </BIT>
+          <BIT sel="10" tag_cloud="lp_stat_s1;">lp_stat_s1          </BIT>
+          <BIT sel="11" tag_cloud="lp_stat_s0;">lp_stat_s0       </BIT>
+          <BIT sel="12" tag_cloud="lp_stat_main;">lp_stat_main  </BIT>
+          <BIT sel="13" tag_cloud="lp_stat_m9;">lp_stat_m9      </BIT>
+          <BIT sel="14" tag_cloud="lp_stat_m8;">lp_stat_m8          </BIT>
+          <BIT sel="15" tag_cloud="lp_stat_m7;">lp_stat_m7       </BIT>
+          <BIT sel="16" tag_cloud="lp_stat_m6;">lp_stat_m6    </BIT>
+          <BIT sel="17" tag_cloud="lp_stat_m5;">lp_stat_m5      </BIT>
+          <BIT sel="18" tag_cloud="lp_stat_m4;">lp_stat_m4          </BIT>
+          <BIT sel="19" tag_cloud="lp_stat_m3;">lp_stat_m3       </BIT>
+          <BIT sel="20" tag_cloud="lp_stat_m2;">lp_stat_m2    </BIT>
+          <BIT sel="21" tag_cloud="lp_stat_m1;">lp_stat_m1      </BIT>
+          <BIT sel="22" tag_cloud="ap_mtx_pub_deep_stop;">ap_mtx_pub_deep_stop</BIT>
+          <BIT sel="23" tag_cloud="mmtx_light_stop;">mmtx_light_stop  </BIT>
+          <BIT sel="24" tag_cloud="mmtx_deep_stop;">mmtx_deep_stop</BIT>
+          <BIT sel="25" tag_cloud="ap_peri_sleep;">ap_peri_sleep   </BIT>
+          <BIT sel="26" tag_cloud="ap_peri_stop;">ap_peri_stop        </BIT>
+          <BIT sel="27" tag_cloud="dispc_busy;">dispc_busy       </BIT>
+          <BIT sel="28" tag_cloud="dma_busy;">dma_busy      </BIT>
+          <BIT sel="29" tag_cloud="ca53_top_sys_top;">ca53_top_sys_top</BIT>
+          <BIT sel="30" tag_cloud="ap_light_sleep_req;">ap_light_sleep_req  </BIT>
+          <BIT sel="31" tag_cloud="ap_deep_sleep_req;">ap_deep_sleep_req</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="2" tag_cloud="djtag_chain_pi_debug2;">
+          <BIT sel="0" tag_cloud="lp_stat_s5;">lp_stat_s5   </BIT>
+          <BIT sel="1" tag_cloud="lp_stat_s4;">lp_stat_s4   </BIT>
+          <BIT sel="2" tag_cloud="lp_stat_s3;">lp_stat_s3     </BIT>
+          <BIT sel="3" tag_cloud="lp_stat_s2;">lp_stat_s2   </BIT>
+          <BIT sel="4" tag_cloud="lp_stat_s1;">lp_stat_s1   </BIT>
+          <BIT sel="5" tag_cloud="lp_stat_s0;">lp_stat_s0   </BIT>
+          <BIT sel="6" tag_cloud="lp_stat_main;">lp_stat_main   </BIT>
+          <BIT sel="7" tag_cloud="lp_stat_m9;">lp_stat_m9   </BIT>
+          <BIT sel="8" tag_cloud="lp_stat_m8;">lp_stat_m8   </BIT>
+          <BIT sel="9" tag_cloud="lp_stat_m7;">lp_stat_m7   </BIT>
+          <BIT sel="10" tag_cloud="lp_stat_m6;">lp_stat_m6     </BIT>
+          <BIT sel="11" tag_cloud="lp_stat_m5;">lp_stat_m5   </BIT>
+          <BIT sel="12" tag_cloud="lp_stat_m4;">lp_stat_m4   </BIT>
+          <BIT sel="13" tag_cloud="lp_stat_m3;">lp_stat_m3   </BIT>
+          <BIT sel="14" tag_cloud="lp_stat_m2;">lp_stat_m2     </BIT>
+          <BIT sel="15" tag_cloud="lp_stat_m1;">lp_stat_m1   </BIT>
+          <BIT sel="16" tag_cloud="clk_ap_s5_clk;">clk_ap_s5_clk</BIT>
+          <BIT sel="17" tag_cloud="clk_ap_s4_clk;">clk_ap_s4_clk</BIT>
+          <BIT sel="18" tag_cloud="clk_ap_s3_clk;">clk_ap_s3_clk  </BIT>
+          <BIT sel="19" tag_cloud="clk_ap_s2_clk;">clk_ap_s2_clk</BIT>
+          <BIT sel="20" tag_cloud="clk_ap_s1_clk;">clk_ap_s1_clk</BIT>
+          <BIT sel="21" tag_cloud="clk_ap_s0_clk;">clk_ap_s0_clk</BIT>
+          <BIT sel="22" tag_cloud="clk_ap_main_clk;">clk_ap_main_clk</BIT>
+          <BIT sel="23" tag_cloud="clk_ap_m9_clk;">clk_ap_m9_clk</BIT>
+          <BIT sel="24" tag_cloud="clk_ap_m8_clk;">clk_ap_m8_clk</BIT>
+          <BIT sel="25" tag_cloud="clk_ap_m7_clk;">clk_ap_m7_clk</BIT>
+          <BIT sel="26" tag_cloud="clk_ap_m6_clk;">clk_ap_m6_clk  </BIT>
+          <BIT sel="27" tag_cloud="clk_ap_m5_clk;">clk_ap_m5_clk</BIT>
+          <BIT sel="28" tag_cloud="clk_ap_m4_clk;">clk_ap_m4_clk</BIT>
+          <BIT sel="29" tag_cloud="clk_ap_m3_clk;">clk_ap_m3_clk</BIT>
+          <BIT sel="30" tag_cloud="clk_ap_m2_clk;">clk_ap_m2_clk  </BIT>
+          <BIT sel="31" tag_cloud="clk_ap_m1_clk;">clk_ap_m1_clk</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="3" tag_cloud="djtag_chain_pi_debug3;">
+          <BIT sel="0" tag_cloud="clk_ap_m8_clk;">clk_ap_m8_clk</BIT>
+          <BIT sel="1" tag_cloud="csysack_m8;">csysack_m8</BIT>
+          <BIT sel="2" tag_cloud="csysreq_m8;">csysreq_m8</BIT>
+          <BIT sel="3" tag_cloud="cative_m8;">cative_m8</BIT>
+          <BIT sel="4" tag_cloud="clk_ap_m7_clk;">clk_ap_m7_clk</BIT>
+          <BIT sel="5" tag_cloud="csysack_m7;">csysack_m7</BIT>
+          <BIT sel="6" tag_cloud="csysreq_m7;">csysreq_m7</BIT>
+          <BIT sel="7" tag_cloud="cative_m7;">cative_m7</BIT>
+          <BIT sel="8" tag_cloud="clk_ap_m6_clk;">clk_ap_m6_clk</BIT>
+          <BIT sel="9" tag_cloud="csysack_m6;">csysack_m6</BIT>
+          <BIT sel="10" tag_cloud="csysreq_m6;">csysreq_m6</BIT>
+          <BIT sel="11" tag_cloud="cative_m6;">cative_m6</BIT>
+          <BIT sel="12" tag_cloud="clk_ap_m5_clk;">clk_ap_m5_clk</BIT>
+          <BIT sel="13" tag_cloud="csysack_m5;">csysack_m5</BIT>
+          <BIT sel="14" tag_cloud="csysreq_m5;">csysreq_m5</BIT>
+          <BIT sel="15" tag_cloud="cative_m5;">cative_m5</BIT>
+          <BIT sel="16" tag_cloud="clk_ap_m4_clk;">clk_ap_m4_clk</BIT>
+          <BIT sel="17" tag_cloud="csysack_m4;">csysack_m4</BIT>
+          <BIT sel="18" tag_cloud="csysreq_m4;">csysreq_m4</BIT>
+          <BIT sel="19" tag_cloud="cative_m4;">cative_m4</BIT>
+          <BIT sel="20" tag_cloud="clk_ap_m3_clk;">clk_ap_m3_clk</BIT>
+          <BIT sel="21" tag_cloud="csysack_m3;">csysack_m3</BIT>
+          <BIT sel="22" tag_cloud="csysreq_m3;">csysreq_m3</BIT>
+          <BIT sel="23" tag_cloud="cative_m3;">cative_m3</BIT>
+          <BIT sel="24" tag_cloud="clk_ap_m2_clk;">clk_ap_m2_clk</BIT>
+          <BIT sel="25" tag_cloud="csysack_m2;">csysack_m2</BIT>
+          <BIT sel="26" tag_cloud="csysreq_m2;">csysreq_m2</BIT>
+          <BIT sel="27" tag_cloud="cative_m2;">cative_m2</BIT>
+          <BIT sel="28" tag_cloud="clk_ap_m1_clk;">clk_ap_m1_clk</BIT>
+          <BIT sel="29" tag_cloud="csysack_m1;">csysack_m1</BIT>
+          <BIT sel="30" tag_cloud="csysreq_m1;">csysreq_m1</BIT>
+          <BIT sel="31" tag_cloud="cative_m1;">cative_m1</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="4" tag_cloud="djtag_chain_pi_debug4;">
+          <BIT sel="0" tag_cloud="clk_ap_s5_clk;">clk_ap_s5_clk  </BIT>
+          <BIT sel="1" tag_cloud="csysack_s5;">csysack_s5  </BIT>
+          <BIT sel="2" tag_cloud="csysreq_s5;">csysreq_s5  </BIT>
+          <BIT sel="3" tag_cloud="cative_s5;">cative_s5  </BIT>
+          <BIT sel="4" tag_cloud="clk_ap_s4_clk;">clk_ap_s4_clk  </BIT>
+          <BIT sel="5" tag_cloud="csysack_s4;">csysack_s4  </BIT>
+          <BIT sel="6" tag_cloud="csysreq_s4;">csysreq_s4  </BIT>
+          <BIT sel="7" tag_cloud="cative_s4;">cative_s4  </BIT>
+          <BIT sel="8" tag_cloud="clk_ap_s3_clk;">clk_ap_s3_clk  </BIT>
+          <BIT sel="9" tag_cloud="csysack_s3;">csysack_s3  </BIT>
+          <BIT sel="10" tag_cloud="csysreq_s3;">csysreq_s3  </BIT>
+          <BIT sel="11" tag_cloud="cative_s3;">cative_s3  </BIT>
+          <BIT sel="12" tag_cloud="clk_ap_s2_clk;">clk_ap_s2_clk  </BIT>
+          <BIT sel="13" tag_cloud="csysack_s2;">csysack_s2  </BIT>
+          <BIT sel="14" tag_cloud="csysreq_s2;">csysreq_s2  </BIT>
+          <BIT sel="15" tag_cloud="cative_s2;">cative_s2  </BIT>
+          <BIT sel="16" tag_cloud="clk_ap_s1_clk;">clk_ap_s1_clk  </BIT>
+          <BIT sel="17" tag_cloud="csysack_s1;">csysack_s1  </BIT>
+          <BIT sel="18" tag_cloud="csysreq_s1;">csysreq_s1  </BIT>
+          <BIT sel="19" tag_cloud="cative_s1;">cative_s1  </BIT>
+          <BIT sel="20" tag_cloud="clk_ap_s0_clk;">clk_ap_s0_clk  </BIT>
+          <BIT sel="21" tag_cloud="csysack_s0;">csysack_s0  </BIT>
+          <BIT sel="22" tag_cloud="csysreq_s0;">csysreq_s0  </BIT>
+          <BIT sel="23" tag_cloud="cative_s0;">cative_s0  </BIT>
+          <BIT sel="24" tag_cloud="clk_ap_main_clk;">clk_ap_main_clk</BIT>
+          <BIT sel="25" tag_cloud="csysack_main;">csysack_main</BIT>
+          <BIT sel="26" tag_cloud="csysreq_main;">csysreq_main</BIT>
+          <BIT sel="27" tag_cloud="cative_main;">cative_main</BIT>
+          <BIT sel="28" tag_cloud="clk_ap_m9_clk;">clk_ap_m9_clk  </BIT>
+          <BIT sel="29" tag_cloud="csysack_m9;">csysack_m9  </BIT>
+          <BIT sel="30" tag_cloud="csysreq_m9;">csysreq_m9  </BIT>
+          <BIT sel="31" tag_cloud="cative_m9;">cative_m9  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="5" tag_cloud="djtag_chain_pi_debug5;">
+          <BIT sel="0" tag_cloud="clk_ap_m8_clk;">clk_ap_m8_clk  </BIT>
+          <BIT sel="1" tag_cloud="csysack_m8;">csysack_m8  </BIT>
+          <BIT sel="2" tag_cloud="csysreq_m8;">csysreq_m8  </BIT>
+          <BIT sel="3" tag_cloud="cative_m8;">cative_m8  </BIT>
+          <BIT sel="4" tag_cloud="clk_ap_m1_clk;">clk_ap_m1_clk  </BIT>
+          <BIT sel="5" tag_cloud="csysack_m1;">csysack_m1  </BIT>
+          <BIT sel="6" tag_cloud="csysreq_m1;">csysreq_m1  </BIT>
+          <BIT sel="7" tag_cloud="cative_m1;">cative_m1  </BIT>
+          <BIT sel="8" tag_cloud="clk_ap_m6_clk;">clk_ap_m6_clk  </BIT>
+          <BIT sel="9" tag_cloud="csysack_m6;">csysack_m6  </BIT>
+          <BIT sel="10" tag_cloud="csysreq_m6;">csysreq_m6  </BIT>
+          <BIT sel="11" tag_cloud="cative_m6;">cative_m6  </BIT>
+          <BIT sel="12" tag_cloud="clk_ap_m5_clk;">clk_ap_m5_clk  </BIT>
+          <BIT sel="13" tag_cloud="csysack_m5;">csysack_m5  </BIT>
+          <BIT sel="14" tag_cloud="csysreq_m5;">csysreq_m5  </BIT>
+          <BIT sel="15" tag_cloud="cative_m5;">cative_m5  </BIT>
+          <BIT sel="16" tag_cloud="clk_ap_s3_clk;">clk_ap_s3_clk  </BIT>
+          <BIT sel="17" tag_cloud="csysack_s3;">csysack_s3  </BIT>
+          <BIT sel="18" tag_cloud="csysreq_s3;">csysreq_s3  </BIT>
+          <BIT sel="19" tag_cloud="cative_s3;">cative_s3  </BIT>
+          <BIT sel="20" tag_cloud="clk_ap_s5_clk;">clk_ap_s5_clk  </BIT>
+          <BIT sel="21" tag_cloud="csysack_s5;">csysack_s5  </BIT>
+          <BIT sel="22" tag_cloud="csysreq_s5;">csysreq_s5  </BIT>
+          <BIT sel="23" tag_cloud="cative_s5;">cative_s5  </BIT>
+          <BIT sel="24" tag_cloud="clk_ap_main_clk;">clk_ap_main_clk</BIT>
+          <BIT sel="25" tag_cloud="csysack_main;">csysack_main</BIT>
+          <BIT sel="26" tag_cloud="csysreq_main;">csysreq_main</BIT>
+          <BIT sel="27" tag_cloud="cative_main;">cative_main</BIT>
+          <BIT sel="28" tag_cloud="clk_ap_m10_clk;">clk_ap_m10_clk </BIT>
+          <BIT sel="29" tag_cloud="csysack_m10;">csysack_m10 </BIT>
+          <BIT sel="30" tag_cloud="csysreq_m10;">csysreq_m10 </BIT>
+          <BIT sel="31" tag_cloud="cative_m10;">cative_m10 </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="6" tag_cloud="djtag_chain_pi_debug6;">
+          <BIT sel="10" tag_cloud="clk_dispc;">clk_dispc      </BIT>
+          <BIT sel="11" tag_cloud="clk_axi_disp_mtx;">clk_axi_disp_mtx</BIT>
+          <BIT sel="12" tag_cloud="disp_lp_stat_s0;">disp_lp_stat_s0</BIT>
+          <BIT sel="13" tag_cloud="reserved;">       reserved       </BIT>
+          <BIT sel="14" tag_cloud="disp_lp_stat_m1;">disp_lp_stat_m1</BIT>
+          <BIT sel="15" tag_cloud="disp_lp_stat_m0;">disp_lp_stat_m0 </BIT>
+          <BIT sel="16" tag_cloud="clk_disp_s0clk;">clk_disp_s0clk </BIT>
+          <BIT sel="17" tag_cloud="disp_csysack_s0;">       disp_csysack_s0</BIT>
+          <BIT sel="18" tag_cloud="disp_csysreq_s0;">disp_csysreq_s0</BIT>
+          <BIT sel="19" tag_cloud="disp_cative_s0;">disp_cative_s0  </BIT>
+          <BIT sel="23:20" tag_cloud="reserved;">reserved       </BIT>
+          <BIT sel="24" tag_cloud="clk_disp_m1clk;">clk_disp_m1clk </BIT>
+          <BIT sel="25" tag_cloud="disp_csysack_m1;">disp_csysack_m1</BIT>
+          <BIT sel="26" tag_cloud="disp_csysreq_m1;">disp_csysreq_m1 </BIT>
+          <BIT sel="27" tag_cloud="disp_cative_m1;">disp_cative_m1 </BIT>
+          <BIT sel="28" tag_cloud="clk_disp_m0clk;">       clk_disp_m0clk </BIT>
+          <BIT sel="29" tag_cloud="disp_csysack_m0;">disp_csysack_m0</BIT>
+          <BIT sel="30" tag_cloud="disp_csysreq_m0;">disp_csysreq_m0 </BIT>
+          <BIT sel="31" tag_cloud="disp_cative_m0;">disp_cative_m0 </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="7" tag_cloud="djtag_chain_pi_debug7;">
+          <BIT sel="20" tag_cloud="async_sclk;">async_sclk    </BIT>
+          <BIT sel="21" tag_cloud="gsp_lp_stat_m0;">       gsp_lp_stat_m0</BIT>
+          <BIT sel="22" tag_cloud="async_mclk;">async_mclk   </BIT>
+          <BIT sel="23" tag_cloud="clk_gsp_m0clk;">clk_gsp_m0clk  </BIT>
+          <BIT sel="26:24" tag_cloud="reserved;">reserved      </BIT>
+          <BIT sel="27" tag_cloud="gsp_lp_stat_m0;">gsp_lp_stat_m0</BIT>
+          <BIT sel="28" tag_cloud="clk_gsp_m0clk;">clk_gsp_m0clk</BIT>
+          <BIT sel="29" tag_cloud="dgsp_csysack_m0;">dgsp_csysack_m0</BIT>
+          <BIT sel="30" tag_cloud="gsp_csysreq_m0;">gsp_csysreq_m0</BIT>
+          <BIT sel="31" tag_cloud="gsp_cative_m0;">       gsp_cative_m0 </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="8" tag_cloud="djtag_chain_pi_debug8;">
+          <BIT sel="0" tag_cloud="lp_stat_m10;">lp_stat_m10         </BIT>
+          <BIT sel="1" tag_cloud="mmtx_sleep_ch10;">mmtx_sleep_ch10     </BIT>
+          <BIT sel="2" tag_cloud="m10_lp_eb;">m10_lp_eb        </BIT>
+          <BIT sel="3" tag_cloud="nandc_eb_lp;">nandc_eb_lp   </BIT>
+          <BIT sel="4" tag_cloud="ap_peri_stop;">ap_peri_stop        </BIT>
+          <BIT sel="5" tag_cloud="dispc_busy;">dispc_busy          </BIT>
+          <BIT sel="6" tag_cloud="dispc_eb;">dispc_eb         </BIT>
+          <BIT sel="7" tag_cloud="gsp_eb;">gsp_eb        </BIT>
+          <BIT sel="8" tag_cloud="ap_peri_force_on;">ap_peri_force_on    </BIT>
+          <BIT sel="9" tag_cloud="ap_apb_sleep;">ap_apb_sleep        </BIT>
+          <BIT sel="10" tag_cloud="ap_peri_force_slp;">ap_peri_force_slp</BIT>
+          <BIT sel="11" tag_cloud="ap_peri_sleep;">ap_peri_sleep </BIT>
+          <BIT sel="12" tag_cloud="ap_mtx_pub_deep_stop;">ap_mtx_pub_deep_stop</BIT>
+          <BIT sel="13" tag_cloud="ap_mtx_pub_deep_stop;">ap_mtx_pub_deep_stop</BIT>
+          <BIT sel="14" tag_cloud="mmtx_light_stop;">mmtx_light_stop  </BIT>
+          <BIT sel="15" tag_cloud="mmtx_deep_stop;">mmtx_deep_stop</BIT>
+          <BIT sel="16" tag_cloud="slv_sleep_ch5;">slv_sleep_ch5       </BIT>
+          <BIT sel="17" tag_cloud="slv_sleep_ch4;">slv_sleep_ch4       </BIT>
+          <BIT sel="18" tag_cloud="slv_sleep_ch3;">slv_sleep_ch3    </BIT>
+          <BIT sel="19" tag_cloud="slv_sleep_ch2;">slv_sleep_ch2 </BIT>
+          <BIT sel="20" tag_cloud="slv_sleep_ch1;">slv_sleep_ch1       </BIT>
+          <BIT sel="21" tag_cloud="slv_sleep_ch0;">slv_sleep_ch0       </BIT>
+          <BIT sel="22" tag_cloud="mmtx_sleep_ch10;">mmtx_sleep_ch10  </BIT>
+          <BIT sel="23" tag_cloud="mmtx_sleep_ch9;">mmtx_sleep_ch9</BIT>
+          <BIT sel="24" tag_cloud="mmtx_sleep_ch8;">mmtx_sleep_ch8      </BIT>
+          <BIT sel="25" tag_cloud="mmtx_sleep_ch7;">mmtx_sleep_ch7      </BIT>
+          <BIT sel="26" tag_cloud="mmtx_sleep_ch6;">mmtx_sleep_ch6   </BIT>
+          <BIT sel="27" tag_cloud="mmtx_sleep_ch5;">mmtx_sleep_ch5</BIT>
+          <BIT sel="28" tag_cloud="mmtx_sleep_ch4;">mmtx_sleep_ch4      </BIT>
+          <BIT sel="29" tag_cloud="mmtx_sleep_ch3;">mmtx_sleep_ch3      </BIT>
+          <BIT sel="30" tag_cloud="mmtx_sleep_ch2;">mmtx_sleep_ch2   </BIT>
+          <BIT sel="31" tag_cloud="mmtx_sleep_ch1;">mmtx_sleep_ch1</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="9" tag_cloud="djtag_chain_pi_debug9;">
+          <BIT sel="0" tag_cloud="lp_stat_m9;">lp_stat_m9</BIT>
+          <BIT sel="1" tag_cloud="mmtx_sleep_ch9;">mmtx_sleep_ch9    </BIT>
+          <BIT sel="2" tag_cloud="m9_lp_eb;">m9_lp_eb</BIT>
+          <BIT sel="3" tag_cloud="ce_sec_eb_lp;">ce_sec_eb_lp</BIT>
+          <BIT sel="4" tag_cloud="lp_stat_m8;">lp_stat_m8</BIT>
+          <BIT sel="5" tag_cloud="mmtx_sleep_ch8;">mmtx_sleep_ch8    </BIT>
+          <BIT sel="6" tag_cloud="m8_lp_eb;">m8_lp_eb</BIT>
+          <BIT sel="7" tag_cloud="otg_eb_lp;">otg_eb_lp   </BIT>
+          <BIT sel="8" tag_cloud="lp_stat_m7;">lp_stat_m7</BIT>
+          <BIT sel="9" tag_cloud="mmtx_sleep_ch7;">mmtx_sleep_ch7    </BIT>
+          <BIT sel="10" tag_cloud="m7_lp_eb;">m7_lp_eb</BIT>
+          <BIT sel="11" tag_cloud="emmc_eb_lp;">emmc_eb_lp  </BIT>
+          <BIT sel="12" tag_cloud="lp_stat_m6;">lp_stat_m6</BIT>
+          <BIT sel="13" tag_cloud="mmtx_sleep_ch6;">mmtx_sleep_ch6    </BIT>
+          <BIT sel="14" tag_cloud="m6_lp_eb;">m6_lp_eb</BIT>
+          <BIT sel="15" tag_cloud="sdio2_eb_lp;">sdio2_eb_lp </BIT>
+          <BIT sel="16" tag_cloud="lp_stat_m5;">lp_stat_m5</BIT>
+          <BIT sel="17" tag_cloud="mmtx_sleep_ch5;">mmtx_sleep_ch5    </BIT>
+          <BIT sel="18" tag_cloud="m5_lp_eb;">m5_lp_eb</BIT>
+          <BIT sel="19" tag_cloud="sdio1_eb_lp;">sdio1_eb_lp </BIT>
+          <BIT sel="20" tag_cloud="lp_stat_m4;">lp_stat_m4</BIT>
+          <BIT sel="21" tag_cloud="mmtx_sleep_ch4;">mmtx_sleep_ch4    </BIT>
+          <BIT sel="22" tag_cloud="m4_lp_eb;">m4_lp_eb</BIT>
+          <BIT sel="23" tag_cloud="sdio0_eb_lp;">sdio0_eb_lp </BIT>
+          <BIT sel="24" tag_cloud="lp_stat_m3;">lp_stat_m3</BIT>
+          <BIT sel="25" tag_cloud="mmtx_sleep_ch3;">mmtx_sleep_ch3    </BIT>
+          <BIT sel="26" tag_cloud="m3_lp_eb;">m3_lp_eb</BIT>
+          <BIT sel="27" tag_cloud="ce_pub_eb_lp;">ce_pub_eb_lp</BIT>
+          <BIT sel="28" tag_cloud="lp_stat_m2;">lp_stat_m2</BIT>
+          <BIT sel="29" tag_cloud="mmtx-sleep_ch2_lpc;">mmtx-sleep_ch2_lpc</BIT>
+          <BIT sel="30" tag_cloud="m2_lp_eb;">m2_lp_eb</BIT>
+          <BIT sel="31" tag_cloud="dma_eb_lp;">dma_eb_lp   </BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="1" name="CA53" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="CE_PUB" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="SDIO0" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="5" name="SDIO1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="6" name="SDIO2" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="7" name="eMMC" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="8" name="USB" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="9" name="CE_SEC" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="10" name="AP_PUB" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="11" name="NANDC" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </AP>
+    <MM sel="1" tag_cloud="MM;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="chain_mm_eb;">
+          <BIT sel="0" tag_cloud="mm_eb;">mm_eb         </BIT>
+          <BIT sel="1" tag_cloud="reserved;">reserved       </BIT>
+          <BIT sel="2" tag_cloud="jpg_eb;">jpg_eb           </BIT>
+          <BIT sel="3" tag_cloud="isp_eb;">isp_eb        </BIT>
+          <BIT sel="4" tag_cloud="vsp_eb;">vsp_eb        </BIT>
+          <BIT sel="5" tag_cloud="dcam_eb;">dcam_eb        </BIT>
+          <BIT sel="6" tag_cloud="sensor0_ckg_en;">       sensor0_ckg_en   </BIT>
+          <BIT sel="7" tag_cloud="cpp_en;">cpp_en        </BIT>
+          <BIT sel="8" tag_cloud="sensor1_ckg_en;">sensor1_ckg_en</BIT>
+          <BIT sel="9" tag_cloud="csi_eb;">csi_eb         </BIT>
+          <BIT sel="10" tag_cloud="csi_s_eb;">       csi_s_eb         </BIT>
+          <BIT sel="11" tag_cloud="isp_axi_ckg_en;">isp_axi_ckg_en</BIT>
+          <BIT sel="12" tag_cloud="ckg_eb;">ckg_eb        </BIT>
+          <BIT sel="13" tag_cloud="mipi_csi_ckg_en;">mipi_csi_ckg_en</BIT>
+          <BIT sel="14" tag_cloud="mipi_csi_s_ckg_en;">       mipi_csi_s_ckg_en</BIT>
+          <BIT sel="15" tag_cloud="cbm_eb;">cbm_eb        </BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="1" tag_cloud="chain_mm_vsp_ram_ctrl;" />
+        <CHAN dr_len="36" sel="2" tag_cloud="chain_mm_dcam_ram_ctrl;" />
+        <CHAN dr_len="36" sel="3" tag_cloud="chain_isp_2pram_ctrl;" />
+        <CHAN dr_len="36" sel="4" tag_cloud="chain_isp_1pram_ctrl;" />
+        <CHAN dr_len="36" sel="5" tag_cloud="chain_mm_jpg_ram_ctrl;" />
+        <CHAN dr_len="36" sel="6" tag_cloud="chain_mm_cpp_ram_ctrl;" />
+      </DAP>
+      <DAP sel="1" name="ISP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="DCAM" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="VSP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="JPG" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="5" name="CPP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </MM>
+    <GPU sel="2" tag_cloud="GPU;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="GPU module enable status;">
+          <BIT sel="0" tag_cloud="current AXI read command is issued via EMC path;">araddr_remap_bit  </BIT>
+          <BIT sel="1" tag_cloud="current AXI write command is issued via EMC path;">awaddr_remap_bit</BIT>
+          <BIT sel="2" tag_cloud="gpu_emcpath;">gpu_emcpath</BIT>
+          <BIT sel="3" tag_cloud="gpu_barrier_disable_sync;">gpu_barrier_disable_sync</BIT>
+          <BIT sel="4" tag_cloud="gpu_emcpath_select;">gpu_emcpath_select</BIT>
+          <BIT sel="5" tag_cloud="IRQGPU, interrupt from MaliT820;">IRQGPU          </BIT>
+          <BIT sel="6" tag_cloud="IRQMMU, interrupt from MaliT820 MMU;">IRQMMU     </BIT>
+          <BIT sel="7" tag_cloud="IRQJOB, interrupt from MaliT820 JOB management;">IRQJOB                  </BIT>
+          <BIT sel="8" tag_cloud="gdl_active;">gdl_active        </BIT>
+          <BIT sel="9" tag_cloud="gdg_active;">gdg_active      </BIT>
+          <BIT sel="10" tag_cloud="gdc_active;">gdc_active </BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="3" tag_cloud="CG mem config;">
+          <BIT sel="1:0" tag_cloud="RTSEL_mmu_tag[1:0];">RTSEL_mmu_tag[1:0] </BIT>
+          <BIT sel="3:2" tag_cloud="WTSEL_mmu_tag[1:0];">WTSEL_mmu_tag[1:0] </BIT>
+          <BIT sel="5:4" tag_cloud="RTSEL_mmu_l20wu[1:0];">RTSEL_mmu_l20wu[1:0]</BIT>
+          <BIT sel="7:6" tag_cloud="WTSEL_mmu_l20wu[1:0];">WTSEL_mmu_l20wu[1:0]</BIT>
+          <BIT sel="9:8" tag_cloud="RTSEL_mmu_data[1:0];">RTSEL_mmu_data[1:0]</BIT>
+          <BIT sel="11:10" tag_cloud="WTSEL_mmu_data[1:0];">WTSEL_mmu_data[1:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="4" tag_cloud="tri arith mem config;">
+          <BIT sel="1:0" tag_cloud="RTSEL;">RTSEL[1:0]</BIT>
+          <BIT sel="3:2" tag_cloud="WTSEL;">WTSEL[1:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="6" tag_cloud="tri tex mem config;">
+          <BIT sel="1:0" tag_cloud="RTSEL;">RTSEL[1:0]</BIT>
+          <BIT sel="3:2" tag_cloud="WTSEL;">WTSEL[1:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="7" tag_cloud="SC mem config;">
+          <BIT sel="1:0" tag_cloud="RTSEL_vl_vc[1:0];">RTSEL_vl_vc[1:0]   </BIT>
+          <BIT sel="3:2" tag_cloud="WTSEL_vl_vc[1:0];">WTSEL_vl_vc[1:0]   </BIT>
+          <BIT sel="5:4" tag_cloud="RTSEL_pdw_bary[1:0];">RTSEL_pdw_bary[1:0]</BIT>
+          <BIT sel="7:6" tag_cloud="WTSEL_pdw_bary[1:0];">WTSEL_pdw_bary[1:0]</BIT>
+          <BIT sel="9:8" tag_cloud="RTSEL_lsc_data[1:0];">RTSEL_lsc_data[1:0]</BIT>
+          <BIT sel="11:10" tag_cloud="WTSEL_lsc_data[1:0];">WTSEL_lsc_data[1:0]</BIT>
+        </CHAN>
+      </DAP>
+    </GPU>
+    <AON sel="3" tag_cloud="AON;">
+      <DAP sel="6" tag_cloud="Debug;">
+        <CHAN dr_len="36" sel="0" tag_cloud="AON SRAM R/W margin control;">
+          <BIT sel="1:0" tag_cloud="RTSEL;">RTSEL[1:0]</BIT>
+          <BIT sel="3:2" tag_cloud="WTSEL;">WTSEL[1:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="1" tag_cloud="GPU AXI misc monitor;">
+          <BIT sel="8" tag_cloud="aw_hdshk_pend;">aw_hdshk_pend</BIT>
+          <BIT sel="9" tag_cloud="w_hdshk_pend;">w_hdshk_pend</BIT>
+          <BIT sel="10" tag_cloud="b_hdshk_pend;">b_hdshk_pend</BIT>
+          <BIT sel="11" tag_cloud="ar_hdshk_pend;">ar_hdshk_pend</BIT>
+          <BIT sel="12" tag_cloud="r_hdshk_pend;">r_hdshk_pend </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="2" tag_cloud="GPU AXI wchn monitor;">
+          <BIT sel="8:0" tag_cloud="wchn_pend_id_rec_u0[8:0];">wchn_pend_id_rec_u0[8:0]</BIT>
+          <BIT sel="9" tag_cloud="wchn_pend_u0;">wchn_pend_u0</BIT>
+          <BIT sel="18:10" tag_cloud="wchn_pend_id_rec_u1[8:0];">wchn_pend_id_rec_u1[8:0]</BIT>
+          <BIT sel="19" tag_cloud="wchn_pend_u1;">wchn_pend_u1</BIT>
+          <BIT sel="28:20" tag_cloud="wchn_pend_id_rec_u2[8:0];">wchn_pend_id_rec_u2[8:0]</BIT>
+          <BIT sel="29" tag_cloud="wchn_pend_u2;">wchn_pend_u2</BIT>
+          <BIT sel="31:30" tag_cloud="reserved;">reserved                </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="3" tag_cloud="GPU AXI rchn monitor;">
+          <BIT sel="8:0" tag_cloud="rchn_pend_id_rec_u0[8:0];">rchn_pend_id_rec_u0[8:0]</BIT>
+          <BIT sel="9" tag_cloud="rchn_pend_u0;">rchn_pend_u0</BIT>
+          <BIT sel="18:10" tag_cloud="rchn_pend_id_rec_u1[8:0];">rchn_pend_id_rec_u1[8:0]</BIT>
+          <BIT sel="19" tag_cloud="rchn_pend_u1;">rchn_pend_u1</BIT>
+          <BIT sel="28:20" tag_cloud="rchn_pend_id_rec_u2[8:0];">rchn_pend_id_rec_u2[8:0]</BIT>
+          <BIT sel="29" tag_cloud="rchn_pend_u2;">rchn_pend_u2</BIT>
+          <BIT sel="31:30" tag_cloud="reserved;">reserved                </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="4" tag_cloud="axi_lpc_aon;">
+          <BIT sel="0" tag_cloud="reg_slice_axi_mm_vsp_emc_0_lpc_lp_stat;">reg_slice_axi_mm_vsp_emc_0_lpc_lp_stat        </BIT>
+          <BIT sel="1" tag_cloud="reg_slice_axi_mm_emc_0_lpc_lp_stat;">reg_slice_axi_mm_emc_0_lpc_lp_stat              </BIT>
+          <BIT sel="2" tag_cloud="reg_slice_axi_gpu_emc_1_lpc_lp_stat;">reg_slice_axi_gpu_emc_1_lpc_lp_stat        </BIT>
+          <BIT sel="3" tag_cloud="reg_slice_axi_cp1ca5_emc_0_lpc_lp_stat;">reg_slice_axi_cp1ca5_emc_0_lpc_lp_stat   </BIT>
+          <BIT sel="4" tag_cloud="reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_stat;">reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_stat   </BIT>
+          <BIT sel="5" tag_cloud="reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_stat;">reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_stat   </BIT>
+          <BIT sel="6" tag_cloud="reg_slice_ace_gpu_ca53_cci_0_lpc_lp_stat;">reg_slice_ace_gpu_ca53_cci_0_lpc_lp_stat   </BIT>
+          <BIT sel="7" tag_cloud="reg_slice_axi_ca53_emc_0_lpc_lp_stat;">reg_slice_axi_ca53_emc_0_lpc_lp_stat     </BIT>
+          <BIT sel="8" tag_cloud="reg_slice_axi_mm_vsp_emc_0_lpc_lp_csysreq;">reg_slice_axi_mm_vsp_emc_0_lpc_lp_csysreq     </BIT>
+          <BIT sel="9" tag_cloud="reg_slice_axi_mm_emc_0_lpc_lp_csysreq;">reg_slice_axi_mm_emc_0_lpc_lp_csysreq           </BIT>
+          <BIT sel="10" tag_cloud="reg_slice_axi_gpu_emc_1_lpc_lp_csysreq;">reg_slice_axi_gpu_emc_1_lpc_lp_csysreq     </BIT>
+          <BIT sel="11" tag_cloud="reg_slice_axi_cp1ca5_emc_0_lpc_lp_csysreq;">reg_slice_axi_cp1ca5_emc_0_lpc_lp_csysreq</BIT>
+          <BIT sel="12" tag_cloud="reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_csysreq;">reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_csysreq</BIT>
+          <BIT sel="13" tag_cloud="reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_csysreq;">reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_csysreq</BIT>
+          <BIT sel="14" tag_cloud="reg_slice_ace_gpu_ca53_cci_0_lpc_lp_csysreq;">reg_slice_ace_gpu_ca53_cci_0_lpc_lp_csysreq</BIT>
+          <BIT sel="15" tag_cloud="reg_slice_axi_ca53_emc_0_lpc_lp_csysreq;">reg_slice_axi_ca53_emc_0_lpc_lp_csysreq  </BIT>
+          <BIT sel="16" tag_cloud="reg_slice_axi_mm_vsp_emc_0_lpc_lp_csysack;">reg_slice_axi_mm_vsp_emc_0_lpc_lp_csysack     </BIT>
+          <BIT sel="17" tag_cloud="reg_slice_axi_mm_emc_0_lpc_lp_csysack;">reg_slice_axi_mm_emc_0_lpc_lp_csysack           </BIT>
+          <BIT sel="18" tag_cloud="reg_slice_axi_gpu_emc_1_lpc_lp_csysack;">reg_slice_axi_gpu_emc_1_lpc_lp_csysack     </BIT>
+          <BIT sel="19" tag_cloud="reg_slice_axi_cp1ca5_emc_0_lpc_lp_csysack;">reg_slice_axi_cp1ca5_emc_0_lpc_lp_csysack</BIT>
+          <BIT sel="20" tag_cloud="reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_csysack;">reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_csysack</BIT>
+          <BIT sel="21" tag_cloud="reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_csysack;">reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_csysack</BIT>
+          <BIT sel="22" tag_cloud="reg_slice_ace_gpu_ca53_cci_0_lpc_lp_csysack;">reg_slice_ace_gpu_ca53_cci_0_lpc_lp_csysack</BIT>
+          <BIT sel="23" tag_cloud="reg_slice_axi_ca53_emc_0_lpc_lp_csysack;">reg_slice_axi_ca53_emc_0_lpc_lp_csysack  </BIT>
+          <BIT sel="24" tag_cloud="reg_slice_axi_mm_vsp_emc_0_lpc_lp_cactive;">reg_slice_axi_mm_vsp_emc_0_lpc_lp_cactive     </BIT>
+          <BIT sel="25" tag_cloud="reg_slice_axi_mm_emc_0_lpc_lp_cactive;">reg_slice_axi_mm_emc_0_lpc_lp_cactive           </BIT>
+          <BIT sel="26" tag_cloud="reg_slice_axi_gpu_emc_1_lpc_lp_cactive;">reg_slice_axi_gpu_emc_1_lpc_lp_cactive     </BIT>
+          <BIT sel="27" tag_cloud="reg_slice_axi_cp1ca5_emc_0_lpc_lp_cactive;">reg_slice_axi_cp1ca5_emc_0_lpc_lp_cactive</BIT>
+          <BIT sel="28" tag_cloud="reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_cactive;">reg_slice_axi_pubcp_wtlcp_dsp_0_lpc_lp_cactive</BIT>
+          <BIT sel="29" tag_cloud="reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_cactive;">reg_slice_axi_pubcp_wtlcp_wcdma_0_lpc_lp_cactive</BIT>
+          <BIT sel="30" tag_cloud="reg_slice_ace_gpu_ca53_cci_0_lpc_lp_cactive;">reg_slice_ace_gpu_ca53_cci_0_lpc_lp_cactive</BIT>
+          <BIT sel="31" tag_cloud="reg_slice_axi_ca53_emc_0_lpc_lp_cactive;">reg_slice_axi_ca53_emc_0_lpc_lp_cactive  </BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="0" name="AP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="1" name="PUBCP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="WTLCP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="ARM7" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </AON>
+    <PUB sel="4" tag_cloud="PUB;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="djtag_instr_eb_slp;">
+          <BIT sel="0" tag_cloud="cgm_busy_dmc_pub_ctl;">cgm_busy_dmc_pub_ctl</BIT>
+          <BIT sel="1" tag_cloud="dmc_sleep;">dmc_sleep         </BIT>
+          <BIT sel="2" tag_cloud="dmc_stop;">dmc_stop         </BIT>
+          <BIT sel="3" tag_cloud="dmc_stop_ch7;">dmc_stop_ch7      </BIT>
+          <BIT sel="4" tag_cloud="dmc_stop_ch6;">dmc_stop_ch6        </BIT>
+          <BIT sel="5" tag_cloud="dmc_stop_ch5;">dmc_stop_ch5      </BIT>
+          <BIT sel="6" tag_cloud="dmc_stop_ch4;">dmc_stop_ch4     </BIT>
+          <BIT sel="7" tag_cloud="dmc_stop_ch3;">dmc_stop_ch3      </BIT>
+          <BIT sel="8" tag_cloud="dmc_stop_ch2;">dmc_stop_ch2        </BIT>
+          <BIT sel="9" tag_cloud="dmc_stop_ch1;">dmc_stop_ch1      </BIT>
+          <BIT sel="10" tag_cloud="dmc_stop_ch0;">dmc_stop_ch0     </BIT>
+          <BIT sel="11" tag_cloud="clk_ddr_gsp_pgu_s0;">clk_ddr_gsp_pgu_s0</BIT>
+          <BIT sel="12" tag_cloud="clk_ddr_gsp_gpu_m1;">clk_ddr_gsp_gpu_m1  </BIT>
+          <BIT sel="13" tag_cloud="clk_ddr_gsp_gpu_m0;">clk_ddr_gsp_gpu_m0</BIT>
+          <BIT sel="14" tag_cloud="clk_ddr_aon_ap_s0;">clk_ddr_aon_ap_s0</BIT>
+          <BIT sel="15" tag_cloud="clk_ddr_aon_ap_m1;">clk_ddr_aon_ap_m1 </BIT>
+          <BIT sel="16" tag_cloud="clk_ddr_aon_ap_m0;">clk_ddr_aon_ap_m0   </BIT>
+          <BIT sel="17" tag_cloud="ggm_s0_in_lp;">ggm_s0_in_lp      </BIT>
+          <BIT sel="18" tag_cloud="ggm_m1_in_lp;">ggm_m1_in_lp     </BIT>
+          <BIT sel="19" tag_cloud="ggm_m0_in_lp;">ggm_m0_in_lp      </BIT>
+          <BIT sel="20" tag_cloud="aam_s0_in_lp;">aam_s0_in_lp        </BIT>
+          <BIT sel="21" tag_cloud="aam_m1_in_lp;">aam_m1_in_lp      </BIT>
+          <BIT sel="22" tag_cloud="aam_m0_in_lp;">aam_m0_in_lp     </BIT>
+        </CHAN>
+      </DAP>
+    </PUB>
+    <PUBCP sel="6" tag_cloud="PUBCP;">
+      <DAP sel="8" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="17" tag_cloud="jtag_chain_lp_dbg_bus0;">
+          <BIT sel="0" tag_cloud="csysack_cd_m7;">csysack_cd_m7</BIT>
+          <BIT sel="1" tag_cloud="csysreq_cd_m7;">csysreq_cd_m7</BIT>
+          <BIT sel="2" tag_cloud="cactive_cd_m7;">cactive_cd_m7</BIT>
+          <BIT sel="3" tag_cloud="m7clk;">m7clk</BIT>
+          <BIT sel="4" tag_cloud="csysack_cd_m6;">csysack_cd_m6</BIT>
+          <BIT sel="5" tag_cloud="csysreq_cd_m6;">csysreq_cd_m6</BIT>
+          <BIT sel="6" tag_cloud="cactive_cd_m6;">cactive_cd_m6</BIT>
+          <BIT sel="7" tag_cloud="m6clk;">m6clk</BIT>
+          <BIT sel="8" tag_cloud="csysack_cd_m5;">csysack_cd_m5</BIT>
+          <BIT sel="9" tag_cloud="csysreq_cd_m5;">csysreq_cd_m5</BIT>
+          <BIT sel="10" tag_cloud="cactive_cd_m5;">cactive_cd_m5</BIT>
+          <BIT sel="11" tag_cloud="m5clk;">m5clk</BIT>
+          <BIT sel="12" tag_cloud="csysack_cd_m4;">csysack_cd_m4</BIT>
+          <BIT sel="13" tag_cloud="csysreq_cd_m4;">csysreq_cd_m4</BIT>
+          <BIT sel="14" tag_cloud="cactive_cd_m4;">cactive_cd_m4</BIT>
+          <BIT sel="15" tag_cloud="m4clk;">m4clk</BIT>
+          <BIT sel="16" tag_cloud="csysack_cd_m3;">csysack_cd_m3</BIT>
+          <BIT sel="17" tag_cloud="csysreq_cd_m3;">csysreq_cd_m3</BIT>
+          <BIT sel="18" tag_cloud="cactive_cd_m3;">cactive_cd_m3</BIT>
+          <BIT sel="19" tag_cloud="m3clk;">m3clk</BIT>
+          <BIT sel="20" tag_cloud="csysack_cd_m2;">csysack_cd_m2</BIT>
+          <BIT sel="21" tag_cloud="csysreq_cd_m2;">csysreq_cd_m2</BIT>
+          <BIT sel="22" tag_cloud="cactive_cd_m2;">cactive_cd_m2</BIT>
+          <BIT sel="23" tag_cloud="m2clk;">m2clk</BIT>
+          <BIT sel="24" tag_cloud="csysack_cd_m1;">csysack_cd_m1</BIT>
+          <BIT sel="25" tag_cloud="csysreq_cd_m1;">csysreq_cd_m1</BIT>
+          <BIT sel="26" tag_cloud="cactive_cd_m1;">cactive_cd_m1</BIT>
+          <BIT sel="27" tag_cloud="m1clk;">m1clk</BIT>
+          <BIT sel="28" tag_cloud="csysack_cd_m0;">csysack_cd_m0</BIT>
+          <BIT sel="29" tag_cloud="csysreq_cd_m0;">csysreq_cd_m0</BIT>
+          <BIT sel="30" tag_cloud="cactive_cd_m0;">cactive_cd_m0</BIT>
+          <BIT sel="31" tag_cloud="m0clk;">m0clk</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="18" tag_cloud="jtag_chain_lp_dbg_bus1;">
+          <BIT sel="0" tag_cloud="csysack_cd_s6;">csysack_cd_s6</BIT>
+          <BIT sel="1" tag_cloud="csysreq_cd_s6;">csysreq_cd_s6</BIT>
+          <BIT sel="2" tag_cloud="cactive_cd_s6;">cactive_cd_s6</BIT>
+          <BIT sel="3" tag_cloud="s6clk;">s6clk</BIT>
+          <BIT sel="4" tag_cloud="csysack_cd_s5;">csysack_cd_s5</BIT>
+          <BIT sel="5" tag_cloud="csysreq_cd_s5;">csysreq_cd_s5</BIT>
+          <BIT sel="6" tag_cloud="cactive_cd_s5;">cactive_cd_s5</BIT>
+          <BIT sel="7" tag_cloud="s5clk;">s5clk</BIT>
+          <BIT sel="8" tag_cloud="csysack_cd_s4;">csysack_cd_s4</BIT>
+          <BIT sel="9" tag_cloud="csysreq_cd_s4;">csysreq_cd_s4</BIT>
+          <BIT sel="10" tag_cloud="cactive_cd_s4;">cactive_cd_s4</BIT>
+          <BIT sel="11" tag_cloud="s4clk;">s4clk</BIT>
+          <BIT sel="12" tag_cloud="csysack_cd_s3;">csysack_cd_s3</BIT>
+          <BIT sel="13" tag_cloud="csysreq_cd_s3;">csysreq_cd_s3</BIT>
+          <BIT sel="14" tag_cloud="cactive_cd_s3;">cactive_cd_s3</BIT>
+          <BIT sel="15" tag_cloud="s3clk;">s3clk</BIT>
+          <BIT sel="16" tag_cloud="csysack_cd_s2;">csysack_cd_s2</BIT>
+          <BIT sel="17" tag_cloud="csysreq_cd_s2;">csysreq_cd_s2</BIT>
+          <BIT sel="18" tag_cloud="cactive_cd_s2;">cactive_cd_s2</BIT>
+          <BIT sel="19" tag_cloud="s2clk;">s2clk</BIT>
+          <BIT sel="20" tag_cloud="csysack_cd_s0;">csysack_cd_s0</BIT>
+          <BIT sel="21" tag_cloud="csysreq_cd_s0;">csysreq_cd_s0</BIT>
+          <BIT sel="22" tag_cloud="cactive_cd_s0;">cactive_cd_s0</BIT>
+          <BIT sel="23" tag_cloud="s0clk;">s0clk</BIT>
+          <BIT sel="24" tag_cloud="csysack_cd_m9;">csysack_cd_m9</BIT>
+          <BIT sel="25" tag_cloud="csysreq_cd_m9;">csysreq_cd_m9</BIT>
+          <BIT sel="26" tag_cloud="cactive_cd_m9;">cactive_cd_m9</BIT>
+          <BIT sel="27" tag_cloud="m9clk;">m9clk</BIT>
+          <BIT sel="28" tag_cloud="csysack_cd_m8;">csysack_cd_m8</BIT>
+          <BIT sel="29" tag_cloud="csysreq_cd_m8;">csysreq_cd_m8</BIT>
+          <BIT sel="30" tag_cloud="cactive_cd_m8;">cactive_cd_m8</BIT>
+          <BIT sel="31" tag_cloud="m8clk;">m8clk</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="19" tag_cloud="jtag_chain_lp_dbg_bus2;">
+          <BIT sel="0" tag_cloud="lp_stat_main;">lp_stat_main    </BIT>
+          <BIT sel="1" tag_cloud="lp_stat_abs;">lp_stat_abs     </BIT>
+          <BIT sel="2" tag_cloud="lp_stat_abm;">lp_stat_abm     </BIT>
+          <BIT sel="3" tag_cloud="lp_stat_s6;">lp_stat_s6</BIT>
+          <BIT sel="4" tag_cloud="lp_stat_s5;">lp_stat_s5      </BIT>
+          <BIT sel="5" tag_cloud="lp_stat_s4;">lp_stat_s4      </BIT>
+          <BIT sel="6" tag_cloud="lp_stat_s3;">lp_stat_s3      </BIT>
+          <BIT sel="7" tag_cloud="lp_stat_s2;">lp_stat_s2</BIT>
+          <BIT sel="8" tag_cloud="lp_stat_s0;">lp_stat_s0      </BIT>
+          <BIT sel="9" tag_cloud="lp_stat_m9;">lp_stat_m9      </BIT>
+          <BIT sel="10" tag_cloud="lp_stat_m8;">lp_stat_m8      </BIT>
+          <BIT sel="11" tag_cloud="lp_stat_m7;">lp_stat_m7</BIT>
+          <BIT sel="12" tag_cloud="lp_stat_m6;">lp_stat_m6      </BIT>
+          <BIT sel="13" tag_cloud="lp_stat_m5;">lp_stat_m5      </BIT>
+          <BIT sel="14" tag_cloud="lp_stat_m4;">lp_stat_m4      </BIT>
+          <BIT sel="15" tag_cloud="lp_stat_m3;">lp_stat_m3</BIT>
+          <BIT sel="16" tag_cloud="lp_stat_m2;">lp_stat_m2      </BIT>
+          <BIT sel="17" tag_cloud="lp_stat_m1;">lp_stat_m1      </BIT>
+          <BIT sel="18" tag_cloud="lp_stat_m0;">lp_stat_m0      </BIT>
+          <BIT sel="19" tag_cloud="1'b0;">reserved  </BIT>
+          <BIT sel="20" tag_cloud="csysack_cd_ab_s0;">csysack_cd_ab_s0</BIT>
+          <BIT sel="21" tag_cloud="csysreq_cd_ab_s0;">csysreq_cd_ab_s0</BIT>
+          <BIT sel="22" tag_cloud="cactive_cd_ab_s0;">cactive_cd_ab_s0</BIT>
+          <BIT sel="23" tag_cloud="clk_abs;">clk_abs   </BIT>
+          <BIT sel="24" tag_cloud="csysack_cd_ab_m0;">csysack_cd_ab_m0</BIT>
+          <BIT sel="25" tag_cloud="csysreq_cd_ab_m0;">csysreq_cd_ab_m0</BIT>
+          <BIT sel="26" tag_cloud="cactive_cd_ab_m0;">cactive_cd_ab_m0</BIT>
+          <BIT sel="27" tag_cloud="clk_abm;">clk_abm   </BIT>
+          <BIT sel="28" tag_cloud="csysack_cd_main;">csysack_cd_main </BIT>
+          <BIT sel="29" tag_cloud="csysreq_cd_main;">csysreq_cd_main </BIT>
+          <BIT sel="30" tag_cloud="cactive_cd_main;">cactive_cd_main </BIT>
+          <BIT sel="31" tag_cloud="mainclk;">mainclk   </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="20" tag_cloud="jtag_chain_lp_dbg_bus3;">
+          <BIT sel="0" tag_cloud="rst_axi_tft_n;">rst_axi_tft_n</BIT>
+          <BIT sel="1" tag_cloud="rst_axi_sec1_n;">rst_axi_sec1_n</BIT>
+          <BIT sel="2" tag_cloud="rst_axi_sec0_n;">rst_axi_sec0_n</BIT>
+          <BIT sel="3" tag_cloud="rst_axi_vic_n;">rst_axi_vic_n  </BIT>
+          <BIT sel="4" tag_cloud="rst_axi_dma_n;">rst_axi_dma_n</BIT>
+          <BIT sel="5" tag_cloud="rst_cssys_n;">rst_cssys_n   </BIT>
+          <BIT sel="6" tag_cloud="rst_cr5_n;">rst_cr5_n     </BIT>
+          <BIT sel="7" tag_cloud="rst_axi_wcdma_n;">rst_axi_wcdma_n</BIT>
+          <BIT sel="8" tag_cloud="rst_axi_aon_n;">rst_axi_aon_n</BIT>
+          <BIT sel="9" tag_cloud="rst_apb_n;">rst_apb_n     </BIT>
+          <BIT sel="10" tag_cloud="rst_axi_half_n;">rst_axi_half_n</BIT>
+          <BIT sel="11" tag_cloud="rst_axi_n;">rst_axi_n      </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="21" tag_cloud="jtag_chain_lp_dbg_bus4;">
+          <BIT sel="0" tag_cloud="cgm_busy_48m;">cgm_busy_48m </BIT>
+          <BIT sel="1" tag_cloud="cgm_busy_51_2m;">cgm_busy_51_2m </BIT>
+          <BIT sel="2" tag_cloud="cgm_busy_64m;">cgm_busy_64m    </BIT>
+          <BIT sel="3" tag_cloud="cgm_busy_96m;">cgm_busy_96m   </BIT>
+          <BIT sel="4" tag_cloud="cgm_busy_128m;">cgm_busy_128m</BIT>
+          <BIT sel="5" tag_cloud="cgm_busy_153_6m;">cgm_busy_153_6m</BIT>
+          <BIT sel="6" tag_cloud="cgm_busy_171_25m;">cgm_busy_171_25m</BIT>
+          <BIT sel="7" tag_cloud="cgm_busy_342_5m;">cgm_busy_342_5m</BIT>
+          <BIT sel="8" tag_cloud="cgm_busy_512m;">cgm_busy_512m</BIT>
+          <BIT sel="9" tag_cloud="cgm_busy_685m;">cgm_busy_685m  </BIT>
+          <BIT sel="10" tag_cloud="cgm_busy_614_4m;">cgm_busy_614_4m </BIT>
+          <BIT sel="11" tag_cloud="cgm_busy_26m;">cgm_busy_26m   </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="22" tag_cloud="jtag_chain_lp_dbg_bus5;">
+          <BIT sel="0" tag_cloud="sdio_eb;">sdio_eb</BIT>
+          <BIT sel="1" tag_cloud="aon_access_pubcp;">aon_access_pubcp</BIT>
+          <BIT sel="2" tag_cloud="tft_eb;">tft_eb  </BIT>
+          <BIT sel="3" tag_cloud="sec1_eb;">sec1_eb      </BIT>
+          <BIT sel="4" tag_cloud="sec0_eb;">sec0_eb</BIT>
+          <BIT sel="5" tag_cloud="dma_eb;">dma_eb          </BIT>
+          <BIT sel="6" tag_cloud="dma_busy;">dma_busy</BIT>
+          <BIT sel="7" tag_cloud="dma_link_busy;">dma_link_busy</BIT>
+          <BIT sel="8" tag_cloud="iis0_eb;">iis0_eb</BIT>
+          <BIT sel="9" tag_cloud="uart0_eb;">uart0_eb        </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="23" tag_cloud="jtag_chain_lp_dbg_bus6;">
+          <BIT sel="0" tag_cloud="cr5_standbywfi_n;">cr5_standbywfi_n   </BIT>
+          <BIT sel="1" tag_cloud="mcu_core_sleep;">mcu_core_sleep      </BIT>
+          <BIT sel="2" tag_cloud="pubcp_sys_cr5_stop;">pubcp_sys_cr5_stop  </BIT>
+          <BIT sel="3" tag_cloud="mcu_peri_stop;">mcu_peri_stop      </BIT>
+          <BIT sel="4" tag_cloud="pubcp_sys_deep_stop;">pubcp_sys_deep_stop</BIT>
+          <BIT sel="5" tag_cloud="pubcp_sys_light_stop;">pubcp_sys_light_stop</BIT>
+          <BIT sel="6" tag_cloud="cgm_apb_en;">cgm_apb_en          </BIT>
+          <BIT sel="7" tag_cloud="cgm_cr5_AXI_div2_en;">cgm_cr5_AXI_div2_en</BIT>
+          <BIT sel="8" tag_cloud="cgm_cr5_axi_en;">cgm_cr5_axi_en     </BIT>
+          <BIT sel="9" tag_cloud="cgm_cr5_core_en;">cgm_cr5_core_en     </BIT>
+          <BIT sel="10" tag_cloud="apb_trans_blk_bypass;">apb_trans_blk_bypass</BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="0" name="CR5_0" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="1" name="CR5_1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="SEC0" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="SEC1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="5" name="TFT" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="6" name="AON" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="7" name="SDIO" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="9" name="DMA_LINK1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="10" name="DMA_LINK" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </PUBCP>
+    <WTLCP sel="5" tag_cloud="WTLCP;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <MUX_SEL sel="65" dr_len="32" def_mux_sel="0x80000000"/>
+        <CHAN mux_sel="0" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="int_req_busmon0;">int_req_busmon0  </BIT>
+          <BIT sel="1" tag_cloud="int_req_busmon1;">int_req_busmon1   </BIT>
+          <BIT sel="2" tag_cloud="int_req_busmon2;">int_req_busmon2   </BIT>
+          <BIT sel="3" tag_cloud="int_req_busmon3;">int_req_busmon3    </BIT>
+          <BIT sel="4" tag_cloud="int_req_busmon4;">int_req_busmon4  </BIT>
+          <BIT sel="5" tag_cloud="int_req_busmon5;">int_req_busmon5   </BIT>
+          <BIT sel="6" tag_cloud="int_req_busmon6;">int_req_busmon6   </BIT>
+          <BIT sel="7" tag_cloud="int_req_busmon7;">int_req_busmon7    </BIT>
+          <BIT sel="8" tag_cloud="reseved;">reseved          </BIT>
+          <BIT sel="9" tag_cloud="pmu_cevaxs_rst_n;">pmu_cevaxs_rst_n  </BIT>
+          <BIT sel="10" tag_cloud="pmu_tg_cevax_rst_n;">pmu_tg_cevax_rst_n</BIT>
+          <BIT sel="11" tag_cloud="pmu_lte_cevax_rst_n;">pmu_lte_cevax_rst_n</BIT>
+          <BIT sel="12" tag_cloud="tg_ceva_rst_out_n;">tg_ceva_rst_out_n</BIT>
+          <BIT sel="13" tag_cloud="lte_ceva_rst_out_n;">lte_ceva_rst_out_n</BIT>
+          <BIT sel="14" tag_cloud="ceva_ocm_core1_rst;">ceva_ocm_core1_rst</BIT>
+          <BIT sel="15" tag_cloud="ceva_ocm_core0_rst;">ceva_ocm_core0_rst </BIT>
+          <BIT sel="31:16" tag_cloud="reseved;">reseved          </BIT>
+        </CHAN>
+        <CHAN mux_sel="1" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="int_req_busmon8;">int_req_busmon8  </BIT>
+          <BIT sel="1" tag_cloud="int_req_busmon9;">int_req_busmon9    </BIT>
+          <BIT sel="2" tag_cloud="int_req_busmon10;">int_req_busmon10          </BIT>
+          <BIT sel="3" tag_cloud="int_req_busmon11;">int_req_busmon11          </BIT>
+          <BIT sel="4" tag_cloud="int_req_busmon12;">int_req_busmon12 </BIT>
+          <BIT sel="5" tag_cloud="int_req_busmon13;">int_req_busmon13   </BIT>
+          <BIT sel="6" tag_cloud="int_req_busmon14;">int_req_busmon14          </BIT>
+          <BIT sel="7" tag_cloud="int_req_busmon15;">int_req_busmon15          </BIT>
+          <BIT sel="8" tag_cloud="int_req_busmon16;">int_req_busmon16 </BIT>
+          <BIT sel="9" tag_cloud="int_req_busmon17;">int_req_busmon17   </BIT>
+          <BIT sel="10" tag_cloud="rst_noc_n_wtl_pub_dsp_sync;">rst_noc_n_wtl_pub_dsp_sync</BIT>
+          <BIT sel="11" tag_cloud="rst_noc_n_wtl_pub_4x1_sync;">rst_noc_n_wtl_pub_4x1_sync</BIT>
+          <BIT sel="12" tag_cloud="rst_mux4to1_n_dsp;">rst_mux4to1_n_dsp</BIT>
+          <BIT sel="13" tag_cloud="rst_mux4to1_n_wcdma;">rst_mux4to1_n_wcdma</BIT>
+          <BIT sel="31:14" tag_cloud="reseved;">reseved                   </BIT>
+        </CHAN>
+        <CHAN mux_sel="2" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="4:0" tag_cloud="reseved;">reseved                 </BIT>
+          <BIT sel="5" tag_cloud="wcdma_m5_access_en;">wcdma_m5_access_en     </BIT>
+          <BIT sel="6" tag_cloud="lacc2dsp_access_en;">lacc2dsp_access_en       </BIT>
+          <BIT sel="7" tag_cloud="pubcp2wtldsp_access_en;">pubcp2wtldsp_access_en  </BIT>
+          <BIT sel="8" tag_cloud="tl42x_psu_core_idle_r_tg;">tl42x_psu_core_idle_r_tg</BIT>
+          <BIT sel="9" tag_cloud="tl42x_psu_dsp_idle_r_tg;"> tl42x_psu_dsp_idle_r_tg</BIT>
+          <BIT sel="10" tag_cloud="tl42x_psu_core_idle_r_lte;">tl42x_psu_core_idle_r_lte</BIT>
+          <BIT sel="11" tag_cloud="tl42x_psu_dsp_idle_r_lte;">tl42x_psu_dsp_idle_r_lte</BIT>
+          <BIT sel="12" tag_cloud="rst_dsp_cp_mtx_aon;">rst_dsp_cp_mtx_aon      </BIT>
+          <BIT sel="13" tag_cloud="pmu_glob_rst_n;"> pmu_glob_rst_n         </BIT>
+          <BIT sel="31:14" tag_cloud="reseved;">reseved                  </BIT>
+        </CHAN>
+        <CHAN mux_sel="3" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="lp_stat_dsp_cp_matrix_main;">lp_stat_dsp_cp_matrix_main</BIT>
+          <BIT sel="1" tag_cloud="lp_stat_dsp_cp_matrix_s8;">lp_stat_dsp_cp_matrix_s8</BIT>
+          <BIT sel="2" tag_cloud="lp_stat_dsp_cp_matrix_s7;">lp_stat_dsp_cp_matrix_s7</BIT>
+          <BIT sel="3" tag_cloud="lp_stat_dsp_cp_matrix_s6;">lp_stat_dsp_cp_matrix_s6</BIT>
+          <BIT sel="4" tag_cloud="lp_stat_dsp_cp_matrix_s5;">lp_stat_dsp_cp_matrix_s5  </BIT>
+          <BIT sel="5" tag_cloud="lp_stat_dsp_cp_matrix_s4;">lp_stat_dsp_cp_matrix_s4</BIT>
+          <BIT sel="6" tag_cloud="lp_stat_dsp_cp_matrix_s3;">lp_stat_dsp_cp_matrix_s3</BIT>
+          <BIT sel="7" tag_cloud="lp_stat_dsp_cp_matrix_s2;">lp_stat_dsp_cp_matrix_s2</BIT>
+          <BIT sel="8" tag_cloud="lp_stat_dsp_cp_matrix_s1;">lp_stat_dsp_cp_matrix_s1  </BIT>
+          <BIT sel="9" tag_cloud="lp_stat_dsp_cp_matrix_s0;">lp_stat_dsp_cp_matrix_s0</BIT>
+          <BIT sel="10" tag_cloud="lp_stat_dsp_cp_matrix_m7;">lp_stat_dsp_cp_matrix_m7</BIT>
+          <BIT sel="11" tag_cloud="lp_stat_dsp_cp_matrix_m6;">lp_stat_dsp_cp_matrix_m6</BIT>
+          <BIT sel="12" tag_cloud="lp_stat_dsp_cp_matrix_m5;">lp_stat_dsp_cp_matrix_m5  </BIT>
+          <BIT sel="13" tag_cloud="lp_stat_dsp_cp_matrix_m4;">lp_stat_dsp_cp_matrix_m4</BIT>
+          <BIT sel="14" tag_cloud="lp_stat_dsp_cp_matrix_m3;">lp_stat_dsp_cp_matrix_m3</BIT>
+          <BIT sel="15" tag_cloud="lp_stat_dsp_cp_matrix_m2;">lp_stat_dsp_cp_matrix_m2</BIT>
+          <BIT sel="16" tag_cloud="lp_stat_dsp_cp_matrix_m1;">lp_stat_dsp_cp_matrix_m1  </BIT>
+          <BIT sel="17" tag_cloud="lp_stat_dsp_cp_matrix_m0;">lp_stat_dsp_cp_matrix_m0</BIT>
+          <BIT sel="31:18" tag_cloud="reseved;">reseved                 </BIT>
+        </CHAN>
+        <CHAN mux_sel="4" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="axi_busy_hu3ge_b;">axi_busy_hu3ge_b      </BIT>
+          <BIT sel="1" tag_cloud="axi_busy_hu3ge_a;">axi_busy_hu3ge_a      </BIT>
+          <BIT sel="2" tag_cloud="wcdma_mtx_s0_stop;">wcdma_mtx_s0_stop     </BIT>
+          <BIT sel="3" tag_cloud="wcdma_slp_req_m0;">wcdma_slp_req_m0      </BIT>
+          <BIT sel="4" tag_cloud="wcdma_slp_req_m1;">wcdma_slp_req_m1      </BIT>
+          <BIT sel="5" tag_cloud="wcdma_slp_req_m2;">wcdma_slp_req_m2      </BIT>
+          <BIT sel="6" tag_cloud="wcdma_slp_req_m3;">wcdma_slp_req_m3      </BIT>
+          <BIT sel="7" tag_cloud="wcdma_slp_req_main;">wcdma_slp_req_main    </BIT>
+          <BIT sel="8" tag_cloud="lp_stat_acc2ddr_mtx_s0;">lp_stat_acc2ddr_mtx_s0</BIT>
+          <BIT sel="9" tag_cloud="lp_stat_acc2ddr_mtx_m4;">lp_stat_acc2ddr_mtx_m4</BIT>
+          <BIT sel="10" tag_cloud="lp_stat_acc2ddr_mtx_m3;">lp_stat_acc2ddr_mtx_m3</BIT>
+          <BIT sel="11" tag_cloud="lp_stat_acc2ddr_mtx_m2;">lp_stat_acc2ddr_mtx_m2</BIT>
+          <BIT sel="12" tag_cloud="lp_stat_acc2ddr_mtx_m1;">lp_stat_acc2ddr_mtx_m1</BIT>
+          <BIT sel="13" tag_cloud="lp_stat_acc2ddr_mtx_m0;">lp_stat_acc2ddr_mtx_m0</BIT>
+          <BIT sel="31:14" tag_cloud="reseved;">reseved               </BIT>
+        </CHAN>
+        <CHAN mux_sel="6" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="cgm_dsp_apb_en;">cgm_dsp_apb_en   </BIT>
+          <BIT sel="1" tag_cloud="cgm_dsp_ahb_en;">cgm_dsp_ahb_en  </BIT>
+          <BIT sel="2" tag_cloud="cgm_dsp_axi_en;">cgm_dsp_axi_en    </BIT>
+          <BIT sel="3" tag_cloud="N/A;">reseved            </BIT>
+          <BIT sel="4" tag_cloud="clk_apb_en;">clk_apb_en       </BIT>
+          <BIT sel="5" tag_cloud="clk_ahb_en;">clk_ahb_en      </BIT>
+          <BIT sel="6" tag_cloud="clk_axi_en;">clk_axi_en        </BIT>
+          <BIT sel="7" tag_cloud="N/A;">reseved            </BIT>
+          <BIT sel="8" tag_cloud="tg_ceva_clk_en;">tg_ceva_clk_en   </BIT>
+          <BIT sel="9" tag_cloud="lte_ceva_clk_en;">lte_ceva_clk_en </BIT>
+          <BIT sel="10" tag_cloud="clk_tg_dsp_core_en;">clk_tg_dsp_core_en</BIT>
+          <BIT sel="11" tag_cloud="clk_lte_dsp_core_en;">clk_lte_dsp_core_en</BIT>
+          <BIT sel="12" tag_cloud="cgm_tgdsp_core_en;">cgm_tgdsp_core_en</BIT>
+          <BIT sel="13" tag_cloud="cgm_ldsp_core_en;">cgm_ldsp_core_en</BIT>
+          <BIT sel="31:14" tag_cloud="reseved;">reseved           </BIT>
+        </CHAN>
+        <CHAN mux_sel="9" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="wcdma_top_pub0_light_sleep;">wcdma_top_pub0_light_sleep</BIT>
+          <BIT sel="1" tag_cloud="wcdma_top_doze_stop;">wcdma_top_doze_stop</BIT>
+          <BIT sel="2" tag_cloud="wcdma_top_pub0_deep_sleep;">wcdma_top_pub0_deep_sleep</BIT>
+          <BIT sel="3" tag_cloud="wcdma_top_deep_sleep;">wcdma_top_deep_sleep </BIT>
+          <BIT sel="4" tag_cloud="wcdma_mtx_s0_stop;">wcdma_mtx_s0_stop         </BIT>
+          <BIT sel="5" tag_cloud="wtlcp_pub_deep_stop;">wtlcp_pub_deep_stop</BIT>
+          <BIT sel="6" tag_cloud="wtlcp_doze_top;">wtlcp_doze_top           </BIT>
+          <BIT sel="7" tag_cloud="wtlcp_deep_stop_final;">wtlcp_deep_stop_final</BIT>
+          <BIT sel="8" tag_cloud="wtlcp_deep_stop;">wtlcp_deep_stop           </BIT>
+          <BIT sel="9" tag_cloud="wtlcp_light_stop;">wtlcp_light_stop   </BIT>
+          <BIT sel="10" tag_cloud="wtlcp_tgdsp_core_stop;">wtlcp_tgdsp_core_stop    </BIT>
+          <BIT sel="11" tag_cloud="wtlcp_ldsp_core_stop;">wtlcp_ldsp_core_stop </BIT>
+          <BIT sel="12" tag_cloud="tg_dma_busy;">tg_dma_busy               </BIT>
+          <BIT sel="13" tag_cloud="lte_dma_busy;">lte_dma_busy       </BIT>
+          <BIT sel="14" tag_cloud="tg_dma_stop;">tg_dma_stop              </BIT>
+          <BIT sel="15" tag_cloud="lte_dma_stop;">lte_dma_stop         </BIT>
+          <BIT sel="31:16" tag_cloud="reseved;">reseved                   </BIT>
+        </CHAN>
+        <CHAN mux_sel="10" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="tg_dsp_core_slp_and_stop;">tg_dsp_core_slp_and_stop</BIT>
+          <BIT sel="1" tag_cloud="lte_dsp_core_slp_and_stop;">lte_dsp_core_slp_and_stop</BIT>
+          <BIT sel="2" tag_cloud="tg_dsp_core_sleep;">tg_dsp_core_sleep</BIT>
+          <BIT sel="3" tag_cloud="lte_dsp_core_sleep;">lte_dsp_core_sleep</BIT>
+          <BIT sel="4" tag_cloud="lte_proc_stop;">lte_proc_stop           </BIT>
+          <BIT sel="5" tag_cloud="dsp_mtx_stop;">dsp_mtx_stop             </BIT>
+          <BIT sel="6" tag_cloud="lte_deep_sleep;">lte_deep_sleep   </BIT>
+          <BIT sel="7" tag_cloud="lte_doze_sleep;">lte_doze_sleep    </BIT>
+          <BIT sel="8" tag_cloud="lte_pub_light_sleep;">lte_pub_light_sleep     </BIT>
+          <BIT sel="9" tag_cloud="lte_pub_deep_sleep;">lte_pub_deep_sleep       </BIT>
+          <BIT sel="31:10" tag_cloud="reseved;">reseved          </BIT>
+        </CHAN>
+        <CHAN mux_sel="11" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="icu_vint_r_tg_dsp;">icu_vint_r_tg_dsp</BIT>
+          <BIT sel="1" tag_cloud="icu_nmi_tg_dsp;">icu_nmi_tg_dsp    </BIT>
+          <BIT sel="2" tag_cloud="icu_int2_tg_dsp;">icu_int2_tg_dsp</BIT>
+          <BIT sel="3" tag_cloud="icu_int1_tg_dsp;">icu_int1_tg_dsp </BIT>
+          <BIT sel="4" tag_cloud="icu_int0_tg_dsp;">icu_int0_tg_dsp  </BIT>
+          <BIT sel="5" tag_cloud="icu_vint_r_lte_dsp;">icu_vint_r_lte_dsp</BIT>
+          <BIT sel="6" tag_cloud="icu_nmi_lte_dsp;">icu_nmi_lte_dsp</BIT>
+          <BIT sel="7" tag_cloud="icu_int2_lte_dsp;">icu_int2_lte_dsp</BIT>
+          <BIT sel="8" tag_cloud="icu_int1_lte_dsp;">icu_int1_lte_dsp </BIT>
+          <BIT sel="9" tag_cloud="icu_int0_lte_dsp;">icu_int0_lte_dsp  </BIT>
+          <BIT sel="31:10" tag_cloud="reseved;">reseved        </BIT>
+        </CHAN>
+        <CHAN mux_sel="12" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="gsm_rfctrl_val[15];">gsm_rfctrl_val[15]</BIT>
+          <BIT sel="1" tag_cloud="td_rfctrl_val[15];">td_rfctrl_val[15]</BIT>
+          <BIT sel="2" tag_cloud="wcdma_rfctrl[15];">wcdma_rfctrl[15]</BIT>
+          <BIT sel="31:3" tag_cloud="reseved;">reseved</BIT>
+        </CHAN>
+        <CHAN mux_sel="13" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="2:0" tag_cloud="reseved;">reseved              </BIT>
+          <BIT sel="3" tag_cloud="pcp_wcdma_slp_int;">pcp_wcdma_slp_int</BIT>
+          <BIT sel="4" tag_cloud="timer1_out_r_lte;">timer1_out_r_lte  </BIT>
+          <BIT sel="5" tag_cloud="timer0_out_r_lte;">timer0_out_r_lte   </BIT>
+          <BIT sel="6" tag_cloud="int_req_syst_lte;">int_req_syst_lte     </BIT>
+          <BIT sel="7" tag_cloud="int_req_wdg_lte;">int_req_wdg_lte  </BIT>
+          <BIT sel="8" tag_cloud="ceva_wcdma_slp_int;">ceva_wcdma_slp_int</BIT>
+          <BIT sel="9" tag_cloud="rft_wake_clkdsp_int;">rft_wake_clkdsp_int</BIT>
+          <BIT sel="10" tag_cloud="timer1_out_r_tg;">timer1_out_r_tg      </BIT>
+          <BIT sel="11" tag_cloud="timer0_out_r_tg;">timer0_out_r_tg  </BIT>
+          <BIT sel="12" tag_cloud="int_req_syst_tg;">int_req_syst_tg   </BIT>
+          <BIT sel="13" tag_cloud="int_req_wdg_tg;">int_req_wdg_tg     </BIT>
+          <BIT sel="14" tag_cloud="tmr_wake_clkdsp_level;">tmr_wake_clkdsp_level</BIT>
+          <BIT sel="15" tag_cloud="stc_fc_int;">stc_fc_int       </BIT>
+          <BIT sel="31:16" tag_cloud="reseved;">reseved           </BIT>
+        </CHAN>
+        <CHAN mux_sel="14" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="rft_autopd_xtl_en;">rft_autopd_xtl_en    </BIT>
+          <BIT sel="1" tag_cloud="rft_tmr_autopd_xtl_en;">rft_tmr_autopd_xtl_en</BIT>
+          <BIT sel="2" tag_cloud="wcdma_power_en[0];">wcdma_power_en[0]    </BIT>
+          <BIT sel="3" tag_cloud="wcdma_power_en[1];">wcdma_power_en[1]    </BIT>
+          <BIT sel="4" tag_cloud="stc_tmr_autopd_xtl_en;">stc_tmr_autopd_xtl_en</BIT>
+          <BIT sel="5" tag_cloud="wakeup_xtl_en_4g_lte;">wakeup_xtl_en_4g_lte </BIT>
+          <BIT sel="6" tag_cloud="wakeup_xtl_en_3g_td;">wakeup_xtl_en_3g_td  </BIT>
+          <BIT sel="7" tag_cloud="wakeup_xtl_en_3g_w;">wakeup_xtl_en_3g_w   </BIT>
+          <BIT sel="8" tag_cloud="wakeup_xtl_en_2g;">wakeup_xtl_en_2g     </BIT>
+          <BIT sel="9" tag_cloud="pubcp_wakeup_int;">pubcp_wakeup_int     </BIT>
+          <BIT sel="10" tag_cloud="lte_dsp_wakeup_int;">lte_dsp_wakeup_int   </BIT>
+          <BIT sel="11" tag_cloud="tg_dsp_wakeup_int;">tg_dsp_wakeup_int    </BIT>
+          <BIT sel="12" tag_cloud="wcdma_top_deep_sleep;">wcdma_top_deep_sleep </BIT>
+          <BIT sel="13" tag_cloud="lte_deep_sleep;">lte_deep_sleep       </BIT>
+          <BIT sel="14" tag_cloud="wtlcp_tgdsp_core_stop;">wtlcp_tgdsp_core_stop</BIT>
+          <BIT sel="15" tag_cloud="wtlcp_ldsp_core_stop;">wtlcp_ldsp_core_stop </BIT>
+          <BIT sel="16" tag_cloud="dsp_mtx_stop;">dsp_mtx_stop         </BIT>
+          <BIT sel="17" tag_cloud="dsp_deep_sleep_en;">dsp_deep_sleep_en    </BIT>
+          <BIT sel="18" tag_cloud="wtlcp_deep_stop;">wtlcp_deep_stop      </BIT>
+          <BIT sel="19" tag_cloud="wtlcp_deep_stop_final;">wtlcp_deep_stop_final</BIT>
+          <BIT sel="31:20" tag_cloud="reseved;">reseved              </BIT>
+        </CHAN>
+        <CHAN mux_sel="15" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="cgm_buusy_245_76m_lte;">cgm_buusy_245_76m_lte</BIT>
+          <BIT sel="1" tag_cloud="cgm_busy_102_4m_lte;">cgm_busy_102_4m_lte</BIT>
+          <BIT sel="2" tag_cloud="cgm_busy_204_8m_lte;">cgm_busy_204_8m_lte </BIT>
+          <BIT sel="3" tag_cloud="cgm_busy_153_6m_lte;">cgm_busy_153_6m_lte </BIT>
+          <BIT sel="4" tag_cloud="cgm_busy_51_2m;">cgm_busy_51_2m       </BIT>
+          <BIT sel="5" tag_cloud="cgm_busy_76_8m;">cgm_busy_76_8m     </BIT>
+          <BIT sel="6" tag_cloud="cgm_busy_153_6m;">cgm_busy_153_6m     </BIT>
+          <BIT sel="7" tag_cloud="cgm_busy_48m;">cgm_busy_48m        </BIT>
+          <BIT sel="8" tag_cloud="cgm_busy_96m;">cgm_busy_96m         </BIT>
+          <BIT sel="9" tag_cloud="cgm_busy_307_2m;">cgm_busy_307_2m    </BIT>
+          <BIT sel="10" tag_cloud="cgm_busy_384m;">cgm_busy_384m       </BIT>
+          <BIT sel="11" tag_cloud="cgm_busy_64m;">cgm_busy_64m        </BIT>
+          <BIT sel="12" tag_cloud="cgm_busy_128m;">cgm_busy_128m        </BIT>
+          <BIT sel="13" tag_cloud="cgm_busy_256m;">cgm_busy_256m      </BIT>
+          <BIT sel="14" tag_cloud="cgm_busy_512m;">cgm_busy_512m       </BIT>
+          <BIT sel="15" tag_cloud="cgm_busy_26m_rf0;">cgm_busy_26m_rf0    </BIT>
+          <BIT sel="16" tag_cloud="cgm_busy_307_2m_lte;">cgm_busy_307_2m_lte  </BIT>
+          <BIT sel="17" tag_cloud="cgm_busy_61_44m_lte;">cgm_busy_61_44m_lte</BIT>
+          <BIT sel="18" tag_cloud="cgm_busy_122_88m_lte;">cgm_busy_122_88m_lte</BIT>
+          <BIT sel="19" tag_cloud="cgm_busy_409__6m_lte;">cgm_busy_409__6m_lte</BIT>
+          <BIT sel="20" tag_cloud="cgm_busy_614_4m_lte;">cgm_busy_614_4m_lte  </BIT>
+          <BIT sel="31:21" tag_cloud="reseved;">reseved            </BIT>
+        </CHAN>
+        <CHAN mux_sel="16" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="2:0" tag_cloud="mtx_ce_m1_c_stat;">mtx_ce_m1_c_stat   </BIT>
+          <BIT sel="5:3" tag_cloud="mtx_ce_m0_c_stat;">mtx_ce_m0_c_stat   </BIT>
+          <BIT sel="8:6" tag_cloud="brg_ulch_ahb_c_stat;">brg_ulch_ahb_c_stat </BIT>
+          <BIT sel="11:9" tag_cloud="brg_dpfec_s1_c_stat;">brg_dpfec_s1_c_stat</BIT>
+          <BIT sel="14:12" tag_cloud="brg_dpfec_s0_c_stat;">brg_dpfec_s0_c_stat</BIT>
+          <BIT sel="17:15" tag_cloud="brg_dpfec_m0_c_stat;">brg_dpfec_m0_c_stat</BIT>
+          <BIT sel="20:18" tag_cloud="brg_csdfe_ahb_c_stat;">brg_csdfe_ahb_c_stat</BIT>
+          <BIT sel="23:21" tag_cloud="brg_ce_s1_c_stat;">brg_ce_s1_c_stat   </BIT>
+          <BIT sel="26:24" tag_cloud="brg_ce_m0_c_stat;">brg_ce_m0_c_stat   </BIT>
+          <BIT sel="29:27" tag_cloud="brg_ce_s0_c_stat;">brg_ce_s0_c_stat   </BIT>
+          <BIT sel="31:30" tag_cloud="reseved;">reseved             </BIT>
+        </CHAN>
+        <CHAN mux_sel="17" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="2:0" tag_cloud="mtx_top_m3_c_stat;">mtx_top_m3_c_stat  </BIT>
+          <BIT sel="5:3" tag_cloud="mtx_top_m2_c_stat;">mtx_top_m2_c_stat  </BIT>
+          <BIT sel="8:6" tag_cloud="mtx_top_m1_c_stat;">mtx_top_m1_c_stat  </BIT>
+          <BIT sel="11:9" tag_cloud="mtx_top_m0_c_stat;">mtx_top_m0_c_stat  </BIT>
+          <BIT sel="14:12" tag_cloud="mtx_csdfe_s0_c_stat;">mtx_csdfe_s0_c_stat</BIT>
+          <BIT sel="17:15" tag_cloud="mtx_csdfe_m2_c_stat;">mtx_csdfe_m2_c_stat</BIT>
+          <BIT sel="20:18" tag_cloud="mtx_csdfe_m1_c_stat;">mtx_csdfe_m1_c_stat</BIT>
+          <BIT sel="23:21" tag_cloud="mtx_csdfe_m0_c_stat;">mtx_csdfe_m0_c_stat</BIT>
+          <BIT sel="26:24" tag_cloud="mtx_ce_s0_c_stat;">mtx_ce_s0_c_stat   </BIT>
+          <BIT sel="29:27" tag_cloud="mtx_ce_m3_c_stat;">mtx_ce_m3_c_stat   </BIT>
+          <BIT sel="31:30" tag_cloud="reseved;">reseved            </BIT>
+        </CHAN>
+        <CHAN mux_sel="18" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="2:0" tag_cloud="mtx_top_s8_c_stat;">mtx_top_s8_c_stat</BIT>
+          <BIT sel="5:3" tag_cloud="mtx_top_s6_c_stat;">mtx_top_s6_c_stat</BIT>
+          <BIT sel="8:6" tag_cloud="mtx_top_s2_c_stat;">mtx_top_s2_c_stat</BIT>
+          <BIT sel="11:9" tag_cloud="mtx_top_s7_c_stat;">mtx_top_s7_c_stat  </BIT>
+          <BIT sel="14:12" tag_cloud="mtx_top_s4_c_stat;">mtx_top_s4_c_stat</BIT>
+          <BIT sel="17:15" tag_cloud="mtx_top_s1_c_stat;">mtx_top_s1_c_stat</BIT>
+          <BIT sel="20:18" tag_cloud="mtx_top_s0_c_stat;">mtx_top_s0_c_stat</BIT>
+          <BIT sel="23:21" tag_cloud="mtx_top_main_c_stat;">mtx_top_main_c_stat</BIT>
+          <BIT sel="26:24" tag_cloud="mtx_top_m5_stat;">mtx_top_m5_stat  </BIT>
+          <BIT sel="29:27" tag_cloud="mtx_top_m4_stat;">mtx_top_m4_stat  </BIT>
+          <BIT sel="31:30" tag_cloud="reseved;">reseved          </BIT>
+        </CHAN>
+        <CHAN mux_sel="19" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="2:0" tag_cloud="mtx_top_s9_c_stat[2:0];">mtx_top_s9_c_stat[2:0]</BIT>
+          <BIT sel="31:3" tag_cloud="reseved;">reseved</BIT>
+        </CHAN>
+        <CHAN mux_sel="32" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_dsp_matrix_m0_out;">clk_dsp_matrix_m0_out</BIT>
+          <BIT sel="1" tag_cloud="csysack_dsp_cp_matrix_m0;">csysack_dsp_cp_matrix_m0</BIT>
+          <BIT sel="2" tag_cloud="csysreq_dsp_cp_matrix_m0;">csysreq_dsp_cp_matrix_m0</BIT>
+          <BIT sel="3" tag_cloud="cactive_dsp_cp_matrix_m0;">cactive_dsp_cp_matrix_m0</BIT>
+          <BIT sel="4" tag_cloud="clk_dsp_matrix_m1_out;">clk_dsp_matrix_m1_out</BIT>
+          <BIT sel="5" tag_cloud="csysack_dsp_cp_matrix_m1;">csysack_dsp_cp_matrix_m1</BIT>
+          <BIT sel="6" tag_cloud="csysreq_dsp_cp_matrix_m1;">csysreq_dsp_cp_matrix_m1</BIT>
+          <BIT sel="7" tag_cloud="cactive_dsp_cp_matrix_m1;">cactive_dsp_cp_matrix_m1</BIT>
+          <BIT sel="8" tag_cloud="clk_dsp_matrix_m2_out;">clk_dsp_matrix_m2_out</BIT>
+          <BIT sel="9" tag_cloud="csysack_dsp_cp_matrix_m2;">csysack_dsp_cp_matrix_m2</BIT>
+          <BIT sel="10" tag_cloud="csysreq_dsp_cp_matrix_m2;">csysreq_dsp_cp_matrix_m2</BIT>
+          <BIT sel="11" tag_cloud="cactive_dsp_cp_matrix_m2;">cactive_dsp_cp_matrix_m2</BIT>
+          <BIT sel="12" tag_cloud="clk_dsp_matrix_m3_out;">clk_dsp_matrix_m3_out</BIT>
+          <BIT sel="13" tag_cloud="csysack_dsp_cp_matrix_m3;">csysack_dsp_cp_matrix_m3</BIT>
+          <BIT sel="14" tag_cloud="csysreq_dsp_cp_matrix_m3;">csysreq_dsp_cp_matrix_m3</BIT>
+          <BIT sel="15" tag_cloud="cactive_dsp_cp_matrix_m3;">cactive_dsp_cp_matrix_m3</BIT>
+          <BIT sel="16" tag_cloud="clk_dsp_matrix_m4_out;">clk_dsp_matrix_m4_out</BIT>
+          <BIT sel="17" tag_cloud="csysack_dsp_cp_matrix_m4;">csysack_dsp_cp_matrix_m4</BIT>
+          <BIT sel="18" tag_cloud="csysreq_dsp_cp_matrix_m4;">csysreq_dsp_cp_matrix_m4</BIT>
+          <BIT sel="19" tag_cloud="cactive_dsp_cp_matrix_m4;">cactive_dsp_cp_matrix_m4</BIT>
+          <BIT sel="20" tag_cloud="clk_dsp_matrix_m5_out;">clk_dsp_matrix_m5_out</BIT>
+          <BIT sel="21" tag_cloud="csysack_dsp_cp_matrix_m5;">csysack_dsp_cp_matrix_m5</BIT>
+          <BIT sel="22" tag_cloud="csysreq_dsp_cp_matrix_m5;">csysreq_dsp_cp_matrix_m5</BIT>
+          <BIT sel="23" tag_cloud="cactive_dsp_cp_matrix_m5;">cactive_dsp_cp_matrix_m5</BIT>
+          <BIT sel="24" tag_cloud="clk_dsp_matrix_m6_out;">clk_dsp_matrix_m6_out</BIT>
+          <BIT sel="25" tag_cloud="csysack_dsp_cp_matrix_m6;">csysack_dsp_cp_matrix_m6</BIT>
+          <BIT sel="26" tag_cloud="csysreq_dsp_cp_matrix_m6;">csysreq_dsp_cp_matrix_m6</BIT>
+          <BIT sel="27" tag_cloud="cactive_dsp_cp_matrix_m6;">cactive_dsp_cp_matrix_m6</BIT>
+          <BIT sel="28" tag_cloud="clk_dsp_matrix_m7_out;">clk_dsp_matrix_m7_out</BIT>
+          <BIT sel="29" tag_cloud="csysack_dsp_cp_matrix_m7;">csysack_dsp_cp_matrix_m7</BIT>
+          <BIT sel="30" tag_cloud="csysreq_dsp_cp_matrix_m7;">csysreq_dsp_cp_matrix_m7</BIT>
+          <BIT sel="31" tag_cloud="cactive_dsp_cp_matrix_m7;">cactive_dsp_cp_matrix_m7</BIT>
+        </CHAN>
+        <CHAN mux_sel="33" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_dsp_matrix_s0_out;">clk_dsp_matrix_s0_out</BIT>
+          <BIT sel="1" tag_cloud="csysack_dsp_cp_matrix_s0;">csysack_dsp_cp_matrix_s0</BIT>
+          <BIT sel="2" tag_cloud="csysreq_dsp_cp_matrix_s0;">csysreq_dsp_cp_matrix_s0</BIT>
+          <BIT sel="3" tag_cloud="cactive_dsp_cp_matrix_s0;">cactive_dsp_cp_matrix_s0</BIT>
+          <BIT sel="4" tag_cloud="clk_dsp_matrix_s1_out;">clk_dsp_matrix_s1_out</BIT>
+          <BIT sel="5" tag_cloud="csysack_dsp_cp_matrix_s1;">csysack_dsp_cp_matrix_s1</BIT>
+          <BIT sel="6" tag_cloud="csysreq_dsp_cp_matrix_s1;">csysreq_dsp_cp_matrix_s1</BIT>
+          <BIT sel="7" tag_cloud="cactive_dsp_cp_matrix_s1;">cactive_dsp_cp_matrix_s1</BIT>
+          <BIT sel="8" tag_cloud="clk_dsp_matrix_s2_out;">clk_dsp_matrix_s2_out</BIT>
+          <BIT sel="9" tag_cloud="csysack_dsp_cp_matrix_s2;">csysack_dsp_cp_matrix_s2</BIT>
+          <BIT sel="10" tag_cloud="csysreq_dsp_cp_matrix_s2;">csysreq_dsp_cp_matrix_s2</BIT>
+          <BIT sel="11" tag_cloud="cactive_dsp_cp_matrix_s2;">cactive_dsp_cp_matrix_s2</BIT>
+          <BIT sel="12" tag_cloud="clk_dsp_matrix_s3_out;">clk_dsp_matrix_s3_out</BIT>
+          <BIT sel="13" tag_cloud="csysack_dsp_cp_matrix_s3;">csysack_dsp_cp_matrix_s3</BIT>
+          <BIT sel="14" tag_cloud="csysreq_dsp_cp_matrix_s3;">csysreq_dsp_cp_matrix_s3</BIT>
+          <BIT sel="15" tag_cloud="cactive_dsp_cp_matrix_s3;">cactive_dsp_cp_matrix_s3</BIT>
+          <BIT sel="16" tag_cloud="clk_dsp_matrix_s4_out;">clk_dsp_matrix_s4_out</BIT>
+          <BIT sel="17" tag_cloud="csysack_dsp_cp_matrix_s4;">csysack_dsp_cp_matrix_s4</BIT>
+          <BIT sel="18" tag_cloud="csysreq_dsp_cp_matrix_s4;">csysreq_dsp_cp_matrix_s4</BIT>
+          <BIT sel="19" tag_cloud="cactive_dsp_cp_matrix_s4;">cactive_dsp_cp_matrix_s4</BIT>
+          <BIT sel="20" tag_cloud="clk_dsp_matrix_s5_out;">clk_dsp_matrix_s5_out</BIT>
+          <BIT sel="21" tag_cloud="csysack_dsp_cp_matrix_s5;">csysack_dsp_cp_matrix_s5</BIT>
+          <BIT sel="22" tag_cloud="csysreq_dsp_cp_matrix_s5;">csysreq_dsp_cp_matrix_s5</BIT>
+          <BIT sel="23" tag_cloud="cactive_dsp_cp_matrix_s5;">cactive_dsp_cp_matrix_s5</BIT>
+          <BIT sel="24" tag_cloud="clk_dsp_matrix_s6_out;">clk_dsp_matrix_s6_out</BIT>
+          <BIT sel="25" tag_cloud="csysack_dsp_cp_matrix_s6;">csysack_dsp_cp_matrix_s6</BIT>
+          <BIT sel="26" tag_cloud="csysreq_dsp_cp_matrix_s6;">csysreq_dsp_cp_matrix_s6</BIT>
+          <BIT sel="27" tag_cloud="cactive_dsp_cp_matrix_s6;">cactive_dsp_cp_matrix_s6</BIT>
+          <BIT sel="28" tag_cloud="clk_dsp_matrix_s7_out;">clk_dsp_matrix_s7_out</BIT>
+          <BIT sel="29" tag_cloud="csysack_dsp_cp_matrix_s7;">csysack_dsp_cp_matrix_s7</BIT>
+          <BIT sel="30" tag_cloud="csysreq_dsp_cp_matrix_s7;">csysreq_dsp_cp_matrix_s7</BIT>
+          <BIT sel="31" tag_cloud="cactive_dsp_cp_matrix_s7;">cactive_dsp_cp_matrix_s7</BIT>
+        </CHAN>
+        <CHAN mux_sel="34" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_dsp_matrix_s8_out;">clk_dsp_matrix_s8_out  </BIT>
+          <BIT sel="1" tag_cloud="csysack_dsp_cp_matrix_s8;">csysack_dsp_cp_matrix_s8  </BIT>
+          <BIT sel="2" tag_cloud="csysreq_dsp_cp_matrix_s8;">csysreq_dsp_cp_matrix_s8  </BIT>
+          <BIT sel="3" tag_cloud="cactive_dsp_cp_matrix_s8;">cactive_dsp_cp_matrix_s8  </BIT>
+          <BIT sel="4" tag_cloud="clk_dsp_matrix_main_out;">clk_dsp_matrix_main_out</BIT>
+          <BIT sel="5" tag_cloud="csysack_dsp_cp_matrix_main;">csysack_dsp_cp_matrix_main</BIT>
+          <BIT sel="6" tag_cloud="csysreq_dsp_cp_matrix_main;">csysreq_dsp_cp_matrix_main</BIT>
+          <BIT sel="7" tag_cloud="cactive_dsp_cp_matrix_main;">cactive_dsp_cp_matrix_main</BIT>
+          <BIT sel="31:8" tag_cloud="reseved;">reseved                </BIT>
+        </CHAN>
+        <CHAN mux_sel="35" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="lp_stat_dsp_cp_matrix_s0;">lp_stat_dsp_cp_matrix_s0</BIT>
+          <BIT sel="1" tag_cloud="lp_stat_dsp_cp_matrix_s1;">lp_stat_dsp_cp_matrix_s1  </BIT>
+          <BIT sel="2" tag_cloud="lp_stat_dsp_cp_matrix_s2;">lp_stat_dsp_cp_matrix_s2</BIT>
+          <BIT sel="3" tag_cloud="lp_stat_dsp_cp_matrix_s3;">lp_stat_dsp_cp_matrix_s3</BIT>
+          <BIT sel="4" tag_cloud="lp_stat_dsp_cp_matrix_s4;">lp_stat_dsp_cp_matrix_s4</BIT>
+          <BIT sel="5" tag_cloud="lp_stat_dsp_cp_matrix_s5;">lp_stat_dsp_cp_matrix_s5  </BIT>
+          <BIT sel="6" tag_cloud="lp_stat_dsp_cp_matrix_s6;">lp_stat_dsp_cp_matrix_s6</BIT>
+          <BIT sel="7" tag_cloud="lp_stat_dsp_cp_matrix_s7;">lp_stat_dsp_cp_matrix_s7</BIT>
+          <BIT sel="8" tag_cloud="lp_stat_dsp_cp_matrix_s8;">lp_stat_dsp_cp_matrix_s8</BIT>
+          <BIT sel="9" tag_cloud="lp_stat_dsp_cp_matrix_main;">lp_stat_dsp_cp_matrix_main</BIT>
+          <BIT sel="10" tag_cloud="lp_stat_dsp_cp_matrix_m0;">lp_stat_dsp_cp_matrix_m0</BIT>
+          <BIT sel="11" tag_cloud="lp_stat_dsp_cp_matrix_m1;">lp_stat_dsp_cp_matrix_m1</BIT>
+          <BIT sel="12" tag_cloud="lp_stat_dsp_cp_matrix_m2;">lp_stat_dsp_cp_matrix_m2</BIT>
+          <BIT sel="13" tag_cloud="lp_stat_dsp_cp_matrix_m3;">lp_stat_dsp_cp_matrix_m3  </BIT>
+          <BIT sel="14" tag_cloud="lp_stat_dsp_cp_matrix_m4;">lp_stat_dsp_cp_matrix_m4</BIT>
+          <BIT sel="15" tag_cloud="lp_stat_dsp_cp_matrix_m5;">lp_stat_dsp_cp_matrix_m5</BIT>
+          <BIT sel="16" tag_cloud="lp_stat_dsp_cp_matrix_m6;">lp_stat_dsp_cp_matrix_m6</BIT>
+          <BIT sel="17" tag_cloud="lp_stat_dsp_cp_matrix_m7;">lp_stat_dsp_cp_matrix_m7  </BIT>
+          <BIT sel="31:18" tag_cloud="reseved;">reseved                 </BIT>
+        </CHAN>
+        <CHAN mux_sel="36" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_acc2ddr_mux4to1_mtx_m0_out;">clk_acc2ddr_mux4to1_mtx_m0_out</BIT>
+          <BIT sel="1" tag_cloud="csysack_acc2ddr_mux4to1_mtx_m0;">csysack_acc2ddr_mux4to1_mtx_m0</BIT>
+          <BIT sel="2" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_m0;">csysreq_acc2ddr_mux4to1_mtx_m0</BIT>
+          <BIT sel="3" tag_cloud="cactive_acc2ddr_mux4to1_mtx_m0;">cactive_acc2ddr_mux4to1_mtx_m0</BIT>
+          <BIT sel="4" tag_cloud="clk_acc2ddr_mux4to1_mtx_m1_out;">clk_acc2ddr_mux4to1_mtx_m1_out</BIT>
+          <BIT sel="5" tag_cloud="csysack_acc2ddr_mux4to1_mtx_m1;">csysack_acc2ddr_mux4to1_mtx_m1</BIT>
+          <BIT sel="6" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_m1;">csysreq_acc2ddr_mux4to1_mtx_m1</BIT>
+          <BIT sel="7" tag_cloud="cactive_acc2ddr_mux4to1_mtx_m1;">cactive_acc2ddr_mux4to1_mtx_m1</BIT>
+          <BIT sel="8" tag_cloud="clk_acc2ddr_mux4to1_mtx_m2_out;">clk_acc2ddr_mux4to1_mtx_m2_out</BIT>
+          <BIT sel="9" tag_cloud="csysack_acc2ddr_mux4to1_mtx_m2;">csysack_acc2ddr_mux4to1_mtx_m2</BIT>
+          <BIT sel="10" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_m2;">csysreq_acc2ddr_mux4to1_mtx_m2</BIT>
+          <BIT sel="11" tag_cloud="cactive_acc2ddr_mux4to1_mtx_m2;">cactive_acc2ddr_mux4to1_mtx_m2</BIT>
+          <BIT sel="12" tag_cloud="clk_acc2ddr_mux4to1_mtx_m3_out;">clk_acc2ddr_mux4to1_mtx_m3_out</BIT>
+          <BIT sel="13" tag_cloud="csysack_acc2ddr_mux4to1_mtx_m3;">csysack_acc2ddr_mux4to1_mtx_m3</BIT>
+          <BIT sel="14" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_m3;">csysreq_acc2ddr_mux4to1_mtx_m3</BIT>
+          <BIT sel="15" tag_cloud="cactive_acc2ddr_mux4to1_mtx_m3;">cactive_acc2ddr_mux4to1_mtx_m3</BIT>
+          <BIT sel="16" tag_cloud="clk_acc2ddr_mux4to1_mtx_m4_out;">clk_acc2ddr_mux4to1_mtx_m4_out</BIT>
+          <BIT sel="17" tag_cloud="csysack_acc2ddr_mux4to1_mtx_m4;">csysack_acc2ddr_mux4to1_mtx_m4</BIT>
+          <BIT sel="18" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_m4;">csysreq_acc2ddr_mux4to1_mtx_m4</BIT>
+          <BIT sel="19" tag_cloud="cactive_acc2ddr_mux4to1_mtx_m4;">cactive_acc2ddr_mux4to1_mtx_m4</BIT>
+          <BIT sel="31:20" tag_cloud="reseved;">reseved                       </BIT>
+        </CHAN>
+        <CHAN mux_sel="37" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_acc2ddr_mux4to1_mtx_s0_out;">clk_acc2ddr_mux4to1_mtx_s0_out</BIT>
+          <BIT sel="1" tag_cloud="csysack_acc2ddr_mux4to1_mtx_s0;">csysack_acc2ddr_mux4to1_mtx_s0</BIT>
+          <BIT sel="2" tag_cloud="csysreq_acc2ddr_mux4to1_mtx_s0;">csysreq_acc2ddr_mux4to1_mtx_s0</BIT>
+          <BIT sel="3" tag_cloud="cactive_acc2ddr_mux4to1_mtx_s0;">cactive_acc2ddr_mux4to1_mtx_s0</BIT>
+          <BIT sel="31:4" tag_cloud="reseved;">reseved                       </BIT>
+        </CHAN>
+        <CHAN mux_sel="38" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="lp_stat_acc2ddr_mtx_m0;">lp_stat_acc2ddr_mtx_m0</BIT>
+          <BIT sel="1" tag_cloud="lp_stat_acc2ddr_mtx_m1;">lp_stat_acc2ddr_mtx_m1</BIT>
+          <BIT sel="2" tag_cloud="lp_stat_acc2ddr_mtx_m2;">lp_stat_acc2ddr_mtx_m2</BIT>
+          <BIT sel="3" tag_cloud="lp_stat_acc2ddr_mtx_m3;">lp_stat_acc2ddr_mtx_m3</BIT>
+          <BIT sel="4" tag_cloud="lp_stat_acc2ddr_mtx_m4;">lp_stat_acc2ddr_mtx_m4</BIT>
+          <BIT sel="5" tag_cloud="lp_stat_acc2ddr_mtx_m5;">lp_stat_acc2ddr_mtx_m5</BIT>
+          <BIT sel="31:6" tag_cloud="reseved;">reseved               </BIT>
+        </CHAN>
+        <CHAN mux_sel="39" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_wmtx_m0_out;">clk_wmtx_m0_out  </BIT>
+          <BIT sel="1" tag_cloud="csysack_cd_m0;">csysack_cd_m0  </BIT>
+          <BIT sel="2" tag_cloud="csysreq_cd_m0;">csysreq_cd_m0  </BIT>
+          <BIT sel="3" tag_cloud="cactive_cd_m0;">cactive_cd_m0  </BIT>
+          <BIT sel="4" tag_cloud="clk_wmtx_m1_out;">clk_wmtx_m1_out  </BIT>
+          <BIT sel="5" tag_cloud="csysack_cd_m1;">csysack_cd_m1  </BIT>
+          <BIT sel="6" tag_cloud="csysreq_cd_m1;">csysreq_cd_m1  </BIT>
+          <BIT sel="7" tag_cloud="cactive_cd_m1;">cactive_cd_m1  </BIT>
+          <BIT sel="8" tag_cloud="clk_wmtx_m2_out;">clk_wmtx_m2_out  </BIT>
+          <BIT sel="9" tag_cloud="csysack_cd_m2;">csysack_cd_m2  </BIT>
+          <BIT sel="10" tag_cloud="csysreq_cd_m2;">csysreq_cd_m2  </BIT>
+          <BIT sel="11" tag_cloud="cactive_cd_m2;">cactive_cd_m2  </BIT>
+          <BIT sel="12" tag_cloud="clk_wmtx_m3_out;">clk_wmtx_m3_out  </BIT>
+          <BIT sel="13" tag_cloud="csysack_cd_m3;">csysack_cd_m3  </BIT>
+          <BIT sel="14" tag_cloud="csysreq_cd_m3;">csysreq_cd_m3  </BIT>
+          <BIT sel="15" tag_cloud="cactive_cd_m3;">cactive_cd_m3  </BIT>
+          <BIT sel="16" tag_cloud="clk_wmtx_main_out;">clk_wmtx_main_out</BIT>
+          <BIT sel="17" tag_cloud="csysack_cd_main;">csysack_cd_main</BIT>
+          <BIT sel="18" tag_cloud="csysreq_cd_main;">csysreq_cd_main</BIT>
+          <BIT sel="19" tag_cloud="cactive_cd_main;">cactive_cd_main</BIT>
+          <BIT sel="31:20" tag_cloud="reseved;">reseved          </BIT>
+        </CHAN>
+        <CHAN mux_sel="40" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="clk_wmtx_s0_out;">clk_wmtx_s0_out</BIT>
+          <BIT sel="1" tag_cloud="csysack_cd_s0;">csysack_cd_s0</BIT>
+          <BIT sel="2" tag_cloud="csysreq_cd_s0;">csysreq_cd_s0</BIT>
+          <BIT sel="3" tag_cloud="cactive_cd_s0;">cactive_cd_s0</BIT>
+          <BIT sel="4" tag_cloud="clk_wmtx_s1_out;">clk_wmtx_s1_out</BIT>
+          <BIT sel="5" tag_cloud="csysack_cd_s1;">csysack_cd_s1</BIT>
+          <BIT sel="6" tag_cloud="csysreq_cd_s1;">csysreq_cd_s1</BIT>
+          <BIT sel="7" tag_cloud="cactive_cd_s1;">cactive_cd_s1</BIT>
+          <BIT sel="8" tag_cloud="clk_wmtx_s2_out;">clk_wmtx_s2_out</BIT>
+          <BIT sel="9" tag_cloud="csysack_cd_s2;">csysack_cd_s2</BIT>
+          <BIT sel="10" tag_cloud="csysreq_cd_s2;">csysreq_cd_s2</BIT>
+          <BIT sel="11" tag_cloud="cactive_cd_s2;">cactive_cd_s2</BIT>
+          <BIT sel="12" tag_cloud="clk_wmtx_s3_out;">clk_wmtx_s3_out</BIT>
+          <BIT sel="13" tag_cloud="csysack_cd_s3;">csysack_cd_s3</BIT>
+          <BIT sel="14" tag_cloud="csysreq_cd_s3;">csysreq_cd_s3</BIT>
+          <BIT sel="15" tag_cloud="cactive_cd_s3;">cactive_cd_s3</BIT>
+          <BIT sel="16" tag_cloud="clk_wmtx_s4_out;">clk_wmtx_s4_out</BIT>
+          <BIT sel="17" tag_cloud="csysack_cd_s4;">csysack_cd_s4</BIT>
+          <BIT sel="18" tag_cloud="csysreq_cd_s4;">csysreq_cd_s4</BIT>
+          <BIT sel="19" tag_cloud="cactive_cd_s4;">cactive_cd_s4</BIT>
+          <BIT sel="31:20" tag_cloud="reseved;">reseved        </BIT>
+        </CHAN>
+        <CHAN mux_sel="41" dr_len="32" sel="64" tag_cloud="jtag_chain_lp_dbg;">
+          <BIT sel="0" tag_cloud="lp_wcdma_mtx_stat_s0;">lp_wcdma_mtx_stat_s0</BIT>
+          <BIT sel="1" tag_cloud="lp_wcdma_mtx_stat_s1;">lp_wcdma_mtx_stat_s1  </BIT>
+          <BIT sel="2" tag_cloud="lp_wcdma_mtx_stat_s2;">lp_wcdma_mtx_stat_s2</BIT>
+          <BIT sel="3" tag_cloud="lp_wcdma_mtx_stat_s3;">lp_wcdma_mtx_stat_s3</BIT>
+          <BIT sel="4" tag_cloud="lp_wcdma_mtx_stat_s4;">lp_wcdma_mtx_stat_s4</BIT>
+          <BIT sel="5" tag_cloud="lp_wcdma_mtx_stat_main;">lp_wcdma_mtx_stat_main</BIT>
+          <BIT sel="6" tag_cloud="lp_wcdma_mtx_mtat_m0;">lp_wcdma_mtx_mtat_m0</BIT>
+          <BIT sel="7" tag_cloud="lp_wcdma_mtx_mtat_m1;">lp_wcdma_mtx_mtat_m1</BIT>
+          <BIT sel="8" tag_cloud="lp_wcdma_mtx_mtat_m2;">lp_wcdma_mtx_mtat_m2</BIT>
+          <BIT sel="9" tag_cloud="lp_wcdma_mtx_mtat_m3;">lp_wcdma_mtx_mtat_m3  </BIT>
+          <BIT sel="31:10" tag_cloud="reseved;">reseved             </BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="1" name="LDSP_P" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="LDSP_D" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="LDSP_DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="TGDSP_P" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="5" name="TGDSP_D" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="6" name="TGDSP_DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="7" name="LTE2DSP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="8" name="PUBCP2WTL" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="9" name="LTE_CSDFE" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="10" name="LTE_CE" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="11" name="LTE_FEC" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="12" name="LTE_ULCH" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="13" name="LTE_HSDL" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="43" name="WCDMA2DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="44" name="LTE2DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="45" name="HU3GEA2DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="46" name="HU3GEB2DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="47" name="DSP2DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="49" name="WCDMA_DMALINK0" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="50" name="WCDMA_DMA1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="51" name="WCDMA_PUBCP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="52" name="WCDMA_FROM_DSP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </WTLCP>
+    <CA53_TOP sel="7" tag_cloud="CA53;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="36" sel="0" tag_cloud="Little core memory rm mode;">
+          <BIT sel="1:0" tag_cloud="lit_ram_l2_RM_11;">lit_ram_l2_RM_11       </BIT>
+          <BIT sel="3:2" tag_cloud="lit_ram_l2_RM_10;">lit_ram_l2_RM_10       </BIT>
+          <BIT sel="5:4" tag_cloud="lit_ram_l2_RM_01;">lit_ram_l2_RM_01       </BIT>
+          <BIT sel="7:6" tag_cloud="lit_ram_l2_RM_00;">lit_ram_l2_RM_00       </BIT>
+          <BIT sel="9:8" tag_cloud="lit_ram_l1_RM_11;">lit_ram_l1_RM_11       </BIT>
+          <BIT sel="11:10" tag_cloud="lit_ram_l1_RM_10;">lit_ram_l1_RM_10       </BIT>
+          <BIT sel="13:12" tag_cloud="lit_ram_l1_RM_01;">lit_ram_l1_RM_01       </BIT>
+          <BIT sel="15:14" tag_cloud="lit_ram_l1_RM_00;">lit_ram_l1_RM_00       </BIT>
+          <BIT sel="17:16" tag_cloud="lit_ram_etf_WTSEL_RM_11;">lit_ram_etf_WTSEL_RM_11</BIT>
+          <BIT sel="19:18" tag_cloud="lit_ram_etf_WTSEL_RM_10;">lit_ram_etf_WTSEL_RM_10</BIT>
+          <BIT sel="21:20" tag_cloud="lit_ram_etf_WTSEL_RM_01;">lit_ram_etf_WTSEL_RM_01</BIT>
+          <BIT sel="23:22" tag_cloud="lit_ram_etf_WTSEL_RM_00;">lit_ram_etf_WTSEL_RM_00</BIT>
+          <BIT sel="25:24" tag_cloud="lit_ram_etf_RTSEL_RM_11;">lit_ram_etf_RTSEL_RM_11</BIT>
+          <BIT sel="27:26" tag_cloud="lit_ram_etf_RTSEL_RM_10;">lit_ram_etf_RTSEL_RM_10</BIT>
+          <BIT sel="29:28" tag_cloud="lit_ram_etf_RTSEL_RM_01;">lit_ram_etf_RTSEL_RM_01</BIT>
+          <BIT sel="31:30" tag_cloud="lit_ram_etf_RTSEL_RM_00;">lit_ram_etf_RTSEL_RM_00</BIT>
+          <BIT sel="35:32" tag_cloud="reserved;">reserved               </BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="1" tag_cloud="Big core memory rm mode;">
+          <BIT sel="1:0" tag_cloud="big_ram_l2_RM_11;">big_ram_l2_RM_11       </BIT>
+          <BIT sel="3:2" tag_cloud="big_ram_l2_RM_10;">big_ram_l2_RM_10       </BIT>
+          <BIT sel="5:4" tag_cloud="big_ram_l2_RM_01;">big_ram_l2_RM_01       </BIT>
+          <BIT sel="7:6" tag_cloud="big_ram_l2_RM_00;">big_ram_l2_RM_00       </BIT>
+          <BIT sel="9:8" tag_cloud="big_ram_l1_RM_11;">big_ram_l1_RM_11       </BIT>
+          <BIT sel="11:10" tag_cloud="big_ram_l1_RM_10;">big_ram_l1_RM_10       </BIT>
+          <BIT sel="13:12" tag_cloud="big_ram_l1_RM_01;">big_ram_l1_RM_01       </BIT>
+          <BIT sel="15:14" tag_cloud="big_ram_l1_RM_00;">big_ram_l1_RM_00       </BIT>
+          <BIT sel="17:16" tag_cloud="big_ram_etf_WTSEL_RM_11;">big_ram_etf_WTSEL_RM_11</BIT>
+          <BIT sel="19:18" tag_cloud="big_ram_etf_WTSEL_RM_10;">big_ram_etf_WTSEL_RM_10</BIT>
+          <BIT sel="21:20" tag_cloud="big_ram_etf_WTSEL_RM_01;">big_ram_etf_WTSEL_RM_01</BIT>
+          <BIT sel="23:22" tag_cloud="big_ram_etf_WTSEL_RM_00;">big_ram_etf_WTSEL_RM_00</BIT>
+          <BIT sel="25:24" tag_cloud="big_ram_etf_RTSEL_RM_11;">big_ram_etf_RTSEL_RM_11</BIT>
+          <BIT sel="27:26" tag_cloud="big_ram_etf_RTSEL_RM_10;">big_ram_etf_RTSEL_RM_10</BIT>
+          <BIT sel="29:28" tag_cloud="big_ram_etf_RTSEL_RM_01;">big_ram_etf_RTSEL_RM_01</BIT>
+          <BIT sel="31:30" tag_cloud="big_ram_etf_RTSEL_RM_00;">big_ram_etf_RTSEL_RM_00</BIT>
+          <BIT sel="35:32" tag_cloud="reserved;">reserved               </BIT>
+        </CHAN>
+        <CHAN dr_len="36" sel="2" tag_cloud="low power related signal;">
+          <BIT sel="1:0" tag_cloud="ca53_lit_core_stop_top[1:0];">ca53_lit_core_stop_top[1:0]</BIT>
+          <BIT sel="3:2" tag_cloud="ca53_big_core_stop_top[1:0];">ca53_big_core_stop_top[1:0]</BIT>
+          <BIT sel="4" tag_cloud="ca53_top_sys_stop;">ca53_top_sys_stop      </BIT>
+          <BIT sel="5" tag_cloud="cci_slp_stop;">       cci_slp_stop           </BIT>
+          <BIT sel="6" tag_cloud="nic_slp_stop_m0;">nic_slp_stop_m0            </BIT>
+          <BIT sel="7" tag_cloud="DBGNOPWRDWN;">DBGNOPWRDWN                </BIT>
+          <BIT sel="8" tag_cloud="nic_slp_stop_s0;">nic_slp_stop_s0        </BIT>
+          <BIT sel="9" tag_cloud="nic_slp_stop_s1;">       nic_slp_stop_s1        </BIT>
+          <BIT sel="10" tag_cloud="nic_slp_stop_s2;">nic_slp_stop_s2            </BIT>
+          <BIT sel="11" tag_cloud="nic_slp_stop_s3;">nic_slp_stop_s3            </BIT>
+          <BIT sel="13:12" tag_cloud="reserved;">reserved               </BIT>
+          <BIT sel="14" tag_cloud="lit_adb400_cactives_mp2;">lit_adb400_cactives_mp2</BIT>
+          <BIT sel="15" tag_cloud="lit_adb400_cactivem_mp2;">lit_adb400_cactivem_mp2    </BIT>
+          <BIT sel="16" tag_cloud="big_adb400_cactives_jav;">big_adb400_cactives_jav    </BIT>
+          <BIT sel="17" tag_cloud="big_adb400_cactivem_jav;">big_adb400_cactivem_jav</BIT>
+          <BIT sel="18" tag_cloud="gpu_en_top;">       gpu_en_top             </BIT>
+          <BIT sel="19" tag_cloud="dap_ca53_en_top;">dap_ca53_en_top            </BIT>
+          <BIT sel="20" tag_cloud="STANDBYWFIL2_LIT_mp2;">STANDBYWFIL2_LIT_mp2       </BIT>
+          <BIT sel="21" tag_cloud="STANDBYWFIL2_BIG;">STANDBYWFIL2_BIG       </BIT>
+          <BIT sel="22" tag_cloud="DBGPWRDUP_LIT;">       DBGPWRDUP_LIT          </BIT>
+          <BIT sel="23" tag_cloud="DBGPWRDUP_BIG;">DBGPWRDUP_BIG              </BIT>
+          <BIT sel="24" tag_cloud="DBGPWRUPREQ_LIT;">DBGPWRUPREQ_LIT            </BIT>
+          <BIT sel="25" tag_cloud="DBGPWRUPREQ_BIG;">DBGPWRUPREQ_BIG        </BIT>
+          <BIT sel="26" tag_cloud="int_req_busmon_ddr;">       int_req_busmon_ddr     </BIT>
+          <BIT sel="27" tag_cloud="int_req_busmon_nic;">int_req_busmon_nic         </BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="1" name="NIC" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="DDR" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </CA53_TOP>
+  </SubSystem>
+  <AXI_BM>
+    <CHAN sel="30" tag_cloud="BUS;Status;">
+      <BIT sel="0" tag_cloud="Read;">RREADY</BIT>
+      <BIT sel="1" tag_cloud="Read;">RVALID</BIT>
+      <BIT sel="2" tag_cloud="Read;">ARREADY</BIT>
+      <BIT sel="3" tag_cloud="Read;">ARVALID</BIT>
+      <BIT sel="4" tag_cloud="Write;">BREADY</BIT>
+      <BIT sel="5" tag_cloud="Write;">BVALID</BIT>
+      <BIT sel="6" tag_cloud="Write;">WREADY</BIT>
+      <BIT sel="7" tag_cloud="Write;">WVALID</BIT>
+      <BIT sel="8" tag_cloud="Write;">AWREADY</BIT>
+      <BIT sel="9" tag_cloud="Write;">AWVALID</BIT>
+      <BIT sel="25" tag_cloud="Read;">R_MIS</BIT>
+      <BIT sel="26" tag_cloud="Read;">AR_MIS</BIT>
+      <BIT sel="27" tag_cloud="Write;">B_MIS</BIT>
+      <BIT sel="28" tag_cloud="Write;">W_MIS</BIT>
+      <BIT sel="29" tag_cloud="Write;">AW_MIS</BIT>
+      <BIT sel="30" tag_cloud="Read;">R_CHN_MIS</BIT>
+      <BIT sel="31" tag_cloud="Write;">W_CHN_MIS</BIT>
+    </CHAN>
+  </AXI_BM>
+</DJTAG>

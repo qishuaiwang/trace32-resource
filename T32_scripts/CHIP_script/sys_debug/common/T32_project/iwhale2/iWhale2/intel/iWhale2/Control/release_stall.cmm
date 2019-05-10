@@ -1,0 +1,27 @@
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+IF (SYStem.CPU()!="IWHALE2")
+(
+	PRINT %ERROR "Need CPU Select iWhale2!"
+	ENDDO
+)
+PRINT "DO ~~/Lauterbach_Configuration/iWhale2/Control/release_stall.cmm"
+system.mode down
+TrOnchip.Set RESet ON ;force BIA reset_break
+
+sys.mode.attach
+
+sys.option.tapselect 0x00040000
+wait 1s
+sys.o.tapselect 0x0
+wait 1s
+TrOnchip.Set RESet OFF ;release BIA reset_break
+diag 3888 1 ;open diag cmd
+diag 38b2 3 0 ;force bootstall on
+enddo
+
+
+

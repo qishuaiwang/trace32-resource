@@ -1,0 +1,223 @@
+IF SOFTWARE.BUILD()<60118.
+(
+	PRINT %ERROR "Please upgrade your Trace32 software!"
+	DIALOG.OK "Please upgrade your Trace32 software!"+CONVert.CHAR(0x0D0A)+"This Script need 2014.11 or later!"
+	ENDDO
+)
+
+GLOBAL &g_main_path
+LOCAL &is_bare_metal
+LOCAL &aon_base &djtag_base &MEM_TYPE
+LOCAL &cur_path &temp
+LOCAL &TAR_DIR
+LOCAL &param_proj &param_core
+ENTRY &param_proj &param_core &is_bare_metal &temp
+IF ("&param_core"=="1")
+(
+	&param_core="&is_bare_metal"
+	&is_bare_metal="1"
+)
+DO ~~/t32.cmm
+&TAR_DIR="\\cvsrv1\SystemDebug\debug_gui_iWhale2"
+&temp=OS.PPD()
+&cur_path="&temp"
+&g_main_path="&cur_path"
+DO "&cur_path/sys_debug/common/lib/lib_export.cmm"
+LOCAL &temp
+&temp=STRing.LoWeR("&param_core")
+IF ("X&param_proj"!="X")&&("&temp"=="swd")
+(
+	GLOBAL &project_sel
+	&project_sel="&param_proj"
+	CD.DO "&cur_path/sys_debug/common/T32_project/&param_proj/&param_proj.cmm" &param_core
+	ENDDO
+)
+GOTO script_start
+ON ERROR JUMPTO error_handler
+
+;check_file_exist
+GOSUB	check_file_exist
+
+;check_version_new
+GOSUB check_version_new
+
+debug_gui_start:
+;GOSUB check_python
+script_start:
+CD.DO "&cur_path/sys_debug/common/script/script.cmm" &param_proj &param_core &is_bare_metal
+ENTRY &is_bare_metal
+
+ON ERROR inherit
+ENDDO
+error_handler:
+	DIALOG.OK "Connect Target is fail, please check it !!!!"
+	ENDDO
+check_file_exist:
+	IF OS.FILE(&TAR_DIR/version.txt)==FALSE()
+	(
+		GOSUB dialog_ok "Access cvsrv1 no permission!!!!"
+		GOSUB debug_gui_start
+	)
+	IF OS.FILE(&cur_path/version.txt)==FALSE()
+	(
+		OS.HIDDEN xcopy &TAR_DIR\* &cur_path\* /Y /E /C /Q /R
+		wait 100.ms
+		do &cur_path\main.cmm
+		ENDDO
+	)
+	ELSE
+	(
+		RETURN
+	)
+check_version_new:
+	LOCAL &version_cur &version_new
+	LOCAL &time_cur &time_new
+	LOCAL &version_new_major &version_new_minor
+	LOCAL &version_cur_major &version_cur_minor
+	OPEN #1 &TAR_DIR/version.txt /Read
+	READ #1 %line &version_new
+	READ #1 %line &time_new
+	CLOSE #1
+	OPEN #1 &cur_path/version.txt /Read
+	READ #1 %line &version_cur
+	READ #1 %line &time_cur
+	CLOSE #1
+	&version_new=STRing.Replace("&version_new","_","",0.)
+	&version_new=STRing.Replace("&version_new","DEBUGGUIV","",0.)
+	&version_new=STRing.TRIM("&version_new")
+	&i=STRing.SCAN("&version_new",".",0)
+	&len=STRing.LENgth("&version_new")
+	&version_new_major=STRing.MID("&version_new",0.,&i)+"."
+	&version_new_minor=STRing.MID("&version_new",(&i+1.),(&len-&i-1.))+"."
+	&version_cur=STRing.Replace("&version_cur","_","",0.)
+	&version_cur=STRing.Replace("&version_cur","DEBUGGUIV","",0.)
+	&version_cur=STRing.TRIM("&version_cur")
+	&i=STRing.SCAN("&version_cur",".",0)
+	&len=STRing.LENgth("&version_cur")
+	&version_cur_major=STRing.MID("&version_cur",0.,&i)+"."
+	&version_cur_minor=STRing.MID("&version_cur",(&i+1.),(&len-&i-1.))+"."
+	IF (&version_cur_major<&version_new_major)
+	(
+		GOSUB update_version "Check version is not new!!!!"
+		OS.HIDDEN xcopy &TAR_DIR\* &cur_path\* /Y /E /C /Q /R
+		wait 100.ms
+		do &cur_path\main.cmm
+		ENDDO
+	)
+	ELSE IF (&version_cur_major==&version_new_major)
+	(
+		IF (&version_cur_minor<&version_new_minor)
+		(
+			GOSUB update_version "Check version is not new!!!!"
+			OS.HIDDEN xcopy &TAR_DIR\* &cur_path\* /Y /E /C /Q /R
+			wait 100.ms
+			do &cur_path\main.cmm
+			ENDDO
+		)
+		ELSE IF (&version_cur_minor>=&version_new_minor)
+		(
+			Print "check version is new"
+		)
+	)
+	ELSE IF (&version_cur_major>&version_new_major)
+	(
+		Print "check version is new"
+	)
+	RETURN
+check_python:
+	IF OS.FILE(&cur_path/error.txt)==TRUE()
+	(
+		DEL &cur_path/error.txt
+	)
+	os cmd.exe /c python &cur_path\check_python.py 2>&cur_path\error.txt
+	wait 1.s
+	IF OS.FILE(&cur_path/error.txt)==TRUE()
+	(
+		LOCAL &i &message &no_python &no_module &module
+		Var.NEWLOCAL char[100][50] \message
+		OPEN #1 &cur_path/error.txt /Read
+		&i=0
+		while !eof()
+		(
+			READ #1 %line &message
+			&message=STRing.Replace("&message","""","_",0.)
+			Var.set \message[&i]="&message"
+			&i=&i+1
+		)
+		CLOSE #1
+		while &i>0
+		(
+			&i=&i-1
+			&message=Var.STRing(\message[&i])
+			&no_python=STRing.ComPare(STRing.LoWeR("&message"),"*'python'*")
+			&no_module=STRing.ComPare(STRing.LoWeR("&message"),"*importerror: no module named*")
+			IF (&no_python==TRUE())
+			(
+				;print "This PC have no python, please install python!!!!"
+				;GOSUB dialog_ok "This PC have no python, please install python!!!!"
+				DIALOG.OK  "This PC have no python, please install python!!!!"
+				DEL &cur_path/error.txt
+				wait 100.ms
+				ENDDO
+			)
+			ELSE IF (&no_module==TRUE())
+			(
+				&len_flag=STRing.LENgth("importerror: no module named")+1.
+				&len=STRing.LENgth("&message")
+				&module=STRing.MID("&message",&len_flag,(&len-&len_flag))
+				;print "This PC have no &module module, please install &module!!!!"
+				;GOSUB dialog_ok "This PC have no &module module, please install &module!!!!"
+				DIALOG.OK  "This PC have no &module module, please install &module!!!!"
+				DEL &cur_path/error.txt
+				wait 100.ms
+				ENDDO
+			)
+		)
+		DEL &cur_path/error.txt
+		wait 100.ms
+	)
+	RETURN
+update_version:
+	LOCAL &message
+	ENTRY &message
+	DIALOG
+		(&
+			HEADER "update_version"
+			POS 1. 1. 30.
+			TEXT "Message:"
+			POS 5. 2. 30.
+			TEXT "&message"
+			POS 1. 3.5 5.
+			DEFBUTTON "OK" "CONTinue"
+			POS 20. 3.5 5.
+			BUTTON "Cancel" "GOTO cancel1"
+			CLOSE "GOTO cancel1"
+		)
+		STOP
+		DIALOG.END ;and then close the dialog
+		RETURN
+cancel1:
+	DIALOG.END
+	GOSUB debug_gui_start
+dialog_ok:
+	LOCAL &message
+	ENTRY &message
+	DIALOG
+		(&
+			HEADER "DIALOG_OK"
+			POS 1. 1. 30.
+			TEXT "Message:"
+			POS 5. 2. 30.
+			TEXT "&message"
+			POS 1. 3.5 5.
+			DEFBUTTON "OK" "CONTinue"
+			POS 20. 3.5 5.
+			BUTTON "Cancel" "GOTO cancel"
+			CLOSE "GOTO cancel"
+		)
+		STOP
+		DIALOG.END ;and then close the dialog
+		RETURN
+cancel:
+	DIALOG.END
+	ENDDO

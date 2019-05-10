@@ -1,0 +1,417 @@
+; BEGIN CCCT SECTION
+; -------------------------------------------------------------------------
+; Copyright (C) 2015 Intel Mobile Communications GmbH
+; 
+;      Sec Class: Intel Confidential (IC)
+; ----------------------------------------------------------------------
+; Revision Information:
+;    $File name:  /tools/Lauterbach/Lauterbach_Configuration/SoFIA_LTE/Component_Verification/Chip_Startup_Scripts/RTITDialog_SoFIA.cmm $
+;    $CC-Version: .../oint_tools_lauterbach_01/1 $
+;    $Date:       2015-07-09    2:52:43 UTC $
+; ----------------------------------------------------------------------
+; by CCCT (0.12l)
+; ----------------------------------------------------------------------
+; END CCCT SECTION
+
+
+;/*******************************************************************
+;*
+;*    FILE:          RTITDialog_SoFIA.cmm
+;*
+;*    AUTHOR:        Eric Leon
+;*
+;*    DESCRIPTION:   Set RTIT
+;*
+;*    DEVICE:        SF_LTE
+;*
+;*    HISTORY:
+;*
+;*    15th.May.2015  Eric Leon: created
+;*******************************************************************/
+
+
+
+Print "DO Lauterbach_Configuration/iWhale2/component_Verification/Chip_Startup_Scripts/RTITDialog_iWhale2.cmm"
+
+
+;---------------------------------------------------------------------------------------------------
+; Initialization
+;---------------------------------------------------------------------------------------------------
+
+DO ~~/Lauterbach_Configuration/UserInterface/ui_initialize.cmm "iWhale2" "CoreIAMP"
+GOSUB DO_DIALOG_RTIT           ; Initialize the dialog
+
+STOP
+
+DO_DIALOG_RTIT:
+    WINPOS 100. 0. 86. 15.
+    DIALOG
+    (&
+        HEADER "iWhale2 RTIT Setup"
+
+        POS 1. 0. 36. 4.
+        LINE "RTIT Clock"
+
+        POS 2. 1. 10. 1.
+
+        TEXT "Trace Clock:"
+
+        POSX 0. 15. 1.
+        L_TRACE_CLK: PULLDOWN "G_0_1@456MHz,C_0_1@338MHz,A_0_2@208MHz,Clk_In@26MHz"
+        (
+            GOSUB SET_REG_TRACE_CLK
+        )
+
+        POS 38. 0. 23. 4.
+        BOX "Select Core(s) to Trace "
+
+        POS 39. 1. 4. 1.
+        L_TRACE_CORE0: CHECKBOX "C0"
+        (
+            GOSUB SET_REG_TRACE_C0
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE1: CHECKBOX "C1"
+        (
+            GOSUB SET_REG_TRACE_C1
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE2: CHECKBOX "C2"
+        (
+            GOSUB SET_REG_TRACE_C2
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE3: CHECKBOX "C3"
+        (
+            GOSUB SET_REG_TRACE_C3
+        )
+
+        POS 39. 2. 4. 1.
+        L_TRACE_CORE4: CHECKBOX "C4"
+        (
+            GOSUB SET_REG_TRACE_C4
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE5: CHECKBOX "C5"
+        (
+            GOSUB SET_REG_TRACE_C5
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE6: CHECKBOX "C6"
+        (
+            GOSUB SET_REG_TRACE_C6
+        )
+
+        POSX 1. 4. 1.
+        L_TRACE_CORE7: CHECKBOX "C7"
+        (
+            GOSUB SET_REG_TRACE_C7
+        )
+		
+		POS 62. 0. 23. 4.
+        BOX "Trace Method"
+		POS 63. 1. 14. 1.
+        O_TRACE_METHOD.1: CHOOSEBOX "Analyzer"
+        (
+            GOSUB SET_TRACE_ANALYZER
+        )
+        O_TRACE_METHOD.2: CHOOSEBOX "OnChip"
+        (
+            GOSUB SET_TRACE_ONCHIP
+        )
+		POS 62. 3. 23. 4.
+        BOX "Trace to Memory"
+		pos 63. 4. 5. 1.
+		TEXT "Base:" 
+		POS 68. 4. 14. 1.
+		L_BUFFER_ADDR: EDIT "&Trace_Memory_Addr"
+        (
+            GOSUB SET_TRACE_MEMORY_BASE
+        )
+		pos 63. 5. 5. 1.
+		TEXT "Size:"
+		pos 68. 5. 14. 1.
+        L_BUFFER_SIZE: EDIT "&Trace_Memory_Size"
+        (
+            GOSUB SET_TRACE_MEMORY_SIZE
+        )
+		POS 62. 6. 23. 4.
+        BOX "Trace to PTI"
+		POS 63. 7. 8. 1.
+		TEXT "PORT SIZE:"
+		POS 75. 7. 8. 1.
+		L_STM_PORT_SIZE: PULLDOWN "4BIT,8BIT,16BIT,32BIT"
+        (
+            GOSUB SET_STM_PORT_SIZE
+        )
+
+		
+        POS 1. 3. 36. 7.
+        BOX "MTC Time Stamp Generation (TSC Cycles)"
+
+        POS 2. 4. 34. 1.
+        O_TIMING.1: CHOOSEBOX "None"
+        (
+            GOSUB SET_REG_TIMING1
+        )
+        O_TIMING.2: CHOOSEBOX "@128 Cycles (High Resolution/More FIFO Fulls)"
+        (
+            GOSUB SET_REG_TIMING2
+        )
+        O_TIMING.3: CHOOSEBOX "@512 Cycles"
+        (
+            GOSUB SET_REG_TIMING3
+        )
+        O_TIMING.4: CHOOSEBOX "@2048 Cycles (recommended)"
+        (
+            GOSUB SET_REG_TIMING4
+        )
+        O_TIMING.5: CHOOSEBOX "@8192 Cycles (Low Resolution/Less FIFO Fulls)"
+        (
+            GOSUB SET_REG_TIMING5
+        )
+        ;POSX 1. 10. 1.
+
+
+        ;L_TRACE_TIMMING: CHECKBOX "" "GOSUB SET_CHECKBOX_TRACE"
+
+        POS 38. 3. 23. 4.
+        BOX "SuperTimeSync"
+
+        POS 39. 4. 21. 1.
+        L_TRACE_STS: CHECKBOX "Multicore Sync"
+        (
+            GOSUB SET_REG_TRACE_STS
+        )
+
+        POS 39. 5. 21. 1.
+        TEXT "    (recommended)"
+
+        POS 38. 7. 23. 3.
+        BOX "CycleAccurate"
+
+        POS 39. 8. 21. 1.
+        L_TRACE_CYC_ACC: CHECKBOX "High Accuracy (FIFOFULLS!) "
+        (
+            GOSUB SET_REG_TRACE_CYC_ACC
+        )
+
+        POS 1. 10. 13. 3.
+        BOX "CPU Clock"
+
+        POS 2. 11. 8. 1.
+        L_CPU_CLK: EDIT "&cpuspeed"
+        (
+            GOSUB SET_REG_CPU_CLK
+            ; Update below two settings when cursor leaves the EDIT control
+            ; GOSUB
+            ; GOSUB update_cycleaccurate
+        )
+
+        POSX 0. 3. 1.
+        TEXT "MHz"
+
+        POS 15. 10. 46. 3
+        LINE "Focus File:"
+
+
+        POS 16. 11. 36. 1
+        ;POSX 0. 45. 1.
+        L_RUN_SCRIPT_CMM1: COMBOBOX "&cmmscripts1,&cmmscriptsA1,&cmmscriptsB1,&cmmscriptsC1, "
+        (
+            GOSUB SET_SCRIPT_CMM1
+        )
+
+        POSX 0. 8. 1.
+        BUTTON "Browse ..."
+        (
+            GOSUB SET_SCRIPT_CMM1_BROWSE
+        )
+
+        POS 1. 13. 15. 1
+        BUTTON "More IPT settings ..."
+        (
+            IPT
+        )
+
+        POS 46. 13. 15. 1
+        BUTTON "Set RTIT Values"
+        (
+            DO ~~/Lauterbach_Configuration/UserInterface/ui_save_config.cmm
+            DO ~~/Lauterbach_Configuration/iWhale2/Control/CoreIAMP_Set_RTIT.cmm
+        )
+
+        POS 1. 14. 45. 1
+        TEXT "Note: close this box inmediately after finishing if iWhale2 CD is being used"
+
+        POS 46. 14. 15. 1
+        BUTTON "Close"
+        (
+            JUMPTO CANCELCLOSE_RTIT
+        )
+
+        CLOSE "JUMPTO CANCELCLOSE_RTIT"
+    )
+
+	Dialog.Set O_TRACE_METHOD.&TMethod	
+	Dialog.Set O_TIMING.&MTCIndex
+	Dialog.Set L_STM_PORT_SIZE "&STM_PORT_SIZE"
+	Dialog.set L_BUFFER_SIZE  "&Trace_Memory_Size"
+	Dialog.set L_BUFFER_ADDR  "&Trace_Memory_Addr"
+    Dialog.Set L_TRACE_CLK "&TRACE_CLK"
+    Dialog.Set L_TRACE_STS &STATE_STS
+    Dialog.Set L_TRACE_CYC_ACC &STATE_CYC_ACC
+    Dialog.set L_TRACE_CORE0 &TRACE_C0
+    Dialog.set L_TRACE_CORE1 &TRACE_C1
+    Dialog.set L_TRACE_CORE2 &TRACE_C2
+    Dialog.set L_TRACE_CORE3 &TRACE_C3
+	Dialog.set L_TRACE_CORE4 &TRACE_C4
+    Dialog.set L_TRACE_CORE5 &TRACE_C5
+    Dialog.set L_TRACE_CORE6 &TRACE_C6
+    Dialog.set L_TRACE_CORE7 &TRACE_C7
+
+RETURN
+
+
+
+SET_REG_TRACE_CLK:
+&TRACE_CLK=Dialog.string(L_TRACE_CLK)
+RETURN
+
+SET_REG_TRACE_STS:
+    &STATE_STS=Dialog.Boolean(L_TRACE_STS)
+RETURN
+
+SET_REG_TRACE_CYC_ACC:
+    &STATE_CYC_ACC=Dialog.Boolean(L_TRACE_CYC_ACC)
+RETURN
+
+SET_REG_TIMING1:
+    &MTCIndex="1"
+RETURN
+
+SET_REG_TIMING2:
+    &MTCIndex="2"
+RETURN
+
+SET_REG_TIMING3:
+    &MTCIndex="3"
+RETURN
+
+SET_REG_TIMING4:
+    &MTCIndex="4"
+RETURN
+
+SET_REG_TIMING5:
+    &MTCIndex="5"
+RETURN
+
+SET_REG_TRACE_C0:
+    &TRACE_C0=Dialog.Boolean(L_TRACE_CORE0)
+RETURN
+
+SET_REG_TRACE_C1:
+    &TRACE_C1=Dialog.Boolean(L_TRACE_CORE1)
+RETURN
+
+SET_REG_TRACE_C2:
+    &TRACE_C2=Dialog.Boolean(L_TRACE_CORE2)
+RETURN
+
+SET_REG_TRACE_C3:
+    &TRACE_C3=Dialog.Boolean(L_TRACE_CORE3)
+RETURN
+
+SET_REG_TRACE_C4:
+    &TRACE_C4=Dialog.Boolean(L_TRACE_CORE4)
+RETURN
+
+SET_REG_TRACE_C5:
+    &TRACE_C5=Dialog.Boolean(L_TRACE_CORE5)
+RETURN
+
+SET_REG_TRACE_C6:
+    &TRACE_C6=Dialog.Boolean(L_TRACE_CORE6)
+RETURN
+
+SET_REG_TRACE_C7:
+    &TRACE_C7=Dialog.Boolean(L_TRACE_CORE7)
+RETURN
+
+SET_SCRIPT_CMM1_BROWSE:
+    Local &file
+    Dialog.FILE "&SettingsPath\*.cmm"
+    ENTRY %line &file
+    Dialog.Set L_RUN_SCRIPT_CMM1 "&file"
+
+    GOSUB SET_SCRIPT_CMM1
+RETURN
+
+SET_SCRIPT_CMM1:
+    LOCAL &file
+    &file=Dialog.string(L_RUN_SCRIPT_CMM1)
+    IF (Dialog.string(L_RUN_SCRIPT_CMM1)=="")
+    (
+        DO ~~/Lauterbach_Configuration/UserInterface/ui_save_cmmscripts1.cmm dialog.string(L_RUN_SCRIPT_CMM1)
+        ;GOSUB REFRESH_DIALOG
+    )
+    ELSE IF (OS.FILE(&file)==TRUE())
+    (
+        DO ~~/Lauterbach_Configuration/UserInterface/ui_save_cmmscripts1.cmm dialog.string(L_RUN_SCRIPT_CMM1)
+    )
+    ELSE
+    (
+        PRINT %ERROR "Path and/or file name is wrong! Please check."
+        RETURN
+    )
+
+RETURN
+
+SET_REG_CPU_CLK:
+    IF (STRING.FIND(Dialog.string(L_CPU_CLK),"."))
+    (
+        &cpuspeed=Dialog.string(L_CPU_CLK)
+    )
+    ELSE
+    (
+        &cpuspeed=Dialog.string(L_CPU_CLK)+"."
+    )
+
+    Dialog.set L_CPU_CLK  "&cpuspeed"
+
+RETURN
+
+
+SET_TRACE_ANALYZER:
+	&TMethod="1"
+RETURN 
+
+SET_TRACE_ONCHIP:
+	&TMethod="2"
+RETURN
+
+SET_TRACE_MEMORY_BASE:
+	&Trace_Memory_Addr=Dialog.string(L_BUFFER_ADDR)
+	Dialog.set L_BUFFER_ADDR  "&Trace_Memory_Addr"
+
+RETURN
+
+SET_TRACE_MEMORY_SIZE:
+
+    &Trace_Memory_Size=Dialog.string(L_BUFFER_SIZE) 
+    Dialog.set L_BUFFER_SIZE  "&Trace_Memory_Size"
+RETURN
+
+SET_STM_PORT_SIZE:
+	&STM_PORT_SIZE=Dialog.string(L_STM_PORT_SIZE)
+RETURN
+
+CANCELCLOSE_RTIT:
+    DO ~~/Lauterbach_Configuration/UserInterface/ui_save_config.cmm
+    Dialog.End
+    ENDDO

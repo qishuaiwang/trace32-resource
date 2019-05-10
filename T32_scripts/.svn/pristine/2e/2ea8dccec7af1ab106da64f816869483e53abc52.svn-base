@@ -1,0 +1,1259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DJTAG>
+  <Debug T32_EXT="1">DAP</Debug>
+  <IDCODE IR="1">0x2381C5FF</IDCODE>
+  <USERCODE IR="2">0x2381C548</USERCODE>
+  <CHANSTART>8</CHANSTART>
+  <SubSystem>
+    <AP sel="0" tag_cloud="AP;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="djtag_chain_pi_eb_slp;">
+          <BIT sel="0" tag_cloud="spi0_eb | spi1_eb | spi2_eb;">all_spi_eb         </BIT>
+          <BIT sel="1" tag_cloud="iis0_eb | iis1_eb | iis3_eb;">all_iis_eb    </BIT>
+          <BIT sel="2" tag_cloud="i2c0_eb | i2c1_eb | i2c2_eb | i2c3_eb | i2c4_eb;">       all_i2c_eb </BIT>
+          <BIT sel="3" tag_cloud="uart0_eb | uart1_eb | uart2_eb | uart3_eb | uart4_eb;">all_uart_eb </BIT>
+          <BIT sel="4" tag_cloud="ce_pub_eb;">ce_public eb       </BIT>
+          <BIT sel="5" tag_cloud="ce_sec_eb;">ce security eb</BIT>
+          <BIT sel="6" tag_cloud="nandc_eb;">       nandc_eb   </BIT>
+          <BIT sel="7" tag_cloud="vsp_eb;">vsp eb      </BIT>
+          <BIT sel="8" tag_cloud="dispc_eb|dispc_busy;">dispc_eb|dispc_busy</BIT>
+          <BIT sel="9" tag_cloud="gsp_eb;">gsp_eb        </BIT>
+          <BIT sel="10" tag_cloud="dsi_eb;">       dsi_eb     </BIT>
+          <BIT sel="11" tag_cloud="otg_eb;">otg_eb      </BIT>
+          <BIT sel="12" tag_cloud="dma_eb|dma_enable;">dma_eb|dma_enable  </BIT>
+          <BIT sel="13" tag_cloud="dma_busy;">dma_busy      </BIT>
+          <BIT sel="14" tag_cloud="sdio0_eb;">       sdio0_eb   </BIT>
+          <BIT sel="15" tag_cloud="sdio1_eb;">sdio1_eb    </BIT>
+          <BIT sel="16" tag_cloud="CLKG_eb;">CLKG_eb            </BIT>
+          <BIT sel="17" tag_cloud="emmc_eb;">emmc_eb       </BIT>
+          <BIT sel="18" tag_cloud="spinlock_eb;">       spinlock_eb</BIT>
+          <BIT sel="19" tag_cloud="sec_tzpc_eb;">sec_tzpc_eb </BIT>
+          <BIT sel="20" tag_cloud="dap_eb;">dap_eb             </BIT>
+          <BIT sel="21" tag_cloud="gpu_eb;">gpu_eb        </BIT>
+          <BIT sel="22" tag_cloud="emmc_32k_eb;">       emmc_32k_eb</BIT>
+          <BIT sel="23" tag_cloud="sdio0_32k_eb;">sdio0_32k_eb</BIT>
+          <BIT sel="24" tag_cloud="sdio1_32k_eb;">sdio1_32k_eb       </BIT>
+          <BIT sel="25" tag_cloud="1'b0;">reserved      </BIT>
+          <BIT sel="26" tag_cloud="sim0_eb;">sim0_eb    </BIT>
+          <BIT sel="27" tag_cloud="intc3_eb;">intc3_eb    </BIT>
+          <BIT sel="28" tag_cloud="intc2_eb;">intc2_eb           </BIT>
+          <BIT sel="29" tag_cloud="intc1_eb;">intc1_eb      </BIT>
+          <BIT sel="30" tag_cloud="intc0_eb;">       intc0_eb   </BIT>
+          <BIT sel="31" tag_cloud="1'b0;">reserved    </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="1" tag_cloud="djtag_chain_pi_deep_slp;">
+          <BIT sel="0" tag_cloud="ca53_standbywfil2;">ca53_standbywfil2    </BIT>
+          <BIT sel="1" tag_cloud="|ca53_standbywfe[3:0];">|ca53_standbywfe[3:0]</BIT>
+          <BIT sel="2" tag_cloud="|ca53_standbywfi[3:0];">|ca53_standbywfi[3:0]   </BIT>
+          <BIT sel="3" tag_cloud="ca53_lp_stat_async_bridge;">       ca53_lp_stat_async_bridge   </BIT>
+          <BIT sel="4" tag_cloud="cgm_disp_async_brg_or;">cgm_disp_async_brg_or</BIT>
+          <BIT sel="5" tag_cloud="cgm_ap_async_brg_or;">cgm_ap_async_brg_or  </BIT>
+          <BIT sel="6" tag_cloud="cgm_merge_s0_en;">cgm_merge_s0_en         </BIT>
+          <BIT sel="7" tag_cloud="cgm_merge_m2_en;">       cgm_merge_m2_en             </BIT>
+          <BIT sel="8" tag_cloud="cgm_merge_m1_en;">cgm_merge_m1_en      </BIT>
+          <BIT sel="9" tag_cloud="cgm_mtx_s5_en;">cgm_mtx_s5_en        </BIT>
+          <BIT sel="10" tag_cloud="cgm_mtx_s4_en;">cgm_mtx_s4_en           </BIT>
+          <BIT sel="11" tag_cloud="cgm_ap_aon_apb_en;">       cgm_ap_aon_apb_en           </BIT>
+          <BIT sel="12" tag_cloud="cgm_mtx_s2_en;">cgm_mtx_s2_en        </BIT>
+          <BIT sel="13" tag_cloud="cgm_mtx_s1_en;">cgm_mtx_s1_en        </BIT>
+          <BIT sel="14" tag_cloud="cgm_ap_apb_en;">cgm_ap_apb_en           </BIT>
+          <BIT sel="15" tag_cloud="peri_force_off;">       peri_force_off              </BIT>
+          <BIT sel="16" tag_cloud="peri_force_on;">peri_force_on        </BIT>
+          <BIT sel="17" tag_cloud="peri_stop;">peri_stop            </BIT>
+          <BIT sel="18" tag_cloud="ca53_top_deep_stop_force;">ca53_top_deep_stop_force</BIT>
+          <BIT sel="19" tag_cloud="|ca53_core_x_stop_force[3:0];">       |ca53_core_x_stop_force[3:0]</BIT>
+          <BIT sel="20" tag_cloud="cgm_clk_ap_axi_en;">cgm_clk_ap_axi_en    </BIT>
+          <BIT sel="21" tag_cloud="cgm_matrix_en;">cgm_matrix_en        </BIT>
+          <BIT sel="22" tag_cloud="disp_ddr_wakeup_n;">disp_ddr_wakeup_n       </BIT>
+          <BIT sel="23" tag_cloud="ap_ddr_wakeup_n;">       ap_ddr_wakeup_n             </BIT>
+          <BIT sel="24" tag_cloud="ca53_ddr_wakeup_n;">ca53_ddr_wakeup_n    </BIT>
+          <BIT sel="25" tag_cloud="ca53_top_deep_stop;">ca53_top_deep_stop   </BIT>
+          <BIT sel="26" tag_cloud="|ca53_core_stop[3:0];">|ca53_core_stop[3:0]    </BIT>
+          <BIT sel="27" tag_cloud="ap_sys_sys_stop;">       ap_sys_sys_stop             </BIT>
+          <BIT sel="28" tag_cloud="ap_sys_deep_stop;">ap_sys_deep_stop     </BIT>
+          <BIT sel="29" tag_cloud="ap_sys_light_stop;">ap_sys_light_stop    </BIT>
+          <BIT sel="30" tag_cloud="1'b0;">reserved                </BIT>
+          <BIT sel="31" tag_cloud="ap_deep_sleep_req;">ap_deep_sleep_req           </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="2" tag_cloud="djtag_chain_pi_ca53_slp;">
+          <BIT sel="5:0" tag_cloud="6'h0;">reserved             </BIT>
+          <BIT sel="6" tag_cloud="ca53_dbg_force_sleep;">  ca53_dbg_force_sleep  </BIT>
+          <BIT sel="7" tag_cloud="ca53_axi_auto_gate_en;">ca53_axi_auto_gate_en</BIT>
+          <BIT sel="8" tag_cloud="ca53_atb_auto_gate_en;">       ca53_atb_auto_gate_en</BIT>
+          <BIT sel="9" tag_cloud="ca53_dbg_auto_gate_en;">ca53_dbg_auto_gate_en</BIT>
+          <BIT sel="10" tag_cloud="ca53_core_auto_gate_en;"> ca53_core_auto_gate_en</BIT>
+          <BIT sel="11" tag_cloud="1'b0;">reserved             </BIT>
+          <BIT sel="15:12" tag_cloud="nfiq2gic[3:0];">nfiq2gic[3:0]        </BIT>
+          <BIT sel="19:16" tag_cloud="nirq2gic[3:0];">nirq2gic[3:0]        </BIT>
+          <BIT sel="20" tag_cloud="ap_wakeup_nint;">ap_wakeup_nint        </BIT>
+          <BIT sel="21" tag_cloud="ap_wakeup_nirq;">ap_wakeup_nirq       </BIT>
+          <BIT sel="22" tag_cloud="ca53_ddr_pwr_hs_ack;">       ca53_ddr_pwr_hs_ack  </BIT>
+          <BIT sel="23" tag_cloud="ca53_srst_frc_lp_ack;">ca53_srst_frc_lp_ack </BIT>
+          <BIT sel="24" tag_cloud="ap_ddr_pwr_hs_ack;"> ap_ddr_pwr_hs_ack     </BIT>
+          <BIT sel="25" tag_cloud="ap_srst_frc_lp_ack;">ap_srst_frc_lp_ack   </BIT>
+          <BIT sel="31:26" tag_cloud="6'h0;">       reserved             </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="3" tag_cloud="djtag_chain_pi_mem;">
+          <BIT sel="0" tag_cloud="1’b0;">reserved                </BIT>
+          <BIT sel="4:1" tag_cloud="ap_ram_top_ram_rm_ctrl[3:0];">ap_ram_top_ram_rm_ctrl[3:0]</BIT>
+          <BIT sel="5" tag_cloud="ap_ram_top_ram_rme_ctrl;">ap_ram_top_ram_rme_ctrl</BIT>
+          <BIT sel="9:6" tag_cloud="ap_rom_top_rom_rm_ctrl[3:0];">ap_rom_top_rom_rm_ctrl[3:0] </BIT>
+          <BIT sel="10" tag_cloud="ap_rom_top_rom_rme_ctrl;">ap_rom_top_rom_rme_ctrl </BIT>
+          <BIT sel="14:11" tag_cloud="dispc_ram_rm_ctrl[3:0];">       dispc_ram_rm_ctrl[3:0]     </BIT>
+          <BIT sel="15" tag_cloud="dispc_ram_rme_ctrl;">dispc_ram_rme_ctrl     </BIT>
+          <BIT sel="19:16" tag_cloud="ap_peri_top_ram_rm_ctrl[3:0];">ap_peri_top_ram_rm_ctrl[3:0]</BIT>
+          <BIT sel="20" tag_cloud="ap_peri_top_ram_rme_ctrl;">ap_peri_top_ram_rme_ctrl</BIT>
+          <BIT sel="24:21" tag_cloud="dsi_ram_rm_ctrl[3:0];">       dsi_ram_rm_ctrl[3:0]       </BIT>
+          <BIT sel="25" tag_cloud="dsi_ram_rme_ctrl;">dsi_ram_rme_ctrl       </BIT>
+          <BIT sel="29:26" tag_cloud="gsp_ram_rm_ctrl[3:0];">gsp_ram_rm_ctrl[3:0]        </BIT>
+          <BIT sel="30" tag_cloud="gsp_ram_rme_ctrl;">gsp_ram_rme_ctrl        </BIT>
+          <BIT sel="31" tag_cloud="1'b0;">       reserved                   </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="4" tag_cloud="djtag_chain_pi_mem2;">
+          <BIT sel="15:12" tag_cloud="ca53_top_ram_rm_ctrl[3:0];">ca53_top_ram_rm_ctrl[3:0]</BIT>
+          <BIT sel="16" tag_cloud="ca53_top_ram_rme_ctrl;">ca53_top_ram_rme_ctrl</BIT>
+          <BIT sel="20:17" tag_cloud="ca53_core_ram_rm_ctrl[3:0];">ca53_core_ram_rm_ctrl[3:0]</BIT>
+          <BIT sel="21" tag_cloud="ca53_core_ram_rme_ctrl;">ca53_core_ram_rme_ctrl</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="5" tag_cloud="djtag_chain_dsi;" />
+        <CHAN dr_len="32" sel="6" tag_cloud="djtag_chain_dpu;" />
+        <CHAN dr_len="32" sel="7" tag_cloud="djtag_chain_peri_ram;" />
+        <CHAN dr_len="32" sel="8" tag_cloud="djtag_tdo_ap_ram_top;" />
+        <CHAN dr_len="32" sel="9" tag_cloud="djtag_tdo_vsp;" />
+        <CHAN dr_len="61" sel="10" tag_cloud="djtag_chain_pi_ap_main_mtx;">
+          <BIT sel="1:0" tag_cloud="rd_trans_cnt_s2[1:0];">rd_trans_cnt_s2[1:0]</BIT>
+          <BIT sel="3:2" tag_cloud="wr_trans_cn_s2[1:0];">wr_trans_cn_s2[1:0]</BIT>
+          <BIT sel="5:4" tag_cloud="leading_wr_cnt_s2[1:0];">leading_wr_cnt_s2[1:0]</BIT>
+          <BIT sel="6" tag_cloud="trans_idle_s2;">trans_idle_s2</BIT>
+          <BIT sel="8:7" tag_cloud="rd_trans_cnt_m9[1:0];">rd_trans_cnt_m9[1:0]</BIT>
+          <BIT sel="10:9" tag_cloud="wr_trans_cn_m9[1:0];">wr_trans_cn_m9[1:0]</BIT>
+          <BIT sel="12:11" tag_cloud="leading_wr_cnt_m9[1:0];">leading_wr_cnt_m9[1:0]</BIT>
+          <BIT sel="13" tag_cloud="trans_idle_m9;">trans_idle_m9</BIT>
+          <BIT sel="15:14" tag_cloud="rd_trans_cnt_m8[1:0];">rd_trans_cnt_m8[1:0]</BIT>
+          <BIT sel="17:16" tag_cloud="wr_trans_cn_m8[1:0];">wr_trans_cn_m8[1:0]</BIT>
+          <BIT sel="19:18" tag_cloud="leading_wr_cnt_m8[1:0];">leading_wr_cnt_m8[1:0]</BIT>
+          <BIT sel="20" tag_cloud="trans_idle_m8;">trans_idle_m8</BIT>
+          <BIT sel="23:21" tag_cloud="rd_trans_cnt_m7[2:0];">rd_trans_cnt_m7[2:0]</BIT>
+          <BIT sel="26:24" tag_cloud="wr_trans_cn_m7[2:0];">wr_trans_cn_m7[2:0]</BIT>
+          <BIT sel="29:27" tag_cloud="leading_wr_cnt_m7[2:0];">leading_wr_cnt_m7[2:0]</BIT>
+          <BIT sel="30" tag_cloud="trans_idle_m7;">trans_idle_m7</BIT>
+          <BIT sel="33:31" tag_cloud="rd_trans_cnt_m6[2:0];">rd_trans_cnt_m6[2:0]</BIT>
+          <BIT sel="36:34" tag_cloud="wr_trans_cn_m6[2:0];">wr_trans_cn_m6[2:0]</BIT>
+          <BIT sel="39:37" tag_cloud="leading_wr_cnt_m6[2:0];">leading_wr_cnt_m6[2:0]</BIT>
+          <BIT sel="40" tag_cloud="trans_idle_m6;">trans_idle_m6</BIT>
+          <BIT sel="43:41" tag_cloud="rd_trans_cnt_m5[2:0];">rd_trans_cnt_m5[2:0]</BIT>
+          <BIT sel="46:44" tag_cloud="wr_trans_cn_m5[2:0];">wr_trans_cn_m5[2:0]</BIT>
+          <BIT sel="49:47" tag_cloud="leading_wr_cnt_m5[2:0];">leading_wr_cnt_m5[2:0]</BIT>
+          <BIT sel="50" tag_cloud="trans_idle_m5;">trans_idle_m5</BIT>
+          <BIT sel="53:51" tag_cloud="rd_trans_cnt_m3[2:0];">rd_trans_cnt_m3[2:0]</BIT>
+          <BIT sel="56:54" tag_cloud="wr_trans_cn_m3[2:0];">wr_trans_cn_m3[2:0]</BIT>
+          <BIT sel="59:57" tag_cloud="leading_wr_cnt_m3[2:0];">leading_wr_cnt_m3[2:0]</BIT>
+          <BIT sel="60" tag_cloud="trans_idle_m3;">trans_idle_m3</BIT>
+        </CHAN>
+        <CHAN dr_len="42" sel="11" tag_cloud="ap vsp_gsp mtx dbg bus;">
+          <BIT sel="3:0" tag_cloud="rd_trans_cnt_m2[3:0];">rd_trans_cnt_m2[3:0]</BIT>
+          <BIT sel="7:4" tag_cloud="wr_trans_cn_m2[3:0];">wr_trans_cn_m2[3:0]</BIT>
+          <BIT sel="11:8" tag_cloud="leading_wr_cnt_m2[3:0];">leading_wr_cnt_m2[3:0]</BIT>
+          <BIT sel="12" tag_cloud="trans_idle_m1;">trans_idle_m2</BIT>
+          <BIT sel="16:13" tag_cloud="rd_trans_cnt_m1[3:0];">rd_trans_cnt_m1[3:0]</BIT>
+          <BIT sel="20:17" tag_cloud="wr_trans_cn_m1[3:0];">wr_trans_cn_m1[3:0]</BIT>
+          <BIT sel="24:21" tag_cloud="leading_wr_cnt_m1[3:0];">leading_wr_cnt_m1[3:0]</BIT>
+          <BIT sel="25" tag_cloud="trans_idle_m1;">trans_idle_m1</BIT>
+          <BIT sel="30:26" tag_cloud="rd_trans_cnt_m0[4:0];">rd_trans_cnt_m0[4:0]</BIT>
+          <BIT sel="35:31" tag_cloud="wr_trans_cn_m0[4:0];">wr_trans_cn_m0[4:0]</BIT>
+          <BIT sel="40:36" tag_cloud="leading_wr_cnt_m0[4:0];">leading_wr_cnt_m0[4:0]</BIT>
+          <BIT sel="41" tag_cloud="trans_idle_m0;">trans_idle_m0</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="12" tag_cloud="djtag_chain_gsp;" />
+      </DAP>
+    </AP>
+    <CA53 sel="0" tag_cloud="CA53;">
+      <DAP sel="6" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="low power signal;">
+          <BIT sel="0" tag_cloud=";">|IRQS_GIC_sync[127:0] </BIT>
+          <BIT sel="1" tag_cloud=";">&amp;nfiqout_gic[3:0]     </BIT>
+          <BIT sel="2" tag_cloud=";">&amp;nirqout_gic[3:0]    </BIT>
+          <BIT sel="3" tag_cloud=";">&amp;nvfiqcpu[3:0]         </BIT>
+          <BIT sel="4" tag_cloud=";">&amp;nVIRQCPU[3:0]        </BIT>
+          <BIT sel="5" tag_cloud=";">&amp;nFIQCPU[3:0]         </BIT>
+          <BIT sel="6" tag_cloud=";">&amp;nIRQCPU[3:0]        </BIT>
+          <BIT sel="7" tag_cloud=";">&amp;nCNTHPIRQ_sync [ 3:0 ]</BIT>
+          <BIT sel="8" tag_cloud=";">&amp;nCNTVIRQ_sync [ 3:0 ]</BIT>
+          <BIT sel="9" tag_cloud=";">&amp;nCNTPNSIRQ_8ync [3:0]</BIT>
+          <BIT sel="10" tag_cloud=";">&amp;nCNTPSIRQ_sync [3:0]</BIT>
+          <BIT sel="11" tag_cloud=";">&amp;nirq2gic_sync [3:0]   </BIT>
+          <BIT sel="12" tag_cloud=";">&amp;nfiq2gic_sync [ 3:0] </BIT>
+          <BIT sel="13" tag_cloud=";">L2FLUSHD0NE           </BIT>
+          <BIT sel="14" tag_cloud=";">STAMDBYWFIL2         </BIT>
+          <BIT sel="15" tag_cloud=";">cgm_ca53_core_en_core  </BIT>
+          <BIT sel="16" tag_cloud=";">cgm_ca53_core_en      </BIT>
+          <BIT sel="17" tag_cloud=";">cgm_ca53_axi_en       </BIT>
+          <BIT sel="18" tag_cloud=";">cgm_ca53_atb_en      </BIT>
+          <BIT sel="19" tag_cloud=";">ca53_top_deep_stop     </BIT>
+          <BIT sel="20" tag_cloud=";">ca53_core_stop[3：0]   </BIT>
+          <BIT sel="21" tag_cloud=";">async_brg_lp_eb       </BIT>
+          <BIT sel="22" tag_cloud=";">ca53_mtx_s2_lp_eb    </BIT>
+          <BIT sel="23" tag_cloud=";">ca53_mtx_sl_lp_eb      </BIT>
+          <BIT sel="24" tag_cloud=";">ca53_mtx_s0_lp_eb     </BIT>
+          <BIT sel="25" tag_cloud=";">ca53_mtx_m0_lp_eb     </BIT>
+          <BIT sel="26" tag_cloud=";">ca53_ddr_wakeup_n    </BIT>
+          <BIT sel="27" tag_cloud=";">lp_stat_async_bridge   </BIT>
+          <BIT sel="28" tag_cloud=";">ca53_mtx_s2_lp_stat   </BIT>
+          <BIT sel="29" tag_cloud=";">ca53_mtx_sl_lp_stat   </BIT>
+          <BIT sel="30" tag_cloud=";">ca53_mtx_s0_lp_stat  </BIT>
+          <BIT sel="31" tag_cloud=";">ca53_mtx_m0_lp_stat    </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="8" tag_cloud="ca53 deep sleep related;">
+          <BIT sel="0" tag_cloud=";">async_brg_force_ack</BIT>
+          <BIT sel="4:1" tag_cloud=";"> SMPEN[3:0]      </BIT>
+          <BIT sel="8:5" tag_cloud=";">STANDDBYWFE[3:0]</BIT>
+          <BIT sel="12:9" tag_cloud=";">STANDBYWFI[3:0]</BIT>
+          <BIT sel="16:13" tag_cloud=";">DBGPWRUP[3:0]      </BIT>
+          <BIT sel="20:17" tag_cloud=";">DBGPWRUPREQ[3:0]</BIT>
+          <BIT sel="24:21" tag_cloud=";">DBGNOPWRDWN[3:0]</BIT>
+          <BIT sel="31:25" tag_cloud=";">reserved       </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="9" tag_cloud="async bridge pl2 w;">
+          <BIT sel="9:0" tag_cloud=";">trans_cnt[9:0]</BIT>
+          <BIT sel="10" tag_cloud=";"> trans_idle </BIT>
+          <BIT sel="11" tag_cloud=";">le ading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud=";">mask_aw_ar   </BIT>
+          <BIT sel="13" tag_cloud=";">mask_w        </BIT>
+          <BIT sel="14" tag_cloud=";">cactive    </BIT>
+          <BIT sel="15" tag_cloud=";">csysreq_sync    </BIT>
+          <BIT sel="16" tag_cloud=";">csysack      </BIT>
+          <BIT sel="17" tag_cloud=";">cactive_inter </BIT>
+          <BIT sel="18" tag_cloud=";">mask_req   </BIT>
+          <BIT sel="19" tag_cloud=";">mask_ack_sync   </BIT>
+          <BIT sel="20" tag_cloud=";">idle_req     </BIT>
+          <BIT sel="21" tag_cloud=";">i dle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud=";">mask_ch    </BIT>
+          <BIT sel="23" tag_cloud=";">fifo_sync_clr   </BIT>
+          <BIT sel="26:24" tag_cloud=";">cs[2:0]      </BIT>
+          <BIT sel="27" tag_cloud=";">aw_ch_w_full  </BIT>
+          <BIT sel="28" tag_cloud=";">w_ch_w_full</BIT>
+          <BIT sel="29" tag_cloud=";">ar_ch_w_full    </BIT>
+          <BIT sel="30" tag_cloud=";">b_ch_w_emp ty</BIT>
+          <BIT sel="31" tag_cloud=";">r_ch_w_emp ty </BIT>
+        </CHAN>
+      </DAP>
+    </CA53>
+    <MM sel="1" tag_cloud="MM;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="16" sel="0" tag_cloud="djtag_chain_pi_eb_mm;">
+          <BIT sel="0" tag_cloud="mm_eb;">mm_eb          </BIT>
+          <BIT sel="1" tag_cloud="ckg_eb;">ckg_eb           </BIT>
+          <BIT sel="2" tag_cloud="jpg_eb;">jpg_eb         </BIT>
+          <BIT sel="3" tag_cloud="isp_eb;">       isp_eb        </BIT>
+          <BIT sel="4" tag_cloud="cpp_eb;">cpp_eb         </BIT>
+          <BIT sel="5" tag_cloud="dcam_eb;">dcam_eb          </BIT>
+          <BIT sel="6" tag_cloud="csi_eb;">csi_eb         </BIT>
+          <BIT sel="7" tag_cloud="csi_s_eb;">       csi_s_eb      </BIT>
+          <BIT sel="8" tag_cloud="sensor0_ckg_en;">sensor0_ckg_en </BIT>
+          <BIT sel="9" tag_cloud="sensor1_ckg_en;">sensor1_ckg_en   </BIT>
+          <BIT sel="10" tag_cloud="cphy_cfg_ckg_en;">cphy_cfg_ckg_en</BIT>
+          <BIT sel="11" tag_cloud="isp_axi_ckg_en;">       isp_axi_ckg_en</BIT>
+          <BIT sel="12" tag_cloud="mipi_csi_ckg_en;">mipi_csi_ckg_en</BIT>
+          <BIT sel="13" tag_cloud="mipi_csi_s_ckg_en;">mipi_csi_s_ckg_en</BIT>
+          <BIT sel="14" tag_cloud="reserved;">reserved       </BIT>
+          <BIT sel="15" tag_cloud="reserved;">reserved      </BIT>
+        </CHAN>
+        <CHAN dr_len="25" sel="1" tag_cloud="chain_mm_dcam_ram_ctrl;" />
+        <CHAN dr_len="15" sel="2" tag_cloud="chain_mm_jpg_ram_ctrl;" />
+        <CHAN dr_len="5" sel="3" tag_cloud="chain_isp_1pram_ctrl;" />
+        <CHAN dr_len="10" sel="4" tag_cloud="chain_isp_2pram_ctrl;" />
+        <CHAN dr_len="5" sel="5" tag_cloud="chain_mm_cpp_ram_ctrl;" />
+        <CHAN dr_len="32" sel="6" tag_cloud="djtag_chain_pi_lpc_en;">
+          <BIT sel="0" tag_cloud="cgm_mm_mtx_s0_auto_gate_en;">cgm_mm_mtx_s0_auto_gate_en</BIT>
+          <BIT sel="1" tag_cloud="cgm_clk_isp_auto_gate_en;">cgm_clk_isp_auto_gate_en</BIT>
+          <BIT sel="2" tag_cloud="mm_lpc_disable;">mm_lpc_disable          </BIT>
+          <BIT sel="3" tag_cloud="lp_eb_dcam;">lp_eb_dcam    </BIT>
+          <BIT sel="5" tag_cloud="lp_eb_isp;">lp_eb_isp                 </BIT>
+          <BIT sel="5" tag_cloud="lp_eb_jpg;">lp_eb_jpg               </BIT>
+          <BIT sel="6" tag_cloud="lp_eb_cpp;">lp_eb_cpp               </BIT>
+          <BIT sel="7" tag_cloud="lp_eb_mtx_s0;">lp_eb_mtx_s0  </BIT>
+          <BIT sel="9:8" tag_cloud="mipi_cphy_sel0[1:0];">mipi_cphy_sel0[1:0]       </BIT>
+          <BIT sel="11:10" tag_cloud="mipi_cphy_sel1[1:0];">mipi_cphy_sel1[1:0]     </BIT>
+          <BIT sel="12" tag_cloud="csi_2p2l_testdout_ms_sel;">csi_2p2l_testdout_ms_sel</BIT>
+          <BIT sel="13" tag_cloud="trans_idle_m0;">trans_idle_m0 </BIT>
+          <BIT sel="14" tag_cloud="lp_stat_mtx_s0;">lp_stat_mtx_s0            </BIT>
+          <BIT sel="15" tag_cloud="lp_stat_cpp;">lp_stat_cpp             </BIT>
+          <BIT sel="16" tag_cloud="lp_stat_isp;">lp_stat_isp             </BIT>
+          <BIT sel="17" tag_cloud="lp_stat_jpg;">lp_stat_jpg   </BIT>
+          <BIT sel="18" tag_cloud="lp_stat_dcam;">lp_stat_dcam              </BIT>
+          <BIT sel="19" tag_cloud="mm_sys_light_stop;">mm_sys_light_stop       </BIT>
+          <BIT sel="20" tag_cloud="cgm_clk_mm_isp_en;">cgm_clk_mm_isp_en       </BIT>
+          <BIT sel="21" tag_cloud="cgm_clk_jpg_en;">cgm_clk_jpg_en</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="7" tag_cloud="djtag_chain_pi_nic400_debug0;">
+          <BIT sel="2:0" tag_cloud="rd_trans_cnt_m3[2:0];">rd_trans_cnt_m3[2:0]</BIT>
+          <BIT sel="5:3" tag_cloud="wr_trans_cnt_m3[2:0];"> wr_trans_cnt_m3[2:0]</BIT>
+          <BIT sel="8:6" tag_cloud="leading_wr_cnt_m3[2:0];"> leading_wr_cnt_m3[2:0]</BIT>
+          <BIT sel="9" tag_cloud="trans_idle_m3;"> trans_idle_m3</BIT>
+          <BIT sel="13:10" tag_cloud="rd_trans_cnt_m2[3:0];">rd_trans_cnt_m2[3:0]</BIT>
+          <BIT sel="17:14" tag_cloud="wr_trans_cnt_m2[3:0];">wr_trans_cnt_m2[3:0]</BIT>
+          <BIT sel="21:18" tag_cloud="leading_wr_cnt_m2[3:0];">leading_wr_cnt_m2[3:0]</BIT>
+          <BIT sel="22" tag_cloud="trans_idle_m2;">trans_idle_m2</BIT>
+          <BIT sel="26:23" tag_cloud="rd_trans_cnt_m1[3:0];">rd_trans_cnt_m1[3:0]</BIT>
+          <BIT sel="30:27" tag_cloud="wr_trans_cnt_m1[3:0];">wr_trans_cnt_m1[3:0]</BIT>
+          <BIT sel="31" tag_cloud="leading_wr_cnt_m1[0];">leading_wr_cnt_m1[0]  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="8" tag_cloud="djtag_chain_pi_nic400_debug1;">
+          <BIT sel="2:0" tag_cloud="leading_wr_cnt_m1[3:1];">leading_wr_cnt_m1[3:1]</BIT>
+          <BIT sel="3" tag_cloud="trans_idle_m1;"> trans_idle_m1</BIT>
+          <BIT sel="7:4" tag_cloud="rd_trans_cnt_m0[3:0];">rd_trans_cnt_m0[3:0]</BIT>
+          <BIT sel="11:8" tag_cloud="wr_trans_cnt_m0[3:0];">wr_trans_cnt_m0[3:0]</BIT>
+          <BIT sel="15:12" tag_cloud="leading_wr_cnt_m0[3:0];">leading_wr_cnt_m0[3:0]</BIT>
+          <BIT sel="16" tag_cloud="trans_idle_m0;">trans_idle_m0</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="9" tag_cloud="djtag_chain_pi_lp_num0;">
+          <BIT sel="15:0" tag_cloud="lp_num_dcam[15:0];">lp_num_dcam[15:0]</BIT>
+          <BIT sel="31:16" tag_cloud="lp_num_isp[15:0];">lp_num_isp[15:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="10" tag_cloud="djtag_chain_pi_lp_num1;">
+          <BIT sel="15:0" tag_cloud="lp_num_jpg[15:0];">lp_num_jpg[15:0]</BIT>
+          <BIT sel="31:16" tag_cloud="lp_num_cpp[15:0];">lp_num_cpp[15:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="11" tag_cloud="djtag_chain_pi_lp_num2;">
+          <BIT sel="15:0" tag_cloud="lp_num_mtx_s0;">lp_num_mtx_s0</BIT>
+        </CHAN>
+      </DAP>
+    </MM>
+    <AON sel="3" tag_cloud="AON;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="2" tag_cloud="aon debug signal sel;">
+          <BIT sel="12:0" tag_cloud="the select signal of aon debug signals;">aon_djtag_chain_po_aon_dbug_sig_sel</BIT>
+          <BIT sel="31:13" tag_cloud="reseved;">reseved</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="3" tag_cloud="the debug bus for aon;" />
+        <CHAN dr_len="33" sel="6" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="the num of unfinished transition;">trans_cnt    </BIT>
+          <BIT sel="10" tag_cloud="no transition state;"> trans_idle                      </BIT>
+          <BIT sel="11" tag_cloud="the finish flag of a burst write transition;">leading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud="aw channel outstanding over the threshold;">mask_aw_ar  </BIT>
+          <BIT sel="13" tag_cloud="w channel outstanding over the threshold;">mask_w       </BIT>
+          <BIT sel="14" tag_cloud="cactive signal;">cactive                         </BIT>
+          <BIT sel="15" tag_cloud="low power c channel req sync signal;">csysreq_sync   </BIT>
+          <BIT sel="16" tag_cloud="low power c channel ack signal;">csysack     </BIT>
+          <BIT sel="17" tag_cloud="internal cactive signal;">cactive_inter</BIT>
+          <BIT sel="18" tag_cloud="mask request;">mask_req                        </BIT>
+          <BIT sel="19" tag_cloud="mask acknowledge sync signal;">mask_ack_sync  </BIT>
+          <BIT sel="20" tag_cloud="idle request;">idle_req    </BIT>
+          <BIT sel="21" tag_cloud="idle acknowledge sync signal;">idle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud="mask channel;">mask_ch                         </BIT>
+          <BIT sel="23" tag_cloud="fifo pointer clear;">fifo_sync_clr  </BIT>
+          <BIT sel="26:24" tag_cloud="async bridge reset FSM current state;">cs[2:0]     </BIT>
+          <BIT sel="27" tag_cloud="aw channel write full;">aw_ch_w_full </BIT>
+          <BIT sel="28" tag_cloud="w channel write full;">w_ch_w_full                     </BIT>
+          <BIT sel="29" tag_cloud="ar channel write full;">ar_ch_w_full   </BIT>
+          <BIT sel="30" tag_cloud="b channel write empty;">b_ch_w_empty</BIT>
+          <BIT sel="31" tag_cloud="r channel write empty;">r_ch_w_empty </BIT>
+          <BIT sel="32" tag_cloud="axi detector overflow;">axi_detector_overflow_gpu_to_ddr</BIT>
+        </CHAN>
+        <CHAN dr_len="33" sel="7" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="the num of unfinished transition;">trans_cnt    </BIT>
+          <BIT sel="10" tag_cloud="no transition state;"> trans_idle                     </BIT>
+          <BIT sel="11" tag_cloud="the finish flag of a burst write transition;">leading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud="aw channel outstanding over the threshold;">mask_aw_ar  </BIT>
+          <BIT sel="13" tag_cloud="w channel outstanding over the threshold;">mask_w       </BIT>
+          <BIT sel="14" tag_cloud="cactive signal;">cactive                        </BIT>
+          <BIT sel="15" tag_cloud="low power c channel req sync signal;">csysreq_sync   </BIT>
+          <BIT sel="16" tag_cloud="low power c channel ack signal;">csysack     </BIT>
+          <BIT sel="17" tag_cloud="internal cactive signal;">cactive_inter</BIT>
+          <BIT sel="18" tag_cloud="mask request;">mask_req                       </BIT>
+          <BIT sel="19" tag_cloud="mask acknowledge sync signal;">mask_ack_sync  </BIT>
+          <BIT sel="20" tag_cloud="idle request;">idle_req    </BIT>
+          <BIT sel="21" tag_cloud="idle acknowledge sync signal;">idle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud="mask channel;">mask_ch                        </BIT>
+          <BIT sel="23" tag_cloud="fifo pointer clear;">fifo_sync_clr  </BIT>
+          <BIT sel="26:24" tag_cloud="async bridge reset FSM current state;">cs[2:0]     </BIT>
+          <BIT sel="27" tag_cloud="aw channel write full;">aw_ch_w_full </BIT>
+          <BIT sel="28" tag_cloud="w channel write full;">w_ch_w_full                    </BIT>
+          <BIT sel="29" tag_cloud="ar channel write full;">ar_ch_w_full   </BIT>
+          <BIT sel="30" tag_cloud="b channel write empty;">b_ch_w_empty</BIT>
+          <BIT sel="31" tag_cloud="r channel write empty;">r_ch_w_empty </BIT>
+          <BIT sel="32" tag_cloud="axi detector overflow;">axi_detector_overflow_mm_to_ddr</BIT>
+        </CHAN>
+        <CHAN dr_len="33" sel="8" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="the num of unfinished transition;">trans_cnt    </BIT>
+          <BIT sel="10" tag_cloud="no transition state;"> trans_idle                      </BIT>
+          <BIT sel="11" tag_cloud="the finish flag of a burst write transition;">leading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud="aw channel outstanding over the threshold;">mask_aw_ar  </BIT>
+          <BIT sel="13" tag_cloud="w channel outstanding over the threshold;">mask_w       </BIT>
+          <BIT sel="14" tag_cloud="cactive signal;">cactive                         </BIT>
+          <BIT sel="15" tag_cloud="low power c channel req sync signal;">csysreq_sync   </BIT>
+          <BIT sel="16" tag_cloud="low power c channel ack signal;">csysack     </BIT>
+          <BIT sel="17" tag_cloud="internal cactive signal;">cactive_inter</BIT>
+          <BIT sel="18" tag_cloud="mask request;">mask_req                        </BIT>
+          <BIT sel="19" tag_cloud="mask acknowledge sync signal;">mask_ack_sync  </BIT>
+          <BIT sel="20" tag_cloud="idle request;">idle_req    </BIT>
+          <BIT sel="21" tag_cloud="idle acknowledge sync signal;">idle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud="mask channel;">mask_ch                         </BIT>
+          <BIT sel="23" tag_cloud="fifo pointer clear;">fifo_sync_clr  </BIT>
+          <BIT sel="26:24" tag_cloud="async bridge reset FSM current state;">cs[2:0]     </BIT>
+          <BIT sel="27" tag_cloud="aw channel write full;">aw_ch_w_full </BIT>
+          <BIT sel="28" tag_cloud="w channel write full;">w_ch_w_full                     </BIT>
+          <BIT sel="29" tag_cloud="ar channel write full;">ar_ch_w_full   </BIT>
+          <BIT sel="30" tag_cloud="b channel write empty;">b_ch_w_empty</BIT>
+          <BIT sel="31" tag_cloud="r channel write empty;">r_ch_w_empty </BIT>
+          <BIT sel="32" tag_cloud="axi detector overflow;">axi_detector_overflow_wcn_to_ddr</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="9" tag_cloud=";">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_empty</BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_empty </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_empty</BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="33" sel="10" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="the num of unfinished transition;">trans_cnt    </BIT>
+          <BIT sel="10" tag_cloud="no transition state;"> trans_idle                   </BIT>
+          <BIT sel="11" tag_cloud="the finish flag of a burst write transition;">leading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud="aw channel outstanding over the threshold;">mask_aw_ar  </BIT>
+          <BIT sel="13" tag_cloud="w channel outstanding over the threshold;">mask_w       </BIT>
+          <BIT sel="14" tag_cloud="cactive signal;">cactive                      </BIT>
+          <BIT sel="15" tag_cloud="low power c channel req sync signal;">csysreq_sync   </BIT>
+          <BIT sel="16" tag_cloud="low power c channel ack signal;">csysack     </BIT>
+          <BIT sel="17" tag_cloud="internal cactive signal;">cactive_inter</BIT>
+          <BIT sel="18" tag_cloud="mask request;">mask_req                     </BIT>
+          <BIT sel="19" tag_cloud="mask acknowledge sync signal;">mask_ack_sync  </BIT>
+          <BIT sel="20" tag_cloud="idle request;">idle_req    </BIT>
+          <BIT sel="21" tag_cloud="idle acknowledge sync signal;">idle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud="mask channel;">mask_ch                      </BIT>
+          <BIT sel="23" tag_cloud="fifo pointer clear;">fifo_sync_clr  </BIT>
+          <BIT sel="26:24" tag_cloud="async bridge reset FSM current state;">cs[2:0]     </BIT>
+          <BIT sel="27" tag_cloud="aw channel write full;">aw_ch_w_full </BIT>
+          <BIT sel="28" tag_cloud="w channel write full;">w_ch_w_full                  </BIT>
+          <BIT sel="29" tag_cloud="ar channel write full;">ar_ch_w_full   </BIT>
+          <BIT sel="30" tag_cloud="b channel write empty;">b_ch_w_empty</BIT>
+          <BIT sel="31" tag_cloud="r channel write empty;">r_ch_w_empty </BIT>
+          <BIT sel="32" tag_cloud="axi detector overflow;">wtl_acc2ddr_bridge_w_overflow</BIT>
+        </CHAN>
+        <CHAN dr_len="33" sel="11" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="the num of unfinished transition;">trans_cnt    </BIT>
+          <BIT sel="10" tag_cloud="no transition state;"> trans_idle               </BIT>
+          <BIT sel="11" tag_cloud="the finish flag of a burst write transition;">leading_wr_flag</BIT>
+          <BIT sel="12" tag_cloud="aw channel outstanding over the threshold;">mask_aw_ar  </BIT>
+          <BIT sel="13" tag_cloud="w channel outstanding over the threshold;">mask_w       </BIT>
+          <BIT sel="14" tag_cloud="cactive signal;">cactive                  </BIT>
+          <BIT sel="15" tag_cloud="low power c channel req sync signal;">csysreq_sync   </BIT>
+          <BIT sel="16" tag_cloud="low power c channel ack signal;">csysack     </BIT>
+          <BIT sel="17" tag_cloud="internal cactive signal;">cactive_inter</BIT>
+          <BIT sel="18" tag_cloud="mask request;">mask_req                 </BIT>
+          <BIT sel="19" tag_cloud="mask acknowledge sync signal;">mask_ack_sync  </BIT>
+          <BIT sel="20" tag_cloud="idle request;">idle_req    </BIT>
+          <BIT sel="21" tag_cloud="idle acknowledge sync signal;">idle_ack_sync</BIT>
+          <BIT sel="22" tag_cloud="mask channel;">mask_ch                  </BIT>
+          <BIT sel="23" tag_cloud="fifo pointer clear;">fifo_sync_clr  </BIT>
+          <BIT sel="26:24" tag_cloud="async bridge reset FSM current state;">cs[2:0]     </BIT>
+          <BIT sel="27" tag_cloud="aw channel write full;">aw_ch_w_full </BIT>
+          <BIT sel="28" tag_cloud="w channel write full;">w_ch_w_full              </BIT>
+          <BIT sel="29" tag_cloud="ar channel write full;">ar_ch_w_full   </BIT>
+          <BIT sel="30" tag_cloud="b channel write empty;">b_ch_w_empty</BIT>
+          <BIT sel="31" tag_cloud="r channel write empty;">r_ch_w_empty </BIT>
+          <BIT sel="32" tag_cloud="axi detector overflow;">aon2ddr_bridge_w_overflow</BIT>
+        </CHAN>
+      </DAP>
+      <DAP sel="1" name="AP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="2" name="WTLCP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="3" name="PUBCP" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="WCN" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </AON>
+    <PUB sel="4" tag_cloud="PUB;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="clock enable/sleep signal;">
+          <BIT sel="0" tag_cloud="the same as ddr_self_refresh_req;">dmc_sleep           </BIT>
+          <BIT sel="1" tag_cloud="the same as ddr_self_refresh_flag;">dmc_stop        </BIT>
+          <BIT sel="2" tag_cloud="dmc clock stop status of channel 6;">dmc_stop_ch6         </BIT>
+          <BIT sel="3" tag_cloud="dmc clock stop status of channel 5;">dmc_stop_ch5         </BIT>
+          <BIT sel="4" tag_cloud="dmc clock stop status of channel 4;">dmc_stop_ch4        </BIT>
+          <BIT sel="5" tag_cloud="dmc clock stop status of channel 3;">dmc_stop_ch3    </BIT>
+          <BIT sel="6" tag_cloud="dmc clock stop status of channel 2;">dmc_stop_ch2         </BIT>
+          <BIT sel="7" tag_cloud="dmc clock stop status of channel 1;">dmc_stop_ch1         </BIT>
+          <BIT sel="8" tag_cloud="dmc clock stop status of channel 0;">dmc_stop_ch0        </BIT>
+          <BIT sel="9" tag_cloud="dmc sleep enble of channel 6;">dmc_sleep_ch6   </BIT>
+          <BIT sel="10" tag_cloud="dmc sleep enble of channel 5;">dmc_sleep_ch5        </BIT>
+          <BIT sel="11" tag_cloud="dmc sleep enble of channel 4;">dmc_sleep_ch4        </BIT>
+          <BIT sel="12" tag_cloud="dmc sleep enble of channel 3;">dmc_sleep_ch3       </BIT>
+          <BIT sel="13" tag_cloud="dmc sleep enble of channel 2;">dmc_sleep_ch2   </BIT>
+          <BIT sel="14" tag_cloud="dmc sleep enble of channel 1;">dmc_sleep_ch1        </BIT>
+          <BIT sel="15" tag_cloud="dmc sleep enble of channel 0;">dmc_sleep_ch0        </BIT>
+          <BIT sel="16" tag_cloud="WIFI DFS handshake request;">wifi_dfs_req        </BIT>
+          <BIT sel="17" tag_cloud="WIFI DFS handshake acknowledge;">wifi_dfs_ack    </BIT>
+          <BIT sel="18" tag_cloud="WIFI DFS handshake timeout flag;">wifi_dfs_timeout_flag</BIT>
+          <BIT sel="19" tag_cloud="DDR sleep status:1: in self refresh,0: not in self refresh;">ddr_self_refresh_flag</BIT>
+          <BIT sel="20" tag_cloud="DDR light sleep request;">ddr_self_refresh_req</BIT>
+          <BIT sel="21" tag_cloud="dfs request;">dfs_req         </BIT>
+          <BIT sel="22" tag_cloud="dfs acknowledge;">dfs_ack              </BIT>
+          <BIT sel="23" tag_cloud="dfs response;">dfs_resp             </BIT>
+          <BIT sel="24" tag_cloud="dfs error occur;">dfs_error           </BIT>
+          <BIT sel="26:25" tag_cloud="dfs frequency select;">dfs_fc_sel[1:0] </BIT>
+          <BIT sel="27" tag_cloud="interrupt of DDR firewall;">int_mem_fw           </BIT>
+          <BIT sel="28" tag_cloud="interrupt of performance trace monitor;">int_req_pub_busmon   </BIT>
+          <BIT sel="29" tag_cloud="interrupt of hardware DFS exit;">int_hw_dfs_exit     </BIT>
+          <BIT sel="30" tag_cloud="interrupt of DFS complete;">int_dfs_complete</BIT>
+          <BIT sel="31" tag_cloud="interrupt of DFS error;">int_dfs_error        </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="1" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="2" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous.0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="3" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="4" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="5" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="6" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="7" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="8" tag_cloud="async_bridge debug signals;">
+          <BIT sel="0" tag_cloud="mask request from async_bridge_w;">mask_req_sync</BIT>
+          <BIT sel="1" tag_cloud="mask acknowledge when finish reset FIFO pointer;">mask_ack     </BIT>
+          <BIT sel="2" tag_cloud="idle request from async_bridge_w;">idle_req_sync</BIT>
+          <BIT sel="3" tag_cloud="idle acknowledge when reach idle state;">idle_ack   </BIT>
+          <BIT sel="4" tag_cloud="mask enable;">mask_en      </BIT>
+          <BIT sel="5" tag_cloud="fifo pointer clear;">fifo_sync_clr</BIT>
+          <BIT sel="6" tag_cloud="asynchronous configure:1: asynchronous,0: synchronous;">async_config </BIT>
+          <BIT sel="9:7" tag_cloud="async bridge reset FSM current state;">cs[2:0]    </BIT>
+          <BIT sel="10" tag_cloud="aw channel full;">aw_ch_r_full </BIT>
+          <BIT sel="11" tag_cloud="w channel full;">w_ch_r_full  </BIT>
+          <BIT sel="12" tag_cloud="ar channel full;">ar_ch_r_full </BIT>
+          <BIT sel="13" tag_cloud="b channel full;">b_ch_r_full</BIT>
+          <BIT sel="14" tag_cloud="r channel full;">r_ch_r_full  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="9" tag_cloud="outstanding detect signals;">
+          <BIT sel="4:0" tag_cloud="read cmd outstanding;">rd_trans_cnt_mm[4:0] </BIT>
+          <BIT sel="9:5" tag_cloud="write cmd outstanding;">wr_trans_cnt_mm[4:0] </BIT>
+          <BIT sel="14:10" tag_cloud="write data outstanding;">leading_wr_cnt_mm[4:0] </BIT>
+          <BIT sel="15" tag_cloud="axi bus idle;">trans_idle_mm </BIT>
+          <BIT sel="20:16" tag_cloud="read cmd outstanding;">rd_trans_cnt_gpu[4:0]</BIT>
+          <BIT sel="25:21" tag_cloud="write cmd outstanding;">wr_trans_cnt_gpu[4:0]</BIT>
+          <BIT sel="30:26" tag_cloud="write data outstanding;">leading_wr_cnt_gpu[4:0]</BIT>
+          <BIT sel="31" tag_cloud="axi bus idle;">trans_idle_gpu</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="10" tag_cloud="outstanding detect signals;">
+          <BIT sel="4:0" tag_cloud="read cmd outstanding;">rd_trans_cnt_disp[4:0]</BIT>
+          <BIT sel="9:5" tag_cloud="write cmd outstanding;">wr_trans_cnt_disp[4:0]</BIT>
+          <BIT sel="14:10" tag_cloud="write data outstanding;">leading_wr_cnt_disp[4:0]</BIT>
+          <BIT sel="15" tag_cloud="axi bus idle;">trans_idle_disp</BIT>
+          <BIT sel="20:16" tag_cloud="read cmd outstanding;">rd_trans_cnt_cpu[4:0] </BIT>
+          <BIT sel="25:21" tag_cloud="write cmd outstanding;">wr_trans_cnt_cpu[4:0] </BIT>
+          <BIT sel="30:26" tag_cloud="write data outstanding;">leading_wr_cnt_cpu[4:0] </BIT>
+          <BIT sel="31" tag_cloud="axi bus idle;">trans_idle_cpu </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="11" tag_cloud="outstanding detect signals;">
+          <BIT sel="4:0" tag_cloud="read cmd outstanding;">rd_trans_cnt_ap[4:0]</BIT>
+          <BIT sel="9:5" tag_cloud="write cmd outstanding;">wr_trans_cnt_ap[4:0]</BIT>
+          <BIT sel="14:10" tag_cloud="write data outstanding;">leading_wr_cnt_ap[4:0]</BIT>
+          <BIT sel="15" tag_cloud="axi bus idle;">trans_idle_ap</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="12" tag_cloud="outstanding detect signals;">
+          <BIT sel="2:0" tag_cloud="read cmd outstanding;">rd_trans_cnt_pubcp[2:0]</BIT>
+          <BIT sel="5:3" tag_cloud="write cmd outstanding;">wr_trans_cnt_pubcp[2:0]</BIT>
+          <BIT sel="8:6" tag_cloud="write data outstanding;">leading_wr_cnt_pubcp[2:0]</BIT>
+          <BIT sel="9" tag_cloud="axi bus idle;">trans_idle_pubcp</BIT>
+          <BIT sel="12:10" tag_cloud="read cmd outstanding;">rd_trans_cnt_wtl[2:0]  </BIT>
+          <BIT sel="15:13" tag_cloud="write cmd outstanding;">wr_trans_cnt_wtl[2:0]  </BIT>
+          <BIT sel="18:16" tag_cloud="write data outstanding;">leading_wr_cnt_wtl[2:0]  </BIT>
+          <BIT sel="19" tag_cloud="axi bus idle;">trans_idle_wtl  </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="13" tag_cloud="outstanding detect signals;">
+          <BIT sel="2:0" tag_cloud="read cmd outstanding;">rd_trans_cnt_aon[2:0]</BIT>
+          <BIT sel="5:3" tag_cloud="write cmd outstanding;">wr_trans_cnt_aon[2:0]</BIT>
+          <BIT sel="8:6" tag_cloud="write data outstanding;">leading_wr_cnt_aon[2:0]</BIT>
+          <BIT sel="9" tag_cloud="axi bus idle;">trans_idle_aon</BIT>
+          <BIT sel="12:10" tag_cloud="read cmd outstanding;">rd_trans_cnt_wcn[2:0]</BIT>
+          <BIT sel="15:13" tag_cloud="write cmd outstanding;">wr_trans_cnt_wcn[2:0]</BIT>
+          <BIT sel="18:16" tag_cloud="write data outstanding;">leading_wr_cnt_wcn[2:0]</BIT>
+          <BIT sel="19" tag_cloud="axi bus idle;">trans_idle_wcn</BIT>
+        </CHAN>
+        <CHAN dr_len="10" sel="14" tag_cloud="sram control signals;">
+          <BIT sel="0" tag_cloud="RMEA port of SRAM;">RMEA</BIT>
+          <BIT sel="4:1" tag_cloud="RMA port of SRAM;">RMA</BIT>
+          <BIT sel="5" tag_cloud="RMEB port of SRAM;">RMEB</BIT>
+          <BIT sel="9:6" tag_cloud="RMB port of SRAM;">RMB</BIT>
+        </CHAN>
+      </DAP>
+    </PUB>
+    <WTLCP sel="5" tag_cloud="WTLCP;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="53" tag_cloud=";">
+          <BIT sel="0" tag_cloud="tdrx_filter_bp_a;">tdrx_filter_bp_a   </BIT>
+          <BIT sel="1" tag_cloud="td_btx_on;">td_btx_on     </BIT>
+          <BIT sel="2" tag_cloud="td_brx_on;">td_brx_on            </BIT>
+          <BIT sel="3" tag_cloud="tg_apc_swt;">tg_apc_swt   </BIT>
+          <BIT sel="4" tag_cloud="1'b0;">1'b0               </BIT>
+          <BIT sel="5" tag_cloud="tdrx_os_cal;">tdrx_os_cal   </BIT>
+          <BIT sel="6" tag_cloud="tdtx_pd_a;">tdtx_pd_a            </BIT>
+          <BIT sel="7" tag_cloud="tdrx_pd_a;">tdrx_pd_a    </BIT>
+          <BIT sel="8" tag_cloud="drf_stc_gsm_en;">drf_stc_gsm_en     </BIT>
+          <BIT sel="9" tag_cloud="drf_rft_gsm_en;">drf_rft_gsm_en</BIT>
+          <BIT sel="10" tag_cloud="stc_tmr_autopd_xtl_en;">stc_tmr_autopd_xtl_en</BIT>
+          <BIT sel="11" tag_cloud="gsm_pll_sleep;">gsm_pll_sleep</BIT>
+          <BIT sel="12" tag_cloud="dsp_cdc_no_clk_gate;">dsp_cdc_no_clk_gate</BIT>
+          <BIT sel="14:13" tag_cloud="2'b00;">2'b00         </BIT>
+          <BIT sel="15" tag_cloud="clk_sbi0_en_stc;">clk_sbi0_en_stc      </BIT>
+          <BIT sel="16" tag_cloud="stc_psk8_on;">stc_psk8_on  </BIT>
+          <BIT sel="17" tag_cloud="stc_apc_on;">stc_apc_on         </BIT>
+          <BIT sel="18" tag_cloud="tx_vctrl_8psk;">tx_vctrl_8psk </BIT>
+          <BIT sel="19" tag_cloud="btxd_on;">btxd_on              </BIT>
+          <BIT sel="20" tag_cloud="gsm_brxd_on;">gsm_brxd_on  </BIT>
+          <BIT sel="21" tag_cloud="stc_qbc_int;">stc_qbc_int        </BIT>
+          <BIT sel="22" tag_cloud="a5_state;">a5_state      </BIT>
+          <BIT sel="23" tag_cloud="stc_tx_pwron;">stc_tx_pwron         </BIT>
+          <BIT sel="24" tag_cloud="stc_rx_pwron;">stc_rx_pwron </BIT>
+          <BIT sel="25" tag_cloud="stc_tx_on;">stc_tx_on          </BIT>
+          <BIT sel="26" tag_cloud="stc_rx_on;">stc_rx_on     </BIT>
+          <BIT sel="27" tag_cloud="dcxo_mode_swt;">dcxo_mode_swt        </BIT>
+          <BIT sel="28" tag_cloud="cdc_active;">cdc_active   </BIT>
+          <BIT sel="31:29" tag_cloud="3'h0;">3'h0               </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="54" tag_cloud=";">
+          <BIT sel="0" tag_cloud="rft_drf_tx_on;">rft_drf_tx_on   </BIT>
+          <BIT sel="1" tag_cloud="rft_tx_on;">rft_tx_on       </BIT>
+          <BIT sel="2" tag_cloud="rft_drf_rx_on;">rft_drf_rx_on </BIT>
+          <BIT sel="3" tag_cloud="rft_rx_on;">rft_rx_on            </BIT>
+          <BIT sel="4" tag_cloud="rft_rx_pwron;">rft_rx_pwron    </BIT>
+          <BIT sel="5" tag_cloud="rft_gsm_en;">rft_gsm_en      </BIT>
+          <BIT sel="6" tag_cloud="rft_clk_cal_en;">rft_clk_cal_en</BIT>
+          <BIT sel="7" tag_cloud="rft_tmr_autopd_xtl_en;">rft_tmr_autopd_xtl_en</BIT>
+          <BIT sel="8" tag_cloud="rft_rx_mode_sel;">rft_rx_mode_sel </BIT>
+          <BIT sel="9" tag_cloud="rft_tx_mode_sel;">rft_tx_mode_sel </BIT>
+          <BIT sel="10" tag_cloud="rft_fir_ptr1;">rft_fir_ptr1  </BIT>
+          <BIT sel="11" tag_cloud="rft_fir_ptr0;">rft_fir_ptr0         </BIT>
+          <BIT sel="12" tag_cloud="rft_gsm_tx_pwron;">rft_gsm_tx_pwron</BIT>
+          <BIT sel="13" tag_cloud="rft_gsm_rx_pwron;">rft_gsm_rx_pwron</BIT>
+          <BIT sel="31:14" tag_cloud="18'h00000;">18'h00000     </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="55" tag_cloud=";">
+          <BIT sel="0" tag_cloud="clk_lte_rft_eb;">clk_lte_rft_eb    </BIT>
+          <BIT sel="1" tag_cloud="clk_ecc_en;">clk_ecc_en         </BIT>
+          <BIT sel="2" tag_cloud="clk_sbi1_en_rft;">clk_sbi1_en_rft  </BIT>
+          <BIT sel="3" tag_cloud="clk_sbi0_en_rft;"> clk_sbi0_en_rft </BIT>
+          <BIT sel="4" tag_cloud="clk_qbc_en;">clk_qbc_en        </BIT>
+          <BIT sel="5" tag_cloud="clk_apb_en;">clk_apb_en         </BIT>
+          <BIT sel="6" tag_cloud="clk_ahb_en;">clk_ahb_en       </BIT>
+          <BIT sel="7" tag_cloud="clk_axi_en;"> clk_axi_en      </BIT>
+          <BIT sel="8" tag_cloud="1'b0;">1'b0              </BIT>
+          <BIT sel="9" tag_cloud="1'b0;">1'b0               </BIT>
+          <BIT sel="10" tag_cloud="1'b0;">1'b0             </BIT>
+          <BIT sel="11" tag_cloud="cgm_dsp_apb_en;"> cgm_dsp_apb_en  </BIT>
+          <BIT sel="12" tag_cloud="cgm_dsp_ahb_en;">cgm_dsp_ahb_en    </BIT>
+          <BIT sel="13" tag_cloud="cgm_dsp_axi_en;">cgm_dsp_axi_en     </BIT>
+          <BIT sel="14" tag_cloud="cgm_tgdsp_core_en;">cgm_tgdsp_core_en</BIT>
+          <BIT sel="15" tag_cloud="cgm_ldsp_core_en;"> cgm_ldsp_core_en</BIT>
+          <BIT sel="16" tag_cloud="pmu_busmon0_eb;">pmu_busmon0_eb    </BIT>
+          <BIT sel="17" tag_cloud="pmu_busmon1_eb;">pmu_busmon1_eb     </BIT>
+          <BIT sel="18" tag_cloud="pmu_busmon2_eb;">pmu_busmon2_eb   </BIT>
+          <BIT sel="19" tag_cloud="pmu_busmon3_eb;"> pmu_busmon3_eb  </BIT>
+          <BIT sel="20" tag_cloud="pmu_busmon4_eb;">pmu_busmon4_eb    </BIT>
+          <BIT sel="21" tag_cloud="pmu_busmon5_eb;">pmu_busmon5_eb     </BIT>
+          <BIT sel="22" tag_cloud="pmu_busmon6_eb;">pmu_busmon6_eb   </BIT>
+          <BIT sel="23" tag_cloud="pmu_busmon7_eb;"> pmu_busmon7_eb  </BIT>
+          <BIT sel="24" tag_cloud="tg_peri_apb_bus_en;">tg_peri_apb_bus_en</BIT>
+          <BIT sel="25" tag_cloud="lte_peri_apb_bus_en;">lte_peri_apb_bus_en</BIT>
+          <BIT sel="29:26" tag_cloud="4'h0;">4'h0             </BIT>
+          <BIT sel="31:30" tag_cloud="2'b00;">2'b00           </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="56" tag_cloud=";">
+          <BIT sel="0" tag_cloud="saic_eb;">saic_eb    </BIT>
+          <BIT sel="1" tag_cloud="map_eb;">map_eb      </BIT>
+          <BIT sel="2" tag_cloud="gencorr_eb;">gencorr_eb   </BIT>
+          <BIT sel="3" tag_cloud="lse_eb;">lse_eb       </BIT>
+          <BIT sel="4" tag_cloud="btx_eb;">btx_eb     </BIT>
+          <BIT sel="5" tag_cloud="cdc_eb;">cdc_eb      </BIT>
+          <BIT sel="6" tag_cloud="brx_eb;">brx_eb       </BIT>
+          <BIT sel="7" tag_cloud="clk_saic_en;">clk_saic_en  </BIT>
+          <BIT sel="8" tag_cloud="clk_map_en;">clk_map_en </BIT>
+          <BIT sel="9" tag_cloud="clk_gcorr_en;">clk_gcorr_en</BIT>
+          <BIT sel="10" tag_cloud="clk_lse_en;">clk_lse_en   </BIT>
+          <BIT sel="11" tag_cloud="clk_btx_en;">clk_btx_en   </BIT>
+          <BIT sel="12" tag_cloud="clk_psk8_en;">clk_psk8_en</BIT>
+          <BIT sel="13" tag_cloud="clk_cdc_en;">clk_cdc_en  </BIT>
+          <BIT sel="14" tag_cloud="gsmcal_clk_eb;">gsmcal_clk_eb</BIT>
+          <BIT sel="15" tag_cloud="td_rft_clk_eb;">td_rft_clk_eb</BIT>
+          <BIT sel="16" tag_cloud="clk_all_en;">clk_all_en </BIT>
+          <BIT sel="17" tag_cloud="clk_tdfir_en;">clk_tdfir_en</BIT>
+          <BIT sel="18" tag_cloud="1'b0;">1'b0         </BIT>
+          <BIT sel="19" tag_cloud="1'b0;">1'b0         </BIT>
+          <BIT sel="20" tag_cloud="1'b0;">1'b0       </BIT>
+          <BIT sel="21" tag_cloud="1'b0;">1'b0        </BIT>
+          <BIT sel="22" tag_cloud="tg_tmr_eb;">tg_tmr_eb    </BIT>
+          <BIT sel="23" tag_cloud="lte_tmr_eb;">lte_tmr_eb   </BIT>
+          <BIT sel="24" tag_cloud="1'b0;">1'b0       </BIT>
+          <BIT sel="31:25" tag_cloud="7'h00;">7'h00       </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="57" tag_cloud=";">
+          <BIT sel="0" tag_cloud="ashb_lte_eb;">ashb_lte_eb        </BIT>
+          <BIT sel="1" tag_cloud="lte_axiclkdma_en;">lte_axiclkdma_en</BIT>
+          <BIT sel="2" tag_cloud="lte_axibus_arch_eb;">lte_axibus_arch_eb</BIT>
+          <BIT sel="3" tag_cloud="lte_dsp_slave_eb;">lte_dsp_slave_eb</BIT>
+          <BIT sel="4" tag_cloud="ashb_tg_eb;">ashb_tg_eb         </BIT>
+          <BIT sel="5" tag_cloud="tg_axiclkdma_en;">tg_axiclkdma_en </BIT>
+          <BIT sel="6" tag_cloud="tg_dsp_slave_eb;">tg_dsp_slave_eb   </BIT>
+          <BIT sel="7" tag_cloud="cgm_26m_stc_en;">cgm_26m_stc_en  </BIT>
+          <BIT sel="8" tag_cloud="accz_arch_eb_dsp_cp;">accz_arch_eb_dsp_cp</BIT>
+          <BIT sel="9" tag_cloud="tdproc_arch_eb;">tdproc_arch_eb  </BIT>
+          <BIT sel="10" tag_cloud="pmu_kasumi_eb;">pmu_kasumi_eb     </BIT>
+          <BIT sel="11" tag_cloud="pmu_hdec_eb;">pmu_hdec_eb     </BIT>
+          <BIT sel="12" tag_cloud="pmu_rbuf_eb;">pmu_rbuf_eb        </BIT>
+          <BIT sel="13" tag_cloud="1'b0;">1'b0            </BIT>
+          <BIT sel="14" tag_cloud="ahb_bus_arch_eb;">ahb_bus_arch_eb   </BIT>
+          <BIT sel="15" tag_cloud="apb_arch_eb;">apb_arch_eb     </BIT>
+          <BIT sel="16" tag_cloud="axi_arch_eb;">axi_arch_eb        </BIT>
+          <BIT sel="17" tag_cloud="1'b0;">1'b0            </BIT>
+          <BIT sel="18" tag_cloud="1'b0;">1'b0              </BIT>
+          <BIT sel="19" tag_cloud="clk_ulch_en;">clk_ulch_en     </BIT>
+          <BIT sel="20" tag_cloud="clk_dlch_en;">clk_dlch_en        </BIT>
+          <BIT sel="21" tag_cloud="clk_hdec_en;">clk_hdec_en     </BIT>
+          <BIT sel="22" tag_cloud="clk_che_en;">clk_che_en        </BIT>
+          <BIT sel="23" tag_cloud="clk_jda_en;">clk_jda_en      </BIT>
+          <BIT sel="24" tag_cloud="pmu_fir_sleep;">pmu_fir_sleep      </BIT>
+          <BIT sel="25" tag_cloud="pmu_che_sleep;">pmu_che_sleep   </BIT>
+          <BIT sel="26" tag_cloud="pmu_jda_sleep;">pmu_jda_sleep     </BIT>
+          <BIT sel="27" tag_cloud="pmu_tsb_sleep;">pmu_tsb_sleep   </BIT>
+          <BIT sel="28" tag_cloud="pmu_ulch_sleep;">pmu_ulch_sleep     </BIT>
+          <BIT sel="29" tag_cloud="pmu_dlch_sleep;">pmu_dlch_sleep  </BIT>
+          <BIT sel="31:30" tag_cloud="2'b00;">2'b00             </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="58" tag_cloud=";">
+          <BIT sel="0" tag_cloud="accz_arch_eb_wtl_aon;">accz_arch_eb_wtl_aon      </BIT>
+          <BIT sel="1" tag_cloud="clk_rtc_wcdma_aon_eb_wtl_aon;">clk_rtc_wcdma_aon_eb_wtl_aon</BIT>
+          <BIT sel="2" tag_cloud="1'b0;">1'b0                       </BIT>
+          <BIT sel="3" tag_cloud="ldsp_wdg_eb_wtl_aon;">ldsp_wdg_eb_wtl_aon       </BIT>
+          <BIT sel="4" tag_cloud="clk_rtc_lte_wdg_eb_wtl_aon;">clk_rtc_lte_wdg_eb_wtl_aon</BIT>
+          <BIT sel="5" tag_cloud="ldsp_syst_eb_wtl_aon;">ldsp_syst_eb_wtl_aon        </BIT>
+          <BIT sel="6" tag_cloud="ldsp_timer0_eb_wtl_aon;">ldsp_timer0_eb_wtl_aon     </BIT>
+          <BIT sel="7" tag_cloud="ldsp_timer1_eb_wtl_aon;">ldsp_timer1_eb_wtl_aon    </BIT>
+          <BIT sel="8" tag_cloud="gsm_stc_ahb_eb_wtl_aon;">gsm_stc_ahb_eb_wtl_aon    </BIT>
+          <BIT sel="9" tag_cloud="td_rft_ahb_eb_wtl_aon;">td_rft_ahb_eb_wtl_aon       </BIT>
+          <BIT sel="10" tag_cloud="1'b0;">1'b0                       </BIT>
+          <BIT sel="11" tag_cloud="tgdsp_wdg_eb_wtl_aon;">tgdsp_wdg_eb_wtl_aon      </BIT>
+          <BIT sel="12" tag_cloud="clk_rtc_tg_wdg_eb_wtl_aon;">clk_rtc_tg_wdg_eb_wtl_aon </BIT>
+          <BIT sel="13" tag_cloud="tgdsp_syst_eb_wtl_aon;">tgdsp_syst_eb_wtl_aon       </BIT>
+          <BIT sel="14" tag_cloud="tgdsp_timer0_eb_wtl_aon;">tgdsp_timer0_eb_wtl_aon    </BIT>
+          <BIT sel="15" tag_cloud="tgdsp_timer1_eb_wtl_aon;">tgdsp_timer1_eb_wtl_aon   </BIT>
+          <BIT sel="16" tag_cloud="lte_rft_ahb_eb_wtl_aon;">lte_rft_ahb_eb_wtl_aon    </BIT>
+          <BIT sel="17" tag_cloud="1'b0;">1'b0                        </BIT>
+          <BIT sel="18" tag_cloud="clk_rtc_td_rft_eb_wtl_aon;">clk_rtc_td_rft_eb_wtl_aon  </BIT>
+          <BIT sel="19" tag_cloud="clk_rtc_lte_rft_eb_wtl_aon;">clk_rtc_lte_rft_eb_wtl_aon</BIT>
+          <BIT sel="20" tag_cloud="clk_rtc_tg_syst_eb_wtl_aon;">clk_rtc_tg_syst_eb_wtl_aon</BIT>
+          <BIT sel="21" tag_cloud="clk_rtc_tg_tmr_eb_wtl_aon;">clk_rtc_tg_tmr_eb_wtl_aon   </BIT>
+          <BIT sel="22" tag_cloud="clk_rtc_lte_syst_eb_wtl_aon;">clk_rtc_lte_syst_eb_wtl_aon</BIT>
+          <BIT sel="23" tag_cloud="clk_rtc_lte_tmr_eb_wtl_aon;">clk_rtc_lte_tmr_eb_wtl_aon</BIT>
+          <BIT sel="24" tag_cloud="clk_rtc_gsm_stc_eb_wtl_aon;">clk_rtc_gsm_stc_eb_wtl_aon</BIT>
+          <BIT sel="25" tag_cloud="clk_26m_stc_eb_wtl_aon;">clk_26m_stc_eb_wtl_aon      </BIT>
+          <BIT sel="26" tag_cloud="clk_all_en_stc_wtl_aon;">clk_all_en_stc_wtl_aon     </BIT>
+          <BIT sel="27" tag_cloud="clk_all_en_td_rft_wtl_aon;">clk_all_en_td_rft_wtl_aon </BIT>
+          <BIT sel="31:28" tag_cloud="4'b0000;">4'b0000                   </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="59" tag_cloud=";">
+          <BIT sel="0" tag_cloud="wcdma_m5_access_en;">wcdma_m5_access_en   </BIT>
+          <BIT sel="1" tag_cloud="lacc2dsp_access_en;">lacc2dsp_access_en        </BIT>
+          <BIT sel="2" tag_cloud="1'b0;">1'b0                 </BIT>
+          <BIT sel="3" tag_cloud="tg_dma_busy;">tg_dma_busy              </BIT>
+          <BIT sel="4" tag_cloud="lte_dma_busy;">lte_dma_busy         </BIT>
+          <BIT sel="5" tag_cloud="lte_deep_sleep;">lte_deep_sleep            </BIT>
+          <BIT sel="6" tag_cloud="lte_doze_sleep;">lte_doze_sleep       </BIT>
+          <BIT sel="7" tag_cloud="lte_pub_light_sleep;">lte_pub_light_sleep      </BIT>
+          <BIT sel="8" tag_cloud="lte_pub_deep_sleep;">lte_pub_deep_sleep   </BIT>
+          <BIT sel="9" tag_cloud="wcdma_top_pub0_light_sleep;">wcdma_top_pub0_light_sleep</BIT>
+          <BIT sel="10" tag_cloud="wcdma_top_doze_stop;">wcdma_top_doze_stop  </BIT>
+          <BIT sel="11" tag_cloud="wcdma_top_pub0_deep_sleep;">wcdma_top_pub0_deep_sleep</BIT>
+          <BIT sel="12" tag_cloud="wcdma_top_deep_sleep;">wcdma_top_deep_sleep </BIT>
+          <BIT sel="13" tag_cloud="wtlcp_doze_stop;">wtlcp_doze_stop           </BIT>
+          <BIT sel="14" tag_cloud="wtlcp_pub_deep_stop;">wtlcp_pub_deep_stop  </BIT>
+          <BIT sel="15" tag_cloud="wtlcp_deep_stop;">wtlcp_deep_stop          </BIT>
+          <BIT sel="16" tag_cloud="wtlcp_light_stop;">wtlcp_light_stop     </BIT>
+          <BIT sel="17" tag_cloud="wcdma_mtx_stop;">wcdma_mtx_stop            </BIT>
+          <BIT sel="18" tag_cloud="wtlcp_tgdsp_core_stop;">wtlcp_tgdsp_core_stop</BIT>
+          <BIT sel="19" tag_cloud="wtlcp_ldsp_core_stop;">wtlcp_ldsp_core_stop     </BIT>
+          <BIT sel="20" tag_cloud="wtlcp_deep_stop_final;">wtlcp_deep_stop_final</BIT>
+          <BIT sel="21" tag_cloud="wcdma_mtx_s0_stop;">wcdma_mtx_s0_stop         </BIT>
+          <BIT sel="22" tag_cloud="axi_busy_hu3ge_b;">axi_busy_hu3ge_b     </BIT>
+          <BIT sel="23" tag_cloud="axi_busy_hu3ge_a;">axi_busy_hu3ge_a         </BIT>
+          <BIT sel="24" tag_cloud="wcdma_mtx_s0_stop;">wcdma_mtx_s0_stop    </BIT>
+          <BIT sel="25" tag_cloud="wcdma_slp_req_m0;">wcdma_slp_req_m0          </BIT>
+          <BIT sel="26" tag_cloud="wcdma_slp_req_m1;">wcdma_slp_req_m1     </BIT>
+          <BIT sel="27" tag_cloud="wcdma_slp_req_m2;">wcdma_slp_req_m2         </BIT>
+          <BIT sel="28" tag_cloud="wcdma_slp_req_m3;">wcdma_slp_req_m3     </BIT>
+          <BIT sel="29" tag_cloud="wcdma_slp_req_main;">wcdma_slp_req_main        </BIT>
+          <BIT sel="31:30" tag_cloud="2'h0;">2'h0                 </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="60" tag_cloud=";">
+          <BIT sel="0" tag_cloud="dsp_deep_sleep_en;">dsp_deep_sleep_en       </BIT>
+          <BIT sel="1" tag_cloud="tg_dsp_core_frc_sleep;">tg_dsp_core_frc_sleep              </BIT>
+          <BIT sel="2" tag_cloud="tg_dsp_core_stop_en;">tg_dsp_core_stop_en          </BIT>
+          <BIT sel="3" tag_cloud="lte_dsp_core_frc_sleep;">lte_dsp_core_frc_sleep  </BIT>
+          <BIT sel="4" tag_cloud="lte_dsp_core_stop_en;">lte_dsp_core_stop_en    </BIT>
+          <BIT sel="5" tag_cloud="acc2ddr_mux4to1_mtx_lp_ctrl_disable;">acc2ddr_mux4to1_mtx_lp_ctrl_disable</BIT>
+          <BIT sel="6" tag_cloud="dsp_cp_matrix_lp_ctrl_disable;">dsp_cp_matrix_lp_ctrl_disable</BIT>
+          <BIT sel="7" tag_cloud="lp_stat_acc2ddr_mtx_s0;">lp_stat_acc2ddr_mtx_s0  </BIT>
+          <BIT sel="8" tag_cloud="lp_stat_acc2ddr_mtx_m4;">lp_stat_acc2ddr_mtx_m4  </BIT>
+          <BIT sel="9" tag_cloud="lp_stat_acc2ddr_mtx_m3;">lp_stat_acc2ddr_mtx_m3             </BIT>
+          <BIT sel="10" tag_cloud="lp_stat_acc2ddr_mtx_m2;">lp_stat_acc2ddr_mtx_m2       </BIT>
+          <BIT sel="11" tag_cloud="lp_stat_acc2ddr_mtx_m1;">lp_stat_acc2ddr_mtx_m1  </BIT>
+          <BIT sel="12" tag_cloud="lp_stat_acc2ddr_mtx_m0;">lp_stat_acc2ddr_mtx_m0  </BIT>
+          <BIT sel="13" tag_cloud="lp_stat_dsp_cp_matrix_main;">lp_stat_dsp_cp_matrix_main         </BIT>
+          <BIT sel="14" tag_cloud="1'b1;">1'b1                         </BIT>
+          <BIT sel="15" tag_cloud="lp_stat_dsp_cp_matrix_s7;">lp_stat_dsp_cp_matrix_s7</BIT>
+          <BIT sel="16" tag_cloud="lp_stat_dsp_cp_matrix_s6;">lp_stat_dsp_cp_matrix_s6</BIT>
+          <BIT sel="17" tag_cloud="lp_stat_dsp_cp_matrix_s5;">lp_stat_dsp_cp_matrix_s5           </BIT>
+          <BIT sel="18" tag_cloud="lp_stat_dsp_cp_matrix_s4;">lp_stat_dsp_cp_matrix_s4     </BIT>
+          <BIT sel="19" tag_cloud="lp_stat_dsp_cp_matrix_s3;">lp_stat_dsp_cp_matrix_s3</BIT>
+          <BIT sel="20" tag_cloud="lp_stat_dsp_cp_matrix_s2;">lp_stat_dsp_cp_matrix_s2</BIT>
+          <BIT sel="21" tag_cloud="lp_stat_dsp_cp_matrix_s1;">lp_stat_dsp_cp_matrix_s1           </BIT>
+          <BIT sel="22" tag_cloud="lp_stat_dsp_cp_matrix_s0;">lp_stat_dsp_cp_matrix_s0     </BIT>
+          <BIT sel="23" tag_cloud="lp_stat_dsp_cp_matrix_m7;">lp_stat_dsp_cp_matrix_m7</BIT>
+          <BIT sel="24" tag_cloud="lp_stat_dsp_cp_matrix_m6;">lp_stat_dsp_cp_matrix_m6</BIT>
+          <BIT sel="25" tag_cloud="lp_stat_dsp_cp_matrix_m5;">lp_stat_dsp_cp_matrix_m5           </BIT>
+          <BIT sel="26" tag_cloud="lp_stat_dsp_cp_matrix_m4;">lp_stat_dsp_cp_matrix_m4     </BIT>
+          <BIT sel="27" tag_cloud="lp_stat_dsp_cp_matrix_m3;">lp_stat_dsp_cp_matrix_m3</BIT>
+          <BIT sel="28" tag_cloud="lp_stat_dsp_cp_matrix_m2;">lp_stat_dsp_cp_matrix_m2</BIT>
+          <BIT sel="29" tag_cloud="lp_stat_dsp_cp_matrix_m1;">lp_stat_dsp_cp_matrix_m1           </BIT>
+          <BIT sel="30" tag_cloud="lp_stat_dsp_cp_matrix_m0;">lp_stat_dsp_cp_matrix_m0     </BIT>
+          <BIT sel="31" tag_cloud="1'h0;">1'h0                    </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="61" tag_cloud=";">
+          <BIT sel="0" tag_cloud="int_req_busmon32;">int_req_busmon32</BIT>
+          <BIT sel="1" tag_cloud="int_req_busmon33;">int_req_busmon33</BIT>
+          <BIT sel="2" tag_cloud="int_req_busmon34;">int_req_busmon34</BIT>
+          <BIT sel="3" tag_cloud="int_req_busmon35;">int_req_busmon35</BIT>
+          <BIT sel="4" tag_cloud="int_req_busmon36;">int_req_busmon36</BIT>
+          <BIT sel="5" tag_cloud="int_req_busmon37;">int_req_busmon37</BIT>
+          <BIT sel="6" tag_cloud="int_req_busmon38;">int_req_busmon38</BIT>
+          <BIT sel="7" tag_cloud="int_req_busmon39;">int_req_busmon39</BIT>
+          <BIT sel="8" tag_cloud="int_req_busmon40;">int_req_busmon40</BIT>
+          <BIT sel="9" tag_cloud="int_req_busmon41;">int_req_busmon41</BIT>
+          <BIT sel="10" tag_cloud="int_req_busmon42;">int_req_busmon42</BIT>
+          <BIT sel="11" tag_cloud="int_req_busmon43;">int_req_busmon43</BIT>
+          <BIT sel="12" tag_cloud="int_req_busmon44;">int_req_busmon44</BIT>
+          <BIT sel="13" tag_cloud="int_req_busmon45;">int_req_busmon45</BIT>
+          <BIT sel="14" tag_cloud="int_req_busmon46;">int_req_busmon46</BIT>
+          <BIT sel="15" tag_cloud="int_req_busmon47;">int_req_busmon47</BIT>
+          <BIT sel="16" tag_cloud="int_req_busmon48;">int_req_busmon48</BIT>
+          <BIT sel="17" tag_cloud="int_req_busmon49;">int_req_busmon49</BIT>
+          <BIT sel="18" tag_cloud="int_req_busmon50;">int_req_busmon50</BIT>
+          <BIT sel="19" tag_cloud="int_req_busmon51;">int_req_busmon51</BIT>
+          <BIT sel="20" tag_cloud="int_req_busmon52;">int_req_busmon52</BIT>
+          <BIT sel="21" tag_cloud="int_req_busmon53;">int_req_busmon53</BIT>
+          <BIT sel="22" tag_cloud="int_req_busmon54;">int_req_busmon54</BIT>
+          <BIT sel="23" tag_cloud="int_req_busmon55;">int_req_busmon55</BIT>
+          <BIT sel="24" tag_cloud="int_req_busmon56;">int_req_busmon56</BIT>
+          <BIT sel="31:25" tag_cloud="7'h0;">7'h0            </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="62" tag_cloud=";">
+          <BIT sel="0" tag_cloud="int_req_busmon0;">int_req_busmon0 </BIT>
+          <BIT sel="1" tag_cloud="int_req_busmon1;">int_req_busmon1 </BIT>
+          <BIT sel="2" tag_cloud="int_req_busmon2;">int_req_busmon2 </BIT>
+          <BIT sel="3" tag_cloud="int_req_busmon3;">int_req_busmon3 </BIT>
+          <BIT sel="4" tag_cloud="int_req_busmon4;">int_req_busmon4 </BIT>
+          <BIT sel="5" tag_cloud="int_req_busmon5;">int_req_busmon5 </BIT>
+          <BIT sel="6" tag_cloud="int_req_busmon6;">int_req_busmon6 </BIT>
+          <BIT sel="7" tag_cloud="int_req_busmon7;">int_req_busmon7 </BIT>
+          <BIT sel="8" tag_cloud="int_req_busmon8;">int_req_busmon8 </BIT>
+          <BIT sel="9" tag_cloud="int_req_busmon9;">int_req_busmon9 </BIT>
+          <BIT sel="10" tag_cloud="int_req_busmon10;">int_req_busmon10</BIT>
+          <BIT sel="11" tag_cloud="int_req_busmon11;">int_req_busmon11</BIT>
+          <BIT sel="12" tag_cloud="int_req_busmon12;">int_req_busmon12</BIT>
+          <BIT sel="13" tag_cloud="int_req_busmon13;">int_req_busmon13</BIT>
+          <BIT sel="14" tag_cloud="int_req_busmon14;">int_req_busmon14</BIT>
+          <BIT sel="15" tag_cloud="int_req_busmon15;">int_req_busmon15</BIT>
+          <BIT sel="16" tag_cloud="int_req_busmon16;">int_req_busmon16</BIT>
+          <BIT sel="17" tag_cloud="int_req_busmon17;">int_req_busmon17</BIT>
+          <BIT sel="18" tag_cloud="int_req_busmon18;">int_req_busmon18</BIT>
+          <BIT sel="19" tag_cloud="int_req_busmon19;">int_req_busmon19</BIT>
+          <BIT sel="20" tag_cloud="int_req_busmon20;">int_req_busmon20</BIT>
+          <BIT sel="21" tag_cloud="int_req_busmon21;">int_req_busmon21</BIT>
+          <BIT sel="22" tag_cloud="int_req_busmon22;">int_req_busmon22</BIT>
+          <BIT sel="23" tag_cloud="int_req_busmon23;">int_req_busmon23</BIT>
+          <BIT sel="24" tag_cloud="int_req_busmon24;">int_req_busmon24</BIT>
+          <BIT sel="25" tag_cloud="int_req_busmon25;">int_req_busmon25</BIT>
+          <BIT sel="26" tag_cloud="int_req_busmon26;">int_req_busmon26</BIT>
+          <BIT sel="27" tag_cloud="int_req_busmon27;">int_req_busmon27</BIT>
+          <BIT sel="28" tag_cloud="int_req_busmon28;">int_req_busmon28</BIT>
+          <BIT sel="29" tag_cloud="int_req_busmon29;">int_req_busmon29</BIT>
+          <BIT sel="30" tag_cloud="int_req_busmon30;">int_req_busmon30</BIT>
+          <BIT sel="31" tag_cloud="int_req_busmon31;">int_req_busmon31</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="64" tag_cloud=";" />
+        <CHAN dr_len="32" sel="65" tag_cloud=";" />
+      </DAP>
+      <DAP sel="2" name="LDSP_D" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="4" name="TGDSP_P" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="5" name="LTE_DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="6" name="TGDSP_DMA" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="8" name="Laccx2Ldspx" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="49" name="WCDMA_DMA1" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+      <DAP sel="50" name="WCDMA_PCPW" subtree="AXI_BM" tag_cloud="BusMon;AXI;"/>
+    </WTLCP>
+    <PUBCP sel="6" tag_cloud="PUBCP;">
+      <DAP sel="8" tag_cloud="Debug;">
+        <CHAN dr_len="32" sel="0" tag_cloud="jtag_chain_pub_cp_slp0;">
+          <BIT sel="0" tag_cloud="cactive siganl for DDR path;">pub_cp_cactive_slv0_wakeup</BIT>
+          <BIT sel="1" tag_cloud="cr5_standbywfe_n;">cr5_standbywfe_n      </BIT>
+          <BIT sel="2" tag_cloud="1'b0;">lp_stat_dsp           </BIT>
+          <BIT sel="3" tag_cloud="lp_stat for MTX S4 LPC;">lp_stat_wcdma</BIT>
+          <BIT sel="4" tag_cloud="lp_stat for async bridge LPC;">pubcp_sys_lp_stat_ab      </BIT>
+          <BIT sel="5" tag_cloud="dma_link_eb;">dma_link_eb           </BIT>
+          <BIT sel="6" tag_cloud="dma_link_eb;">dma_link_eb           </BIT>
+          <BIT sel="7" tag_cloud="dma_link_busy;">dma_link_busy</BIT>
+          <BIT sel="8" tag_cloud="no use;">aon_access_pubcp          </BIT>
+          <BIT sel="9" tag_cloud="no use;">pubcp_sys_frc_stop_ack</BIT>
+          <BIT sel="10" tag_cloud="no use;">pubcp_sys_frc_stop_req</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="1" tag_cloud="jtag_chain_pub_cp_slp1;">
+          <BIT sel="0" tag_cloud="pubcp_sys_light_stop;">pubcp_sys_light_stop</BIT>
+          <BIT sel="1" tag_cloud="pubcp_sys_deep_stop;">pubcp_sys_deep_stop</BIT>
+          <BIT sel="2" tag_cloud="mcu_peri_stop;">       mcu_peri_stop      </BIT>
+          <BIT sel="3" tag_cloud="apb_peri_sleep;">apb_peri_sleep</BIT>
+          <BIT sel="4" tag_cloud="pubcp_sys_cr5_stop;">pubcp_sys_cr5_stop  </BIT>
+          <BIT sel="5" tag_cloud="1'h0;">reserved           </BIT>
+          <BIT sel="6" tag_cloud="dma_busy;">dma_busy           </BIT>
+          <BIT sel="7" tag_cloud="dma_link_busy;">dma_link_busy </BIT>
+          <BIT sel="8" tag_cloud="cr5_standbywfi_n;">cr5_standbywfi_n    </BIT>
+          <BIT sel="9" tag_cloud="gate enable for clk_apb;">cgm_apb_en         </BIT>
+          <BIT sel="10" tag_cloud="no use;">       cgm_cr5_axi_div2_en</BIT>
+          <BIT sel="11" tag_cloud="gate enable for clk_axi;">cgm_cr5_axi_en</BIT>
+          <BIT sel="12" tag_cloud="gate enable for clk_core;">cgm_cr5_core_en     </BIT>
+          <BIT sel="13" tag_cloud="apb_arch_eb;">apb_arch_eb        </BIT>
+          <BIT sel="14" tag_cloud="uart0_eb;">       uart0_eb           </BIT>
+          <BIT sel="15" tag_cloud="sim2_eb;">sim2_eb       </BIT>
+          <BIT sel="16" tag_cloud="sim1_eb;">sim1_eb             </BIT>
+          <BIT sel="17" tag_cloud="sim0_eb;">sim0_eb            </BIT>
+          <BIT sel="18" tag_cloud="iis0_eb;">       iis0_eb            </BIT>
+          <BIT sel="19" tag_cloud="ept1_eb;">ept1_eb       </BIT>
+          <BIT sel="20" tag_cloud="ept0_eb;">ept0_eb             </BIT>
+          <BIT sel="21" tag_cloud="vic_eb;">vic_eb             </BIT>
+          <BIT sel="22" tag_cloud="dma_eb;">       dma_eb             </BIT>
+          <BIT sel="23" tag_cloud="sec1_eb;">sec1_eb       </BIT>
+          <BIT sel="24" tag_cloud="sec0_eb;">sec0_eb             </BIT>
+          <BIT sel="25" tag_cloud="tft_eb;">tft_eb             </BIT>
+          <BIT sel="26" tag_cloud="sdio_eb;">       sdio_eb            </BIT>
+          <BIT sel="31:27" tag_cloud="5'h0;">reserved      </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="2" tag_cloud="jtag_chain_pub_cp_busmon_irq;">
+          <BIT sel="0" tag_cloud="busmon0_irq;">busmon0_irq</BIT>
+          <BIT sel="1" tag_cloud="busmon1_irq;">busmon1_irq</BIT>
+          <BIT sel="2" tag_cloud="busmon2_irq;">busmon2_irq        </BIT>
+          <BIT sel="3" tag_cloud="busmon3_irq;">busmon3_irq</BIT>
+          <BIT sel="4" tag_cloud="busmon4_irq;">busmon4_irq</BIT>
+          <BIT sel="5" tag_cloud="busmon5_irq;">busmon5_irq</BIT>
+          <BIT sel="6" tag_cloud="busmon6_irq;">busmon6_irq        </BIT>
+          <BIT sel="7" tag_cloud="busmon7_irq;">busmon7_irq</BIT>
+          <BIT sel="8" tag_cloud="busmon8_irq;">busmon8_irq</BIT>
+          <BIT sel="9" tag_cloud="busmon9_irq;">busmon9_irq</BIT>
+          <BIT sel="10" tag_cloud="busmon_axi_perf_irq;">busmon_axi_perf_irq</BIT>
+        </CHAN>
+        <CHAN dr_len="16" sel="18" tag_cloud="jtag_chain_lp_dbg_bus;" />
+        <CHAN dr_len="45" sel="19" tag_cloud="jtag_chain_pub_cp_mtx_dbg_bus;" />
+      </DAP>
+    </PUBCP>
+    <WCN sel="7" tag_cloud="WCN;">
+      <DAP sel="0" tag_cloud="Debug;">
+        <CHAN dr_len="20" sel="0" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME </BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM </BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD RMEA</BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD RMA</BIT>
+          <BIT sel="10" tag_cloud=";">RF2HD RMEB</BIT>
+          <BIT sel="14:11" tag_cloud=";">RF2HD RMB</BIT>
+          <BIT sel="15" tag_cloud=";">RF2UD RME </BIT>
+          <BIT sel="19:16" tag_cloud=";">RF2UD RM </BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="1" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="15" sel="2" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME </BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM </BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD RMEA</BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD RMA</BIT>
+          <BIT sel="10" tag_cloud=";">RF2HD RMEB</BIT>
+          <BIT sel="14:11" tag_cloud=";">RF2HD RMB</BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="3" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="35" sel="4" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1UD256x32  RME </BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1UD256x32  RM </BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD256x32  RMEA</BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD256x32  RMA</BIT>
+          <BIT sel="10" tag_cloud=";">RF2HD256x32  RMEB</BIT>
+          <BIT sel="14:11" tag_cloud=";">RF2HD256x32  RMB</BIT>
+          <BIT sel="15" tag_cloud=";">RF2UD180x32  RME </BIT>
+          <BIT sel="19:16" tag_cloud=";">RF2UD180x32 RM  </BIT>
+          <BIT sel="20" tag_cloud=";">RADHD368x32 RMEA </BIT>
+          <BIT sel="24:21" tag_cloud=";">RADHD368x32 RMA </BIT>
+          <BIT sel="25" tag_cloud=";">RADHD368x32 RMEB </BIT>
+          <BIT sel="29:26" tag_cloud=";">RADHD368x32 RMB </BIT>
+          <BIT sel="30" tag_cloud=";">ROM320x48 RME    </BIT>
+          <BIT sel="34:31" tag_cloud=";">ROM320x48 RM    </BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="5" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="15" sel="6" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF2HD RMEA       </BIT>
+          <BIT sel="4:1" tag_cloud=";">RF2HD RMA       </BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD RMEB</BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD RMB</BIT>
+          <BIT sel="10" tag_cloud=";">RME(sharkle only)</BIT>
+          <BIT sel="14:11" tag_cloud=";">RM(sharkle only)</BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="7" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1UD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1UD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="8" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="20" sel="9" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME </BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM </BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD RMEA   </BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD RMA   </BIT>
+          <BIT sel="10" tag_cloud=";">RF2HD RMEB</BIT>
+          <BIT sel="14:11" tag_cloud=";">RF2HD RMB</BIT>
+          <BIT sel="15" tag_cloud=";">ROM256x24 RME</BIT>
+          <BIT sel="19:16" tag_cloud=";">ROM256x24 RM</BIT>
+        </CHAN>
+        <CHAN dr_len="10" sel="10" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF2HD RMEA</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF2HD RMA</BIT>
+          <BIT sel="5" tag_cloud=";">RF2HD RMEB</BIT>
+          <BIT sel="9:6" tag_cloud=";">RF2HD RMB</BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="11" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1UD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1UD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="5" sel="12" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">RF1HD RME</BIT>
+          <BIT sel="4:1" tag_cloud=";">RF1HD RM</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="13" tag_cloud=";">
+          <BIT sel="2:0" tag_cloud=";">btwf_iram1_ls, btwf_iram1_ret, btwf_iram1_pd                                            </BIT>
+          <BIT sel="5:3" tag_cloud=";">btwf_iram0_ls, btwf_iram0_ret, btwf_iram0_pd                                            </BIT>
+          <BIT sel="8:6" tag_cloud=";">btwf_ram_ls_icache_data_0, btwf_ram_ret_icache_data_0, btwf_ram_pd_icache_data_0 (write)</BIT>
+          <BIT sel="11:9" tag_cloud=";">btwf_ram_ls_dcache_data_0, btwf_ram_ret_dcache_data_0, btwf_ram_pd_dcache_data_0 (write)</BIT>
+          <BIT sel="14:12" tag_cloud=";">btwf_ram_ls_icache_data_1, btwf_ram_ret_icache_data_1, btwf_ram_pd_icache_data_1 (write)</BIT>
+          <BIT sel="17:15" tag_cloud=";">btwf_ram_ls_dcache_data_1, btwf_ram_ret_dcache_data_1, btwf_ram_pd_dcache_data_1 (write)</BIT>
+          <BIT sel="20:18" tag_cloud=";">btwf_ram_ls_icache_data_2, btwf_ram_ret_icache_data_2, btwf_ram_pd_icache_data_2 (write)</BIT>
+          <BIT sel="23:21" tag_cloud=";">btwf_ram_ls_dcache_data_2, btwf_ram_ret_dcache_data_2, btwf_ram_pd_dcache_data_2 (write)</BIT>
+          <BIT sel="26:24" tag_cloud=";">btwf_ram_ls_icache_data_3, btwf_ram_ret_icache_data_3, btwf_ram_pd_icache_data_3 (write)</BIT>
+          <BIT sel="29:27" tag_cloud=";">btwf_ram_ls_dcache_data_3, btwf_ram_ret_dcache_data_3, btwf_ram_pd_dcache_data_3 (write)</BIT>
+          <BIT sel="31:30" tag_cloud=";">unused (write)                                                                          </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="14" tag_cloud=";">
+          <BIT sel="2:0" tag_cloud=";">gnss_iram0_ls, gnss_iram0_ret, gnss_iram0_pd                                            </BIT>
+          <BIT sel="5:3" tag_cloud=";">gnss_iram1_ls, gnss_iram1_ret, gnss_iram1_pd                                            </BIT>
+          <BIT sel="8:6" tag_cloud=";">gnss_ram_ls_icache_data_0, gnss_ram_ret_icache_data_0, gnss_ram_pd_icache_data_0 (write)</BIT>
+          <BIT sel="11:9" tag_cloud=";">gnss_ram_ls_dcache_data_0, gnss_ram_ret_dcache_data_0, gnss_ram_pd_dcache_data_0 (write)</BIT>
+          <BIT sel="14:12" tag_cloud=";">gnss_ram_ls_icache_data_1, gnss_ram_ret_icache_data_1, gnss_ram_pd_icache_data_1 (write)</BIT>
+          <BIT sel="17:15" tag_cloud=";">gnss_ram_ls_dcache_data_1, gnss_ram_ret_dcache_data_1, gnss_ram_pd_dcache_data_1 (write)</BIT>
+          <BIT sel="20:18" tag_cloud=";">gnss_ram_ls_icache_data_2, gnss_ram_ret_icache_data_2, gnss_ram_pd_icache_data_2 (write)</BIT>
+          <BIT sel="23:21" tag_cloud=";">gnss_ram_ls_dcache_data_2, gnss_ram_ret_dcache_data_2, gnss_ram_pd_dcache_data_2 (write)</BIT>
+          <BIT sel="26:24" tag_cloud=";">gnss_ram_ls_icache_data_3, gnss_ram_ret_icache_data_3, gnss_ram_pd_icache_data_3 (write)</BIT>
+          <BIT sel="29:27" tag_cloud=";">gnss_ram_ls_dcache_data_3, gnss_ram_ret_dcache_data_3, gnss_ram_pd_dcache_data_3 (write)</BIT>
+          <BIT sel="31:30" tag_cloud=";">unused (write)                                                                          </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="15" tag_cloud=";" />
+        <CHAN dr_len="32" sel="16" tag_cloud=";">
+          <BIT sel="4:0" tag_cloud=";">djtag_chain_po_lp_ctrl[4:0]</BIT>
+          <BIT sel="31" tag_cloud=";">djtag_chain_po_lp_ctrl[31]</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="17" tag_cloud=";">
+          <BIT sel="9:0" tag_cloud="equal to debug bus;">wcn_pad_debug_out_btwf_db[9:0]</BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="18" tag_cloud=";">
+          <BIT sel="3:0" tag_cloud=";">btwf_slp_status[3:0]</BIT>
+          <BIT sel="7:4" tag_cloud=";">gnss_slp_status[3:0]   </BIT>
+          <BIT sel="8" tag_cloud=";">gnss_deep_sleep_out </BIT>
+          <BIT sel="9" tag_cloud=";">btwf_deep_sleep_out    </BIT>
+          <BIT sel="10" tag_cloud=";">btwf_wakeup_lock    </BIT>
+          <BIT sel="11" tag_cloud=";"> gnss_pll_pd            </BIT>
+          <BIT sel="12" tag_cloud=";"> gnss_xtlbuf_pd      </BIT>
+          <BIT sel="13" tag_cloud=";">gnss_xtl_pd            </BIT>
+          <BIT sel="14" tag_cloud=";">btwf_pll_pd         </BIT>
+          <BIT sel="15" tag_cloud=";"> btwf_xtlbuf_pd         </BIT>
+          <BIT sel="16" tag_cloud=";"> btwf_xtl_pd         </BIT>
+          <BIT sel="17" tag_cloud=";">wcn_gnss_wrap_deep_stop</BIT>
+          <BIT sel="18" tag_cloud=";">gnss_chip_deep_sleep</BIT>
+          <BIT sel="19" tag_cloud=";"> wcn_wifi_wrap_deep_stop</BIT>
+          <BIT sel="20" tag_cloud=";"> btwf_chip_deep_sleep</BIT>
+          <BIT sel="21" tag_cloud=";">gnss_sys_deep_sleep    </BIT>
+          <BIT sel="22" tag_cloud=";">btwf_sys_deep_sleep </BIT>
+          <BIT sel="23" tag_cloud=";"> mainmtx_bus_clk_en     </BIT>
+          <BIT sel="24" tag_cloud=";"> gnssarm_bus_clk_en  </BIT>
+          <BIT sel="25" tag_cloud=";">btwfarm_bus_clkk_en    </BIT>
+          <BIT sel="26" tag_cloud=";">gnss_sys_stop       </BIT>
+          <BIT sel="27" tag_cloud=";"> btwf_sys_stop          </BIT>
+          <BIT sel="28" tag_cloud=";"> gnss_cm4_bus_stop   </BIT>
+          <BIT sel="29" tag_cloud=";">wifi_bus_stop          </BIT>
+          <BIT sel="30" tag_cloud=";">btwf_dma_bus_stop   </BIT>
+          <BIT sel="31" tag_cloud=";"> btwf_cm4_bus_stop      </BIT>
+        </CHAN>
+        <CHAN dr_len="32" sel="19" tag_cloud=";">
+          <BIT sel="0" tag_cloud=";">lp_stat_ddrmtx_m6     </BIT>
+          <BIT sel="1" tag_cloud=";">wcn_ddr_cactive_cd    </BIT>
+          <BIT sel="2" tag_cloud=";">ddrmtx_cactive_cd_s0</BIT>
+          <BIT sel="3" tag_cloud=";">ddrmtx_cactive_cd_m6 </BIT>
+          <BIT sel="4" tag_cloud=";">ddrmtx_cactive_cd_m5  </BIT>
+          <BIT sel="5" tag_cloud=";">ddrmtx_cactive_cd_m4  </BIT>
+          <BIT sel="6" tag_cloud=";">ddrmtx_cactive_cd_m3</BIT>
+          <BIT sel="7" tag_cloud=";">ddrmtx_cactive_cd_m2 </BIT>
+          <BIT sel="8" tag_cloud=";">ddrmtx_cactive_cd_m1  </BIT>
+          <BIT sel="9" tag_cloud=";">ddrmtx_cactive_cd_m0  </BIT>
+          <BIT sel="10" tag_cloud=";">wcn_top_light_stop  </BIT>
+          <BIT sel="11" tag_cloud=";">lp_stat_toddr        </BIT>
+          <BIT sel="12" tag_cloud=";">lp_stat_ddrmtx_s0     </BIT>
+          <BIT sel="13" tag_cloud=";">gpll_cnt_done         </BIT>
+          <BIT sel="14" tag_cloud=";">bbpll_cnt_done      </BIT>
+          <BIT sel="15" tag_cloud=";">xtlbuf_cnt_done      </BIT>
+          <BIT sel="16" tag_cloud=";">xtl_cnt_done          </BIT>
+          <BIT sel="17" tag_cloud=";">wcn_top_ddr_wake_up_n </BIT>
+          <BIT sel="18" tag_cloud=";">wifi_ddr_light_sleep</BIT>
+          <BIT sel="19" tag_cloud=";">wcn_ddr_cgm_busy_lpc </BIT>
+          <BIT sel="20" tag_cloud=";">cgm_busy_lpc_ddrmtx_m6</BIT>
+          <BIT sel="21" tag_cloud=";">cgm_busy_lpc_ddrmtx_s0</BIT>
+          <BIT sel="22" tag_cloud=";">extck_clkout_en_pre </BIT>
+          <BIT sel="23" tag_cloud=";">wcn_pmu_dummmy_26m_or</BIT>
+          <BIT sel="24" tag_cloud=";">wcn_pmu_dummy_32k_or  </BIT>
+          <BIT sel="25" tag_cloud=";">gnss_cgm_en           </BIT>
+          <BIT sel="26" tag_cloud=";">btwf_cgm_en         </BIT>
+          <BIT sel="27" tag_cloud=";">gps_pwr_pd           </BIT>
+          <BIT sel="28" tag_cloud=";">btwf_pwr_pd           </BIT>
+          <BIT sel="31:29" tag_cloud=";">reserved              </BIT>
+        </CHAN>
+      </DAP>
+    </WCN>
+  </SubSystem>
+  <AXI_BM>
+    <CHAN sel="30" tag_cloud="BUS;Status;">
+      <BIT sel="0" tag_cloud="Read;">RREADY</BIT>
+      <BIT sel="1" tag_cloud="Read;">RVALID</BIT>
+      <BIT sel="2" tag_cloud="Read;">ARREADY</BIT>
+      <BIT sel="3" tag_cloud="Read;">ARVALID</BIT>
+      <BIT sel="4" tag_cloud="Write;">BREADY</BIT>
+      <BIT sel="5" tag_cloud="Write;">BVALID</BIT>
+      <BIT sel="6" tag_cloud="Write;">WREADY</BIT>
+      <BIT sel="7" tag_cloud="Write;">WVALID</BIT>
+      <BIT sel="8" tag_cloud="Write;">AWREADY</BIT>
+      <BIT sel="9" tag_cloud="Write;">AWVALID</BIT>
+      <BIT sel="25" tag_cloud="Read;">R_MIS</BIT>
+      <BIT sel="26" tag_cloud="Read;">AR_MIS</BIT>
+      <BIT sel="27" tag_cloud="Write;">B_MIS</BIT>
+      <BIT sel="28" tag_cloud="Write;">W_MIS</BIT>
+      <BIT sel="29" tag_cloud="Write;">AW_MIS</BIT>
+      <BIT sel="30" tag_cloud="Read;">R_CHN_MIS</BIT>
+      <BIT sel="31" tag_cloud="Write;">W_CHN_MIS</BIT>
+    </CHAN>
+  </AXI_BM>
+</DJTAG>

@@ -1,0 +1,34 @@
+local &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF STATE.POWER()==FALSE()
+(
+	PRINT %ERROR "Please Power up device, and then, try it again!"
+	ENDDO
+)
+
+LOCAL &cpu
+&cpu=STRing.UPpeR(SYStem.CPU())
+
+IF (CPUFAMILY()!="ARM"||!CPUIS64BIT())
+(
+	PRINT "DDR Init only support by CORTEXA55"
+	ENDDO
+)
+
+D.LOAD "&CUR_DIR\minicode_ddr_init
+go
+wait 2000ms
+break
+
+D.TEST 0x80000000++0xfff /RANDOM
+IF FOUND()
+	WAIT 1.MS
+	PRINT "DDR INIT Failed!"
+ELSE
+	WAIT 1.MS
+	PRINT "DDR INIT OK!"
+ENDDO
+
+
+

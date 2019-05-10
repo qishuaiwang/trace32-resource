@@ -1,0 +1,69 @@
+
+#                TRACE32 Remote API
+#      Copyright (c) 1998-2015 Lauterbach GmbH
+#                All rights reserved
+#
+#                    GNU Makefile
+
+CC := gcc
+CFLAGS  := -pipe -c -MMD -MP -fPIC -Wall -Wextra -O2 -g -DENABLE_NOTIFICATION 
+LDFLAGS := -shared
+CFLAGS32 := -m32
+CFLAGS64 := -m64
+RM := rm
+MKDIR := mkdir
+ODIR32 := linux
+ODIR64 := linux64
+SDIR := ../src
+TARGETLIB32 := t32api.so
+TARGETLIB64 := t32api64.so
+
+SRCS := hremote.c hlinknet.c
+DEPS := $(SRCS:%.c=%.d)
+OBJS := $(SRCS:%.c=%.o)
+
+OBJS32 := $(addprefix $(ODIR32)/,$(OBJS))
+OBJS64 := $(addprefix $(ODIR64)/,$(OBJS))
+DEPS32 := $(addprefix $(ODIR32)/,$(DEPS))
+DEPS64 := $(addprefix $(ODIR64)/,$(DEPS))
+
+.PHONY: help
+help:
+	@echo
+	@echo make help ... show this help
+	@echo make all .... same as make rel
+	@echo make rel .... build t32api.so and t32api64.so
+	@echo make rel32 .. build t32api.so
+	@echo make rel64 .. build t32api64.so
+	@echo make clean .. delete directories ./linux and ./linux64
+	@echo
+
+.PHONY: all
+all: rel
+
+rel: rel32 rel64
+
+rel32: $(ODIR32)/$(TARGETLIB32)
+
+rel64: $(ODIR64)/$(TARGETLIB64)
+
+$(ODIR32) $(ODIR64):
+	$(MKDIR) $@
+
+$(ODIR32)/$(TARGETLIB32): $(OBJS32)
+	$(CC) $(LDFLAGS) $(CFLAGS32) -o $@ $^
+
+$(ODIR64)/$(TARGETLIB64): $(OBJS64)
+	$(CC) $(LDFLAGS) $(CFLAGS64) -o $@ $^
+
+$(ODIR32)/%.o : $(SDIR)/%.c | $(ODIR32)
+	$(CC) $(CFLAGS) $(CFLAGS32) -I$(SDIR) -o $@ $<
+
+$(ODIR64)/%.o : $(SDIR)/%.c | $(ODIR64)
+	$(CC) $(CFLAGS) $(CFLAGS64) -I$(SDIR) -o $@ $<
+
+-include $(DEPS32) $(DEPS64)
+
+.PHONY: clean extraclean
+clean extraclean:
+	-$(RM) -rf $(ODIR32) $(ODIR64)

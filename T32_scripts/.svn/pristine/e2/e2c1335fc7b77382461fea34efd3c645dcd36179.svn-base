@@ -1,0 +1,116 @@
+; qingwen.fang for busmon all enable/disable through DAP
+LOCAL &en_disable_bm &temp &cur_path
+ENTRY &en_disable_bm
+
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<3
+(
+	PRINT %ERROR "Please make sure Trace32 in Prepare MODE!"
+	ENDDO
+)
+
+LOCAL &proj_low &path_proj
+
+&proj_low=STRing.LoWeR("&project_sel")
+&path_proj=STRing.Replace("&g_proj_dir", "\", "/", 0)
+if ("&proj_low"=="iwhale2")||("&proj_low"=="isharkl2")
+	&path_proj="&path_proj/sys/script"
+else
+	&path_proj="&path_proj/DEBUG/sys"
+DO "&path_proj/&(proj_low)_djtag_busmon_info.cmm"
+  
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	DO "&cur_path/DJTAG_via_T32_edk.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+)
+
+run_djtag DJ_switch 0xFFFFFFFF
+
+&BUSMON_CHN_INT=0x8
+
+LOCAL &ssys &dap &busmon_en
+LOCAL &sys_number &dap_size
+
+if "X&en_disable_bm"=="X"
+	&en_disable_bm=1
+
+if &en_disable_bm>0
+	&busmon_en=0x00000001
+else
+	&busmon_en=0
+
+;**************************************************
+&i=0
+&sys_number=Var.STRing(\sys_num)+'.'
+while &i<&sys_number
+(
+	&temp_sys=Var.STRing(\sys_name[&i])
+	if "&temp_sys"==""
+		GOTO next_sys
+	&ssys=FORMAT.Decimal(1+((&i/10.)%1),&i)
+	&dap_size=Var.SIZEOF(\busmon_sys&ssys)/Var.SIZEOF(\busmon_sys&ssys[0])
+	&j=0
+	while &j<&dap_size
+	(
+		&temp_dap=Var.STRing(\busmon_sys&ssys[&j])
+		if "&temp_dap"=="N/A"
+			GOTO next_cyc
+		;&dap=STRing.SPLIT("&temp_dap","_dap",1)
+		GOSUB str_split "&temp_dap" "_dap" 1
+		ENTRY &dap
+		run_djtag DJ_excute &ssys. &dap. &BUSMON_CHN_INT &busmon_en 0
+next_cyc:	&j=&j+1
+	)
+next_sys:	&i=&i+1
+)
+
+if	&en_disable_bm>0
+	DIALOG.MESSAGE "All BUSMON Enable!!!"
+else
+	DIALOG.MESSAGE "All BUSMON Disable!!!"
+	
+run_djtag DJ_switch 0
+ENDDO
+
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %WARNING "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""

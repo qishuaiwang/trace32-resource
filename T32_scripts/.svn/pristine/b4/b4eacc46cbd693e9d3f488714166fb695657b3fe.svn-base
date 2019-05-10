@@ -1,0 +1,1401 @@
+LOCAL &all_project &all_Core			;在下拉列表中显示的选项
+LOCAL &project_force &core_force	;上次选择的信息配置
+LOCAL &DST_DIR										;上次选择的环境配置路径
+LOCAL &CUR_path										;工作目录所在路径
+LOCAL &tag_hardware &tag_debug &tag_exe ;项目要求环境配置信息
+LOCAL &dir_path &start_ENVIR_path &script_path										;环境配置路径下的目录名
+LOCAL &software_license &debug_license  &hardware_license ;当前软硬件环境信息
+LOCAL &CUR_DIR &PRO_TAR_DIR				;CUR为目标项目脚本路径，PRO为目标项目脚本copy路径
+LOCAL &script_path &PRO_TAR_DIR
+LOCAL &TAR_DIR
+LOCAL &configure_path      ;configure information path
+LOCAL &tag_path  ;T32 software path in server
+LOCAL &script_path ;run script path in server
+LOCAL &flge_software   ;判断software_license的标志
+LOCAL &Core_sel_num     ;code的个数
+LOCAL &flag_core
+LOCAL &tag_hardware &soft_path &tag_script_name &tag_exe
+LOCAL &all_Core
+LOCAL &advance_flag &common_path &advance_path;判断advance的标志
+LOCAL &debug_driver &debug_module &debug_gui_path 
+GLOBAL &project_sel
+LOCAL &Core_sel
+LOCAL &win_64_path &win_32_path ;bin文件path
+LOCAL &is_bare_metal ;OS select
+LOCAL &param_proj &param_core &param_bare_metal
+LOCAL &debug_cmd
+&debug_cmd="cmd /c"
+
+ENTRY &param_proj &param_core &param_bare_metal
+
+&win_64_path="bin\windows64"
+&win_32_path="bin\windows"
+
+LOCAL &temp
+&temp=OS.PPD()
+&CUR_path=STRing.Replace("&temp","/","\",0.)
+&advance_flag=0
+
+ON ERROR JUMPTO error_handler_script
+IF OS.FILE("&CUR_path/script.txt")==TRUE()
+( 
+	DEL "&CUR_path/script.txt"
+)
+AREA.CREATE SYSDEBUG 80. 200.
+;AREA.VIEW SYSDEBUG
+AREA.SELECT SYSDEBUG
+
+&common_path="&CUR_path/.."
+
+;read old configure information
+OPEN #1 "&CUR_path\configure.txt" /Read
+READ #1 %line &project_force
+READ #1 %line &core_force
+READ #1 %line &DST_DIR
+READ #1 %line &debug_driver
+READ #1 %line &debug_module
+READ #1 %line &is_bare_metal
+CLOSE #1
+
+
+&configure_path="&common_path\configure"
+;read &all_project in list
+GOSUB all_project_configure	
+
+LOCAL &show_dialog
+&show_dialog=1
+IF ("X&param_proj"!="X")&&("X&param_core"!="X")
+(
+	&show_dialog=0
+	&project_sel="&param_proj"
+	&core_force="&param_core"
+)
+ELSE IF ("X&param_proj"!="X")
+(
+	&show_dialog=1
+	&project_force="&param_proj"
+)
+
+IF ("X&param_bare_metal"!="X")
+(
+	IF ("&param_bare_metal"=="1")||("&param_bare_metal"=="small_sys")
+	(
+		&is_bare_metal="small_sys"
+	)
+	ELSE
+	(
+		&is_bare_metal="os_sys"
+	)
+)
+
+IF &show_dialog==1
+(
+	;select project and core
+	GOSUB project_configure
+	ENTRY &project_sel &core_force &debug_driver &debug_module
+)
+;get environment configure
+GOSUB cfg_information &project_sel &core_force
+ENTRY  &tag_hardware &soft_path &tag_script_name &tag_exe
+
+;&temp=STRing.MID("&project_sel",0.,1.)
+;IF ("&temp"=="i")
+;(
+;	GOSUB detect_hardware &tag_hardware
+;	ENTRY &flag_core
+;	;&flge_software=1. software is ok
+;	;&flge_software=0. software is old
+;	;&flge_software=2. hardware is old
+;	GOSUB detect_software
+;	ENTRY &flge_software
+;)
+;ELSE
+(
+	&flge_software=1.
+)
+&tag_exe=STRing.Replace("&tag_exe","/","\",0.)
+&tag_path="\\cvsrv1\SystemDebug\T32_software\&dir_path"
+&script_path="&common_path\T32_project"
+;&tag_path=STRing.Replace("&tag_path","/","\",0.)
+
+IF &show_dialog==1
+(
+	OPEN #1 "&CUR_path\configure.txt" /Create
+	WRITE #1 "&project_sel"
+	WRITE #1 "&core_force"
+	WRITE #1 "&DST_DIR"
+	WRITE #1 "&debug_driver"
+	WRITE #1 "&debug_module"
+	WRITE #1 "&is_bare_metal"
+	CLOSE #1
+)
+
+&Core_sel="&core_force"
+
+IF (&flge_software==0.)
+(
+	;确认上次运行的路径
+	LOCAL &cur &target_env_exe
+	&cur="&DST_DIR/&dir_path"
+	IF (OS.DIR(&cur)!=TRUE())
+	(
+		IF (&advance_flag==1)
+		(
+			&DST_DIR=STRing.Replace("&DST_DIR","/","\",0.)
+			GOSUB path_sel &DST_DIR
+			ENTRY &DST_DIR
+			;read project and core information
+			;OPEN #1 &CUR_path\configure.txt /Create
+			;WRITE #1 "&project_sel"
+			;WRITE #1 "&core_force"
+			;WRITE #1 "&DST_DIR"
+			;WRITE #1 "&debug_driver"
+			;WRITE #1 "&debug_module"
+			;WRITE #1 "&is_bare_metal"
+			;CLOSE #1
+			&DST_DIR=STRing.Replace("&DST_DIR","/","\",0.)
+			&DST_DIR="&DST_DIR\&dir_path"
+			OS.Hidden xcopy &tag_path\* &DST_DIR\* /Y /E /C /Q /R
+			PRINT OS.RETURN()
+			PRINT "xcopy &tag_path\* &DST_DIR\* /Y /E /C /Q /R"
+			;添加硬件和debug判断信息
+			;GOSUB check_environment
+		
+			&target_env_exe=STRing.Replace("&DST_DIR","\","/",0.)
+			GOSUB bin_win_exist &target_env_exe &tag_exe1
+			ENTRY &target_env_exe
+			&target_env_exe=STRing.Replace("&target_env_exe","/","\",0.)
+			&CUR_DIR="&script_path\&project_sel"
+			
+			&PRO_TAR_DIR="&CUR_DIR"
+			
+			LOCAL &envir_temp_cfg &cur_path_local
+			&envir_temp_cfg=VERSION.ENVironment(TMP)
+			OS.Hidden xcopy &start_ENVIR_path\* &envir_temp_cfg\* /Y /E /C /Q /R
+			PRINT OS.RETURN()
+			PRINT "xcopy &start_ENVIR_path\* &envir_temp_cfg\* /Y /E /C /Q /R"
+			
+			&ID1="T32_1000049.t32"
+			&core_id="1"
+			&API_PORT="20010"
+			&INTER_PORT="10009"
+			&PBI_module="SIM"
+			&Envir_path_local="&DST_DIR"
+			;AREA.CLEAR
+			;AREA.CLOSE SYSDEBUG
+			
+			GOSUB check_intercom &INTER_PORT
+			GOSUB gen_t32_config &ID1 &core_id &API_PORT &INTER_PORT &PBI_module &PBI_module &Envir_path_local	
+			GOSUB save_exe_configue
+			&temp=STRing.LENgth("&target_env_exe -c &envir_temp_cfg\&ID1 &CUR_path\envir_cfg.cmm")
+			IF (&temp<200.)
+			(
+				PRINT "OS &target_env_exe -c &envir_temp_cfg\&ID1 &CUR_path\envir_cfg.cmm"
+				OS.Hidden &target_env_exe -c &envir_temp_cfg\&ID1, &CUR_path\envir_cfg.cmm
+			)
+			ELSE
+			(
+				PRINT "cmd len is:&temp"
+				GOSUB detect_intercom_open
+				OS.Hidden &target_env_exe -c &envir_temp_cfg\&ID1	
+				INTERCOM.WAIT localhost:10009
+				INTERCOM.executeNoWait 10009 cd.do &CUR_path\envir_cfg.cmm	
+			)
+			WAIT 1.s
+			quit
+		)
+		ELSE 
+		(
+			;AREA.CLEAR
+			;AREA.CLOSE SYSDEBUG
+			;DIALOG.OK "no match software,please update match software" 
+			Print &error "no match software,please update match software"
+			quit
+		)
+	)
+	ELSE
+	(
+		;添加硬件和debug判断信息
+		;GOSUB check_environment
+		;OPEN #1 &CUR_path\configure.txt /Create
+		;WRITE #1 "&project_sel"
+		;WRITE #1 "&core_force"
+		;WRITE #1 "&DST_DIR"
+		;WRITE #1 "&debug_driver"
+		;WRITE #1 "&debug_module"
+		;WRITE #1 "&is_bare_metal"
+		;CLOSE #1
+		&DST_DIR=STRing.Replace("&DST_DIR","/","\",0.)
+		&DST_DIR="&DST_DIR\&dir_path"
+		&CUR_DIR="&script_path\&project_sel"
+		&PRO_TAR_DIR="&CUR_DIR"
+		
+		&target_env_exe=STRing.Replace("&cur","\","/",0.)
+		GOSUB bin_win_exist &target_env_exe &tag_exe1
+		ENTRY &target_env_exe
+		&target_env_exe=STRing.Replace("&target_env_exe","/","\",0.)
+		
+		LOCAL &envir_temp_cfg &cur_path_local
+		&envir_temp_cfg=VERSION.ENVironment(TMP)
+		OS.Hidden xcopy &start_ENVIR_path\* &envir_temp_cfg\* /Y /E /C /Q /R
+		PRINT OS.RETURN()
+		PRINT "xcopy &start_ENVIR_path\* &envir_temp_cfg\* /Y /E /C /Q /R"
+		
+		&ID1="T32_1000049.t32"
+		&core_id="1"
+		&API_PORT="20010"
+		&INTER_PORT="10009"
+		&PBI_module="SIM"
+		&Envir_path_local="&DST_DIR"
+		;&tag_exe1=STRing.Replace("&tag_exe1","/","\",0.)
+		;AREA.CLEAR
+		
+		GOSUB check_intercom &INTER_PORT
+		
+		GOSUB gen_t32_config &ID1 &core_id &API_PORT &INTER_PORT &PBI_module &PBI_module &Envir_path_local
+		GOSUB save_exe_configue
+		&temp=STRing.LENgth("&target_env_exe -c &envir_temp_cfg\&ID1 &CUR_path\envir_cfg.cmm")
+		IF (&temp<200.)
+		(
+			PRINT "OS &target_env_exe -c &envir_temp_cfg\&ID1 &CUR_path\envir_cfg.cmm"
+			OS.Hidden &target_env_exe -c &envir_temp_cfg\&ID1, &CUR_path\envir_cfg.cmm
+		)
+		ELSE
+		(
+			PRINT "cmd len is:&temp"
+			GOSUB detect_intercom_open
+			OS.Hidden &target_env_exe -c &envir_temp_cfg\&ID1	
+			INTERCOM.WAIT localhost:10009
+			INTERCOM.executeNoWait 10009 cd.do &CUR_path\envir_cfg.cmm	
+		)
+		WAIT 1.s
+		QUIT
+	)
+)
+ELSE IF (&flge_software==1.)
+(
+	;添加硬件和debug判断信息
+	&DST_DIR=OS.PSD()
+	&CUR_DIR="&script_path\&project_sel"
+	&PRO_TAR_DIR="&CUR_DIR"
+	
+	&cur_exe_path=VERSION.ENVironment(exe)
+
+	&parent_temp_path=OS.FILE.PATH("&cur_exe_path")
+	&parent_parent_temp_path="&parent_temp_path/.."
+	&cur_exe=OS.FILE.NAME("&cur_exe_path")
+
+	&tag_exe=STRing.Replace("&tag_exe","/","\",0.)
+
+	IF (ICD())&&((STRing.FIND("&Core_sel",",")==FALSE())&&(STRing.ComPare("&cur_exe_path","*&tag_exe*")==TRUE()))
+	(
+		DO &PRO_TAR_DIR\&tag_script_name &is_bare_metal
+	)
+	ELSE
+	(
+		GOSUB auto_start_t32
+		PRINT "Start &project_sel &Core_sel, Please Waiting ..."
+		QUIT
+	)
+)
+ON ERROR inherit
+
+AREA.CLOSE
+AREA.SELECT A000
+ENDDO &is_bare_metal
+
+auto_start_t32:
+	LOCAL &envir_temp_cfg &cur_path_local &target_env_exe &ID &temp
+	&cur_path_local=OS.PSD()
+	&envir_temp_cfg=VERSION.ENVironment(TMP)
+	
+	&target_env_exe=STRing.Replace("&cur_path_local","\","/",0.)
+	; build 60314 02/2015
+	;&temp=STRing.SPLIT("&tag_exe",",",0)
+	GOSUB str_split "&tag_exe" "," 0
+	ENTRY &temp
+	GOSUB bin_win_exist &target_env_exe &temp
+	ENTRY &target_env_exe
+	&target_env_exe=STRing.Replace("&target_env_exe","/","\",0.)
+	
+	&ID="TS.t32"
+	&core_id="1"
+	&API_PORT="20100"
+	&INTER_PORT="10100"
+	&PBI_module="SIM"
+	&Envir_path_local="&cur_path_local"
+
+	GOSUB check_intercom &INTER_PORT
+
+	GOSUB gen_t32_config &ID &core_id &API_PORT &INTER_PORT &PBI_module &Envir_path_local TEMP
+
+	GOSUB save_exe_configue
+	;OPEN #1 "&envir_temp_cfg\s.bat" /Create
+	;WRITE #1 "start &target_env_exe -c &envir_temp_cfg\&ID, &CUR_path\envir_cfg.cmm"
+	;;WRITE #1 "start &target_env_exe -c &envir_temp_cfg\&ID"
+	;CLOSE #1
+	;OS &debug_cmd "&envir_temp_cfg\s.bat"
+	OS "&target_env_exe" -c "&envir_temp_cfg\&ID", "&CUR_path\envir_cfg.cmm"
+RETURN
+;end of auto_start_t32
+
+
+
+detect_intercom_open:
+	LOCAL &intercom_flag
+	&t32_config=os.pcf()
+	OPEN #1 "&t32_config" /Read
+	READ #1 %line &headerline 
+	&i=0
+	&intercom_flag=0x0
+	WHILE !EOF()
+	(
+		READ #1 %line &temp
+		&temp=STRing.SCAN("&temp", ";T32 Intercom", 0)
+		IF &temp!=-1
+		(
+			READ #1 %line &temp
+			&temp=STRing.SCAN("&temp", "IC=NETASSIST", 0)
+			IF &temp!=-1
+			(
+				&intercom_flag=0x1
+			)
+		)
+	)
+	CLOSE #1
+	IF &intercom_flag!=0x1
+	(
+		DIALOG.OK "Please open T32 intercom,refer readme.docx!"
+		ENDDO
+	)
+RETURN
+
+save_exe_configue:
+	OPEN #1 "&CUR_path\exe_configue.txt" /Create
+	WRITE #1 "&is_bare_metal"
+	WRITE #1 "&debug_driver"
+	WRITE #1 "&debug_module"
+	WRITE #1 "&project_sel"
+	WRITE #1 "&Core_sel"
+	WRITE #1 "&tag_script_name"
+	WRITE #1 "&tag_exe"
+	CLOSE #1
+RETURN
+
+error_handler_script:
+	DIALOG.OK "Connect Target is fail, please check it !!!!"
+	ENDDO
+
+gen_t32_config:
+	LOCAL &ID &core_id &API_PORT &INTER_PORT &PBI_module &envir_path &core_sel &temp &ID_NAME &envir_temp_cfg
+	ENTRY &ID &core_id &API_PORT &INTER_PORT &PBI_module &envir_path &core_sel
+	&temp=OS.PTD()
+	; build 60314 02/2015
+	;&ID_NAME=STRing.SPLIT("&ID",".",0)
+	GOSUB str_split "&ID" "." 0
+	ENTRY &ID_NAME
+	&envir_temp_cfg=VERSION.ENVironment(TMP)
+	OPEN #1 "&envir_temp_cfg\&ID" /Create
+	WRITE #1 ";This configuration file is generated with T32Start2"
+	WRITE #1 ";==================================================="
+	WRITE #1 ""
+	WRITE #1 ";Environment Variables"
+	WRITE #1 "OS="
+	WRITE #1 "ID=&ID_NAME"
+	WRITE #1 "TMP=&temp"
+	WRITE #1 "SYS=&envir_path"
+	WRITE #1 "HELP=&envir_path\pdf"
+	WRITE #1 ""
+	WRITE #1 "; Standard License File used"
+	WRITE #1 ""
+	WRITE #1 ";T32 API Access"
+	WRITE #1 "RCL=NETASSIST"
+	WRITE #1 "PORT=&API_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 Intercom"
+	WRITE #1 "IC=NETASSIST"
+	WRITE #1 "PORT=&INTER_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 GDB"
+	WRITE #1 "; not used"
+	WRITE #1 ""
+	WRITE #1 ""
+	WRITE #1 ";Connection to Host"
+	IF ("&PBI_module"=="SIM")
+	(
+		WRITE #1 "PBI=&PBI_module"
+	)
+	ELSE
+	(
+		WRITE #1 "PBI="
+		WRITE #1 "&PBI_module"
+		WRITE #1 "CORE=&core_id"
+	)
+	WRITE #1 ""
+	WRITE #1 ";Screen Settings"
+	WRITE #1 "SCREEN=OFF"
+	;WRITE #1 "SCREEN="
+	WRITE #1 "FONT=SMALL"
+	WRITE #1 "HEADER=&project_force &core_sel TRACE32 PowerView &core_id [Power Debug &PBI_module]"
+	WRITE #1 ""
+	WRITE #1 ";Printer Settings:"
+	WRITE #1 "PRINTER=WINDOWS"
+	CLOSE #1
+RETURN
+;end gen_t32_config
+
+cfg_information:
+	LOCAL &tag_project &tag_core &temp
+	LOCAL &offset &data &headerline &unix_pan
+	LOCAL &tag_hardware &soft_path &tag_script_name &tag_exe
+	ENTRY &tag_project &tag_core
+	&tag_project=STRing.UPR("&tag_project")
+	&tag_core=STRing.UPR("&tag_core")
+
+	OPEN #1 "&configure_path\envir_cfg.txt" /Read
+	READ #1 %line &headerline 
+	PRINT "&headerline"
+	; script for newer software versions
+
+	&tag_hardware=""
+	&soft_path=""
+	&tag_script_name=""
+	&tag_exe=""
+	WHILE !EOF()
+	(
+		READ #1 %line &data
+		WHILE (STRing.LENgth("&data")!=0)&&(STRing.SCAN("&data","  ",0)!=-1)
+		(
+			&data=STRing.Replace("&data","  "," ",0.)
+		)
+		IF (STRing.LENgth("&data")!=0)
+		(
+			; build 60314 02/2015
+			;&unix_pan=STRing.SPLIT("&data"," ",0)
+			GOSUB str_split "&data" " " 0
+			ENTRY &unix_pan
+			&unix_pan=STRing.TRIM("&unix_pan")
+			IF ("&tag_project"==STRing.UPR("&unix_pan"))
+			(
+				;&unix_pan=STRing.SPLIT("&data"," ",1)
+				GOSUB str_split "&data" " " 1
+				ENTRY &unix_pan
+				&unix_pan=STRing.TRIM("&unix_pan")
+				&temp=STRing.SCAN("&tag_core",STRing.UPR("&unix_pan"),0)
+				IF (&temp!=-1)
+				(
+					;&unix_pan=STRing.SPLIT("&data"," ",2)
+					GOSUB str_split "&data" " " 2
+					ENTRY &unix_pan
+					&unix_pan=STRing.TRIM("&unix_pan")
+					IF "X&tag_hardware"=="X"
+					(
+						&tag_hardware="&unix_pan"
+					)
+					ELSE
+					(
+						&tag_hardware="&tag_hardware"+",&unix_pan"
+					)
+
+					;&unix_pan=STRing.SPLIT("&data"," ",3)
+					GOSUB str_split "&data" " " 3
+					ENTRY &unix_pan
+					&unix_pan=STRing.TRIM("&unix_pan")
+					IF "&soft_path"!="&unix_pan"
+					(
+						IF "X&soft_path"=="X"
+						(
+							&soft_path="&unix_pan"
+						)
+						ELSE
+						(
+							PRINT %ERROR "You set different soft path? &soft_path and &unix_pan"
+						)
+					)
+
+					;&unix_pan=STRing.SPLIT("&data"," ",4)
+					GOSUB str_split "&data" " " 4
+					ENTRY &unix_pan
+					&unix_pan=STRing.TRIM("&unix_pan")
+					IF "X&tag_script_name"=="X"
+					(
+						&tag_script_name="&unix_pan"
+					)
+					ELSE
+					(
+						&tag_script_name="&tag_script_name"+",&unix_pan"
+					)
+
+					;&unix_pan=STRing.SPLIT("&data"," ",5)
+					GOSUB str_split "&data" " " 5
+					ENTRY &unix_pan
+					&unix_pan=STRing.Replace("&unix_pan","\","/",0.)
+					IF "X&tag_exe"=="X"
+					(
+						&tag_exe="&unix_pan"
+					)
+					ELSE
+					(
+						&tag_exe="&tag_exe"+",&unix_pan"
+					)
+				)
+			)
+		)
+	)
+	CLOSE #1
+RETURN &tag_hardware &soft_path &tag_script_name &tag_exe
+
+;end cfg_information
+;start detect software
+detect_software:
+	LOCAL &soft_old &x86_sup &A53_sup &arm_sup 
+	LOCAL &soft_year &soft_mon &hardware_year &hardware_mon
+	LOCAL &hardware_license_end &SOFTWARE_license_end &local_date
+	;get LOCAL software license information
+	&SOFTWARE_license_end=VERSION.DATE();2015/07
+	;get LOCAL hardware license information
+	&hardware_license_end=license.date(0);2015/07
+	&local_date=CLOCK.DATE()
+	IF ("&hardware_license_end"!="")
+	(
+		&soft_year=STRing.MID("&SOFTWARE_license_end",0.,4.)+"."
+		&soft_mon=STRing.MID("&SOFTWARE_license_end",5.,2.)+"."
+		&hardware_year=STRing.MID("&hardware_license_end",0.,4.)+"."
+		&hardware_mon=STRing.MID("&hardware_license_end",5.,2.)+"."
+		IF ("&tag_hardware1"=="ATOM")
+		(
+			IF (&hardware_year<2016.)
+			(
+				&hardware_year=2016.
+				&hardware_mon=5.
+			)
+			Else IF (&hardware_year==2016.)
+			(
+				IF (&hardware_mon<=5.)
+				(
+					&hardware_year=2016.
+					&hardware_mon=5.
+				)
+			)
+
+		)
+		&year=&hardware_year-&soft_year
+		IF (&year==0.)
+		(
+			&temp=&hardware_mon-&soft_mon
+			IF ((&temp<12.)&&(&temp>=0.))
+			(
+				&soft_old=1.
+			)
+			else
+				&soft_old=2.
+		)
+		else IF (&year==1.)
+		(
+			&temp1=&hardware_mon-&soft_mon
+			IF (&temp1>0.)
+			(
+				&soft_old=0.
+			)
+			ELSE
+			(
+				&temp=&hardware_mon+12.-&soft_mon
+				IF ((&temp<12.)||(&temp==12.))
+				(
+					&soft_old=1.
+				)
+				else
+					&soft_old=0.
+			)
+		)
+		else IF (&year<0)
+			&soft_old=2.
+		else IF (&year>1.)
+			&soft_old=0.
+			
+		IF (&soft_old==0.)
+		(
+			;DIALOG.OK "software is old" 
+			PRINT %ERROR "ERROR:software is old!!!!"
+			&soft_old=1.
+			;ENDDO
+		)
+		else IF (&soft_old==2.)
+		(
+			;DIALOG.OK "hardware license is old" 
+			PRINT %ERROR "warning:hardware license is old!!!!"
+			&soft_old=1.
+		)
+	)
+	ELSE
+	(
+		&soft_old=1.
+	)
+	RETURN &soft_old
+;end detect software
+;start detect hardware
+detect_hardware:
+	LOCAL &X86_index &ARM_index &other_index
+	LOCAL &tag_hardware
+	ENTRY &tag_hardware
+	Var.NEWLOCAL char[5][10] \string_hardware
+	&i=0
+	WHILE &i<3.
+	(
+		&unix_pan=LICENSE.FAMILY(&i)
+		IF ("&unix_pan"=="Intel x86")
+		(
+			&X86_index=&i
+		)
+		else IF ("&unix_pan"=="ARM")
+		(
+			&ARM_index=&i
+		)
+		&i=&i+1
+	)
+	IF ("&X86_index"=="0")
+	(
+		IF ("&ARM_index"=="0")
+		(
+			&flag_core1=0
+			&flag_core2=0
+			&flag_core3=0
+			&flag_core4=0
+			&flag_core5=0
+			RETURN &flag_core1 &flag_core2 &flag_core3 &flag_core4 &flag_core5
+		)
+	)
+	IF ("&tag_hardware1"=="")
+	(
+		&flag_core1=0
+	)
+	else IF ("&tag_hardware1"=="ATOM")
+	(
+		IF "&X86_index"!=""
+		(
+			&hardware=license.features(&X86_index)
+			IF (STRing.FIND("&tag_hardware1",","))
+			(
+				&tag_hardware1=STRing.Replace("&tag_hardware1",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware1",0)
+			IF &temp!=-1
+			(
+				&flag_core1=1
+			)
+			else
+				&flag_core1=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	else
+	(
+		IF "&ARM_index"!=""
+		(
+			&hardware=license.features(&ARM_index)
+			IF (STRing.FIND("&tag_hardware1",","))
+			(
+				&tag_hardware1=STRing.Replace("&tag_hardware1",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware1",0)
+			IF &temp!=-1
+			(
+				&flag_core1=1
+			)
+			else
+				&flag_core1=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	IF ("&tag_hardware2"=="")
+	(
+		&flag_core2=0
+	)
+	else IF ("&tag_hardware2"=="ATOM")
+	(
+		IF "&X86_index"!=""
+		(
+			&hardware=license.features(&X86_index)
+			IF (STRing.FIND("&tag_hardware2",","))
+			(
+				&tag_hardware2=STRing.Replace("&tag_hardware2",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware2",0)
+			IF &temp!=-1
+			(
+				&flag_core2=1
+			)
+			else
+				&flag_core2=0
+		)	
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	else
+	(
+		IF "&ARM_index"!=""
+		(
+			&hardware=license.features(&ARM_index)
+			IF (STRing.FIND("&tag_hardware2",","))
+			(
+				&tag_hardware2=STRing.Replace("&tag_hardware2",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware2",0)
+			IF &temp!=-1
+			(
+				&flag_core2=1
+			)
+			else
+				&flag_core2=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	IF ("&tag_hardware3"=="")
+	(
+		&flag_core3=0
+	)
+	else IF ("&tag_hardware3"=="ATOM")
+	(
+		IF "&X86_index"!=""
+		(
+			&hardware=license.features(&X86_index)
+			IF (STRing.FIND("&tag_hardware3",","))
+			(
+				&tag_hardware3=STRing.Replace("&tag_hardware3",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware3",0)
+			IF &temp!=-1
+			(
+				&flag_core3=1
+			)
+			else
+				&flag_core3=0
+		)	
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	else
+	(
+		IF "&ARM_index"!=""
+		(
+			&hardware=license.features(&ARM_index)
+			IF (STRing.FIND("&tag_hardware3",","))
+			(
+				&tag_hardware3=STRing.Replace("&tag_hardware3",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware3",0)
+			IF &temp!=-1
+			(
+				&flag_core3=1
+			)
+			else
+				&flag_core3=0
+		)	
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	IF ("&tag_hardware4"=="")
+	(
+		&flag_core4=0
+	)
+	else IF ("&tag_hardware4"=="ATOM")
+	(
+		IF "&X86_index"!=""
+		(
+			&hardware=license.features(&X86_index)
+			IF (STRing.FIND("&tag_hardware4",","))
+			(
+				&tag_hardware4=STRing.Replace("&tag_hardware4",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware4",0)
+			IF &temp!=-1
+			(
+				&flag_core4=1
+			)
+			else
+				&flag_core4=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	else
+	(
+		IF "&ARM_index"!=""
+		(
+			&hardware=license.features(&ARM_index)
+			IF (STRing.FIND("&tag_hardware4",","))
+			(
+				&tag_hardware4=STRing.Replace("&tag_hardware4',",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware4",0)
+			IF &temp!=-1
+			(
+				&flag_core4=1
+			)
+			else
+				&flag_core4=0
+		)	
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	IF ("&tag_hardware5"=="")
+	(
+		&flag_core5=0
+	)
+	else IF ("&tag_hardware5"=="ATOM")
+	(
+		IF "&X86_index"!=""
+		(
+			&hardware=license.features(&X86_index)
+			IF (STRing.FIND("&tag_hardware5",","))
+			(
+				&tag_hardware5=STRing.Replace("&tag_hardware5",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware5",0)
+			IF &temp!=-1
+			(
+				&flag_core5=1
+			)
+			else
+				&flag_core5=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	else
+	(
+		IF "&ARM_index"!=""
+		(
+			&hardware=license.features(&ARM_index)
+			IF (STRing.FIND("&tag_hardware5",","))
+			(
+				&tag_hardware5=STRing.Replace("&tag_hardware5",",","*",0.)
+			)
+			&temp=STRing.SCAN("&hardware","&tag_hardware5",0)
+			IF &temp!=-1
+			(
+				&flag_core5=1
+			)
+			else
+				&flag_core5=0
+		)
+		ELSE
+		(
+			&flag_core1=0
+		)
+	)
+	RETURN &flag_core1 &flag_core2 &flag_core3 &flag_core4 &flag_core5
+;end detect hardware	
+path_sel:
+		LOCAL &copy_path &out_path
+		ENTRY &copy_path
+		IF ("&copy_path"=="")
+		(
+		&copy_path="C:"
+		)
+		&copy_path="&copy_path"+"/"
+		LOCAL &disk_free &disk_all &disk_percen
+		DIALOG
+		(
+		HEADER "BUTTON Demo"
+		POS 1. 1. 20.
+		LAB: EDIT "" ""
+		POS 22. 1. 10.
+		BUTTON "[:coloryellow]Browse..." "GOTO setdir"
+		POS 1. 2. 4.
+		myLabel: EDIT "0" ""
+		POS 5. 2. 4.
+		TEXT "GB to" 
+		POS 9. 2. 4.
+		myTEXT: DYNLTEXT ""
+		POS 13. 2. 2.
+		TEXT "GB" 
+		POS 22. 2. 5.
+		DEFBUTTON "Show"
+		(
+		&IndicatorLength=DIALOG.STRing(myLabel)+"."
+		DIALOG.Set myProgressBar &IndicatorLength
+		)
+		;progress bar with a width of 40. units.
+		POS 1. 4. 30. 1.
+		myProgressBar: BAR
+		
+		POS 1. 5. 5.
+		DEFBUTTON "OK" "CONTinue"
+		
+		POS 20. 5. 5.
+		BUTTON "Cancel" "GOTO cancel1"
+		CLOSE "GOTO cancel1"
+		)
+		;set default selections
+		DIALOG.SetDIR LAB  "&copy_path"
+		&retVal=DIALOG.STRing(LAB) ;get the string from the EDIT box
+		&out_path="&retVal"
+		&out_path=STRing.Replace("&out_path","\","/",0.)
+		&len=STRing.LENgth("&out_path")
+		&out_path=STRing.MID("&out_path",0.,&len-1.)
+		GOSUB get_freespace &retVal
+		ENTRY &disk_free &disk_all &disk_percen
+		DIALOG.Set myLabel "&disk_free"
+		DIALOG.Set myTEXT "&disk_all"
+		DIALOG.Set myProgressBar &disk_percen
+		STOP
+		DIALOG.END ;and then close the dialog
+		RETURN &out_path
+;end path_sel
+
+setdir:
+			DIALOG.SetDIR LAB C:\t32_test*
+			&retVal1=DIALOG.STRing(LAB) ;get the string from the EDIT box
+		IF ("&retVal1"!="&retVal")
+		(
+		&out_path="&retVal1"
+		GOSUB get_freespace &retVal1
+		ENTRY &disk_free &disk_all &disk_percen
+		DIALOG.Set myLabel "&disk_free" 
+		DIALOG.Set myTEXT "&disk_all"
+		DIALOG.Set myProgressBar &disk_percen
+		STOP
+		)
+		&out_path=STRing.Replace("&out_path","\","/",0.)
+		DIALOG.END ;and then close the dialog
+		RETURN &out_path
+			
+;end setdir
+
+get_freespace:
+		Var.NEWLOCAL char[6][13] \string_ID
+		Var.NEWLOCAL char[6][13] \string_free
+		Var.NEWLOCAL char[6][13] \string_all
+		LOCAL  &header_path &FREE_SPACE &ALL_SPACE &FREE_PERCEN
+		ENTRY &header_path
+		&header_path=STRing.MID("&header_path",0.,1.)
+		&unix_len=STRing.LEN("abcDEF")
+		OS.Hidden cmd.exe /c wmic logicaldisk where "drivetype=3" get DeviceID,size,freespace > &CUR_path\cmd.txt
+		WAIT 1.s
+		OS.Hidden cmd.exe /c type &CUR_path\cmd.txt > &CUR_path\cmd2.txt
+		WAIT 1.s
+		LOCAL &offset &data &headerline &unix_pan
+		OPEN #1 "&CUR_path\cmd2.txt" /Read
+		READ #1 %line &headerline 
+		PRINT "&headerline"
+		; script for newer software versions
+		;Var.set \i=0
+		&i=0
+		WHILE !EOF()
+		(
+		READ #1 %line &data
+		&unix_pan=STRing.MID("&data",0.,1.)
+		Var.set \string_ID[&i]="&unix_pan"
+		PRINT Var.STRing(\string_ID[&i])
+		&unix_pan=STRing.MID("&data",10.,12.)
+		Var.set \string_free[&i]="&unix_pan"
+		PRINT Var.STRing(\string_free[&i])
+		&unix_pan=STRing.MID("&data",24.,12.)
+		Var.set \string_all[&i]="&unix_pan"
+		PRINT Var.STRing(\string_all[&i])
+		PRINT "&data"
+		&i=&i+1
+		)
+		CLOSE #1
+		WHILE &i>0
+		(
+		&i=&i-1
+		&a=Var.STRing(\string_ID[&i])
+		IF ("&header_path"=="&a")
+		(
+		&FREE_SPACE=Var.STRing(\string_free[&i])
+		&FREE_SPACE=STRing.TRIM("&FREE_SPACE")+"."
+		&FREE_SPACE=&FREE_SPACE/1024./1024./1024.
+		&ALL_SPACE=Var.STRing(\string_all[&i])
+		&ALL_SPACE=STRing.TRIM("&ALL_SPACE")+"."
+		&ALL_SPACE=&ALL_SPACE/1024./1024./1024.
+		&FREE_PERCEN=100.*&FREE_SPACE/&ALL_SPACE
+		)
+		)
+		RETURN &FREE_SPACE &ALL_SPACE &FREE_PERCEN
+;end get_freespace
+
+check_environment:
+	IF ("&tag_hardware"!="&hardware_license")
+	(
+	DIALOG.OK "please change hardware" "hardware license: &hardware_license"
+	)
+	IF ("&tag_debug"!="&debug_license")
+	(
+	DIALOG.OK "please update trace32 driver" "debug license: &debug_license"
+	)
+RETURN
+;end cheak environment
+
+project_configure:
+	LOCAL &project_sel &Core_sel &module &driver
+re_select:
+	DIALOG
+	(
+		HEADER "project configure"
+		POS 0. 0. 29. 1.
+		TEXT ""
+		POS 1. 0. 12. 1.
+		TEXT "Select project_A:"
+		OptionA.SEL: DYNPULLDOWN ",,," "GOSUB project_core_sel DIALOG.STRing(OptionA.SEL)"
+		
+		POS 15. 0. 12. 1.
+		TEXT "Debug driver:"
+		OptionC.SEL: DEFCOMBOBOX "___,___" ""
+		
+		POS 1. 3. 12. 1.
+		TEXT "Select Core_B:"
+		POS 1. 4. 12. 5.
+		OptionB.SEL: MLISTBOX "AP,CP,A53, , , " ""
+		
+		POS 15. 3. 12. 1.
+		TEXT "Select Module:"
+		POS 15. 4.5 12. 1.
+		OptionD: CHECKBOX "________" ""
+		OptionE: CHECKBOX "________" ""
+
+		POS 15. 7. 12. 1.
+		TEXT "Select OS:"
+		POS 15. 8.5 14. 1.
+		OptionF: CHECKBOX "Bare_Metal" ""
+		
+		;buttons OK (Default) and Cancel
+		POS 2. 10. 10. 1.
+		DEFBUTTON "OK" "CONTinue"
+		POS 15. 10. 10. 1.
+		BUTTON "Cancel" "GOTO cancel"
+		;define action when window is closed
+		CLOSE "GOTO cancel"
+	)
+	;set default selections
+	IF (STRing.ComPare("&debug_driver","*DAP*")==TRUE())
+	(
+		DIALOG.SET OptionC.SEL  "*" "DAP,CPU"
+	)
+	else
+	(
+		DIALOG.SET OptionC.SEL  "*" "DAP,CPU"
+	)
+	IF (STRing.ComPare("&debug_module","*DJTAG*")==TRUE())
+	(
+		DIALOG.SET OptionD
+	)
+	IF (STRing.ComPare("&debug_module","*BUSMON*")==TRUE())
+	(
+		DIALOG.SET OptionE
+	)
+	IF ("&is_bare_metal"=="small_sys")
+	(
+		DIALOG.SET OptionF
+	)
+	DIALOG.DISABLE OptionD
+	DIALOG.DISABLE OptionE
+
+	;cur don't care
+	DIALOG.DISABLE OptionC.SEL
+
+	&project_force=STRing.TRIM("&project_force")
+	;PRINT "DIALOG.SET OptionA.SEL &project_force &all_project"
+	DIALOG.SET OptionA.SEL "&project_force" "&all_project"
+	GOSUB project_core_sel_before &project_force
+	ENTRY &all_Core
+	DIALOG.SET OptionB.SEL "&core_force" "&all_Core"
+	;STOP command halts script execution 
+	STOP
+	;script will continue here when "OK" button is clicked
+	;get selection
+	&project_sel=DIALOG.STRing(OptionA.SEL);
+	&Core_sel=DIALOG.STRing(OptionB.SEL);
+	IF "X&Core_sel"=="X"
+	(
+		PRINT %ERROR "select nothing?"
+		GOTO re_select
+	)
+	
+	;get &debug_driver &debug_module
+	&debug_driver=DIALOG.STRing(OptionC.SEL);
+	IF DIALOG.BOOLEAN(OptionD)
+	(
+		&module="DJTAG"
+	)
+	IF DIALOG.BOOLEAN(OptionD)
+	(
+		IF STRing.LENgth("&module")>0
+			&module="&module"+",BUSMON"
+		else
+			&module="BUSMON"
+	)
+	IF DIALOG.BOOLEAN(OptionF)
+	(
+		&is_bare_metal="small_sys"
+	)
+	ELSE
+	(
+		&is_bare_metal="os_sys"
+	)
+	DIALOG.END
+
+RETURN &project_sel &Core_sel &debug_driver &debug_module
+
+;end project_configure
+
+;read all_project_configure
+all_project_configure:
+	LOCAL &unix_pan &pre_project &headerline 
+	OPEN #1 "&configure_path\envir_cfg.txt" /Read
+	READ #1 %line &headerline 
+	; script for newer software versions
+	&i=0
+	&all_project=""
+	WHILE !EOF()
+	(
+		READ #1 %line &data
+		WHILE (STRing.LENgth("&data")!=0)&&(STRing.SCAN("&data","  ",0)!=-1)
+		(
+			&data=STRing.Replace("&data","  "," ",0.)
+		)
+		IF (STRing.LENgth("&data")!=0)
+		(
+			;&unix_pan=STRing.SPLIT("&data"," ",0)
+			GOSUB str_split "&data" " " 0
+			ENTRY &unix_pan
+			&unix_pan=STRing.TRIM("&unix_pan")
+			&i=&i+1
+			IF ("&unix_pan"!="&pre_project")
+			(
+				IF ("&all_project"=="")
+				(
+					&all_project="&unix_pan"
+				)
+				ELSE
+					&all_project="&all_project"+","+"&unix_pan"
+			)
+			&pre_project="&unix_pan"
+		)
+	)
+	CLOSE #1
+RETURN
+
+project_core_get:
+	LOCAL &project_end &core_sel_all &headerline 
+	ENTRY &project_end
+	&tag_project="&project_end"
+	LOCAL &offset &data &headerline &unix_pan
+	&tag_project=STRing.TRIM("&tag_project")
+	&tag_project=STRing.UPR("&tag_project")
+
+	OPEN #1 "&configure_path\envir_cfg.txt" /Read
+	READ #1 %line &headerline 
+
+	&core_sel_all=""
+	WHILE !EOF()
+	(
+		READ #1 %line &data
+		WHILE (STRing.LENgth("&data")!=0)&&(STRing.SCAN("&data","  ",0)!=-1)
+		(
+			&data=STRing.Replace("&data","  "," ",0.)
+		)
+		IF (STRing.LENgth("&data")!=0)
+		(
+			;&unix_pan=STRing.SPLIT("&data"," ",0)
+			GOSUB str_split "&data" " " 0
+			ENTRY &unix_pan
+			&unix_pan=STRing.TRIM("&unix_pan")
+
+			&project=STRing.UPR("&unix_pan")
+			IF ("&tag_project"=="&project")
+			(
+				;&unix_pan=STRing.SPLIT("&data"," ",1)
+				GOSUB str_split "&data" " " 1
+				ENTRY &unix_pan
+				IF (STRing.LENgth("&core_sel_all")!=0)
+					&core_sel_all="&core_sel_all"+",&unix_pan"
+				ELSE
+					&core_sel_all="&unix_pan"
+			)
+		)
+	)
+	CLOSE #1
+RETURN &core_sel_all
+
+project_core_sel:
+	LOCAL &core_sel_all &temp
+	LOCAL &project_end
+	ENTRY &project_end
+	&temp="&project_end"
+	&project_end=&temp
+	GOSUB project_core_get &project_end
+	ENTRY &core_sel_all
+	DIALOG.SET OptionB.SEL "&core_force" "&core_sel_all"
+
+	RETURN 
+	
+project_core_sel_before:
+	LOCAL &core_sel_all
+	LOCAL &project_end
+	ENTRY &project_end
+	GOSUB project_core_get &project_end
+	ENTRY &core_sel_all
+RETURN &core_sel_all
+
+cancel1:
+	DIALOG.END
+;script continues here when Cancel is clicked"
+cancel:
+	DIALOG.END
+	ENDDO
+
+
+bin_win_exist:
+	LOCAL &TEMP_PATH &LOCAL_PATH &PATH &cur
+	ENTRY &TEMP_PATH &LOCAL_PATH
+	&TEMP_PATH=STRing.Replace("&TEMP_PATH","/","\",0.)
+	&cur="&TEMP_PATH\&win_64_path\&LOCAL_PATH"
+	IF (OS.FILE(&cur)==TRUE())
+	(
+		&PATH="&cur"
+	)
+	ELSE
+	(
+		&cur="&TEMP_PATH\&win_32_path\&LOCAL_PATH"
+		IF (OS.FILE(&cur)==TRUE())
+		(
+			&PATH="&cur"
+		)
+		ELSE
+		(
+			PRINT %ERROR "not exist correct exe"
+			ENDDO
+		)
+	)
+	&PATH=STRing.Replace("&PATH","\","/",0.)
+RETURN &PATH
+
+t32m_kill_check:
+	LOCAL &task_name &PID &read_tasklist &temp &temp_file
+	ENTRY &PID
+	&temp_file="&CUR_path\tasklist.tmp"
+	OS &debug_cmd tasklist /FI "PID eq &PID" /FO CSV /NH > "&temp_file"
+	WHILE (OS.FILE("&temp_file")==FALSE())
+	(
+		WAIT 10.MS
+	)
+	OPEN #1 "&temp_file" /Read
+	READ #1 %line &read_tasklist
+	CLOSE #1
+	DEL "&temp_file"
+	&temp=STRing.SCAN("&read_tasklist","t32m",0)
+	IF &temp!=-1
+	(
+		;&temp=STRing.SPLIT("&read_tasklist",",",0)
+		GOSUB str_split "&read_tasklist" "," 0
+		ENTRY &temp
+		PRINT "Kill the &temp, PID is &PID"
+		OS &debug_cmd taskkill /F /T /PID &PID
+	)
+	ELSE
+	(
+		PRINT %ERROR "Fail! try to kill the &temp, PID is &PID, It's not T32 task!"
+	)
+RETURN
+; end of t32m_kill_check
+
+check_intercom:
+	LOCAL &read_id &temp &ID &temp_file
+	ENTRY &ID
+	ON ERROR GOTO use_win_cmd
+	IF INTERCOM.PING("localhost:&ID")
+		INTERCOM.executeNoWait localhost:&ID QUIT
+	ON ERROR inherit
+	IF INTERCOM.PING("localhost:&ID")==FALSE()
+		RETURN
+use_win_cmd:
+	ON ERROR inherit
+	&temp_file="&CUR_path\b.tmp"
+	OS &debug_cmd netstat -ano|findstr "0.0.0.0:&ID" > "&temp_file"
+	WHILE (OS.FILE("&temp_file")==FALSE())
+	(
+		WAIT 10.MS
+	)
+	OPEN #1 "&temp_file" /Read
+	READ #1 %line &read_id
+	CLOSE #1
+	DEL "&temp_file"
+
+	&temp=STRing.SCAN("&read_id","&ID",0)
+	IF &temp!=-1
+	(
+		&read_id=STRing.TRIM("&read_id")
+		WHILE (STRing.LENgth("&read_id")!=0)&&(STRing.SCAN("&read_id","  ",0)!=-1)
+		(
+			&read_id=STRing.Replace("&read_id","  "," ",0.)
+		)
+		;&temp=STRing.SPLIT("&read_id"," ",3)
+		GOSUB str_split "&read_id" " " 3
+		ENTRY &temp
+		GOSUB t32m_kill_check &temp
+		WAIT 1.MS
+	)
+	RETURN
+;end check_intercom
+
+
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %ERROR "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""

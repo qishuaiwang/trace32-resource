@@ -1,0 +1,46 @@
+system.mode down
+system.reset
+&MEM_TYPE="ZSD" ; ENAHB
+system.jtagclock 5.0Mhz
+
+system.cpu CORTEXA53 
+system.config CORENUMBER 1
+
+core.assign 1
+
+sys.config corebase 0x81410000
+SYS.CONFIG.CTIBase       0x81420000
+sys.config.bmc.base       0x81430000
+sys.config.etm.base       0x81440000
+
+;system.multiCore JTAGACCESSPORT 0
+;system.multicore COREJTAGPORT 0
+system.config MEMORYACCESSPORT 0
+;system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+;system.mode Prepare
+
+system.config SWDP ON
+system.mode Up
+
+
+;PMU FORCE DEEPSLEEP RELEASE
+D.S &MEM_TYPE:0x402B20E8 %LE %Long 0x80000
+
+; PMU FORCE RELEASE
+D.S &MEM_TYPE:0x402B2084 %LE %Long 0x02000000
+;D.S &MEM_TYPE:0x402B207C %LE %Long 0x02000000
+
+; PMU RESET RELEASE
+D.S &MEM_TYPE:0x402B10C4 %LE %Long 0x00004
+WAIT 1.S
+D.S &MEM_TYPE:0x402B20C4 %LE %Long 0x00004
+
+; PMU DEEPSLEEP RELEASE
+;D.S &MEM_TYPE:0x402B20E8 %LE %Long 0x00200000
+
+D.S &MEM_TYPE:0x402E2174 %LE %Long 0x400
+ENDDO
+
+

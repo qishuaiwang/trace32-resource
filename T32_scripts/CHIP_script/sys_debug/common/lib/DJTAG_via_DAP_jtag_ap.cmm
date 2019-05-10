@@ -1,0 +1,176 @@
+; ken.kuang for DJTAG interface by DAP JTAG-AP
+LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+
+LOCAL &DJ_jtag_port &DJ_core_port &DJ_main_core_port &DJ_switch_core_port
+&DJ_jtag_port=2.
+&DJ_main_core_port=0.
+&DJ_switch_core_port=4.
+&DJ_core_port=&DJ_main_core_port
+
+ON CMD run_dap GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	DO "&cur_path/DAP_jtag_ap.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+)
+
+ON CMD DJ_shift GOSUB
+(
+	LOCAL &reg &data &need_update &ir_len &dr_len &data2
+	ENTRY &reg &data &need_update &ir_len &dr_len &data2
+	LOCAL &tap_instr &write_data &read_data &ret &write_data2 &read_data2
+	IF "X&need_update"=="X"
+		&need_update=0
+	IF "X&ir_len"=="X"
+		&ir_len=9.
+	IF "X&dr_len"=="X"
+		&dr_len=32.
+	&write_data=0
+	&read_data=0
+	&write_data2=0
+	&read_data2=0
+	&tap_instr=&reg
+	IF (&need_update)!=0
+	(
+		&tap_instr=(&reg)|0x100
+		&write_data=&data
+		&write_data2=&data2
+	)
+	run_dap dap_ir &DJ_jtag_port &DJ_core_port &ir_len &tap_instr
+	ENTRY &ret
+	IF &ret<0
+		RETURN -1
+	run_dap dap_dr &DJ_jtag_port &DJ_core_port &dr_len 0 0 &write_data &write_data2
+	ENTRY &ret &read_data &read_data2
+	RETURN &ret &read_data &read_data2
+)
+
+
+ON CMD DJ_read GOSUB
+(
+	LOCAL &reg &ir_len &dr_len &ret &read_data &read_data2
+	ENTRY &reg &ir_len &dr_len
+	DJ_shift &reg 0 0 &ir_len &dr_len
+	ENTRY &ret &read_data &read_data2
+	RETURN &ret &read_data &read_data2
+)
+
+ON CMD DJ_write GOSUB
+(
+	LOCAL &reg &data &data2 &ir_len &dr_len &ret &read_data &read_data2
+	ENTRY &reg &data &ir_len &dr_len &data2
+	DJ_shift &reg &data 1 &ir_len &dr_len &data2
+	ENTRY &ret &read_data &read_data2
+	RETURN &ret &read_data &read_data2
+)
+
+ON CMD DJ_switch GOSUB
+(
+	LOCAL &data &reg &ret &read_data
+	ENTRY &data
+	&DJ_core_port=&DJ_switch_core_port
+;	&reg=0x1
+;	DJ_read &reg
+;	ENTRY &ret &read_data
+;	//PRINT "                                             Switch port IDCODE is &read_data"
+	&reg=0x8
+	DJ_write &reg &data
+;	DJ_read &reg
+;	ENTRY &ret &read_data
+;	//PRINT "                                             Switch is &read_data"
+;	&reg=0x1
+;	DJ_read &reg
+;	ENTRY &ret &read_data
+;	//PRINT "                                             Switch port IDCODE is &read_data"
+;	&DJ_core_port=&DJ_main_core_port
+;	&reg=0x1
+;	DJ_read &reg
+;	ENTRY &ret &read_data
+;	//PRINT "                                             DJTAG port IDCODE is &read_data"
+	run_dap dap_w_f &DJ_jtag_port
+	RETURN
+)
+
+ON CMD DJ_sw_s_d GOSUB
+(
+	LOCAL &sys &dap &ret &read_data &write_data &reg
+	ENTRY &sys &dap
+	IF "X&sys"=="X"
+		&sys=0
+	IF "X&dap"=="X"
+		&dap=0
+	&reg=0x8
+	DJ_read &reg
+	ENTRY &ret &read_data
+	//PRINT "                                             Current sys & dap is &read_data"
+	&write_data=(((&sys)&0xFF)<<8.)|(((&dap)&0xFF))
+	DJ_write &reg &write_data
+	RETURN
+)
+
+
+ON CMD DJ_exec GOSUB
+(
+	LOCAL &sys &dap &chan &data &rnw &ir_len &dr_len &data2
+	ENTRY &sys &dap &chan &data &rnw &ir_len &dr_len &data2
+	IF "X&chan"=="X"
+		&chan=1
+	IF "X&data"=="X"
+		&data=0
+	IF "X&rnw"=="X"
+		&rnw=1
+	LOCAL &ret &read_data &ret_value &read_data2 &ret_value2
+	run_dap dap_nsr_p &DJ_jtag_port ((1<<(&DJ_main_core_port))|(1<<(&DJ_switch_core_port)))
+	DJ_sw_s_d &sys &dap
+	IF &rnw==0
+	(
+		DJ_write &chan &data &ir_len &dr_len &data2
+		ENTRY &ret &ret_value &ret_value2
+		//DJ_read &chan &ir_len &dr_len
+		DJ_read &chan &ir_len &dr_len
+		ENTRY &ret &read_data &read_data2
+		//PRINT "                                             (w)read chan(&chan) is &read_data &read_data2"
+	)
+	ELSE
+	(
+		DJ_read &chan &ir_len &dr_len
+		ENTRY &ret &read_data &read_data2
+		//PRINT "                                             (r)read chan(&chan) is &read_data &read_data2"
+		&ret_value=&read_data
+		&ret_value2=&read_data2
+	)
+	RETURN &ret_value &ret_value2
+)
+
+ON CMD DJ_scan GOSUB
+(
+	LOCAL &sys &dap &chan &ir_len &dr_len &file_name &inv &detect_lenght &p_len
+	ENTRY &sys &dap &chan &dr_len &file_name &inv &detect_lenght &ir_len &p_len
+	IF "X&chan"=="X"
+		&chan=1
+	run_dap dap_nsr_p &DJ_jtag_port ((1<<(&DJ_main_core_port))|(1<<(&DJ_switch_core_port)))
+	DJ_sw_s_d &sys &dap
+
+	IF "X&ir_len"=="X"
+		&ir_len=9.
+	run_dap dap_ir &DJ_jtag_port &DJ_core_port &ir_len &chan
+	ENTRY &ret
+	IF &ret<0
+		RETURN -1
+	run_dap dap_scan &DJ_jtag_port &DJ_core_port &dr_len &file_name &inv &detect_lenght &p_len
+	RETURN
+)
+
+&cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10

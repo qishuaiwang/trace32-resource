@@ -1,0 +1,6 @@
+LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+&cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0

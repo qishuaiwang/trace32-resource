@@ -1,0 +1,596 @@
+;create by huigui at 06/06/2017
+; Modify by Ken.Kuang at 15/09/2017
+;bin.ji change for sharkl5
+LOCAL &MEM_TYPE &AVM_BASE &Core_N &W &H &OPS
+Var.NEWGLOBAL int[9][3] \core_offset_array
+LOCAL &prometheus_dataq_start_addr
+
+ENTRY &OPS &MEM_TYPE
+
+&Core_N=8
+IF "X&OPS"=="X"
+    &OPS="ALL"
+IF "X&MEM_TYPE"=="X"
+    &MEM_TYPE="EAXI"
+&AVM_BASE=0x210000
+&regsave_base=0X3C00A00C
+&W=100.
+&H=32.
+IF (SYStem.MODE()==0)||(SYStem.MODE()==04)
+	SYStem.MODE Prepare
+ELSE IF SYStem.MODE()==0XB
+	CONTINUE
+ELSE 
+	ENDDO
+IF ("X&OPS"=="XALL")||("X&OPS"=="XREAD")
+(
+	;clear AVM
+	D.S AVM:&AVM_BASE++0x7FFF %LE %Long 0
+	D.S AVM:0x220000++0x7FFF %LE %Long 0
+	D.S AVM:0x230000++0x7FFF %LE %Long 0
+	
+	GOSUB InitCoreParameters
+    AREA.CREATE Register &W (&H*&Core_N)
+    AREA.SELECT Register
+
+    if ("X&OPS"=="XALL")
+        GOSUB reg_save_enable
+    SYStem.CONFIG.ETB1.Base dap:0x82003000
+    LOCAL &i &is_prometheus &buf_offset
+    &i=0
+    WHILE (&i<&Core_N)
+    (
+		&is_prometheus=Var.Value(\core_offset_array[&i][0])
+		&buf_offset=Var.Value(\core_offset_array[&i][1])
+        GOSUB reg_read &i &is_prometheus &buf_offset Var.Value(\core_offset_array[&i][2])
+		IF (&is_prometheus==0)
+		(
+			GOSUB reg_show_save &i
+		)
+		ELSE
+		(
+			GOSUB reg_show_prometheus &i
+		)
+        &i=&i+1
+    )
+
+    AREA.SELECT A000
+    WinPOS 1 1 &W (&H) 0. 0. W002
+    AREA.VIEW Register
+    AREA.CLOSE Register
+)
+ELSE if "X&OPS"=="XTRIG"
+(
+    GOSUB reg_save_enable
+    PRINT "Trigger Done!"
+)
+
+ENDDO
+
+reg_save_enable:
+	ON ERROR GOTO Trigger_Fail
+	D.S &MEM_TYPE:(&regsave_base) %LE %Long (1<<7.)|(1<<9.)|(1<<8.)		;enable reg_autosave & soft trigger
+    WAIT 500.MS    ;wait system save cpu register data to ETF. the waiting time is depend on core num
+	D.S &MEM_TYPE:(&regsave_base) %LE %Long 0        ;disable automatic reigster saving
+	ON ERROR
+RETURN
+Trigger_Fail:
+	PRINT %ERROR "We can't Trigger the register save dump by EAXI fail!"
+	AREA.SELECT A000
+	AREA.CLOSE Register
+	PRINT %ERROR "We can't Trigger the register save dump by EAXI fail!"
+	ON ERROR
+	ENDDO
+
+reg_read:
+	LOCAL &tmp_data &tmp_addr &num &core_id &tmp_data &drop
+	ENTRY &core_id &is_prometheus &buf_offset &buf_size
+	&num=&buf_size   ;read all reg
+	IF "X&core_id"=="X"
+		&core_id=0
+
+	&tmp_addr=&AVM_BASE+&buf_offset
+	D.S EDAP:0x82003020 %LE %Long 0x0  ;disable etb
+	D.S EDAP:0x82003014 %LE %Long &buf_offset
+	REPEAT
+	(
+		&tmp_data=DATA.LONG(EDAP:0x82003010)
+		&drop=DATA.LONG(EDAP:0x82003010)
+		;PRINT &tmp_data &drop
+		D.S AVM:&tmp_addr %LE %Long &tmp_data
+		D.S AVM:&tmp_addr+4 %LE %Long &drop
+		&tmp_addr=&tmp_addr+8;
+		&num=&num-8;
+	)
+	WHILE (&num>0)
+;	GOSUB reg_show_save &core_id
+RETURN
+
+reg_show_save:
+	LOCAL &core_id &addr &temp &buf_offset &avm_offset
+	ENTRY &core_id
+	IF "X&core_id"=="X"
+		&core_id=0
+	LOCAL &X0 &X1 &X2 &X3 &X4 &X5 &X6 &X7 &X8 &X9 &X10 &X11 &X12 &X13 &X14 &X15 &X16
+	LOCAL &X17 &X18 &X19 &X20 &X21 &X22 &X23 &X24 &X25 &X26 &X27 &X28 &X29 &X30
+	LOCAL &SP &EL0_SP  &EL1_SP &EL2_SP &EL3_SP &EL1_ELR &EL2_ELR &EL3_ELR &PC &CPSR &SPSR_FIQ &SPSR_IRQ &SPSR_SVC_EL1 &SPSR_ABT &SPSR_UND &SPSR_MON_EL3 &SPSR_HYP_EL2 
+	LOCAL &SCTLR_EL1 &SCTLR_EL2 &SCTLR_EL3 &FAR_EL1 &FAR_EL2 &FAR_EL3 &HPFAR
+	;&addr=&AVM_BASE+(0x200*&core_id)
+	&buf_offset=Var.Value(\core_offset_array[&core_id][1])
+	&addr=&AVM_BASE+&buf_offset
+	&avm_offset=0x230000+0x1000*&core_id
+
+	&X0=Data.Quad(AVM:&addr+0x000)
+	&X1=Data.Quad(AVM:&addr+0x008)
+	&X2=Data.Quad(AVM:&addr+0x010)
+	&X3=Data.Quad(AVM:&addr+0x018)
+	&X4=Data.Quad(AVM:&addr+0x020)
+	&X5=Data.Quad(AVM:&addr+0x028)
+	&X6=Data.Quad(AVM:&addr+0x030)
+	&X7=Data.Quad(AVM:&addr+0x038)
+	&X8=Data.Quad(AVM:&addr+0x040)
+	&X9=Data.Quad(AVM:&addr+0x048)
+	&X10=Data.Quad(AVM:&addr+0x050)
+	&X11=Data.Quad(AVM:&addr+0x058)
+	&X12=Data.Quad(AVM:&addr+0x060)
+	&X13=Data.Quad(AVM:&addr+0x068)
+	&X14=Data.Quad(AVM:&addr+0x070)
+	&X15=Data.Quad(AVM:&addr+0x078)
+	&X16=Data.Quad(AVM:&addr+0x080)
+	&X17=Data.Quad(AVM:&addr+0x088)
+	&X18=Data.Quad(AVM:&addr+0x090)
+	&X19=Data.Quad(AVM:&addr+0x098)
+	&X20=Data.Quad(AVM:&addr+0x0A0)
+	&X21=Data.Quad(AVM:&addr+0x0A8)
+	&X22=Data.Quad(AVM:&addr+0x0B0)
+	&X23=Data.Quad(AVM:&addr+0x0B8)
+	&X24=Data.Quad(AVM:&addr+0x0C0)
+	&X25=Data.Quad(AVM:&addr+0x0C8)
+	&X26=Data.Quad(AVM:&addr+0x0D0)
+	&X27=Data.Quad(AVM:&addr+0x0D8)
+	&X28=Data.Quad(AVM:&addr+0x0E0)
+	&X29=Data.Quad(AVM:&addr+0x0E8)
+	&X30=Data.Quad(AVM:&addr+0x0F0)
+	&EL0_SP=Data.Quad(AVM:&addr+0x0F8)
+	&EL1_SP=Data.Quad(AVM:&addr+0x100)
+	&EL2_SP=Data.Quad(AVM:&addr+0x108)
+	&EL3_SP=Data.Quad(AVM:&addr+0x110)
+	&EL1_ELR=Data.Quad(AVM:&addr+0x118)
+	&EL2_ELR=Data.Quad(AVM:&addr+0x120)
+	&EL3_ELR=Data.Quad(AVM:&addr+0x128)
+	&PC=Data.Quad(AVM:&addr+0x130)
+	
+	&CPSR=Data.Quad(AVM:&addr+0x138)
+	;&CPSR=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_FIQ=Data.Quad(AVM:&addr+0x140)
+	;&SPSR_FIQ=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_IRQ=Data.Quad(AVM:&addr+0x148)
+	;&SPSR_IRQ=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_SVC_EL1=Data.Quad(AVM:&addr+0x150)
+	;&SPSR_SVC_EL1=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_ABT=Data.Quad(AVM:&addr+0x158)
+	;&SPSR_ABT=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_UND=Data.Quad(AVM:&addr+0x160)
+	;&SPSR_UND=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_MON_EL3=Data.Quad(AVM:&addr+0x168)
+	;&SPSR_MON_EL3=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	&SPSR_HYP_EL2=Data.Quad(AVM:&addr+0x170)
+	;&SPSR_HYP_EL2=(&temp&0xFFFFFFFF003FFFFF)+((&temp&0xFFC00000)<<3.)
+	
+	&SCTLR_EL1=Data.Quad(AVM:&addr+0x178)
+	&SCTLR_EL2=Data.Quad(AVM:&addr+0x180)
+	&SCTLR_EL3=Data.Quad(AVM:&addr+0x188)
+	&FAR_EL1=Data.Quad(AVM:&addr+0x190)
+	&FAR_EL2=Data.Quad(AVM:&addr+0x198)
+	&FAR_EL3=Data.Quad(AVM:&addr+0x1A0)
+	&HPFAR=Data.Quad(AVM:&addr+0x1A8)
+
+	PRINT ""
+	PRINT "----------------------------- Core &core_id -----------------------------"
+	PRINT "    X0           0x"              FORMAT.HEX(16., &X0)
+	PRINT  %CONTinue "  X16          0x"     FORMAT.HEX(16., &X16)
+	PRINT "    X1           0x"              FORMAT.HEX(16., &X1)
+	PRINT  %CONTinue "  X17          0x"     FORMAT.HEX(16., &X17)
+	PRINT "    X2           0x"              FORMAT.HEX(16., &X2)
+	PRINT  %CONTinue "  X18          0x"     FORMAT.HEX(16., &X18)
+	PRINT "    X3           0x"              FORMAT.HEX(16., &X3)
+	PRINT  %CONTinue "  X19          0x"     FORMAT.HEX(16., &X19)
+	PRINT "    X4           0x"              FORMAT.HEX(16., &X4)
+	PRINT  %CONTinue "  X20          0x"     FORMAT.HEX(16., &X20)
+	PRINT "    X5           0x"              FORMAT.HEX(16., &X5)
+	PRINT  %CONTinue "  X21          0x"     FORMAT.HEX(16., &X21)
+	PRINT "    X6           0x"              FORMAT.HEX(16., &X6)
+	PRINT  %CONTinue "  X22          0x"     FORMAT.HEX(16., &X22)
+	PRINT "    X7           0x"              FORMAT.HEX(16., &X7)
+	PRINT  %CONTinue "  X23          0x"     FORMAT.HEX(16., &X23)
+	PRINT "    X8           0x"              FORMAT.HEX(16., &X8)
+	PRINT  %CONTinue "  X24          0x"     FORMAT.HEX(16., &X24)
+	PRINT "    X9           0x"              FORMAT.HEX(16., &X9)
+	PRINT  %CONTinue "  X25          0x"     FORMAT.HEX(16., &X25)
+	PRINT "    X10          0x"              FORMAT.HEX(16., &X10)
+	PRINT  %CONTinue "  X26          0x"     FORMAT.HEX(16., &X26)
+	PRINT "    X11          0x"              FORMAT.HEX(16., &X11)
+	PRINT  %CONTinue "  X27          0x"     FORMAT.HEX(16., &X27)
+	PRINT "    X12          0x"              FORMAT.HEX(16., &X12)
+	PRINT  %CONTinue "  X28          0x"     FORMAT.HEX(16., &X28)
+	PRINT "    X13          0x"              FORMAT.HEX(16., &X13)
+	PRINT  %CONTinue "  X29          0x"     FORMAT.HEX(16., &X29)
+	PRINT "    X14          0x"              FORMAT.HEX(16., &X14)
+	PRINT  %CONTinue "  X30          0x"     FORMAT.HEX(16., &X30)
+	PRINT "    X15          0x"              FORMAT.HEX(16., &X15)
+	PRINT  %CONTinue "  PC           0x"     FORMAT.HEX(16., &PC)
+
+	PRINT "    EL0_SP       0x"              FORMAT.HEX(16., &EL0_SP)
+	PRINT  %CONTinue "  EL1_SP       0x"     FORMAT.HEX(16., &EL1_SP)
+	PRINT "    EL2_SP       0x"              FORMAT.HEX(16., &EL2_SP)
+	PRINT  %CONTinue "  EL3_SP       0x"     FORMAT.HEX(16., &EL3_SP)
+	PRINT "    EL1_ELR      0x"              FORMAT.HEX(16., &EL1_ELR)
+	PRINT  %CONTinue "  EL2_ELR      0x"     FORMAT.HEX(16., &EL2_ELR)
+	PRINT "    EL3_ELR      0x"              FORMAT.HEX(16., &EL3_ELR)
+	PRINT  %CONTinue "  CPSR         0x"     FORMAT.HEX(16., &CPSR)
+
+	PRINT "    SCTLR_EL1    0x"              FORMAT.HEX(16., &SCTLR_EL1)
+	PRINT  %CONTinue "  FAR_EL1      0x"     FORMAT.HEX(16., &FAR_EL1)
+	PRINT "    SCTLR_EL2    0x"              FORMAT.HEX(16., &SCTLR_EL2)
+	PRINT  %CONTinue "  FAR_EL2      0x"     FORMAT.HEX(16., &FAR_EL2)
+	PRINT "    SCTLR_EL3    0x"              FORMAT.HEX(16., &SCTLR_EL3)
+	PRINT  %CONTinue "  FAR_EL3      0x"     FORMAT.HEX(16., &FAR_EL3)
+
+	PRINT "    SPSR_SVC_EL1 0x"              FORMAT.HEX(16., &SPSR_SVC_EL1)
+	PRINT  %CONTinue "  SPSR_MON_EL3 0x"     FORMAT.HEX(16., &SPSR_MON_EL3)
+	PRINT "    SPSR_HYP_EL2 0x"              FORMAT.HEX(16., &SPSR_HYP_EL2)
+	PRINT  %CONTinue "  HPFAR        0x"     FORMAT.HEX(16., &HPFAR)
+	PRINT "    SPSR_FIQ     0x"              FORMAT.HEX(16., &SPSR_FIQ)
+	PRINT  %CONTinue "  SPSR_IRQ     0x"     FORMAT.HEX(16., &SPSR_IRQ)
+	PRINT "    SPSR_ABT     0x"              FORMAT.HEX(16., &SPSR_ABT)
+	PRINT  %CONTinue "  SPSR_UND     0x"     FORMAT.HEX(16., &SPSR_UND)
+	
+	LOCAL &CUR_DIR
+	&CUR_DIR=OS.PPD()
+	
+	OPEN #1 &CUR_DIR/core&core_id-register_set.cmm  /create
+	
+	WRITE #1 "REGISTER.SET X0  0x"        FORMAT.HEX(16., &X0)
+	WRITE #1 "REGISTER.SET X1  0x"        FORMAT.HEX(16., &X1)
+	WRITE #1 "REGISTER.SET X2  0x"        FORMAT.HEX(16., &X2)
+	WRITE #1 "REGISTER.SET X3  0x"        FORMAT.HEX(16., &X3)
+	WRITE #1 "REGISTER.SET X4  0x"        FORMAT.HEX(16., &X4)
+	WRITE #1 "REGISTER.SET X5  0x"        FORMAT.HEX(16., &X5)
+	WRITE #1 "REGISTER.SET X6  0x"        FORMAT.HEX(16., &X6)
+	WRITE #1 "REGISTER.SET X7  0x"        FORMAT.HEX(16., &X7)
+	WRITE #1 "REGISTER.SET X8  0x"        FORMAT.HEX(16., &X8)
+	WRITE #1 "REGISTER.SET X9  0x"        FORMAT.HEX(16., &X9)
+	WRITE #1 "REGISTER.SET X10 0x"        FORMAT.HEX(16., &X10)
+	WRITE #1 "REGISTER.SET X11 0x"        FORMAT.HEX(16., &X11)
+	WRITE #1 "REGISTER.SET X12 0x"        FORMAT.HEX(16., &X12)
+	WRITE #1 "REGISTER.SET X13 0x"        FORMAT.HEX(16., &X13)
+	WRITE #1 "REGISTER.SET X14 0x"        FORMAT.HEX(16., &X14)
+	WRITE #1 "REGISTER.SET X15 0x"        FORMAT.HEX(16., &X15)
+	WRITE #1 "REGISTER.SET X16 0x"        FORMAT.HEX(16., &X16)
+	WRITE #1 "REGISTER.SET X17 0x"        FORMAT.HEX(16., &X17)
+	WRITE #1 "REGISTER.SET X18 0x"        FORMAT.HEX(16., &X18)
+	WRITE #1 "REGISTER.SET X19 0x"        FORMAT.HEX(16., &X19)
+	WRITE #1 "REGISTER.SET X20 0x"        FORMAT.HEX(16., &X20)
+	WRITE #1 "REGISTER.SET X21 0x"        FORMAT.HEX(16., &X21)
+	WRITE #1 "REGISTER.SET X22 0x"        FORMAT.HEX(16., &X22)
+	WRITE #1 "REGISTER.SET X23 0x"        FORMAT.HEX(16., &X23)
+	WRITE #1 "REGISTER.SET X24 0x"        FORMAT.HEX(16., &X24)
+	WRITE #1 "REGISTER.SET X25 0x"        FORMAT.HEX(16., &X25)
+	WRITE #1 "REGISTER.SET X26 0x"        FORMAT.HEX(16., &X26)
+	WRITE #1 "REGISTER.SET X27 0x"        FORMAT.HEX(16., &X27)
+	WRITE #1 "REGISTER.SET X28 0x"        FORMAT.HEX(16., &X28)
+	WRITE #1 "REGISTER.SET X29 0x"        FORMAT.HEX(16., &X29)
+	WRITE #1 "REGISTER.SET X30 0x"        FORMAT.HEX(16., &X30)
+	WRITE #1 "REGISTER.SET PC  0x"        FORMAT.HEX(16., &PC)
+	WRITE #1 "REGISTER.SET CPSR 0x"        FORMAT.HEX(16., &CPSR)
+	;WRITE #1 "REGISTER.SET SPSR 0x"        FORMAT.HEX(16., &)
+	WRITE #1 "REGISTER.SET SPSR_FIQ 0x"        FORMAT.HEX(16., &SPSR_FIQ)
+	WRITE #1 "REGISTER.SET SPSR_IRQ 0x"        FORMAT.HEX(16., &SPSR_IRQ)
+	WRITE #1 "REGISTER.SET SPSR_SVC 0x"        FORMAT.HEX(16., &SPSR_SVC_EL1)  ;;;
+	WRITE #1 "REGISTER.SET SPSR_ABT 0x"        FORMAT.HEX(16., &SPSR_ABT)
+	WRITE #1 "REGISTER.SET SPSR_UND 0x"        FORMAT.HEX(16., &SPSR_UND)
+	;WRITE #1 "REGISTER.SET R13_MON 0x"        FORMAT.HEX(16., &)
+	;WRITE #1 "REGISTER.SET R14_MON 0x"        FORMAT.HEX(16., &)
+	WRITE #1 "REGISTER.SET SPSR_MON 0x"        FORMAT.HEX(16., &SPSR_MON_EL3)
+	;WRITE #1 "REGISTER.SET ELR_HYP 0x"        FORMAT.HEX(16., &)
+	WRITE #1 "REGISTER.SET SPSR_HYP 0x"        FORMAT.HEX(16., &SPSR_HYP_EL2)   ;;;
+	WRITE #1 "REGISTER.SET SP_EL0 0x"        FORMAT.HEX(16., &EL0_SP)
+	WRITE #1 "REGISTER.SET SP_EL1 0x"        FORMAT.HEX(16., &EL1_SP)
+	WRITE #1 "REGISTER.SET SP_EL2 0x"        FORMAT.HEX(16., &EL2_SP)
+	WRITE #1 "REGISTER.SET SP_EL3 0x"        FORMAT.HEX(16., &EL3_SP)
+	WRITE #1 "REGISTER.SET SPSR_EL1 0x"        FORMAT.HEX(16., &SPSR_SVC_EL1)
+	WRITE #1 "REGISTER.SET SPSR_EL2 0x"        FORMAT.HEX(16., &SPSR_HYP_EL2)
+	WRITE #1 "REGISTER.SET SPSR_EL3 0x"        FORMAT.HEX(16., &SPSR_MON_EL3)
+	WRITE #1 "REGISTER.SET ELR_EL1  0x"        FORMAT.HEX(16., &EL1_ELR)
+	WRITE #1 "REGISTER.SET ELR_EL2  0x"        FORMAT.HEX(16., &EL2_ELR)
+	WRITE #1 "REGISTER.SET ELR_EL3  0x"        FORMAT.HEX(16., &EL3_ELR)
+
+	CLOSE #1
+
+RETURN
+
+reg_show_prometheus:
+	LOCAL &addr &temp &buf_offset &avm_offset
+	ENTRY &core_id
+	IF "X&core_id"=="X"
+		&core_id=0
+	LOCAL &X0 &X1 &X2 &X3 &X4 &X5 &X6 &X7 &X8 &X9 &X10 &X11 &X12 &X13 &X14 &X15 &X16
+	LOCAL &X17 &X18 &X19 &X20 &X21 &X22 &X23 &X24 &X25 &X26 &X27 &X28 &X29 &X30
+	LOCAL &art_q0 &art_q1 &art_q2 &art_q3 &art_q4 &art_q5 &art_q6 &art_q7 &art_q8 &art_q9 &art_q10 &art_q11 &art_q12 &art_q13 &art_q14 &art_q15 &art_q16
+	LOCAL &art_q17 &art_q18 &art_q19 &art_q20 &art_q21 &art_q22 &art_q23 &art_q24 &art_q25 &art_q26 &art_q27 &art_q28 &art_q29 &art_q30
+	LOCAL &art_q31 &art_q32 &art_q33 &art_q34 &art_q35 &art_q36 &art_q37 &art_q38
+	LOCAL &re_i1_pc_q &re_i2_pc_q &re_i0_pc_q &dspsr &spsr_fiq &spsr_irq &spsr_svc &spsr_abt  &spsr_und &spsr_mon &spsr_hyp
+	LOCAL &sctlr_ns_data &sctlr_s_data &multi0_q &multi1_q &multi2_q &far_el3_q &multi3_q &esr_er1_q &esr_er2_q &esr_er3_q
+	LOCAL &SP &EL0_SP &EL1_SP &EL2_SP &EL3_SP &EL1_ELR &EL2_ELR &EL3_ELR &PC &CPSR &SPSR_FIQ &SPSR_IRQ &SPSR_SVC_EL1 &SPSR_ABT &SPSR_UND &SPSR_MON_EL3 &SPSR_HYP_EL2
+	
+	&buf_offset=Var.Value(\core_offset_array[&core_id][1])
+	&addr=&AVM_BASE+&buf_offset
+;	&avm_offset=&SAVED_REGS_AVM_BASE+&AVM_TOTALREGS_SIZE*&core_id
+	
+	;data_00q start from
+	;whalek: 0x400
+	;sharkl5: 0x400
+	;roc1: 0x200
+	;sharkl5pro: 0x200
+	&data_addr=&addr+&prometheus_dataq_start_addr
+	
+	;AARCH64
+	&by_offset=DATA.Quad(AVM:&addr)
+	&art_q0=&by_offset&0x7F
+	&art_q1=(&by_offset>>0x8)&0x7F
+	&art_q2=(&by_offset>>0x10)&0x7F
+	&art_q3=(&by_offset>>0x18)&0x7F
+	&art_q4=(&by_offset>>0x20)&0x7F
+	&art_q5=(&by_offset>>0x28)&0x7F
+	&art_q6=(&by_offset>>0x30)&0x7F
+	&art_q7=(&by_offset>>0x38)&0x7F
+	&X0=DATA.Quad(AVM:&data_addr+0x008*&art_q0)
+	&X1=DATA.Quad(AVM:&data_addr+0x008*&art_q1)
+	&X2=DATA.Quad(AVM:&data_addr+0x008*&art_q2)
+	&X3=DATA.Quad(AVM:&data_addr+0x008*&art_q3)
+	&X4=DATA.Quad(AVM:&data_addr+0x008*&art_q4)
+	&X5=DATA.Quad(AVM:&data_addr+0x008*&art_q5)
+	&X6=DATA.Quad(AVM:&data_addr+0x008*&art_q6)
+	&X7=DATA.Quad(AVM:&data_addr+0x008*&art_q7)
+	
+	&by_offset=DATA.Quad(AVM:&addr+0x008)
+	&art_q8=&by_offset&0x7F
+	&art_q9=(&by_offset>>0x8)&0x7F
+	&art_q10=(&by_offset>>0x10)&0x7F
+	&art_q11=(&by_offset>>0x18)&0x7F
+	&art_q12=(&by_offset>>0x20)&0x7F
+	&art_q13=(&by_offset>>0x28)&0x7F
+	&art_q14=(&by_offset>>0x30)&0x7F
+	&art_q15=(&by_offset>>0x38)&0x7F
+	&X8=DATA.Quad(AVM:&data_addr+0x008*&art_q8)
+	&X9=DATA.Quad(AVM:&data_addr+0x008*&art_q9)
+	&X10=DATA.Quad(AVM:&data_addr+0x008*&art_q10)
+	&X11=DATA.Quad(AVM:&data_addr+0x008*&art_q11)
+	&X12=DATA.Quad(AVM:&data_addr+0x008*&art_q12)
+	&X13=DATA.Quad(AVM:&data_addr+0x008*&art_q13)
+	&X14=DATA.Quad(AVM:&data_addr+0x008*&art_q14)
+	&X15=DATA.Quad(AVM:&data_addr+0x008*&art_q15)
+
+	&by_offset=DATA.Quad(AVM:&addr+0x010)
+	&art_q16=&by_offset&0x7F
+	&art_q17=(&by_offset>>0x8)&0x7F
+	&art_q18=(&by_offset>>0x10)&0x7F
+	&art_q19=(&by_offset>>0x18)&0x7F
+	&art_q20=(&by_offset>>0x20)&0x7F
+	&art_q21=(&by_offset>>0x28)&0x7F
+	&art_q22=(&by_offset>>0x30)&0x7F
+	&art_q23=(&by_offset>>0x38)&0x7F
+	&X16=DATA.Quad(AVM:&data_addr+0x008*&art_q16)
+	&X17=DATA.Quad(AVM:&data_addr+0x008*&art_q17)
+	&X18=DATA.Quad(AVM:&data_addr+0x008*&art_q18)
+	&X19=DATA.Quad(AVM:&data_addr+0x008*&art_q19)
+	&X20=DATA.Quad(AVM:&data_addr+0x008*&art_q20)
+	&X21=DATA.Quad(AVM:&data_addr+0x008*&art_q21)
+	&X22=DATA.Quad(AVM:&data_addr+0x008*&art_q22)
+	&X23=DATA.Quad(AVM:&data_addr+0x008*&art_q23)
+
+	&by_offset=DATA.Quad(AVM:&addr+0x018)
+	&art_q24=&by_offset&0x7F
+	&art_q25=(&by_offset>>0x8)&0x7F
+	&art_q26=(&by_offset>>0x10)&0x7F
+	&art_q27=(&by_offset>>0x18)&0x7F
+	&art_q28=(&by_offset>>0x20)&0x7F
+	&art_q29=(&by_offset>>0x28)&0x7F
+	&art_q30=(&by_offset>>0x30)&0x7F
+	&art_q31=(&by_offset>>0x38)&0x7F
+	&X24=DATA.Quad(AVM:&data_addr+0x008*&art_q24)
+	&X25=DATA.Quad(AVM:&data_addr+0x008*&art_q25)
+	&X26=DATA.Quad(AVM:&data_addr+0x008*&art_q26)
+	&X27=DATA.Quad(AVM:&data_addr+0x008*&art_q27)
+	&X28=DATA.Quad(AVM:&data_addr+0x008*&art_q28)
+	&X29=DATA.Quad(AVM:&data_addr+0x008*&art_q29)
+	&X30=DATA.Quad(AVM:&data_addr+0x008*&art_q30)
+	&EL3_SP=DATA.Quad(AVM:&data_addr+0x008*&art_q31)
+
+	&by_offset=DATA.Quad(AVM:&addr+0x020)
+	&art_q32=&by_offset&0x7F
+	&art_q33=(&by_offset>>0x8)&0x7F
+	&art_q34=(&by_offset>>0x10)&0x7F
+	&art_q35=(&by_offset>>0x18)&0x7F
+	&art_q36=(&by_offset>>0x20)&0x7F
+	&art_q37=(&by_offset>>0x28)&0x7F
+	&art_q38=(&by_offset>>0x30)&0x7F
+	&art_q39=(&by_offset>>0x38)&0x7F
+	&EL3_ELR=DATA.Quad(AVM:&data_addr+0x008*&art_q32)
+	&EL2_ELR=DATA.Quad(AVM:&data_addr+0x008*&art_q33)
+	&EL1_ELR=DATA.Quad(AVM:&data_addr+0x008*&art_q34)
+	&EL0_SP=DATA.Quad(AVM:&data_addr+0x008*&art_q35)
+	&EL1_SP=DATA.Quad(AVM:&data_addr+0x008*&art_q36)
+	&EL2_SP=DATA.Quad(AVM:&data_addr+0x008*&art_q37)
+;	&X38=DATA.Quad(AVM:&data_addr+0x008*&art_q38)
+
+	&re_i1_pc_q=DATA.Quad(AVM:&addr+0x120)			;pc
+	&re_i2_pc_q=DATA.Quad(AVM:&addr+0x128)			;pc
+	&re_i0_pc_q=DATA.Quad(AVM:&addr+0x130)			;pc
+	&dspsr=DATA.Quad(AVM:&addr+0x138)			
+	&spsr_fiq=DATA.Quad(AVM:&addr+0x140)			
+	&spsr_irq=DATA.Quad(AVM:&addr+0x148)			
+	&spsr_svc=DATA.Quad(AVM:&addr+0x150)			
+	&spsr_abt=DATA.Quad(AVM:&addr+0x158)			
+	&spsr_und=DATA.Quad(AVM:&addr+0x160)			
+	&spsr_mon=DATA.Quad(AVM:&addr+0x168)			
+	&spsr_hyp=DATA.Quad(AVM:&addr+0x170)			
+	&sctlr_ns_data=DATA.Quad(AVM:&addr+0x178)			
+	&sctlr_s_data=DATA.Quad(AVM:&addr+0x180)			
+	&multi0_q=DATA.Quad(AVM:&addr+0x188)			
+	&multi1_q=DATA.Quad(AVM:&addr+0x190)			
+	&multi2_q=DATA.Quad(AVM:&addr+0x198)			
+	&far_el3_q=DATA.Quad(AVM:&addr+0x1A0)			
+	&multi3_q=DATA.Quad(AVM:&addr+0x1A8)			
+	&esr_er1_q=DATA.Quad(AVM:&addr+0x1B0)			
+	&esr_er2_q=DATA.Quad(AVM:&addr+0x1B8)			
+	&esr_er3_q=DATA.Quad(AVM:&addr+0x1C0)			
+		
+	PRINT ""
+	PRINT "----------------------------- Core &core_id -----------------------------"
+	PRINT "    X0           0x"              FORMAT.HEX(16., &X0)
+	PRINT  %CONTinue "  X16          0x"     FORMAT.HEX(16., &X16)
+	PRINT "    X1           0x"              FORMAT.HEX(16., &X1)
+	PRINT  %CONTinue "  X17          0x"     FORMAT.HEX(16., &X17)
+	PRINT "    X2           0x"              FORMAT.HEX(16., &X2)
+	PRINT  %CONTinue "  X18          0x"     FORMAT.HEX(16., &X18)
+	PRINT "    X3           0x"              FORMAT.HEX(16., &X3)
+	PRINT  %CONTinue "  X19          0x"     FORMAT.HEX(16., &X19)
+	PRINT "    X4           0x"              FORMAT.HEX(16., &X4)
+	PRINT  %CONTinue "  X20          0x"     FORMAT.HEX(16., &X20)
+	PRINT "    X5           0x"              FORMAT.HEX(16., &X5)
+	PRINT  %CONTinue "  X21          0x"     FORMAT.HEX(16., &X21)
+	PRINT "    X6           0x"              FORMAT.HEX(16., &X6)
+	PRINT  %CONTinue "  X22          0x"     FORMAT.HEX(16., &X22)
+	PRINT "    X7           0x"              FORMAT.HEX(16., &X7)
+	PRINT  %CONTinue "  X23          0x"     FORMAT.HEX(16., &X23)
+	PRINT "    X8           0x"              FORMAT.HEX(16., &X8)
+	PRINT  %CONTinue "  X24          0x"     FORMAT.HEX(16., &X24)
+	PRINT "    X9           0x"              FORMAT.HEX(16., &X9)
+	PRINT  %CONTinue "  X25          0x"     FORMAT.HEX(16., &X25)
+	PRINT "    X10          0x"              FORMAT.HEX(16., &X10)
+	PRINT  %CONTinue "  X26          0x"     FORMAT.HEX(16., &X26)
+	PRINT "    X11          0x"              FORMAT.HEX(16., &X11)
+	PRINT  %CONTinue "  X27          0x"     FORMAT.HEX(16., &X27)
+	PRINT "    X12          0x"              FORMAT.HEX(16., &X12)
+	PRINT  %CONTinue "  X28          0x"     FORMAT.HEX(16., &X28)
+	PRINT "    X13          0x"              FORMAT.HEX(16., &X13)
+	PRINT  %CONTinue "  X29          0x"     FORMAT.HEX(16., &X29)
+	PRINT "    X14          0x"              FORMAT.HEX(16., &X14)
+	PRINT  %CONTinue "  X30          0x"     FORMAT.HEX(16., &X30)
+	PRINT "    X15          0x"              FORMAT.HEX(16., &X15)
+	
+	PRINT  %CONTinue "  EL3_SP           0x"     FORMAT.HEX(16., &EL3_SP)
+	PRINT "    EL3_ELR       0x"              FORMAT.HEX(16., &EL3_ELR)
+	PRINT  %CONTinue "  EL1_SP       0x"     FORMAT.HEX(16., &EL1_SP)
+	PRINT "    EL2_ELR      0x"              FORMAT.HEX(16., &EL2_ELR)
+	PRINT  %CONTinue "  EL2_SP      0x"     FORMAT.HEX(16., &EL2_SP)
+	PRINT "    EL1_ELR      0x"              FORMAT.HEX(16., &EL1_ELR)
+	PRINT  %CONTinue "  dspsr         0x"     FORMAT.HEX(16., &dspsr)	
+	PRINT "    EL0_SP      0x"              FORMAT.HEX(16., &EL0_SP)
+	PRINT  %CONTinue
+
+	PRINT "    re_i1_pc_q    0x"              FORMAT.HEX(16., &re_i1_pc_q)
+	PRINT  %CONTinue "  re_i2_pc_q      0x"     FORMAT.HEX(16., &re_i2_pc_q)
+	PRINT "    re_i0_pc_q    0x"              FORMAT.HEX(16., &re_i0_pc_q)
+	PRINT  %CONTinue "  dspsr      0x"     FORMAT.HEX(16., &dspsr)
+	PRINT "    spsr_fiq    0x"              FORMAT.HEX(16., &spsr_fiq)
+	PRINT  %CONTinue "  spsr_irq      0x"     FORMAT.HEX(16., &spsr_irq)
+	PRINT "    spsr_svc 0x"              FORMAT.HEX(16., &spsr_svc)
+	PRINT  %CONTinue "  spsr_abt 0x"     FORMAT.HEX(16., &spsr_abt)
+	PRINT "    spsr_und 0x"              FORMAT.HEX(16., &spsr_und)
+	PRINT  %CONTinue "  spsr_mon        0x"     FORMAT.HEX(16., &spsr_mon)
+	PRINT "    spsr_hyp     0x"              FORMAT.HEX(16., &spsr_hyp)
+	PRINT  %CONTinue "  sctlr_ns_data     0x"     FORMAT.HEX(16., &sctlr_ns_data)
+	PRINT "    sctlr_s_data     0x"              FORMAT.HEX(16., &sctlr_s_data)
+	PRINT  %CONTinue "  multi0_q     0x"     FORMAT.HEX(16., &multi0_q)
+	PRINT "    multi1_q     0x"              FORMAT.HEX(16., &multi1_q)
+	PRINT  %CONTinue "  multi2_q     0x"     FORMAT.HEX(16., &multi2_q)
+	PRINT "    far_el3_q     0x"              FORMAT.HEX(16., &far_el3_q)
+	PRINT  %CONTinue "  multi3_q     0x"     FORMAT.HEX(16., &multi3_q)
+	PRINT "    esr_er1_q     0x"              FORMAT.HEX(16., &esr_er1_q)
+	PRINT  %CONTinue "  esr_er2_q     0x"     FORMAT.HEX(16., &esr_er2_q)
+	PRINT "    esr_er3_q     0x"              FORMAT.HEX(16., &esr_er3_q)
+	
+	LOCAL &CUR_DIR
+	&CUR_DIR=OS.PPD()
+	
+	OPEN #1 &CUR_DIR/core&core_id-register_set.cmm  /create
+	
+	WRITE #1 "REGISTER.SET X0  0x"        FORMAT.HEX(16., &X0)
+	WRITE #1 "REGISTER.SET X1  0x"        FORMAT.HEX(16., &X1)
+	WRITE #1 "REGISTER.SET X2  0x"        FORMAT.HEX(16., &X2)
+	WRITE #1 "REGISTER.SET X3  0x"        FORMAT.HEX(16., &X3)
+	WRITE #1 "REGISTER.SET X4  0x"        FORMAT.HEX(16., &X4)
+	WRITE #1 "REGISTER.SET X5  0x"        FORMAT.HEX(16., &X5)
+	WRITE #1 "REGISTER.SET X6  0x"        FORMAT.HEX(16., &X6)
+	WRITE #1 "REGISTER.SET X7  0x"        FORMAT.HEX(16., &X7)
+	WRITE #1 "REGISTER.SET X8  0x"        FORMAT.HEX(16., &X8)
+	WRITE #1 "REGISTER.SET X9  0x"        FORMAT.HEX(16., &X9)
+	WRITE #1 "REGISTER.SET X10 0x"        FORMAT.HEX(16., &X10)
+	WRITE #1 "REGISTER.SET X11 0x"        FORMAT.HEX(16., &X11)
+	WRITE #1 "REGISTER.SET X12 0x"        FORMAT.HEX(16., &X12)
+	WRITE #1 "REGISTER.SET X13 0x"        FORMAT.HEX(16., &X13)
+	WRITE #1 "REGISTER.SET X14 0x"        FORMAT.HEX(16., &X14)
+	WRITE #1 "REGISTER.SET X15 0x"        FORMAT.HEX(16., &X15)
+	WRITE #1 "REGISTER.SET X16 0x"        FORMAT.HEX(16., &X16)
+	WRITE #1 "REGISTER.SET X17 0x"        FORMAT.HEX(16., &X17)
+	WRITE #1 "REGISTER.SET X18 0x"        FORMAT.HEX(16., &X18)
+	WRITE #1 "REGISTER.SET X19 0x"        FORMAT.HEX(16., &X19)
+	WRITE #1 "REGISTER.SET X20 0x"        FORMAT.HEX(16., &X20)
+	WRITE #1 "REGISTER.SET X21 0x"        FORMAT.HEX(16., &X21)
+	WRITE #1 "REGISTER.SET X22 0x"        FORMAT.HEX(16., &X22)
+	WRITE #1 "REGISTER.SET X23 0x"        FORMAT.HEX(16., &X23)
+	WRITE #1 "REGISTER.SET X24 0x"        FORMAT.HEX(16., &X24)
+	WRITE #1 "REGISTER.SET X25 0x"        FORMAT.HEX(16., &X25)
+	WRITE #1 "REGISTER.SET X26 0x"        FORMAT.HEX(16., &X26)
+	WRITE #1 "REGISTER.SET X27 0x"        FORMAT.HEX(16., &X27)
+	WRITE #1 "REGISTER.SET X28 0x"        FORMAT.HEX(16., &X28)
+	WRITE #1 "REGISTER.SET X29 0x"        FORMAT.HEX(16., &X29)
+	WRITE #1 "REGISTER.SET X30 0x"        FORMAT.HEX(16., &X30)
+	
+	WRITE #1 "REGISTER.SET EL0_SP  0x"        FORMAT.HEX(16., &EL0_SP)
+	WRITE #1 "REGISTER.SET EL1_SP  0x"        FORMAT.HEX(16., &EL1_SP)
+	WRITE #1 "REGISTER.SET EL2_SP  0x"        FORMAT.HEX(16., &EL2_SP)
+	WRITE #1 "REGISTER.SET EL1_ELR  0x"        FORMAT.HEX(16., &EL1_ELR)
+	WRITE #1 "REGISTER.SET EL2_ELR  0x"        FORMAT.HEX(16., &EL2_ELR)
+	WRITE #1 "REGISTER.SET re_i0_pc_q  0x"        FORMAT.HEX(16., &re_i0_pc_q)
+	WRITE #1 "REGISTER.SET dspsr  0x"        FORMAT.HEX(16., &dspsr)	
+
+	CLOSE #1		
+	RETURN
+	
+InitCoreParameters:
+	;0 anake 1 prometheus
+	Var.set \core_offset_array[0][0]=0x0
+	Var.set \core_offset_array[1][0]=0x0
+	Var.set \core_offset_array[2][0]=0x0
+	Var.set \core_offset_array[3][0]=0x0
+	Var.set \core_offset_array[4][0]=0x1
+	Var.set \core_offset_array[5][0]=0x1
+	Var.set \core_offset_array[6][0]=0x1
+	Var.set \core_offset_array[7][0]=0x1
+	Var.set \core_offset_array[8][0]=0xFFFFFFFF
+	;core offset
+	Var.set \core_offset_array[0][1]=0x0
+	Var.set \core_offset_array[1][1]=0x200
+	Var.set \core_offset_array[2][1]=0x400
+	Var.set \core_offset_array[3][1]=0x600
+	Var.set \core_offset_array[4][1]=0x800
+	Var.set \core_offset_array[5][1]=0xE00
+	Var.set \core_offset_array[6][1]=0x1400
+	Var.set \core_offset_array[7][1]=0x1A00
+	Var.set \core_offset_array[8][1]=0x2000
+	;core size
+	Var.set \core_offset_array[0][2]=0x200
+	Var.set \core_offset_array[1][2]=0x200
+	Var.set \core_offset_array[2][2]=0x200
+	Var.set \core_offset_array[3][2]=0x200
+	Var.set \core_offset_array[4][2]=0x600
+	Var.set \core_offset_array[5][2]=0x600	
+	Var.set \core_offset_array[6][2]=0x600
+	Var.set \core_offset_array[7][2]=0x600	
+	Var.set \core_offset_array[8][2]=0x0		
+	
+	&prometheus_dataq_start_addr=0x400
+	RETURN

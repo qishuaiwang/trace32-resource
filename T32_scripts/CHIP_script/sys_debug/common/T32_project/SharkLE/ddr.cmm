@@ -1,0 +1,31 @@
+local &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF STATE.POWER()==FALSE()
+(
+	PRINT %ERROR "Please Power up device, and then, try it again!"
+	ENDDO
+)
+
+IF SYStem.CPU()!="CORTEXA53"
+(
+	PRINT "DDR Init only support by CORTEXA53"
+	ENDDO
+)
+
+D.LOAD "&CUR_DIR\u-boot-spl_256"
+
+GO 0x8B48
+WAIT !RUN()
+
+D.TEST 0x80000000++0xfff /RANDOM
+IF FOUND()
+	WAIT 1.MS
+	PRINT "DDR INIT Failed!"
+ELSE
+	WAIT 1.MS
+	PRINT "DDR INIT OK! DDR @ 256MHz"
+ENDDO
+
+
+

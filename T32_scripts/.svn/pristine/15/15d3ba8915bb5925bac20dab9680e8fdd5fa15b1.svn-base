@@ -1,0 +1,88 @@
+;Friday, Jan 22, 2016  
+;boot cm4 by dap
+&os_sel="small_sys"
+LOCAL &os_sel 
+ENTRY &os_sel 
+
+&MEM_TYPE="EZAXI"
+&SET=0x1000
+&CLR=0x2000
+&AON_BASE=0x40000000 ; AP: 0x40000000  , PUBCP: 0x02000000
+&SLEEP_CTRL=0x002B00E8
+&SYS_SOFT_RST=0x002B00C4
+
+system.mode down
+system.reset
+system.jtagclock 5.0Mhz
+system.cpu CORTEXM4 
+system.config MEMORYACCESSPORT 0
+system.config AXIACCESSPORT    0
+sys.MemAccess DAP
+System.CpuAccess Enable
+system.config SWDP ON
+system.mode Prepare
+
+GOSUB PREPARE_FOR_CM4
+GOSUB RELEASE_FOR_CM4
+
+
+system.config MEMORYACCESSPORT 3
+system.config AHBACCESSPORT   3
+system.config DEBUGACCESSPORT 0
+
+system.config AXIACCESSPORT   0.
+system.config APBACCESSPORT   1.
+
+;&os_sel="small_sys"
+;system.mode Prepare
+
+if ("&os_sel"=="small_sys")
+(
+	ON ERROR JUMPTO connect_error
+	SYS.CONFIG SWDP ON
+	system.mode attach
+	Break
+connect_continue:
+	wait 100.ms
+	&cur_state=STATE.TARGET()
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*system down*")
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*running*")||&cur_flag
+	IF (&cur_flag==True())
+	(
+		SYS.CONFIG SWDP OFF
+		system.mode attach
+		Break
+	)	
+	ON ERROR inherit	
+)
+ELSE IF ("&os_sel"=="os_sys")
+(
+	SYS.CONFIG SWDP ON
+	system.mode Prepare
+	print "this is os_sys.if core debug, please system.mode attach"
+)
+ENDDO
+
+;################################### CM4 BOOT ########################
+PREPARE_FOR_CM4:
+	; PMU DEEPSLEEP RELEASE CM4
+	D.S &MEM_TYPE:(&AON_BASE+&SLEEP_CTRL+&CLR) %LE %Long (1<<23.)
+
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<21.)
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<1.)
+	WAIT 500.MS
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<21.)
+
+	D.S &MEM_TYPE:0x00080000 %LE %Long 0xE7FEE7FE ; 0xE7FE is While(1);
+	D.S &MEM_TYPE:0x00080004 %LE %Long 0x00000001 ; the first code address
+	RETURN
+
+RELEASE_FOR_CM4:
+	; PMU RESET RELEASE CM4 CORE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<1.)
+	RETURN
+connect_error:
+	GOSUB connect_continue
+
+

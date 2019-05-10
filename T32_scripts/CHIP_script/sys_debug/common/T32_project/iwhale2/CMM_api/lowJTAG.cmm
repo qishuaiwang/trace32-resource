@@ -1,0 +1,238 @@
+LOCAL &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+GOSUB &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+
+jtag_lock:
+	JTAG.LOCK
+	&JTAG_LOCKED=1
+	RETURN
+;end of jtag_lock
+
+jtag_unlock:
+	IF &JTAG_LOCKED!=0
+		JTAG.UNLOCK
+	&JTAG_LOCKED=0
+	RETURN
+;end of jtag_unlock
+
+jtag_pin_enable:
+	IF (CPUFAMILY()=="I386")
+	(
+		JTAG.PIN ENable
+		&JTAG_PIN_ENABLED=1
+	)
+	ELSE
+		&JTAG_PIN_ENABLED=0
+	RETURN
+;end of jtag_pin_enable
+
+jtag_pin_disable:
+	IF &JTAG_PIN_ENABLED!=0
+		JTAG.PIN DISable
+	&JTAG_PIN_ENABLED=0
+	RETURN
+;end of jtag_pin_disable
+
+
+jtag_acq:
+	LOCAL &power
+	&power=JTAG.PIN(VTREF)
+	IF (&power==0)
+	(
+		PRINT %ERROR "Please power up!"
+		END
+		ENDDO
+	)
+	;JTAG.LOCK
+	;JTAG.PIN ENable
+	GOSUB jtag_lock
+	GOSUB jtag_pin_enable
+	RETURN
+;end of jtag_acq
+
+jtag_rel:
+	GOSUB jtag_pin_disable
+	GOSUB jtag_unlock
+	;JTAG.PIN DISable
+	;JTAG.UNLOCK
+	RETURN
+;end of jtag_rel
+
+jtag_reset_tms:
+	JTAG.SHIFTTMS 1 1 1 1 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	RETURN
+;end of jtag_reset_tms
+
+
+jtag_reset:
+	JTAG.PIN NRESET HIGH
+	JTAG.PIN NTRST LOW
+	WAIT 50.MS
+	JTAG.PIN NTRST HIGH
+	WAIT 150.MS
+	GOSUB jtag_reset_tms
+	RETURN
+;end of jtag_reset
+
+shift_n_bits_row:
+	LOCAL &temp_val
+	LOCAL &ret_val &ret_val_high
+	LOCAL &val &size &val_h
+	ENTRY &val &size &val_h
+	LOCAL &idx &use_h
+	&idx=0
+	&use_h=0
+	&ret_val=0
+	WHILE (&idx<(&size))
+	(
+		&temp_val=&val&(0x1<<&idx)
+		IF (&temp_val==0)
+		(
+			JTAG.SHIFTTDI 0
+		)
+		ELSE
+		(
+			JTAG.SHIFTTDI 1
+		)
+		&temp_val=JTAG.SHIFT()
+		IF (&use_h==1)
+		(
+			&ret_val_high=(&ret_val_high)+((&temp_val&0x1)<<(&idx))
+		)
+		ELSE
+		(
+			&ret_val=(&ret_val)+((&temp_val&0x1)<<(&idx))
+		)
+		&idx=&idx+1
+		IF (&idx>=64.)
+		(
+			&use_h=1
+			&ret_val_high=0
+			&idx=0
+			&val=&val_h
+			&size=&size-64.
+		)
+	)
+	RETURN &ret_val &ret_val_high
+;end of shift_n_bits_row
+
+shift_n_bits_row_reg:
+	LOCAL &temp_val &idx
+	LOCAL &ret_val &ret_val_high
+	LOCAL &val &size
+	ENTRY &val &size &val_h
+	&idx=&size-1
+	GOSUB shift_n_bits_row &val &idx &val_h
+	ENTRY &ret_val &ret_val_high
+	IF (&idx>=64.)
+	(
+		&temp_val=&val_h&(0x1<<&idx-64.)
+	)
+	ELSE
+	(
+		&temp_val=&val&(0x1<<&idx)
+	)
+	IF (&temp_val==0)
+	(
+		JTAG.SHIFTREG 0
+	)
+	ELSE
+	(
+		JTAG.SHIFTREG 1
+	)
+	&temp_val=JTAG.SHIFT()
+	IF (&idx>=64.)
+	(
+		&ret_val_high=(&ret_val_high)+((&temp_val&0x1)<<(&idx-64.))
+	)
+	ELSE
+	(
+		&ret_val=(&ret_val)+((&temp_val&0x1)<<(&idx))
+	)
+	RETURN &ret_val &ret_val_high
+;end of shift_n_bits_row_reg
+
+detect_ir:
+	LOCAL &test_ir &ret_len
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-IR
+	&test_ir=(0xFFFFFFFF)
+	JTAG.SHIFTTDI %Long &test_ir &test_ir
+	&ret_len=JTAG.SHIFT()
+	&test_ir=(0)
+	JTAG.SHIFTREG %Long &test_ir &test_ir
+	&ret_len=JTAG.SHIFT()
+	JTAG.SHIFTTMS 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	RETURN &ret_len
+;end of detect_ir
+
+detect_dr:
+	LOCAL &test_ir &ret_len
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-IR
+	&test_ir=(0xFFFFFFFF)
+	JTAG.SHIFTREG %Long &test_ir &test_ir
+	&ret_len=JTAG.SHIFT()
+	JTAG.SHIFTTMS 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	JTAG.SHIFTTMS 0 0	; goto SHIFT-DR
+	JTAG.SHIFTREG %Long &test_ir
+	&ret_len=JTAG.SHIFT()
+	JTAG.SHIFTTMS 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	RETURN &ret_len
+;end of detect_dr
+
+select_ir:
+	LOCAL &temp_val
+	LOCAL &val &size &pre_ir &post_ir &val_h
+	ENTRY &val &size &pre_ir &post_ir &val_h
+	LOCAL &ret
+	IF ("X&pre_ir"=="X")
+		&pre_ir=0
+	IF ("X&post_ir"=="X")
+		&post_ir=0
+	JTAG.SHIFTTMS 1 0 0	; goto SHIFT-IR
+	IF (&pre_ir!=0)
+		GOSUB shift_n_bits_row 0xFFFFFFFFFFFFFFFF &pre_ir 0xFFFFFFFFFFFFFFFF
+	IF (&post_ir==0)
+	(
+		GOSUB shift_n_bits_row_reg &val &size &val_h
+		ENTRY &ret &temp_val
+	)
+	ELSE
+	(
+		GOSUB shift_n_bits_row &val &size &val_h
+		ENTRY &ret &temp_val
+		GOSUB shift_n_bits_row_reg 0xFFFFFFFFFFFFFFFF &post_ir 0xFFFFFFFFFFFFFFFF
+	)
+	JTAG.SHIFTTMS 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	RETURN &ret
+;end of select_ir
+
+shift_dr:
+	LOCAL &temp_val
+	LOCAL &val &size &pre_dr &post_dr &val_h
+	ENTRY &val &size &pre_dr &post_dr &val_h
+	LOCAL &ret
+	IF ("X&pre_dr"=="X")
+		&pre_dr=0
+	IF ("X&post_dr"=="X")
+		&post_dr=0
+	JTAG.SHIFTTMS 0 0	; goto SHIFT-DR
+	IF (&pre_dr!=0)
+		GOSUB shift_n_bits_row 0 &pre_dr
+	IF (&post_dr==0)
+	(
+		GOSUB shift_n_bits_row_reg &val &size &val_h
+		ENTRY &ret &temp_val
+	)
+	ELSE
+	(
+		GOSUB shift_n_bits_row &val &size &val_h
+		ENTRY &ret &temp_val
+		GOSUB shift_n_bits_row_reg 0 &post_dr
+	)
+	JTAG.SHIFTTMS 1 0 0 1 ; goto Run-Test/Idle -> Select-DR-Scan
+	RETURN &ret &temp_val
+;end of shift_dr

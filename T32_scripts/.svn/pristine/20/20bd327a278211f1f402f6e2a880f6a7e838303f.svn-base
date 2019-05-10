@@ -1,0 +1,218 @@
+LOCAL &MEM_TYPE &AON_BASE
+IF (CPUFAMILY()=="I386")
+(
+	&MEM_TYPE="A"
+	&AON_BASE=0xe4000000
+	;PRINT %ERROR "The Trace32 can't do this! open ARM version please!"
+)
+ELSE
+(
+	&MEM_TYPE="A"
+	&AON_BASE=0x02000000
+	;SYStem.Mode Prepare
+)
+&SYS_SOFT_RST=0x002C0000
+&PMU_CTRL=0x002B0000
+&RST_BASE=&SYS_SOFT_RST+&AON_BASE
+&PMU_BASE=&PMU_CTRL+&AON_BASE
+
+&flag=0x0
+;check CR5 boot?
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0020))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=Data.Long(&MEM_TYPE:&PMU_BASE+0x014c)
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<1.)|(1<<15.)|(1<<20.))&(Data.Long(&MEM_TYPE:&RST_BASE))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+if (&flag==0x0)
+(
+	Print "CR5 boot up is success!!!!!"
+)
+ELSE
+(
+	Print "CR5 boot up is fail"
+)
+
+
+;check CM4 boot?
+&flag=0x0
+&temp=((1<<0.)|(1<<8.))&(Data.Long(&MEM_TYPE:&RST_BASE))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+if (&flag==0x0)
+(
+	Print "CM4 boot up is success!!!!!"
+)
+ELSE
+(
+	Print "CM4 boot up is fail"
+)
+
+
+;check LTEDSP boot?
+&flag=0x0
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0050))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0084))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<1.)|(1<<13.)|(1<<24.)|(1<<26.))&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0144))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<10.)|(1<<14.)|(1<<17.))&(Data.Long(&MEM_TYPE:&RST_BASE))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+if (&flag==0x0)
+(
+	Print "LTEDSP boot up is success!!!!!"
+)
+ELSE
+(
+	Print "LTEDSP boot up is fail"
+)
+
+;check TGDSP boot?
+&flag=0x0
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x002c))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0084))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<1.)|(1<<13.)|(1<<24.)|(1<<26.))&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0144))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<10.)|(1<<14.)|(1<<16.))&(Data.Long(&MEM_TYPE:&RST_BASE))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+if (&flag==0x0)
+(
+	Print "TGDSP boot up is success!!!!!"
+)
+ELSE
+(
+	Print "TGDSP boot up is fail"
+)
+
+;check AGDSP boot?
+&flag=0x0
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0024))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=(1<<25.)&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0040))
+if (&temp!=(1<<25.))
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<1.)|(1<<13.)|(1<<24.)|(1<<26.))&(Data.Long(&MEM_TYPE:&PMU_BASE+0x0148))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+&temp=((1<<11.)|(1<<12.))&(Data.Long(&MEM_TYPE:&RST_BASE))
+if (&temp==0x0)
+(
+	&flag=&flag|0x0
+)
+ELSE
+(
+	&flag=&flag|0x1
+)
+if (&flag==0x0)
+(
+	Print "AGDSP boot up is success!!!!!"
+)
+ELSE
+(
+	Print "AGDSP boot up is fail"
+)

@@ -1,0 +1,96 @@
+LOCAL &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+GOSUB &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+
+init:
+	IF &primary_tap_id==&NOTAPID
+	(
+		&primary_tap_id=&cur_tap_cnt
+		&cur_tap_cnt=&cur_tap_cnt+1
+		;Primary TAP
+		Var.ASSIGN \tap_network[&primary_tap_id][0..(&tap_info_cnt-1)]=(0x5CCCCFFF, 2, 1)
+		Var.ASSIGN \ops_cmd[&primary_tap_id]="pTAP"
+		Var.ASSIGN \cur_tap_chain[&primary_tap_id][0..(&tap_pp_cnt-1)]=(0, 0, 0, 0)
+		Var.ASSIGN \tap_order[0]=&primary_tap_id
+		&added_tap_cnt=1
+		comOPS detect_ir_len
+		LOCAL &ir_len
+		ENTRY &ir_len
+		IF &ir_len==2
+			GOSUB write_0_cache 0
+	)
+	RETURN
+;end of init
+
+get_id:
+	RETURN &primary_tap_id
+;end of get_id
+
+get_b_id:
+	RETURN &ENDOFTAPID
+;end of get_b_id
+
+is_added:
+	LOCAL &id &ret
+	&ret=0
+	GOSUB get_id
+	ENTRY &id
+	comOPS is_tap_added &id
+	ENTRY &ret
+	RETURN &ret
+;end of is_added
+
+read:
+	LOCAL &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	IF &op1==0
+	(
+		GOSUB read_0_cache
+		ENTRY &op3
+		RETURN &op3
+	)
+	GOSUB get_id
+	ENTRY &id
+	comOPS tap_read &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	//LOCAL &ir_len
+	//&ir_len=Var.VALUE(\tap_network[&id][&IR])
+	//lowJTAG select_ir &op1 &ir_len 0 0
+	//lowJTAG shift_dr &rop1 &op2 0 0 &rop2
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+;end of read
+
+write:
+	LOCAL &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	GOSUB get_id
+	ENTRY &id
+	comOPS tap_write &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	IF &op1==0
+		GOSUB write_0_cache &op3
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+;end of write
+
+read_0_cache:
+	LOCAL &val
+	OPEN #1 &api_temp_path/&(project_name)_pTAP_0.r /Read
+	READ #1 %Line &val
+	CLOSE #1
+	RETURN &val
+;end of read_0_cache
+
+write_0_cache:
+	LOCAL &val
+	ENTRY &val
+	OPEN #1 &api_temp_path/&(project_name)_pTAP_0.r /Create
+	WRITE #1 "&val"
+	CLOSE #1
+	RETURN
+;end of write_0_cache

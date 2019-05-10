@@ -1,0 +1,131 @@
+LOCAL &os_sel 
+ENTRY &os_sel 
+;&os_sel="small_sys"
+&AON_BASE=0x40000000 ; AP: 0x40000000  , PUBCP: 0x02000000
+
+&SET=0x1000
+&CLR=0x2000
+&SLEEP_CTRL=0x002B00E8
+&SYS_SOFT_RST=0x002B00C4
+
+&CP_ARM_JTAG_CTRL=0x002E0034
+
+;&MEM_TYPE="ZSD"
+&MEM_TYPE="EZAXI"
+
+
+system.mode down
+system.reset
+system.jtagclock 1Mhz
+
+system.cpu CORTEXR5
+
+sys.config corebase 0x80030000
+sys.config CTIBase  0x80038000
+
+if ICD()
+(
+CD.DO ~~\T32.cmm
+Break.SELect.Program Onchip
+
+Break.SELect.Read Onchip
+
+Break.SELect.Write Onchip
+
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG APBACCESSPORT 1.
+SYStem.CONFIG AHBACCESSPORT 3.
+
+SYStem.CONFIG DEBUGACCESSPORT 1
+
+SYStem.CONFIG JTAGACCESSPORT 2
+
+SYStem.MemAccess DAP
+System.CpuAccess Enable
+
+SYStem.CONFIG SWDP ON
+SYStem.mode prepare
+
+GOSUB PREPARE_FOR_PUBCP
+
+GOSUB RELEASE_FOR_PUBCP
+
+system.config AXIACCESSPORT   0.
+system.config APBACCESSPORT   1.
+
+
+;system.mode Prepare
+
+if ("&os_sel"=="small_sys")
+(
+	ON ERROR JUMPTO connect_error
+	SYS.CONFIG SWDP ON
+	system.mode attach
+	Break
+connect_continue:
+	wait 100.ms
+	&cur_state=STATE.TARGET()
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*system down*")
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*running*")||&cur_flag
+	IF (&cur_flag==True())
+	(
+		SYS.CONFIG SWDP OFF
+		system.mode attach
+		Break
+	)	
+	ON ERROR inherit
+)
+ELSE IF ("&os_sel"=="os_sys")
+(
+	SYS.CONFIG SWDP ON
+	system.mode Prepare
+	print "this is os_sys.if core debug, please system.mode attach"
+)
+)
+ENDDO
+
+
+connect_error:
+	GOSUB connect_continue
+;################################### PUBCP BOOT ########################
+PREPARE_FOR_PUBCP:
+	; !!! FOR TGDSP FREQ. UP
+	; 0: 26MHz
+	; 1: 256MHz
+	; 2: 307.2MHz
+	; 3: 384MHz
+	; 4: 512MHz
+	; 5: 614.4MHz
+	&CODE_BASE=0x000F0000
+	;D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xE59F1008
+	;&CODE_BASE=(&CODE_BASE+4)
+	;D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xE59F0008
+	;&CODE_BASE=(&CODE_BASE+4)
+	;D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xE5801000
+	;&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xEAFFFFFE
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 5
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0x515D0020
+	&CODE_BASE=(&CODE_BASE+4)
+	; PMU DEEPSLEEP RELEASE PUBCP
+	D.S &MEM_TYPE:(&AON_BASE+&SLEEP_CTRL+&CLR) %LE %Long ((1<<26.)|(1<<19.))
+
+	; PMU FOREC RELEASE
+	D.S &MEM_TYPE:(0x402B0084+&CLR) %LE %Long (1<<25.)
+
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<2.)
+	D.S &MEM_TYPE:(0x402E0174+&SET) %LE %Long ((1<<10.)|(1<<4.))
+	WAIT 500.MS
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<2.)
+	RETURN
+
+RELEASE_FOR_PUBCP:
+	; AON PUBCP CORE RESET RELEASE
+	D.S &MEM_TYPE:(0x402E0174+&CLR) %LE %Long ((1<<10.)|(1<<4.))
+	RETURN
+
+
+

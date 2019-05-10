@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- 
+-->
+
+<Debug>
+    <DAP protocol="SWD">
+        <id>0</id>
+        <System_Memory port="0" connect="DAP" protocol="AXI"/>
+        <Debug_Access port="1" connect="DAP" protocol="APB"/>
+        <!-- CoreSight structure -->
+        <JTAG port="2" connect="DAP" protocol="JTAG"/>
+        <!-- JTAG-AP structure --> 
+        <DJTAG port="0" connect="JTAG"/>
+        <LDSP port="1" connect="JTAG"/>
+        <TDDSP port="2" connect="JTAG"/>
+        <DJTAG_Switch port="4" connect="JTAG"/>
+    </DAP>
+</Debug>

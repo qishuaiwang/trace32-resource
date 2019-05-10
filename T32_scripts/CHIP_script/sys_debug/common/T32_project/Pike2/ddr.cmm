@@ -1,0 +1,31 @@
+local &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF STATE.POWER()==FALSE()
+(
+	PRINT %ERROR "Please Power up device, and then, try it again!"
+	ENDDO
+)
+
+IF SYStem.CPU()!="CortexA7MPCore"
+(
+	PRINT "DDR Init only support by CORTEXA7"
+	ENDDO
+)
+
+D.LOAD "&CUR_DIR\u-boot-spl"
+
+GO 0x5000307C
+WAIT !RUN()
+
+D.TEST 0x80000000++0xfff /RANDOM
+IF FOUND()
+	WAIT 1.MS
+	PRINT "DDR INIT Failed!"
+ELSE
+	WAIT 1.MS
+	PRINT "DDR INIT 192MHz OK!"
+ENDDO
+
+
+

@@ -1,0 +1,29 @@
+system.jtagclock 5Mhz
+
+system.cpu cortexr5
+
+system.config swdptargetsel 1
+
+sys.config corebase 0x80030000
+sys.config ctibase 0x80038000
+sys.config etmbase 0x8003c000
+
+sys.config swdp on
+system.multicore jtagaccessport 2
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+sys.option enreset off
+system.mode prepare
+
+d.s eaxi:0x322800b0 %le %long 0x305
+d.s eaxi:0x32280058 %le %long 0x208006
+d.s eaxi:0x32090174 %le %long 0x0
+d.s eaxi:0x32280544 %le %long 0xa0044
+
+system.mode up
+ 

@@ -1,0 +1,66 @@
+system.mode down
+global &sys_sel
+local &mem_tpye &CUR_DIR
+
+&mem_tpye="EAXI"
+local 
+&CUR_DIR=os.ppd()
+
+
+if ("&sys_sel"=="os_sys")
+(
+	
+	system.Option EnReset off
+	system.Option TRST off
+
+)
+else
+(
+	system.reset
+	system.Option EnReset on
+	system.Option ResBreak off
+	system.option waitReset on
+) 
+
+
+system.jtagclock 5mhz
+
+system.cpu ARM7TDMI
+
+SYStem.config JTAGACCESSPORT 	2
+SYStem.config COREJTAGPORT			3
+
+system.config MEMORYACCESSPORT	0
+system.config DEBUGACCESSPORT 	1
+system.config AXIACCESSPORT			0
+system.config AHBACCESSPORT			0
+system.config APBACCESSPORT			1
+
+system.multicore SWDP ON ;2 Wire JTAG switch
+system.cpuaccess enable
+system.memaccess dap
+sys.Mode.prepare
+
+if ("&sys_sel"=="os_sys")
+(
+	sys.Mode.Attach
+
+)
+ELSE
+(
+	gosub BOOT
+	system.mode up	
+)
+ENDDO
+
+BOOT:	    
+	D.S ahb:0x402b00cc+0x2000 %LONG 1<<21.  ;clear deep sleep
+	;D.S ahb:0x402b00b0+0x1000 %LONG 1<<8.   ;ARM7 SOFT_RESET
+	;D.S ahb:0x402E0114+0x1000 %LONG 1<<4.|1<<0.		;ARM7 sys SOFT_RESET
+	;wait 10.ms
+	D.S ahb:0x402b00b0+0x2000 %LONG 1<<8.   ;ARM7 SOFT_RESET
+	D.S ahb:0x402E0114+0x2000 %LONG 1<<4.   ;ARM7 sys SOFT_RESET
+	D.S ahb:0x50800000 %LONG 0xeafffffe 		;While 1 arm7 internal ram
+	
+	D.S ahb:0x402E0114+0x2000 %LONG 1<<0.		;ARM7 core SOFT_RESET
+	RETURN

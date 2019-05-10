@@ -1,0 +1,82 @@
+&MEM_TYPE="SD" ; ENAHB
+;dap control
+D.S &MEM_TYPE:0x022e0200 %LE %Long 0x3
+
+
+;print point
+&OFFSET=0x30
+&CODE_BASE=(0x2000+&OFFSET)
+&DSP_BASE=(0x30000000+&OFFSET)
+
+; mov ##data, r0
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+&CODE_BASE=(&CODE_BASE+4)
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+&CODE_BASE=(&CODE_BASE+4)
+; st r0, [##reg].dw
+D.S &MEM_TYPE:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+&CODE_BASE=(&CODE_BASE+4)
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+&CODE_BASE=(&CODE_BASE+4)
+; L2: brr L2
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xfffffffc ; 0xd7ee1320
+&CODE_BASE=(&CODE_BASE+0x4)
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7ee1320 ; 0xfffffffc while(1)
+&CODE_BASE=(&CODE_BASE+0x4)
+
+
+; -----------------------------------------------------------------
+;clk pull up 
+&OFFSET=0x0
+&CODE_BASE=(0x00002000+&OFFSET)
+&DSP_BASE=(0x30000000+&OFFSET)
+; 0: 26MHz
+; 1: 256MHz
+; 2: 384MHz
+; 3: 512MHz
+; 4: 614.4MHz
+; mov ##data, r0
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 3 ;data value
+&CODE_BASE=(&CODE_BASE+4)
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+&CODE_BASE=(&CODE_BASE+4)
+; st r0, [##reg].dw
+D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x015D0020/2) ; register address
+&CODE_BASE=(&CODE_BASE+4)
+D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+&CODE_BASE=(&CODE_BASE+4)
+	
+	
+;clear dsp prot
+D.S &MEM_TYPE:0x022e006c %LE %Long 0x00009620
+
+
+; PMU FORCE PD
+D.S &MEM_TYPE:0x022B0034 %LE %Long 0x208804
+D.S &MEM_TYPE:0x022B0038 %LE %Long 0x208804
+D.S &MEM_TYPE:0x022B0044 %LE %Long 0x208006
+
+;AP RELEASE RESET OF WTL
+D.S &MEM_TYPE:0x022B00CC %LE %Long 0x200000
+
+;RELEASE WTLCP SOFT RST
+D.S &MEM_TYPE:0x022B00B0 %LE %Long 0X0
+
+;SET EXTERN_WAIT
+D.S &MEM_TYPE:0x022e0254 %LE %Long 0x3
+
+;TGDSP CORE RST
+D.S &MEM_TYPE:0x022e0130 %LE %Long 0x20000
+
+
+;D.S &MEM_TYPE:0x022e0240 %LE %Long 0x1
+
+;D.S &MEM_TYPE:0x515D0020 %LE %Long 0x4
+
+;RELEASE TGDSP CORE RST
+D.S &MEM_TYPE:0x022e0130 %LE %Long 0x0
+
+;RELEASE extern wait
+D.S &MEM_TYPE:0x022e0254 %LE %Long 0x1
+
+enddo

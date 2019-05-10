@@ -1,0 +1,114 @@
+; by Ken.Kuang
+LOCAL &mem_tpye &trace_output
+
+ENTRY &mem_tpye &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&mem_tpye"=="X"
+(
+	;&mem_tpye="EAXI"
+	&mem_tpye="EZAXI"
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC ETB"
+	;&trace_output="ETR"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+SYStem.CPU CORTEXR5
+;SYStem.CONFIG CoreNumber 1
+;CORE.ASSIGN 1
+
+SYStem.JtagClock 20MHz
+
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+
+TrOnchip.Set RESET OFF
+TrOnchip.Set UNDEF OFF
+TrOnchip.Set DABORT OFF
+TrOnchip.Set PABORT OFF
+
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+;SYStem.CONFIG.CTI.Base 0x80002000
+SYStem.CONFIG.TPIU.Base 0x80004000
+SYStem.CONFIG.ETR1.Base 0x80005000
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+;SYStem.CONFIG.CTI.Base 0x80007000
+
+; R5
+SYStem.CONFIG.COREDEBUG.Base 0x80030000
+;SYStem.CONFIG.BMC.Base 0x80032000
+SYStem.CONFIG.CTI.Base 0x80038000
+SYStem.CONFIG.ETM.Base 0x8003C000
+
+SYStem.CONFIG.FUNNEL1.ATBSource ETM 1 STM1 4
+
+
+IF ("&trace_output"=="SoC ETB")
+(
+	; ETB
+	SYStem.CONFIG.ETB1.Base 0x80003000
+	SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+)
+ELSE
+(
+	; ETF
+	SYStem.CONFIG.ETF1.Base 0x80003000
+	SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+	SYStem.CONFIG.ETR1.ATBSource ETF1
+	SYStem.CONFIG.TPIU.ATBSource ETF1 
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 0xFF
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CONFIG SWDP ON
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+SYStem.Mode.Prepare
+
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+	DO "&CUR_DIR\cr5_mpu.cmm"   ;MPU INIT
+	PRINT "CR5 MPU INIT OK"
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" CR5_BOOT
+	RETURN
+; end of BOOT
+
+

@@ -1,0 +1,49 @@
+;config soc etf, funnel
+
+ENTRY &trace_output &to_soc_funnel &to_soc_port &cpu_etf
+
+trace.method onchip
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base &soc_funnel
+SYStem.CONFIG.ETF1.Base &soc_etf
+SYStem.CONFIG.TPIU.Base &soc_tpiu
+SYStem.CONFIG.ETR1.Base &soc_etr
+SYStem.CONFIG.STM1.Base &soc_stm
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+
+;SYStem.CONFIG.FUNNEL1.ATBSource FUNNEL3 0 STM1 4
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+SYStem.CONFIG.ETR1.ATBSource ETF1
+SYStem.CONFIG.TPIU.ATBSource ETF1
+TPIU.PortMode Wrapped
+
+; connect soc trace path
+SYStem.CONFIG.FUNNEL1.ATBSource &to_soc_funnel &to_soc_port STM1 4
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1	
+
+IF ("&trace_output"=="SoC_ETB")
+(
+	Onchip.TraceCONNECT ETF1
+)
+ELSE IF ("&trace_output"=="CPU_ETB")
+(
+	Onchip.TraceCONNECT &cpu_etf
+)
+ELSE
+(
+	IF ("&trace_output"=="CPU_ETR")
+	(
+		Onchip.TraceCONNECT ETR2
+	)
+	ELSE
+	(
+		IF ("&trace_output"=="SoC_ETR")
+		(
+			Onchip.TraceCONNECT ETR1
+		)
+	)
+)
+
+ENDDO

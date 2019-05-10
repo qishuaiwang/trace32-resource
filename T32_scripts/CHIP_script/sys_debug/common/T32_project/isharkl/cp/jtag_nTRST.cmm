@@ -1,0 +1,33 @@
+
+LOCAL &power
+LOCAL &nTRST
+LOCAL &idcode
+LOCAL &temp_val
+
+JTAG.LOCK
+
+JTAG.PIN ENable  
+
+&power=JTAG.PIN(VTREF)
+
+IF (&power==0)
+(
+	PRINT %ERROR "Please power up!"
+	ENDDO
+)
+
+	GOSUB jtag_reset
+
+JTAG.PIN DISable
+JTAG.UNLOCK
+
+ENDDO
+
+jtag_reset:
+	JTAG.PIN NRESET HIGH
+	JTAG.PIN NTRST LOW
+	WAIT 50.MS
+	JTAG.PIN NTRST HIGH
+	WAIT 50.MS
+	RETURN
+;end jtag_reset

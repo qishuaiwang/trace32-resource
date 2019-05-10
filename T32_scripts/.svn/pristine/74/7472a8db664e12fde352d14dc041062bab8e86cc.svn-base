@@ -1,0 +1,68 @@
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<3
+(
+	PRINT %ERROR "Please make sure Trace32 in Prepare MODE!"
+	ENDDO
+)
+
+
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	DODECRYPT "SPREADTRUMDJTAGVIADAPJTAGAPFROMKEN" "&cur_path/DJTAG_via_DAP_jtag_ap.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+)
+AREA.CREATE BUSMON 80. 64.
+AREA.SELECT BUSMON
+AREA.VIEW BUSMON
+run_djtag DJ_switch 1
+;sharklj1 and sharkl2
+&SSYS_AP=0.
+&SSYS_MM=1.
+&SSYS_GPU=2.
+&SSYS_AON=3.
+&SSYS_PUB=4.
+&SSYS_WTLCP=5.
+&SSYS_PUBCP=6.
+&SSYS_CPU=7.
+
+
+&BUSMON_CHN_INT=0x8
+&BUSMON_BUS_STATUS=0x26
+;sel dap
+&CHECK_DAP_START=2.
+;CHECK_DAP_END AGCP=5 AON=4 CA53=2 
+&CHECK_DAP_END=&CHECK_DAP_START+1.
+
+LOCAL &ssys &dap &chan &retval
+;sel subsys
+&ssys=&SSYS_CPU
+;&ssys=&SSYS_AON
+&chan=&BUSMON_BUS_STATUS
+
+&dap=&CHECK_DAP_START
+WHILE &dap<&CHECK_DAP_END
+(
+	run_djtag DJ_excute &ssys &dap &BUSMON_CHN_INT 0x1 0
+	run_djtag DJ_excute &ssys &dap &chan 0 1
+	ENTRY &retval
+	PRINT %Decimal "sys" &ssys " dap" &dap " chan" &chan ": 0x" FORMAT.HEX(8., &retval)
+	&dap=&dap+1
+)
+
+
+run_djtag DJ_switch 0
+AREA.SELECT A000
+AREA.CLOSE BUSMON
+
+ENDDO
+
+;note:
+;run_djtag DJ_excute &ssys(sys) &dap(dap) &BUSMON_CHN_INT(chain) 0x1(val) 0(write)
+;run_djtag DJ_excute &ssys(sys) &dap(dap) &chan(chain) 0(val) 1(read)

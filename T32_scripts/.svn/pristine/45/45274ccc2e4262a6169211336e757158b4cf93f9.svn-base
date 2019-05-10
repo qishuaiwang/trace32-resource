@@ -1,0 +1,129 @@
+; qingwen.fang for debug bus pad config gui
+LOCAL   &MEM_TYPE &proj_low &path_proj
+ENTRY   &MEM_TYPE
+
+LOCAL   &SysSel &ModSel &SigSel
+LOCAL   &default_sys &all_sys &sys_number
+
+&proj_low=STRing.LoWeR("&project_sel")
+
+IF "X&MEM_TYPE"=="X"
+(
+	&MEM_TYPE="EAXI"
+)
+
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+&path_proj=STRing.Replace("&g_proj_dir", "\", "/", 0)
+&path_proj="&path_proj/DEBUG/sys"
+;&path_proj="D:/T32_scripts/CHIP_script/sys_debug/common/T32_project/SharkLJ1/DEBUG/sys"
+DO "&path_proj/&(proj_low)_debug_bus_info.cmm"
+
+DIALOG
+(
+  HEADER "Debug Bus Config"
+; define dialog width by printine empty text: POS 0. 0. <width> 1.
+  POS 0. 0. 60. 1.
+  TEXT ""
+  
+  POS 1. 1. 12. 1.
+  TEXT "Select SubSys:"
+  OptionA.SEL:		DYNPULLDOWN ",,," ""
+  POS 20. 1. 12. 1.
+  TEXT "MOD_SEL:"
+  TextA:		EDIT "N/A" ""
+  POS 40. 1. 12. 1.
+  TEXT "SIG_SEL:"
+  TextB:		EDIT "N/A" ""
+
+;buttons OK (Default) and Cancel
+  POS 1. 5. 12. 1.
+  DEFBUTTON "OK" "CONTinue"
+  POS 16. 5. 12. 1.
+  BUTTON    "Cancel" "GOTO cancel"
+;define action when window is closed
+  CLOSE "GOTO cancel"
+)
+	
+;set default selections
+&default_sys=Var.STRing(\sys_name[0])
+&sys_number=Var.STRing(\sys_num)+'.'
+&i=0
+while (&i<&sys_number)
+(
+	&temp_sys=Var.STRing(\sys_name[&i])
+	if (&i==0)
+		&all_sys="&default_sys"
+	else
+		&all_sys="&all_sys"+','+"&temp_sys"
+	&i=&i+1
+)
+  
+  DIALOG.SET OptionA.SEL "&default_sys" "&all_sys"
+  
+;STOP command halts script execution 
+  STOP
+
+;script will continue here when "OK" button is clicked
+
+;get selection
+  &SysSel=DIALOG.STRING(OptionA.SEL);
+  &ModSel=DIALOG.STRING(TextA)+'.';
+  &SigSel=DIALOG.STRING(TextB)+'.';
+;close dialog window  
+  DIALOG.END
+;print result 
+  DIALOG.OK "Subsys Selection: &SysSel" "Mod Selection: &ModSel" "Sig Selection: &SigSel"
+
+LOCAL &envir_temp_cfg
+&envir_temp_cfg=VERSION.ENVironment(TMP)
+OPEN #1 &envir_temp_cfg\dump_cfg.txt /Create
+&i=0
+while (&i<&sys_number)
+(
+	&temp_sys=Var.STRing(\sys_name[&i])
+	if ("&temp_sys"=="&SysSel")
+	(
+		&sys_value=Var.STRing(\subsys_value[&i])+'.'
+		&sys_sel_addr=Var.STRing(\subsys_sel[0])+'.'
+		&bit_offset=Var.STRing(\subsys_sel[1])+'.'
+		&temp1=Data.Long(&MEM_TYPE:&sys_sel_addr)&(~(0x000000ff<<&bit_offset))
+		GOSUB data_set_writef &sys_sel_addr (&temp1)|(&sys_value<<&bit_offset)
+		if ("&ModSel"!="N/A.")&&(Var.STRing(\mod_sel[&i][0])!="0") 
+		(
+			&mod_addr=Var.STRing(\mod_sel[&i][0])+'.'
+			&mod_offset=Var.STRing(\mod_sel[&i][1])+'.'
+			&temp2=Data.Long(&MEM_TYPE:&mod_addr)&(~(0x000000ff<<&mod_offset))
+			GOSUB data_set_writef &mod_addr (&temp2)|(&ModSel<<&mod_offset)
+		)
+		if ("&SigSel"!="N/A.")&&(Var.STRing(\sig_sel[&i][0])!="0")
+		(
+			&sig_addr=Var.STRing(\sig_sel[&i][0])+'.'
+			&sig_offset=Var.STRing(\sig_sel[&i][1])+'.'
+			&temp3=Data.Long(&MEM_TYPE:&sig_addr)&(~(0x000000ff<<&sig_offset))
+			GOSUB data_set_writef &sig_addr (&temp3)|(&SigSel<<&sig_offset)
+		)
+	)
+	&i=&i+1
+)
+CLOSE #1
+
+;PAD config interface
+DO "&cur_path/pad_config_dyn.cmm" &path_proj &MEM_TYPE
+	
+ENDDO
+
+;script continues here when Cancel is clicked"
+cancel:
+  DIALOG.END
+  DIALOG.OK "Cancelled"
+ENDDO
+
+data_set_writef:
+	LOCAL &addr_t &data_t
+	ENTRY &addr_t &data_t
+	
+	D.S &MEM_TYPE:&addr_t %LE %Long &data_t
+	WRITE #1 "lookat -s " %Hex &data_t " " %Hex &addr_t
+	RETURN

@@ -1,0 +1,10 @@
+LOCAL &temp &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+GLOBAL &project_name
+&project_name="iWhale2"
+GLOBAL &project_path
+&temp=OS.PPD()
+&project_path=STRing.Replace("&temp", "\", "/", 0)
+DO "&project_path/../JTAGv1.cmm" &project_name &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+ENDDO

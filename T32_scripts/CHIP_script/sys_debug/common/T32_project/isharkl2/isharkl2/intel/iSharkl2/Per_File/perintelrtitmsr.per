@@ -1,0 +1,103 @@
+; BEGIN CCCT SECTION
+; -------------------------------------------------------------------------
+; Copyright (C) 2014 Intel Mobile Communications GmbH
+; 
+;      Sec Class: Intel Confidential (IC)
+; ----------------------------------------------------------------------
+; Revision Information:
+;    $File name:  /tools/Lauterbach/Lauterbach_Configuration/SoFIA_LTE/Component_Verification/Per_File/perintelrtitmsr.per $
+;    $CC-Version: .../oint_tools_lauterbach_01/1 $
+;    $Date:       2014-06-20    8:15:19 UTC $
+; ----------------------------------------------------------------------
+; by CCCT (0.12l)
+; ----------------------------------------------------------------------
+; END CCCT SECTION
+
+; @(#) Sep 14 2012
+; $LastChangedDate: 2012-09-14 16:14:52 +0200 $
+; $LastChangedRevision: 4202 $
+; $LastChangedBy: trasmussen $
+                                                                   
+
+config 16. 8.
+
+
+width 20.
+
+group.quad msr:0x768++0x0
+ line.quad 0x00 "RTIT_CTL"
+  bitfld.quad 0x00 14.--15. "  MTC_Range    " "TSC[14:7],TSC[16:9],TSC[18:11],TSC[20:13]"
+  bitfld.quad 0x00 13.      "  TraceActive  " "Disabled,Enabled"
+  bitfld.quad 0x00 12.      "  Less_Pkts    " "Disabled,Enabled"
+  textline "                                     "
+  bitfld.quad 0x00 11.      "  Cmprs_Ret    " "Disabled  ,Enabled"
+  bitfld.quad 0x00 10.      "  STS_En       " "Disabled,Enabled"
+  bitfld.quad 0x00 9.       "  MTC_En       " "Disabled,Enabled"
+  textline "                                     "
+  bitfld.quad 0x00 7.       "  CR3En        " "Disabled  ,Enabled"
+  bitfld.quad 0x00 4.       "  STS_on_CR3   " "Disabled,Enabled"
+  bitfld.quad 0x00 3.       "  User         " "Disabled,Enabled"
+  textline "                                     "
+  bitfld.quad 0x00 2.       "  OS           " "Disabled  ,Enabled"
+  bitfld.quad 0x00 1.       "  Cycle_Acc    " "Disabled,Enabled"
+  bitfld.quad 0x00 0.       "  Trace_En     " "Disabled,Enabled"
+
+group.quad msr:0x769++0x0
+ line.quad 0x00 "RTIT_STATUS"
+  bitfld.quad 0x00 3.       "  Buffer_Overflow  " "Disabled,Enabled"
+  bitfld.quad 0x00 2.       "  TriggerEn  " "Disabled,Enabled"
+  bitfld.quad 0x00 1.       "  ContextEn    " "Disabled,Enabled"
+  textline "                                     "
+  bitfld.quad 0x00 0.       "  FilterEn         " "Disabled,Enabled"
+
+rgroup.quad msr:0x76B++0x0
+ line.quad 0x00 "RTIT_CNTP"
+
+group.quad msr:0x76C++0x0
+ line.quad 0x00 "RTIT_EVENTS"
+  bitfld.quad 0x00 3.--5. "  TraceStop_Event_ID  " "0,1,2,3,4,5,6,7" 
+  bitfld.quad 0x00 0.--2. "  Filter_Event_ID     " "0,1,2,3,4,5,6,7"
+
+group.quad msr:0x760++0x0
+ line.quad 0x00 "RTIT_LIP0"
+
+group.quad msr:0x761++0x0
+ line.quad 0x00 "RTIT_LIP1"
+
+group.quad msr:0x762++0x0
+ line.quad 0x00 "RTIT_LIP2"
+
+group.quad msr:0x763++0x0
+ line.quad 0x00 "RTIT_LIP3"
+
+group.quad msr:0x76E++0x0
+ line.quad 0x00 "RTIT_LAST_LIP"
+  bitfld.quad 0x00 32.              "  CMPRS_LIP_Valid  " "Invalid,Valid" 
+  hexmask.quad.word 0x00 16.--31. 1 "  CMPRS_LIP_HIGH   "  
+  hexmask.quad.word 0x00 0.--15. 1  "  CMPRS_LIP_LOW    "  
+
+group.quad msr:0x777++0x0
+ line.quad 0x00 "RTIT_CR3_MATCH"
+
+group.quad msr:0x77C++0x0
+ line.quad 0x00 "RTIT_PKT_CNT"
+  bitfld.quad 0x00 16.--17.        "  Pkt_Mask  " "0,1,2,3"
+  hexmask.quad.word 0x00 0.--13. 1 "  Pkt_Cnt   "  
+
+group.quad msr:0x770++0x0
+ line.quad 0x00 "RTIT_BASE_ADDR"
+
+group.quad msr:0x771++0x0
+ line.quad 0x00 "RTIT_LIMIT_MASK"
+
+group.quad msr:0x772++0x0
+ line.quad 0x00 "RTIT_OFFSET"
+
+group.quad msr:0x77D++0x0
+ line.quad 0x00 "RTIT_TNT_BUFF"
+
+group.quad msr:0x76F++0x0
+ line.quad 0x00 "RTIT_LAST_CALL_NLIP"
+  bitfld.quad 0x00 48.              "  NLIP_Valid  " "Invalid,Valid" 
+  hexmask.quad.word 0x00 32.--47. 1 "  Call_NLIP[32:47]  "  
+  hexmask.quad.long 0x00 0.--31. 1  "  Call_NLIP[31:0]  "  

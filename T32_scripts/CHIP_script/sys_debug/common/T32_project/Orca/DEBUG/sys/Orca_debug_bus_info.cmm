@@ -1,0 +1,102 @@
+;***************************SYS INFO****************************************
+;sys_num means the number of subsys
+Var.NEWGLOBAL int \sys_num
+Var.set \sys_num=8
+
+;sys_name array includes different name of every subsys
+Var.NEWGLOBAL char[8][7] \sys_name
+Var.set \sys_name[0]="AP"
+Var.set \sys_name[1]="PSCP"
+Var.set \sys_name[2]="V3"
+Var.set \sys_name[3]="AUDCP"
+Var.set \sys_name[4]="PUB"
+Var.set \sys_name[5]="NRCP"
+Var.set \sys_name[6]="AON"
+Var.set \sys_name[7]="APCPU"
+
+;subsys_value is the value write to subsys_sel address correspond to every subsys
+Var.NEWGLOBAL int[8] \subsys_value
+Var.set \subsys_value[0..7]=(0,1,2,3,4,5,6,7)
+
+;subsys_sel[x][0] is address of subsys selection, subsys_sel[x][1] is the 8-bits offset, 'x=0' represents subsys_sel A, 'x=1' represents subsys_sel B
+Var.NEWGLOBAL int[2][2] \subsys_sel
+Var.set \subsys_sel[0][0..1]=(0x7800a100,0)
+Var.set \subsys_sel[1][0..1]=(0x7800a104,0)
+
+;mod_sel[x][0] and sig_sel[x][0] is address, mod_sel[x][1] and sig_sel[x][1] is the 8-bits offset, 'x' represents different subsys
+Var.NEWGLOBAL int[8][2] \mod_sel
+Var.set \mod_sel[0][0..1]=(0x7800a14c,0)
+Var.set \mod_sel[1][0..1]=(0x7800a124,0)
+Var.set \mod_sel[2][0..1]=(0x7800a134,0)
+Var.set \mod_sel[3][0..1]=(0x7800a11c,0)
+Var.set \mod_sel[4][0..1]=(0x7800a12c,0)
+Var.set \mod_sel[5][0..1]=(0x7800a13c,0)
+Var.set \mod_sel[6][0..1]=(0x7800a10c,0)
+Var.set \mod_sel[7][0..1]=(0x7800a114,0)
+
+Var.NEWGLOBAL int[8][2] \sig_sel
+Var.set \sig_sel[0][0..1]=(0x7800a150,0)
+Var.set \sig_sel[1][0..1]=(0x7800a128,0)
+Var.set \sig_sel[2][0..1]=(0x7800a138,0)
+Var.set \sig_sel[3][0..1]=(0x7800a120,0)
+Var.set \sig_sel[4][0..1]=(0x7800a130,0)
+Var.set \sig_sel[5][0..1]=(0x7800a140,0)
+Var.set \sig_sel[6][0..1]=(0x7800a110,0)
+Var.set \sig_sel[7][0..1]=(0x7800a118,0)
+
+;***************************PAD INFO****************************************
+;group_num means the number of pad group
+Var.NEWGLOBAL int \group_num
+Var.set \group_num=2
+
+;addr_pad[x] includes 32 addresses of debug bus in group x
+Var.NEWGLOBAL int[2][32] \addr_pad
+
+;group0 address
+Var.set \addr_pad[0][0..31]=(0x63450138,0x6345013c,0x63450140,0x63450144,0x63450148,0x6345014c,0x63450150,0x63450154,\
+0x63450158,0x6345015c,0x63450160,0x63450164,0x63450168,0x6345016c,0x63450170,0x63450174,\
+0x634500d0,0x634500d4,0x634500d8,0x634500dc,0x634500e0,0x634500e4,0x634500e8,0x634500ec,\
+0x634500f0,0x634500f4,0x634500f8,0x634500fc,0x63450100,0x63450104,0x63450108,0x6345010c) 
+
+;group1 address
+Var.set \addr_pad[1][0..31]=(0x634501a0,0x634501a4,0x634501a8,0x634501ac,0x63450030,0x63450034,0x63450038,0x6345003c,\
+0x63450234,0x63450230,0x63450228,0x6345022c,0x63450210,0x63450214,0x63450218,0x6345021c,\
+0x63450240,0x63450244,0x63450220,0x63450224,0x63450040,0x63450044,0x63450048,0x6345004c,\
+0x634501b0,0x634501b4,0x634501bc,0x634501b8,0x634501c0,0x634501c4,0x634501cc,0x634501d0)
+
+;dbg_bus_sel[x] means debug bus bit x source selection: (address, 8-bits offset)
+Var.NEWGLOBAL int[32][2] \dbg_bus_sel
+Var.set \dbg_bus_sel[0][0..1]=(0x7800a200,0)
+Var.set \dbg_bus_sel[1][0..1]=(0x7800a204,0)
+Var.set \dbg_bus_sel[2][0..1]=(0x7800a208,0)
+Var.set \dbg_bus_sel[3][0..1]=(0x7800a20c,0)
+Var.set \dbg_bus_sel[4][0..1]=(0x7800a210,0)
+Var.set \dbg_bus_sel[5][0..1]=(0x7800a214,0)
+Var.set \dbg_bus_sel[6][0..1]=(0x7800a218,0)
+Var.set \dbg_bus_sel[7][0..1]=(0x7800a21c,0)
+Var.set \dbg_bus_sel[8][0..1]=(0x7800a220,0)
+Var.set \dbg_bus_sel[9][0..1]=(0x7800a224,0)
+Var.set \dbg_bus_sel[10][0..1]=(0x7800a228,0)
+Var.set \dbg_bus_sel[11][0..1]=(0x7800a22c,0)
+Var.set \dbg_bus_sel[12][0..1]=(0x7800a230,0)
+Var.set \dbg_bus_sel[13][0..1]=(0x7800a234,0)
+Var.set \dbg_bus_sel[14][0..1]=(0x7800a238,0)
+Var.set \dbg_bus_sel[15][0..1]=(0x7800a23c,0)
+Var.set \dbg_bus_sel[16][0..1]=(0x7800a240,0)
+Var.set \dbg_bus_sel[17][0..1]=(0x7800a244,0)
+Var.set \dbg_bus_sel[18][0..1]=(0x7800a248,0)
+Var.set \dbg_bus_sel[19][0..1]=(0x7800a24c,0)
+Var.set \dbg_bus_sel[20][0..1]=(0x7800a250,0)
+Var.set \dbg_bus_sel[21][0..1]=(0x7800a254,0)
+Var.set \dbg_bus_sel[22][0..1]=(0x7800a258,0)
+Var.set \dbg_bus_sel[23][0..1]=(0x7800a25c,0)
+Var.set \dbg_bus_sel[24][0..1]=(0x7800a260,0)
+Var.set \dbg_bus_sel[25][0..1]=(0x7800a264,0)
+Var.set \dbg_bus_sel[26][0..1]=(0x7800a268,0)
+Var.set \dbg_bus_sel[27][0..1]=(0x7800a26c,0)
+Var.set \dbg_bus_sel[28][0..1]=(0x7800a270,0)
+Var.set \dbg_bus_sel[29][0..1]=(0x7800a274,0)
+Var.set \dbg_bus_sel[30][0..1]=(0x7800a278,0)
+Var.set \dbg_bus_sel[31][0..1]=(0x7800a27c,0)
+
+ENDDO

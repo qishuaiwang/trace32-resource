@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- 
+-->
+
+<ASIC project="SharkLE">
+    <Debug file="Debug.xml"/>
+    <DJTAG file="DJTAG.xml"/>
+</ASIC>

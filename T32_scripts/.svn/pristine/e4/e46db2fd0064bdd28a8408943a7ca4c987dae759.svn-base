@@ -1,0 +1,81 @@
+project      core     hardware_license     softpath        script_name              path
+
+Orca         AP       ARMv8-A/R            T32_iwhale2     Orca                   t32marm64.exe
+Orca         CP       ARMv7-A/R            T32_iwhale2     Orca                   t32marm.exe
+Orca         SP       Cortex-M             T32_iwhale2     Orca                   t32marm.exe
+Orca         AG       TeakLite-4           T32_iwhale2     Orca                   t32mteak.exe
+Orca         TG       TeakLite-4           T32_iwhale2     Orca                   t32mteak.exe
+Orca         LTE      TeakLite-4           T32_iwhale2     Orca                   t32mteak.exe
+Orca         XC4500   CEVA-X               T32_iwhale2     Orca                   t32mceva.exe
+
+SharkL5      AP       ARMv8-A/R            T32_iwhale2     SharkL5                t32marm64.exe
+SharkL5      CP       ARMv7-A/R            T32_iwhale2     SharkL5                t32marm.exe
+SharkL5      SP       Cortex-M             T32_iwhale2     SharkL5                t32marm.exe
+SharkL5      AG       TeakLite-4           T32_iwhale2     SharkL5                t32mteak.exe
+SharkL5      TG       TeakLite-4           T32_iwhale2     SharkL5                t32mteak.exe
+SharkL5      LTE      TeakLite-4           T32_iwhale2     SharkL5                t32mteak.exe
+SharkL5      CDMA     TeakLite-4           T32_iwhale2     SharkL5                t32mteak.exe
+
+SharkL5Pro      AP       ARMv8-A/R            T32_iwhale2     SharkL5Pro                t32marm64.exe
+SharkL5Pro      CP       ARMv7-A/R            T32_iwhale2     SharkL5Pro                t32marm.exe
+SharkL5Pro      SP       Cortex-M             T32_iwhale2     SharkL5Pro                t32marm.exe
+SharkL5Pro      AG       TeakLite-4           T32_iwhale2     SharkL5Pro                t32mteak.exe
+SharkL5Pro      TG       TeakLite-4           T32_iwhale2     SharkL5Pro                t32mteak.exe
+SharkL5Pro      LTE      TeakLite-4           T32_iwhale2     SharkL5Pro                t32mteak.exe
+
+ROC1         AP       ARMv8-A/R            T32_iwhale2     ROC1                   t32marm64.exe
+ROC1         CP       ARMv7-A/R            T32_iwhale2     ROC1                   t32marm.exe
+ROC1         SP       Cortex-M             T32_iwhale2     ROC1                   t32marm.exe
+ROC1         AG       TeakLite-4           T32_iwhale2     ROC1                   t32mteak.exe
+ROC1         TG       TeakLite-4           T32_iwhale2     ROC1                   t32mteak.exe
+ROC1         LTE      TeakLite-4           T32_iwhale2     ROC1                   t32mteak.exe
+ROC1         eSE      Cortex-M             T32_iwhale2     ROC1                   t32marm.exe
+ROC1         IPA      Cortex-M             T32_iwhale2     ROC1                   t32marm.exe
+
+SharkL3      AP       ARMv8-A/R            T32_iwhale2     SharkL3                t32marm64.exe
+SharkL3      CP       ARMv7-A/R            T32_iwhale2     SharkL3                t32marm.exe
+SharkL3      SP       Cortex-M             T32_iwhale2     SharkL3                t32marm.exe
+SharkL3      TG       TeakLite-4           T32_iwhale2     SharkL3                t32mteak.exe
+SharkL3      LTE      TeakLite-4           T32_iwhale2     SharkL3                t32mteak.exe
+SharkL3      GNSS     Cortex-M             T32_iwhale2     SharkL3                t32marm.exe
+SharkL3      WIFI     Cortex-M             T32_iwhale2     SharkL3                t32marm.exe
+
+Pike2        AP       ARMv7-A/R            T32_iwhale2     Pike2                  t32marm.exe
+Pike2        CP       ARMv7-A/R            T32_iwhale2     Pike2                  t32marm.exe
+Pike2        SP       Cortex-M             T32_iwhale2     Pike2                  t32marm.exe
+Pike2        TG       TeakLite-4           T32_iwhale2     Pike2                  t32mteak.exe
+Pike2        GNSS     Cortex-M             T32_iwhale2     Pike2                  t32marm.exe
+Pike2        WIFI     Cortex-M             T32_iwhale2     Pike2                  t32marm.exe
+
+SharkLE      AP       ARMv8-A/R            T32_iwhale2     SharkLE                t32marm64.exe
+SharkLE      CP       ARMv7-A/R            T32_iwhale2     SharkLE                t32marm.exe
+SharkLE      SP       Cortex-M             T32_iwhale2     SharkLE                t32marm.exe
+SharkLE      TG       TeakLite-4           T32_iwhale2     SharkLE                t32mteak.exe
+SharkLE      LTE      TeakLite-4           T32_iwhale2     SharkLE                t32mteak.exe
+SharkLE      GNSS     Cortex-M             T32_iwhale2     SharkLE                t32marm.exe
+SharkLE      WIFI     Cortex-M             T32_iwhale2     SharkLE                t32marm.exe
+
+SharkLJ1     AP       ARMv8-A/R            T32_iwhale2     SharkLJ1               t32marm64.exe
+SharkLJ1     CP       ARMv7-A/R            T32_iwhale2     SharkLJ1               t32marm.exe
+SharkLJ1     SP       ARM7                 T32_iwhale2     SharkLJ1               t32marm.exe
+SharkLJ1     TG       TeakLite-4           T32_iwhale2     SharkLJ1               t32mteak.exe
+SharkLJ1     LTE      TeakLite-4           T32_iwhale2     SharkLJ1               t32mteak.exe
+
+SharkL2      AP       ARMv7-A/R            T32_iwhale2     SharkL2                t32marm.exe
+SharkL2      CP       ARMv7-A/R            T32_iwhale2     SharkL2                t32marm.exe
+SharkL2      SP       ARM7                 T32_iwhale2     SharkL2                t32marm.exe
+SharkL2      TG       TeakLite-4           T32_iwhale2     SharkL2                t32mteak.exe
+SharkL2      LTE      TeakLite-4           T32_iwhale2     SharkL2                t32mteak.exe
+
+iSharkL2     AP       ATOM                 T32_iwhale2     iSharkL2/iSharkL2      t32mx64.exe
+iSharkL2     CP       ARMv7-A/R            T32_iwhale2     iSharkL2/iSharkL2      t32marm.exe
+iSharkL2     SP       Cortex-M             T32_iwhale2     iSharkL2/iSharkL2      t32marm.exe
+iSharkL2     TG       TeakLite-4           T32_iwhale2     iSharkL2/iSharkL2      t32mteak.exe
+iSharkL2     LTE      TeakLite-4           T32_iwhale2     iSharkL2/iSharkL2      t32mteak.exe
+
+iWhale2      AP       ATOM                 T32_iwhale2     iWhale2/iWhale2        t32mx64.exe
+iWhale2      CP       ARMv7-A/R            T32_iwhale2     iWhale2/iWhale2        t32marm.exe
+iWhale2      SP       Cortex-M             T32_iwhale2     iWhale2/iWhale2        t32marm.exe
+iWhale2      AG       TeakLite-4           T32_iwhale2     iWhale2/iWhale2        t32mteak.exe
+iWhale2      TG       TeakLite-4           T32_iwhale2     iWhale2/iWhale2        t32mteak.exe
+iWhale2      LTE      TeakLite-4           T32_iwhale2     iWhale2/iWhale2        t32mteak.exe

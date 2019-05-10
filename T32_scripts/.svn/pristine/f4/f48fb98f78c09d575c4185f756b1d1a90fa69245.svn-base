@@ -1,0 +1,6 @@
+; by Ken.Kuang
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+DO "&CUR_DIR/TL420.cmm" 2

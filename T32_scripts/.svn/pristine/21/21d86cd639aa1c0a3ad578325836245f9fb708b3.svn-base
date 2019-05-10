@@ -1,0 +1,417 @@
+;---------------------------------------------------------------------------------------
+; Menu reprogram, add customized bottons and menus
+;---------------------------------------------------------------------------------------
+GLOBAL &CONFIG_INPUT &continue &g_proj_dir &os_sel
+GLOBAL &per_rtit_msr &per_register
+GLOBAL &project_sel &Core_sel
+LOCAL &sys_script &debug
+LOCAL &debug &TAP_SEL &sel_flag
+
+ENTRY &os_sel
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+&CUR_DIR=OS.PPD()
+&CONFIG_INPUT=""
+&g_proj_dir="&CUR_DIR"
+;&Core_sel="AP ,CP ,LTE"
+&per_rtit_msr="per_rtit_msr" 
+&per_register="per_register"
+
+;OS.Hidden mkdir "&g_proj_dir"
+print OS.RETURN()
+&sel_flag=0x0
+
+;init jtag
+if (STATE.power())
+(
+	IF (CPUFAMILY()=="ARM")
+	(
+		sys.Option EnReset OFF
+		sys.Option TRST OFF
+	)
+	SYStem.Mode Prepare
+	SYStem.Mode Down
+)
+else
+(
+	GLOBALON POWERUP DO &g_proj_dir/step_prapare.cmm
+)
+&sys_script=0x0
+&debug=0x1
+if (&sys_script==0x1)
+(
+	OPEN #1 &CUR_DIR\configure.txt /Read
+	READ #1 %line &TAP_SEL
+	READ #1 %line &os_sel
+	READ #1 %line &continue
+	CLOSE #1
+
+	IF (CPUFAMILY()=="I386")
+	(
+		gosub project_configure
+	)
+	ELSE
+	(
+		;gosub project_configure_DAP
+		&CONFIG_INPUT="&TAP_SEL"
+	)
+	OPEN #1 &CUR_DIR\configure.txt /Create
+	WRITE #1 "&CONFIG_INPUT"
+	WRITE #1 "&os_sel"
+	WRITE #1 "&continue"
+	CLOSE #1
+)
+ELSE
+(
+	&temp=STRing.SCAN("&Core_sel", "AP", 0)
+	IF (&temp!=-1)
+		&CONFIG_INPUT="&CONFIG_INPUT"+"BIA"
+	&temp1=STRing.SCAN("&Core_sel", "CP", 0)
+	&temp2=STRing.SCAN("&Core_sel", "SP", 0)
+	&temp3=STRing.SCAN("&Core_sel", "AG", 0)
+	&temp4=STRing.SCAN("&Core_sel", "TG", 0)
+	&temp5=STRing.SCAN("&Core_sel", "LTE", 0)
+	IF (&temp1!=-1||&temp2!=-1||&temp3!=-1||&temp4!=-1||&temp5!=-1)
+		&CONFIG_INPUT="&CONFIG_INPUT"+"DAP"
+)
+IF "&CONFIG_INPUT"==""
+(
+	IF (CPUFAMILY()=="I386")
+	(
+		&CONFIG_INPUT="BIADAP"
+	)
+	ELSE
+	(
+		&CONFIG_INPUT="DAP"
+	)
+	
+)
+&temp=STRing.SCAN("&CONFIG_INPUT", "BIA", 0)
+IF (&temp!=-1)
+(	
+	GLOBALON CMD menubia do "&g_proj_dir/butter.cmm"
+	&sel_flag=0x0
+)
+GLOBALON CMD menutrst do "&g_proj_dir/jtag_nTRST.cmm"
+GLOBALON CMD menusrst do "&g_proj_dir/jtag_SRST.cmm"
+GLOBALON CMD menubia do "&g_proj_dir/butter.cmm"
+GLOBALON CMD menurb do "&g_proj_dir/butter.cmm"
+GLOBALON CMD menubf do "&g_proj_dir/butter_fuse.cmm"
+GLOBALON CMD menuup do "&g_proj_dir/attach.cmm"
+GLOBALON CMD menuedit do "&g_proj_dir/edit_cmm.cmm"
+
+GLOBALON CMD menuarcs do "&g_proj_dir/ap_release_r5_cm4.cmm"
+GLOBALON CMD menuef do "&g_proj_dir/fuse.cmm"
+GLOBALON CMD menufgi do "&g_proj_dir/fuse_gui.cmm"
+GLOBALON CMD menudfgi do "&g_proj_dir/fuse_detail_gui.cmm"
+GLOBALON CMD menusig do "&g_proj_dir/signal_sel.cmm"
+GLOBALON CMD menuprb do "&g_proj_dir/probe_mode_test.cmm"
+GLOBALON CMD menurti do "&g_proj_dir/RTIT.cmm"
+GLOBALON CMD menur5 do "&g_proj_dir/r5.cmm"
+GLOBALON CMD menucm4 do "&g_proj_dir/cm4.cmm"
+GLOBALON CMD menurrd do "&g_proj_dir/R5_release_DSP.cmm"
+GLOBALON CMD menuagd do "&g_proj_dir/AGDSP_TL420.cmm"
+GLOBALON CMD menutgd do "&g_proj_dir/TGDSP_TL420.cmm"
+GLOBALON CMD menulte do "&g_proj_dir/LTEDSP_TL420.cmm"
+GLOBALON CMD menuoeu do "&g_proj_dir/orange_unlock.cmm"
+
+GLOBALON CMD menuddr do "&g_proj_dir/ddr_init.cmm"
+
+
+
+GLOBALON CMD menuchk do "&g_proj_dir/sys/script/Per_Preload.cmm"
+GLOBALON CMD menulod do "&g_proj_dir/sys/script/cmd_load.cmm"
+GLOBALON CMD menustm do "&g_proj_dir/sys/script/iWhale2_STM_for_BIA.cmm"
+
+GLOBALON CMD menusbrd do "&g_proj_dir/sys/script/etb_readout.cmm"
+GLOBALON CMD menusrrd do "&g_proj_dir/sys/script/etr_readout.cmm"
+GLOBALON CMD menurtit do "&g_proj_dir/intel/iSharkl2/Chip_Startup_Scripts/RTITDialog_IWhale2.cmm"
+GLOBALON CMD menubtst do "&g_proj_dir/intel/iSharkl2/Control/boot_stall.cmm"
+GLOBALON CMD menurlst do "&g_proj_dir/intel/iSharkl2/Control/release_stall.cmm"
+
+GLOBALON CMD menuckbt do "&g_proj_dir/check_boot_flag.cmm"
+
+GLOBALON CMD menurper do "&g_proj_dir/intel/per_file_label.cmm"
+
+GLOBALON CMD menure do "&g_main_path/main.cmm"
+
+;do "&g_proj_dir/intel/per_file_label.cmm"
+;menurper per_rtit_msr
+;menurper per_register
+;GLOBALON CMD menurtr GOSUB "&per_rtit_msr"
+;GLOBALON CMD menuregi GOSUB "&per_register"
+
+MENU.RESET
+(&
+    MENU.REPROGRAM
+    (&
+      ADD
+      TOOLBAR
+      (
+			IF (CPUFAMILY()=="I386")
+			(
+
+				toolitem "BIA" "Bi,a"		"do &g_proj_dir/butter.cmm"
+				separator
+				toolitem "DAP" "DP,a"		"do &g_proj_dir/butter.cmm DAP"
+				separator
+				toolitem "RESET JTAG" "Rs,r"		"do &g_proj_dir/jtag_nTRST.cmm"
+				separator
+				toolitem "BIA no DAP" "BN,a"		"do &g_proj_dir/butter.cmm BIA"
+				if ("&os_sel"=="small_sys")
+				(
+					separator
+					toolitem "DDR init" "DR,r"		"menuddr"
+				)
+				else
+				(
+					separator
+					toolitem "BIADAP_Noattach" "BD,r"		"do &g_proj_dir/butter.cmm BIA BIADAPno_attach"
+					toolitem "BIA_Noattach" "Bi,r"		"do &g_proj_dir/butter.cmm BIA BIAno_attach"
+					separator
+					toolitem "Attach_break" "AT,c"		"do &g_proj_dir/attach.cmm 0x1"
+					toolitem "Attach Break Go" "BG,c"		"do &g_proj_dir/attach.cmm 0x2"
+					;toolitem "check_boot_flag" "CK,r"		"do &g_proj_dir/check_boot_flag.cmm"
+					separator
+					toolitem "IOAPIC" "IO,g"		"do &g_proj_dir/sys/script/cmd_load.cmm per iWhale2_IOAPIC.per"
+					toolitem "LAPIC" "LI,c"		"do &g_proj_dir/sys/script/cmd_load.cmm per iWhale2_LAPIC.per"
+					separator
+				)
+			)
+			IF (CPUFAMILY()=="ARM")
+			(
+				toolitem "R5" "R5,a"			"do &g_proj_dir/r5.cmm"
+				toolitem "SP" "SP,c"			"do &g_proj_dir/cm4.cmm"
+				separator
+				toolitem "DAP" "DP,a"			"do &g_proj_dir/r5.cmm DAP"
+				separator
+				toolitem "RESET JTAG" "Rs,r"		"do &g_proj_dir/jtag_nTRST.cmm"
+				if ("&os_sel"=="small_sys")
+				(
+					separator
+					toolitem "R5_RELEASE_DSP" "RE,c"		"do &g_proj_dir/R5_release_DSP.cmm"
+				)
+				else
+				(
+					separator
+					toolitem "Attach_break" "AT,c"				"do &g_proj_dir/attach.cmm 0x1"
+					separator
+					toolitem "Check via AON" "CA,r"			"do &g_proj_dir/sys/script/Per_Preload.cmm EAXI:4"
+					toolitem "Check via EAXI" "CK,g"			"do &g_proj_dir/sys/script/Per_Preload.cmm EAXI"
+					toolitem "Check via EAHB" "CH,r"			"do &g_proj_dir/sys/script/Per_Preload.cmm EAHB"
+					separator
+					toolitem "STM Trace_stmbuffer Start" "TS,g"			"do &g_proj_dir/sys/script/iWhale2_STM_for_BIA.cmm"
+					toolitem "STM Trace_ddr Start" "TD,g"			"do &g_proj_dir/sys/script/iWhale2_STM_for_BIA.cmm Start ddr"
+					toolitem "STM Trace Stop" "TE,r"			"do &g_proj_dir/sys/script/iWhale2_STM_for_BIA.cmm Stop"
+					separator
+					toolitem "Read stm_stmbuffer_out" "SB,g"			"menusbrd"
+					toolitem "Read stm_ddr_out" "SR,r"			"menusrrd"
+					separator
+				)	
+			)
+			IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")
+			(
+				;toolitem "AGDSP" "AG,b"			"do &g_proj_dir/AGDSP_TL420.cmm"
+				toolitem "TGDSP" "TD,b"			"do &g_proj_dir/TGDSP_TL420.cmm"
+				toolitem "LTEDSP" "LT,b"		"do &g_proj_dir/LTEDSP_TL420.cmm"
+				;separator				
+				;toolitem "DAP" "DP,a"			"do &g_proj_dir/LTEDSP_TL420.cmm DAP"
+				separator
+				toolitem "RESET JTAG" "Rs,r"		"do &g_proj_dir/jtag_nTRST.cmm"
+				separator
+			)
+      )
+    )
+    MENU.ReProgram "&g_proj_dir/iSharkl2.men"
+)
+ENDDO
+IF (CPUFAMILY()=="I386")
+	(
+		IF (&sel_flag==0x1)
+			DO &CUR_DIR/butter_iwhale2.cmm
+		ELSE
+			DO &CUR_DIR/butter.cmm
+	)
+ENDDO
+project_configure_DAP:
+		LOCAL &project_sel &Core_sel &module &driver
+		LOCAL &Core1_sel &Core2_sel &Core3_sel &Core4_sel &Core5_sel 		;select project and core
+		DIALOG
+		(
+		  HEADER "PRO_CONFG"
+		  POS 0. 0. 28. 1.
+		  TEXT ""
+		  	  
+		  POS 1. 1. 12. 1.
+		  TEXT "Select TAP:"
+		  POS 1. 2. 12. 1.
+		  OptionD: CHECKBOX "BIA" ""
+			OptionE: CHECKBOX "DAP" ""
+			OptionF: CHECKBOX "FUSE" ""
+			
+			POS 15. 1. 12. 1.
+		  LINE "Select OS:"
+			POS 15. 2. 12. 1.
+			OptionH: CHECKBOX "Bare_Metal" ""
+			POS 15. 3. 12. 1.
+			Optiong: CHECKBOX "Connect" ""
+			
+			;buttons OK (Default) and Cancel
+		  POS 2. 6. 10. 1.
+		  DEFBUTTON "OK" "CONTinue"
+		  POS 15. 6. 10. 1.
+		  BUTTON "Cancel" "GOTO cancel"
+			;define action when window is closed
+		  CLOSE "GOTO cancel"
+		)	
+		;set default selections
+		LOCAL &temp
+		&temp=STRing.SCAN("&TAP_SEL", "BIA", 0)
+		IF (&temp!=-1)
+		(
+			DIALOG.SET OptionD
+		)
+		&temp=STRing.SCAN("&TAP_SEL", "DAP", 0)
+		IF (&temp!=-1)
+		(
+			DIALOG.SET OptionE
+		)
+		&temp=STRing.SCAN("&TAP_SEL", "FUSE", 0)
+		IF (&temp!=-1)
+		(
+			DIALOG.SET OptionF
+		)
+		if ("&os_sel"=="small_sys")
+		(
+			DIALOG.SET OptionH
+		)
+		if ("&continue"=="continue")
+		(
+			DIALOG.SET OptionH
+		)
+		;STOP command halts script execution 
+		STOP
+		;script will continue here when "OK" button is clicked
+		;get selection
+		IF DIALOG.BOOLEAN(OptionD)
+		(
+			&CONFIG_INPUT="&CONFIG_INPUT"+"BIA"
+		)
+		IF DIALOG.BOOLEAN(OptionE)
+		(
+			&CONFIG_INPUT="&CONFIG_INPUT"+"DAP"
+		)
+		IF DIALOG.BOOLEAN(OptionF)
+		(
+			&CONFIG_INPUT="&CONFIG_INPUT"+"FUSE"
+		)
+		IF DIALOG.BOOLEAN(OptionH)
+		(
+			&os_sel="small_sys"
+		)
+		ELSE
+		(
+			&os_sel="os_sys"
+		)
+		IF DIALOG.BOOLEAN(OptionG)
+		(
+			&continue="continue"
+		)
+		ELSE
+		(
+			&continue="no_continue"
+		)
+		DIALOG.END
+		RETURN
+project_configure:
+		LOCAL &project_sel &Core_sel &module &driver
+		LOCAL &Core1_sel &Core2_sel &Core3_sel &Core4_sel &Core5_sel 		;select project and core
+		DIALOG
+		(
+			HEADER "PRO_CONFG"
+			POS 0. 0. 22. 1.
+			TEXT ""
+		  	  
+			POS 1. 1. 10. 1.
+			TEXT "Select TAP:"
+			POS 1. 2.5 10. 1.
+			OptionD: CHECKBOX "BIA" ""
+			POS 1. 4. 10. 1.
+			OptionE: CHECKBOX "DAP" ""
+			
+			
+			POS 12. 1. 10. 1.
+			LINE "Select OS:"
+			POS 12. 2.5 10. 1.
+			OptionH: CHECKBOX "Bare_Metal" ""
+			POS 12. 4. 10. 1.
+			Optiong: CHECKBOX "Connect" ""
+			
+			;buttons OK (Default) and Cancel
+			POS 2. 8. 8. 1.
+			DEFBUTTON "OK" "CONTinue"
+			POS 12. 8. 8. 1.
+			BUTTON "Cancel" "GOTO cancel"
+			;define action when window is closed
+			CLOSE "GOTO cancel"
+		)	
+		;set default selections
+		LOCAL &temp
+		&temp=STRing.SCAN("&TAP_SEL", "BIA", 0)
+		IF (&temp!=-1)
+		(
+			DIALOG.SET OptionD
+		)
+		&temp=STRing.SCAN("&TAP_SEL", "DAP", 0)
+		IF (&temp!=-1)
+		(
+			DIALOG.SET OptionE
+		)
+		
+		
+		
+		if ("&os_sel"=="small_sys")
+		(
+			DIALOG.SET OptionH
+		)
+		;STOP command halts script execution 
+		STOP
+		;script will continue here when "OK" button is clicked
+		;get selection
+		IF DIALOG.BOOLEAN(OptionD)
+		(
+			&CONFIG_INPUT="&CONFIG_INPUT"+"BIA"
+		)
+		IF DIALOG.BOOLEAN(OptionE)
+		(
+			&CONFIG_INPUT="&CONFIG_INPUT"+"DAP"
+		)
+		IF DIALOG.BOOLEAN(OptionH)
+		(
+			&os_sel="small_sys"
+		)
+		ELSE
+		(
+			&os_sel="os_sys"
+		)
+		IF DIALOG.BOOLEAN(OptionG)
+		(
+			&continue="continue"
+		)
+		ELSE
+		(
+			&continue="no_continue"
+		)
+		DIALOG.END
+		RETURN
+per_rtit_msr:
+	Per "&g_proj_dir/intel/ISharkl2/Per_File/perintelrtitmsr.per"
+	return
+per_register:
+	per "&g_proj_dir/intel/ISharkl2/Per_File/ISharkl2_A0.per"
+	return
+cancel:
+  DIALOG.END
+  ENDDO

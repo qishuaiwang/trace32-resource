@@ -1,0 +1,52 @@
+;***************************SYS INFO****************************************
+;sys_num means the number of subsys
+Var.NEWGLOBAL int \sys_num
+Var.set \sys_num=7
+
+;sys_name array includes different name of every subsys
+Var.NEWGLOBAL char[7][8] \sys_name
+Var.set \sys_name[0]="AON"
+Var.set \sys_name[1]="CP"
+Var.set \sys_name[2]="RF_SPI"
+Var.set \sys_name[3]="WCN"
+Var.set \sys_name[4]="RF_MON"
+Var.set \sys_name[5]="AP"
+Var.set \sys_name[6]="GPU"
+
+;subsys_value is the value write to subsys_sel address correspond to every subsys
+Var.NEWGLOBAL int[7] \subsys_value
+Var.set \subsys_value[0..6]=(0,1,2,4,5,6,7)
+
+;subsys_sel[0] is address of subsys selection, subsys_sel[1] is the 8-bits offset 
+Var.NEWGLOBAL int[2] \subsys_sel
+Var.set \subsys_sel[0..1]=(0x402E02BC,0)
+
+;mod_sel[x][0] and sig_sel[x][0] is address, mod_sel[x][1] and sig_sel[x][1] is the 8-bits offset, 'x' represents different subsys
+Var.NEWGLOBAL int[7][2] \mod_sel
+Var.set \mod_sel[1][0..1]=(0x402E02B0,8)
+
+Var.NEWGLOBAL int[7][2] \sig_sel   
+Var.set \sig_sel[0][0..1]=(0x402e02B8,0)
+Var.set \sig_sel[3][0..1]=(0xD0010014,4)
+Var.set \sig_sel[4][0..1]=(0x31031034,9)
+Var.set \sig_sel[5][0..1]=(0x402e02B0,16)
+Var.set \sig_sel[6][0..1]=(0x6010000C,0)
+;WCN should config 0x2x
+
+;***************************PAD INFO****************************************
+;group_num means the number of pad group
+Var.NEWGLOBAL int \group_num
+Var.set \group_num=2
+
+;addr_pad[x] includes 16 addresses of debug bus in group x
+Var.NEWGLOBAL int[2][16] \addr_pad
+
+;group0 address
+Var.set \addr_pad[0][0..15]=(0x402a01a0,0x402a019c,0x402a0198,0x402a0194,0x402a0190,0x402a018c,0x402a0188,0x402a0184,\
+0x402a0180,0x402a017c,0x402a0130,0x402a0134,0x402a016c,0x402a0170,0x402a0020,0x402a012c)
+
+;group1 address
+Var.set \addr_pad[1][0..15]=(0x402a0110,0x402a010c,0x402a0100,0x402a0104,0x402a0108,0x402a00fc,0x402a00ec,0x402a00f0,\
+0x402a00f4,0x402a00f8,0x402a00e4,0x402a00e8,0x402a0158,0x402a014c,0x402a0150,0x402a0154)
+
+ENDDO

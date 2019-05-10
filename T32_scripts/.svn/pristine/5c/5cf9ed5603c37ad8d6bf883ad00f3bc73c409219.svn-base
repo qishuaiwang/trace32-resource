@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!-- 
+JTAGAdaptor attribution meaning:
+adaptor : select which config have the same adaptor attribution
+config  : sleect which special config we have
+
+######
+search order is <selected config>;<selected adaptor default>;<default adaptor>
+
+e.g.
+
+<JTAGAdaptor config="Test" adaptor="T32">
+    <config adaptor="T32">
+        <Test>{1}
+            <port>20002</port>
+        </Test>
+        <default>{2}
+            <path>C:\T32_201606</path>
+            <node>localhost</node>
+            <packlen>1024</packlen>
+            <port>20000</port>
+        </default>
+    </config>
+
+    <config adaptor="DS5">
+        <default>
+        </default>
+    </config>
+    <config adaptor="default">{3}
+        <swd>1</swd>
+    </config>
+</JTAGAdaptor>
+
+for this example, search order as below
+{1}<Test>;{2}<default(@adaptor="T32")>;{3}<@adaptor="default">
+
+if say, you try to get swd configuration, we will search:
+{1}, only port, no swd, goto {2}
+{2}, no swd, goto {3}
+{3}, got it.
+
+for port, we will search:
+{1}, got port. end
+
+for node, we will search:
+{1}, only port, no node, goto {2}
+{2}, got it. end
+
+######
+
+we hope which configuration for any adaptor, should put in {3}<@adaptor="default">
+                            for most special adaptor, put in {2}<default(@adaptor="T32")>
+                            for frequency change, put in {1}<Test>
+**NOTES** "Test" is a config name, you can name it as you wish, but please match the name with JTAGAdaptor's attribution config="Test"
+-->
+
+<JTAGAdaptor config="default" adaptor="T32">
+    <config adaptor="T32">
+        <Intel><!--1-->
+            <swd>0</swd>
+            <port>20019</port>
+        </Intel>
+        <ARM><!--1-->
+            <port>20006</port>
+        </ARM>
+        <default><!--2-->
+            <path>C:\T32_201606</path>
+            <node>localhost</node>
+            <packlen>1024</packlen>
+            <port>20000</port>
+            <t32_ext>C:\Users\ken.kuang\Documents\repo_scirpt\T32_scripts\CHIP_script\sys_debug\common\lib\SPRD.t32</t32_ext>
+        </default>
+    </config>
+    <!-- below for ARM DS5 Debugger only -->
+    <config adaptor="DS5">
+        <default><!--2-->
+        </default>
+    </config>
+    <config adaptor="default"><!--3-->
+        <swd>1</swd>
+    </config>
+</JTAGAdaptor>

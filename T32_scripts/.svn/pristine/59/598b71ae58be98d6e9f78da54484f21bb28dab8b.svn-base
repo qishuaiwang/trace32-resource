@@ -1,0 +1,47 @@
+LOCAL &CUR_DIR &temp
+&temp=OS.PPD()
+&CUR_DIR="&temp"
+
+GLOBAL &lib_SPRD_t32
+&lib_SPRD_t32="&CUR_DIR/SPRD.t32"
+
+GLOBAL &lib_etr_utility
+&lib_etr_utility="&CUR_DIR/etr_utility.cmm"
+
+GLOBAL &lib_DJTAG_via_T32_edk
+&lib_DJTAG_via_T32_edk="&CUR_DIR/DJTAG_via_T32_edk.cmm"
+
+GLOBAL &lib_py
+&lib_py="OS Python &CUR_DIR/py/DebugTools.py -p"
+
+GLOBAL &lib_do_cmd
+&lib_do_cmd="&CUR_DIR/do_cmd.cmm"
+
+GLOBAL &lib_do_Py
+&lib_do_Py="&CUR_DIR/do_Py.cmm"
+
+GLOBAL &lib_debug_bus_cfg
+&lib_debug_bus_cfg="&CUR_DIR/debug_bus_gui.cmm"
+
+GLOBAL &lib_debug_bus_cfg_64
+&lib_debug_bus_cfg_64="&CUR_DIR/debug_bus_gui_64bit.cmm"
+
+GLOBAL &lib_busmon_eb_dis_all
+&lib_busmon_eb_dis_all="&CUR_DIR/busmon_en_disable.cmm"
+
+GLOBAL &lib_busmon_addr_cfg
+&lib_busmon_addr_cfg="&CUR_DIR/addr_bus_mon_cfg.cmm"
+
+GLOBAL &lib_busmon_addr_scan
+&lib_busmon_addr_scan="&CUR_DIR/addr_bus_mon_scan.cmm"
+
+GLOBAL &lib_busmon_reg_read
+&lib_busmon_reg_read="&CUR_DIR/busmon_reg_read.cmm"
+
+GLOBAL &lib_open_swd
+&lib_open_swd="&CUR_DIR/Open_SWD.cmm"
+
+GLOBAL &lib_setup_linux
+&lib_setup_linux="&CUR_DIR/Setup_Linux.cmm"
+
+ENDDO

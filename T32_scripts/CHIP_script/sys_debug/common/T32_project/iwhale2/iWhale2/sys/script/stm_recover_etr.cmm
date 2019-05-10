@@ -1,0 +1,34 @@
+system.cpu CORTEXR5
+sys.config corebase 		 0x80030000
+SYS.CONFIG CTIBase       0x80038000
+sys.config etmbase       0x8003c000
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPv2
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+sys.mode.up
+&cur_path_dir=os.ppd()
+	SYStem.CONFIG.STM1.Base 0x80006000
+	SYStem.CONFIG.STM1.Type ARM
+	SYStem.CONFIG.STM1.Mode STPv2
+	SYStem.CONFIG.FUNNEL1.Base 0x80001000
+		SYStem.CONFIG.ETF1.Base 0x80003000 
+		SYStem.CONFIG.ETR1.Base 0x80005000
+		SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+		SYStem.CONFIG.ETR1.ATBSource ETF1
+		do &cur_path_dir/etr_utility ETR1 set DAB 0x80000000 ;punit trace stm2ddr address base
+		do &cur_path_dir/etr_utility ETR1 set RSZ 0x1ffff  ;buffer address
+		do &cur_path_dir/etr_utility ETR1 set AXICTL 0x00000000 0x00000FBF 
+		;onchip.traceconnect ETR1
+
+	;SYStemTrace
+	;STM.ON
+
+	
+&cur_path_stm=os.ppd()
+stmla.IMPORT.ETB &cur_path_stm\etr.bin 
+stm.portsize 16.
+stm.PortEndianess little
+SYStem.CONFIG.STM1.Mode STPv2	
+st.METHOD LA
+stmla.list

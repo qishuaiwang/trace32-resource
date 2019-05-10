@@ -1,0 +1,244 @@
+; by Ken.Kuang
+LOCAL &core_num &core_id &trace_output
+
+ENTRY &core_num &core_id &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=4
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC_ETB"
+	;&trace_output="A55_ETB"
+	;&trace_output="A55_ETR"
+	;&trace_output="ETR"
+	;&trace_output="TPIU"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+
+SYStem.Mode Down
+SYStem.RESet
+
+ON ERROR GOTO TIPS_UPDATE
+IF &core_num==4
+(
+    SYStem.CPU CortexA75A55
+)
+ELSE IF &core_num==1
+(
+    IF &core_id==3
+        SYStem.CPU CortexA75
+    ELSE
+        SYStem.CPU CortexA55
+)
+GOTO NEXT
+TIPS_UPDATE:
+PRINT %ERROR "Please update your Trace32 Software!"
+NEXT:
+ON ERROR
+SYStem.CONFIG CoreNumber &core_num
+
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+
+
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+TrOnchip.Set RESET OFF
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80002000
+SYStem.CONFIG.ETF1.Base 0x80003000
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+SYStem.CONFIG.TPIU.Base 0x80006000
+SYStem.CONFIG.ETR1.Base 0x80005000
+SYStem.CONFIG.STM1.Base 0x80001000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+SYStem.CONFIG.ETR1.ATBSource ETF1
+SYStem.CONFIG.TPIU.ATBSource ETF1 
+TPIU.PortMode Wrapped
+
+; APCPU
+SYStem.CONFIG.FUNNEL2.Base 0x82001000
+SYStem.CONFIG.ETF2.Base 0x82003000
+SYStem.CONFIG.ETF2.ATBSource FUNNEL2
+SYStem.CONFIG.ETR2.Base 0x82002000
+SYStem.CONFIG.ETR2.ATBSource ETF2
+
+
+;PTM 3 CR5 2
+SYStem.CONFIG.FUNNEL1.ATBSource STM1 0 ETF2 1
+
+
+IF (&core_num==4)
+(
+	CORE.ASSIGN 1 2 3 4
+	SYStem.CONFIG.COREDEBUG.Base (0x83010000) (0x83110000) (0x83210000) (0x83310000)
+	SYStem.CONFIG.BMC.Base (0x83030000) (0x83130000) (0x83230000) (0x83330000)
+	SYStem.CONFIG.CTI.Base (0x83020000) (0x83120000) (0x83220000) (0x83320000)
+	SYStem.CONFIG.ETM.Base (0x83040000) (0x83140000) (0x83240000) (0x83340000)
+	SYStem.CONFIG.CTI.Config ARMV8V2
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3
+)
+ELSE
+(
+	CORE.ASSIGN 1
+	PRIVATE &offset
+	&offset=0x00100000*&core_id
+	SYStem.CONFIG.COREDEBUG.Base (0x83010000+&offset)
+	SYStem.CONFIG.BMC.Base (0x83030000+&offset)
+	SYStem.CONFIG.CTI.Base (0x83020000+&offset)
+	SYStem.CONFIG.ETM.Base (0x83040000+&offset)
+	SYStem.CONFIG.CTI.Config ARMV8V2
+	
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+)
+
+IF ("&trace_output"=="SoC_ETB")
+(
+	Onchip.TraceCONNECT ETF1
+)
+ELSE IF ("&trace_output"=="A55_ETB")
+(
+	Onchip.TraceCONNECT ETF2
+)
+ELSE
+(
+	IF ("&trace_output"=="A55_ETR")
+	(
+		Onchip.TraceCONNECT ETR2
+	)
+	ELSE
+	(
+		IF ("&trace_output"=="ETR")
+		(
+			Onchip.TraceCONNECT ETR1
+		)
+	)
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+
+DO "&CUR_DIR/Prepare.cmm"
+
+ON ERROR CONTinue
+WAIT 200.MS
+D.S EDAP:0x82004000 %LE %Long 0xFFFFFFFF
+D.S EDAP:0x82004004 %LE %Long 0xFFFFFFFF
+IF ("&trace_output"=="A55_ETR")
+(
+	DIALOG.MESSAGE "ETR test, don't forget init ddr!"
+	;apcpu etr -> 1M
+	D.S EDAP:0x82002004 %Long 0x100000
+	;DBALO
+	D.S EDAP:0x82002118 %Long 0x80000000
+	
+	; Port1 PASS
+	D.S EDAP:0x82004000 %LE %Long 0
+)
+ELSE
+(
+	; Port0 PASS
+	D.S EDAP:0x82004004 %LE %Long 0
+
+	D.S EDAP:0x80004000 %LE %Long 0xFFFFFFFF
+	D.S EDAP:0x80004004 %LE %Long 0xFFFFFFFF
+	IF ("&trace_output"=="ETR")
+	(
+		DIALOG.MESSAGE "ETR test, don't forget init ddr!"
+		;soc etr -> 1M
+		D.S EDAP:0x80005004 %Long 0x100000
+		;DBALO
+		D.S EDAP:0x80005118 %Long 0x80000000
+		
+		; Port0 PASS
+		D.S EDAP:0x80004000 %LE %Long 0
+	)
+	ELSE IF ("&trace_output"=="TPIU")
+	(
+		; Port1 PASS
+		D.S EDAP:0x80004004 %LE %Long 0
+	)
+)
+ON ERROR
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=1||&core_id!=0
+	(
+		GOSUB BOOT &core_num &core_id
+		WAIT &delay_times*500.MS
+	)
+	;ON ERROR CONTinue
+	;AREA.OPEN A000 c:\step_log.txt
+	;AREA.CLEAR A000
+	;SYStem.POLLING DEFault OFF
+	;diag 0x30E0 1.
+	;diag 0x3208 1.
+	;SYStem.Mode Attach
+	;diag 0x30E0 0.
+	;diag 0x3208 0.
+	;SYStem.POLLING DEFault DEFault
+	;AREA.CLOSE A000
+	;ON ERROR DEFault
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	LOCAL &boot_num &boot_core
+	ENTRY &boot_num &boot_core
+    
+	IF "X&boot_num"=="X"
+		&boot_num=1
+
+    IF "X&boot_core"=="X"
+		&boot_core=1
+
+	DO "&CUR_DIR\boot_all.cmm" AP_MP_CORE_BOOT &boot_num &boot_core 1
+	RETURN
+; end of BOOT
+
+
+
+
+
+
+

@@ -1,0 +1,51 @@
+ENTRY &core_num &trace_output
+
+DO "&CUR_DIR/Orca_Trace_Path_config.cmm"
+
+;plist
+;stop
+
+IF (&core_num==2)
+(
+	CORE.ASSIGN 1 2
+
+	SYStem.CONFIG.COREDEBUG.Base (&pscp_coredebug_base) (&pscp_coredebug_base+&cr8_coredebug_offset)
+	SYStem.CONFIG.BMC.Base (&pscp_pmu_base) (&pscp_pmu_base+&cr8_pmu_offset)
+	SYStem.CONFIG.CTI.Base (&pscp_cti_base) (&pscp_cti_base+&cr8_cti_offset)
+	SYStem.CONFIG.ETM.Base (&pscp_etm_base) (&pscp_etm_base+&cr8_etm_offset)
+)
+ELSE
+(
+	SYStem.CONFIG.COREDEBUG.Base (&pscp_coredebug_base)
+	SYStem.CONFIG.BMC.Base (&pscp_pmu_base)
+	SYStem.CONFIG.CTI.Base (&pscp_cti_base)
+	SYStem.CONFIG.ETM.Base (&pscp_etm_base)
+)
+
+; PSCP
+SYStem.CONFIG.FUNNEL2.Base &pscp_funnel
+SYStem.CONFIG.ETF2.Base &pscp_etf0
+SYStem.CONFIG.ETF3.Base &pscp_etf1
+SYStem.CONFIG.ETF4.Base &pscp_etf2
+SYStem.CONFIG.ETF5.Base &pscp_etf3
+
+; connect trace path
+IF (&core_num==2)
+(
+	SYStem.CONFIG.ETF2.ATBSource ETM.0
+	SYStem.CONFIG.ETF3.ATBSource ETM.1
+	SYStem.CONFIG.ETF4.ATBSource ETMDATA.0
+	SYStem.CONFIG.ETF5.ATBSource ETMDATA.1
+	SYStem.CONFIG.FUNNEL2.ATBSource ETF2 0 ETF3 1 ETF4 2 ETF5 3
+)
+ELSE
+(
+	SYStem.CONFIG.ETF2.ATBSource ETM
+	SYStem.CONFIG.ETF4.ATBSource ETMDATA
+	SYStem.CONFIG.FUNNEL2.ATBSource ETF2 0 ETF4 2
+)
+
+;config replicator, soc, etc
+DO "&CUR_DIR/Orca_Trace_Path_common.cmm" &trace_output FUNNEL2 1 ETF2
+
+ENDDO

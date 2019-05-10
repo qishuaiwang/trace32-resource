@@ -1,0 +1,4 @@
+	SYStem.Mode Prepare
+	SYStem.Mode Down
+	globalon POWERUP 
+	enddo

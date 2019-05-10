@@ -1,0 +1,73 @@
+GLOBAL &CONFIG_INPUT &RESET_INPUT &SIGNAL_INPUT &PROBE_MODE_INPUT &RTIT_INPUT &DST_DIR &os_sel
+LOCAL &SIGNAL_INPUT &temp &pin_base &offer
+ENTRY &SIGNAL_INPUT
+IF "X&SIGNAL_INPUT"=="X"
+(
+	&SIGNAL_INPUT=0x1
+)
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+&CUR_DIR=OS.PPD()
+
+LOCAL &mem_type &check_flag
+&check_flag=SYStem.mode()
+if (&check_flag==0x0)
+(
+	&mem_type="EAQD"
+	DO &CUR_DIR/butter.cmm DAP
+)
+ELSE
+(
+	&mem_type="AND"
+)
+&pin_base=0xE42A0000
+Change_SDIO_func:
+;SD0
+	&offer=0x0110
+	for (&offer<=0x128)
+	(
+		D.S &mem_type:(&pin_base+&offer) %LE %Long 0x00000030
+		&offer=&offer+0x4
+	)
+;SD1
+	&offer=0x0184
+	for (&offer<=0x19c)
+	(
+		D.S &mem_type:(&pin_base+&offer) %LE %Long 0x00000030
+		&offer=&offer+0x4
+	)
+;SD2
+	&offer=0x007C
+	for (&offer<=0x94)
+	(
+		D.S &mem_type:(&pin_base+&offer) %LE %Long 0x00000030
+		&offer=&offer+0x4
+	)
+OPEN_SDIO_power:
+	D.S &mem_type:(&pin_base+0x8D70) %LE %Long 0x00000030
+
+IF (&SIGNAL_INPUT==0x1)
+(
+	DO &CUR_DIR/iWhale2_JTAG.cmm "VISA" 0x0
+)
+ELSE IF (&SIGNAL_INPUT==0x2)
+(
+	 DO &CUR_DIR/iWhale2_JTAG.cmm "VISA" 0x1
+)
+ELSE IF (&SIGNAL_INPUT==0x3)
+(
+   DO &CUR_DIR/iWhale2_JTAG.cmm "VISA" 0x2
+)
+ELSE IF (&SIGNAL_INPUT==0x4)
+(
+   DO &CUR_DIR/iWhale2_JTAG.cmm "VISA" 0x3
+)
+ELSE IF (&SIGNAL_INPUT==0x10)
+(
+   DO &CUR_DIR/iWhale2_JTAG.cmm "SoC"
+)
+DIALOG.OK "Please make sure the strippin is configure!"
+ENDDO

@@ -1,0 +1,9 @@
+LOCAL &cur_path
+&cur_path=OS.PPD()
+
+d.load.elf &cur_path/ddr/*
+go 
+wait 2.s
+break
+ENDDO
+;d.test 0x0++0x1ffff /RANDOM

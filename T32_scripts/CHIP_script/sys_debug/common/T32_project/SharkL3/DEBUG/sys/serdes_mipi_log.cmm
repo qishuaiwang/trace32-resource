@@ -1,0 +1,259 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; pll_sel: TWPLL, ISPLL, LPLL
+; ch_sel: SerDes Channel selection
+;	bit15: TRAINING
+;	bit4: WCN
+;	bit3: DBUS
+;	bit2: DBG
+;	bit1: WTL
+;	bit0: MDAR
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LOCAL &mem_type &serdes_mem_type &pll_sel &ch_sel &set &clr
+
+&mem_type="EZAXI"
+&serdes_mem_type="EDAP"
+&pll_sel="TWPLL"  ; 1536MHz
+;&pll_sel="ISPLL" ; 936 MHz
+;&pll_sel="LPLL"  ; 1228.8MHz
+&ch_sel="DBG"
+;&ch_sel="WCN"
+&set=0x1000
+&clr=0x2000
+
+
+; SharkL3 Address
+LOCAL &AON_BASE &AON_APB_BASE &DSI_GLB_BASE &PLL_GLB_BASE &SERDES_BASE &CLK_BASE
+&AON_BASE=0x40000000
+&AON_APB_BASE=(&AON_BASE+0x002E0000)
+&PMU_APB_BASE=(&AON_BASE+0x002B0000)
+&DSI_GLB_BASE=(&AON_BASE+0x00350000)
+&PLL_GLB_BASE=(&AON_BASE+0x00353000)
+&CLK_BASE=(&AON_BASE+0x002D0000)
+&SERDES_BASE=0x8000C000
+
+
+; Setting
+GOSUB CSI_2P2LANE_DSI_SETTING
+
+GOSUB SERDES_SETTING
+
+ENDDO
+
+SERDES_SETTING:
+	; Enable SerDes
+	D.S &mem_type:(&AON_APB_BASE+&set+0x00B0) %LE %Long (1<<27.)
+
+	;Cut
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0010) %LE %Long 0x20
+
+
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0008) %LE %Long 0x0
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x8000
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0008) %LE %Long 0x1
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0000) %LE %Long 0x1
+	;D.S &serdes_mem_type:(&SERDES_BASE+0x0200) %LE %Long 0x1
+	DIALOG.OK "Please TRAINING the FPGA BOX"
+	;serdes channel select
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0008) %LE %Long 0x0
+	if ("&ch_sel"=="TRAINING")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x8000
+	)
+	else if ("&ch_sel"=="WCN")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x10
+	)
+	else if ("&ch_sel"=="DBUS")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x8
+	)
+	else if ("&ch_sel"=="DBG")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x4
+	)
+	else if ("&ch_sel"=="WTL")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x2
+	)
+	else if ("&ch_sel"=="MDAR")
+	(
+		D.S &serdes_mem_type:(&SERDES_BASE+0x0004) %LE %Long 0x1
+	)
+	D.S &serdes_mem_type:(&SERDES_BASE+0x0008) %LE %Long 0x1
+RETURN
+
+
+
+CSI_2P2LANE_DSI_SETTING:
+	; Enable ANLG_APB
+	D.S &mem_type:(&AON_APB_BASE+&set+0x00B0) %LE %Long (1<<11.)|(1<<13.)
+	; Enable SerDes DPHY
+	;D.S &mem_type:(&AON_APB_BASE+&set+0x0004) %LE %Long (1<<31.)
+
+	; IF Selection, SW Control
+	;D.S &mem_type:(&DSI_GLB_BASE+&set+0x0068) %LE %Long (1<<2.)
+
+	; PLL DSICLK Selection : 0-TWPLL, 1-ISPLL, 2-LPLL
+	D.S &mem_type:(&PLL_GLB_BASE+&clr+0x007C) %LE %Long (0x3<<1.)
+	IF ("&pll_sel"=="TWPLL")
+	(
+		;TWPLL DIV1 EB
+		D.S &mem_type:(&PLL_GLB_BASE+&set+0x0080) %LE %Long (1<<18.) ; |(1<<17.)
+		D.S &mem_type:(&CLK_BASE+0x0024) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0024))&(~(1<<13.))
+		D.S &mem_type:(&CLK_BASE+0x0028) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0028))|((1<<13.))
+	)
+	ELSE IF ("&pll_sel"=="ISPLL")
+	(
+		D.S &mem_type:(&PLL_GLB_BASE+&set+0x007C) %LE %Long (0x1<<1.)
+		;ISPLL DIV1 EB
+		D.S &mem_type:(&PLL_GLB_BASE+&set+0x0080) %LE %Long (1<<1.) ; |(1<<0.)
+		D.S &mem_type:(&CLK_BASE+0x0024) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0024))&(~(1<<15.))
+		D.S &mem_type:(&CLK_BASE+0x0028) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0028))|((1<<15.))
+	)
+	ELSE IF ("&pll_sel"=="LPLL")
+	(
+		D.S &mem_type:(&PLL_GLB_BASE+&set+0x007C) %LE %Long (0x2<<1.)
+		;LPLL DIV1 EB
+		D.S &mem_type:(&PLL_GLB_BASE+&set+0x0080) %LE %Long (1<<10.) ; |(1<<9.)
+		D.S &mem_type:(&CLK_BASE+0x0024) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0024))&(~(1<<8.))
+		D.S &mem_type:(&CLK_BASE+0x0028) %LE %Long DATA.LONG(&mem_type:(&CLK_BASE+0x0028))|((1<<8.))
+	)
+
+	; PLL CLK2CSI EB
+	D.S &mem_type:(&PLL_GLB_BASE+&set+0x007C) %LE %Long (1<<0.)
+
+	; Enable ANLG_APB Clock
+	D.S &mem_type:(&AON_APB_BASE+&set+0x00B0) %LE %Long (0x3<<8.)
+
+	; Enable MM PD for Test IF
+	D.S &mem_type:(&PMU_APB_BASE+&clr+0x001C) %LE %Long (0x3<<24.)
+
+	GOSUB DSI_INIT
+	GOSUB SHUTDOWNZ &clr
+	GOSUB RSTZ &clr
+	WAIT 1.MS
+	GOSUB TESTCLR &set
+	WAIT 5.MS
+	GOSUB PS_PD_S &clr
+	WAIT 1.MS
+	GOSUB PS_PD_L &clr
+	WAIT 1.MS
+	GOSUB ISO_SW_EN &clr
+	WAIT 5.MS
+	GOSUB TESTCLR &clr
+	WAIT 5.MS
+	GOSUB SHUTDOWNZ &set
+	GOSUB RSTZ &set
+	WAIT 5.MS
+	GOSUB ENABLECLK &set
+	GOSUB ENABLE &set
+
+	; Enable MM PD for Test IF
+	D.S &mem_type:(&PMU_APB_BASE+&set+0x001C) %LE %Long (1<<25.)
+
+RETURN
+
+DSI_INIT:
+	GOSUB PS_PD_L &set
+	GOSUB PS_PD_S &set
+	GOSUB ISO_SW_EN &set
+
+	GOSUB TESTCLR &clr
+	; TESTCLR sel SW Control
+	D.S &mem_type:(&DSI_GLB_BASE+&set+0x0088) %LE %Long (1<<18.)|(1<<21.)
+
+	GOSUB SHUTDOWNZ &set
+	; SHUTDOWNZ sel SW Control
+	D.S &mem_type:(&DSI_GLB_BASE+&set+0x0068) %LE %Long (1<<3.)|(1<<16.)|(1<<27.)
+
+	GOSUB RSTZ &set
+	; RSTZ sel SW Control
+	D.S &mem_type:(&DSI_GLB_BASE+&set+0x0068) %LE %Long (1<<15.)|(1<<26.)
+
+	GOSUB ENABLECLK &clr
+	GOSUB ENABLE &clr
+RETURN
+
+PS_PD_L:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	D.S &mem_type:(&AON_APB_BASE+&h+0x0024) %LE %Long (1<<12.)
+RETURN
+
+PS_PD_S:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	D.S &mem_type:(&AON_APB_BASE+&h+0x0024) %LE %Long (1<<13.)
+RETURN
+
+ISO_SW_EN:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	D.S &mem_type:(&AON_APB_BASE+&h+0x0024) %LE %Long (1<<27.)|(1<<26.)
+RETURN
+
+TESTCLR:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	; TESTCLR M
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0088) %LE %Long (1<<20.)
+	; TESTCLR S
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0088) %LE %Long (1<<17.)
+	; TESTCLR_DB
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0060) %LE %Long (1<<0.)
+RETURN
+
+
+SHUTDOWNZ:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	; SHUTDOWNZ
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x005C) %LE %Long (1<<15.)
+	; SHUTDOWNZ_M
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0014) %LE %Long (1<<7.)
+	; SHUTDOWNZ_S
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0024) %LE %Long (1<<7.)
+RETURN
+
+RSTZ:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	; RSTZ
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x005C) %LE %Long (1<<14.)
+	; RSTZ_M
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0014) %LE %Long (1<<6.)
+	; RSTZ_S
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x0024) %LE %Long (1<<6.)
+RETURN
+
+ENABLE:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	; 4xCLOCK EB , 
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x005C) %LE %Long (0xF<<10.)
+RETURN
+
+ENABLECLK:
+	LOCAL &h
+	ENTRY &h
+	IF "X&h"=="X"
+		&h=&set
+	;CLOCK EB
+	D.S &mem_type:(&DSI_GLB_BASE+&h+0x005C) %LE %Long (1<<9.)
+RETURN
+
+

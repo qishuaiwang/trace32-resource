@@ -1,0 +1,2223 @@
+; Ken.Kuang for iWhale2 Debug information
+; 2017
+; Version @ 0010
+ASSERT SOFTWARE.BUILD.BASE()>=57080. "The Trace32 software too old"
+
+;cp_pub_address
+;0x02000000
+;cp_wtl_address
+;0x32000000
+;cp_ag_address
+;0x32000000
+;ap_address
+;0xE4000000
+
+;share IRAM
+;0xE6012000
+;0x20000000
+ENTRY &MEM_TYPE="EAXI" &AON_SIRAM_ADDR=0xE6012000 &AON_BASE_ADDR=0xE4000000 
+ASSERT DATA.LONG(AVM:0x0)==0x5577 "Please use Per_Preload.cmm!"
+
+CONFIG 16. 8.
+WIDTH 23.
+
+; ############################ START OF DJTAG ############################
+BASE EAPB:0x0
+TREE "DJTAG Scan"
+TREE "BUSMON BUS STATUS"
+TREE "AP BUS STATUS"
+SGROUP "AP"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x00012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " BIA , BIA(M1) "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x00022680,0)
+	LINE.LONG 0x08 " DMA , DMA(M2) "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x00032680,0)
+	LINE.LONG 0x0C " PUB , PUB(S0) "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x00042680,0)
+	LINE.LONG 0x10 " AON , AON(S6) "
+	BITFLD.LONG 0x10 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x10 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x10 29. " AW , AW_MIS"
+	BITFLD.LONG 0x10 28. " W , W_MIS"
+	BITFLD.LONG 0x10 27. " B , B_MIS"
+	BITFLD.LONG 0x10 26. " AR , AR_MIS"
+	BITFLD.LONG 0x10 25. " R , R_MIS"
+TREE.END
+
+TREE "AON BUS STATUS"
+SGROUP "AON"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x0B002680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " AP , AP(M0) "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x0B012680,0)
+	LINE.LONG 0x08 " WTL , WTL_CP(M1) "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x0B022680,0)
+	LINE.LONG 0x0C " AG , AG_CP(M2) "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x0B032680,0)
+	LINE.LONG 0x10 " PUBCP , PUB_CP(M3) "
+	BITFLD.LONG 0x10 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x10 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x10 29. " AW , AW_MIS"
+	BITFLD.LONG 0x10 28. " W , W_MIS"
+	BITFLD.LONG 0x10 27. " B , B_MIS"
+	BITFLD.LONG 0x10 26. " AR , AR_MIS"
+	BITFLD.LONG 0x10 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x0B042680,0)
+	LINE.LONG 0x14 " SP , SP CM4(M4) "
+	BITFLD.LONG 0x14 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x14 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x14 29. " AW , AW_MIS"
+	BITFLD.LONG 0x14 28. " W , W_MIS"
+	BITFLD.LONG 0x14 27. " B , B_MIS"
+	BITFLD.LONG 0x14 26. " AR , AR_MIS"
+	BITFLD.LONG 0x14 25. " R , R_MIS"
+TREE.END
+
+TREE "AGCP BUS STATUS"
+SGROUP "AGCP"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x08002680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " DSP P , TL420_PMSS(M0) "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x08012680,0)
+	LINE.LONG 0x08 " DSP D , TL420_DMSS(M1) "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x08022680,0)
+	LINE.LONG 0x0C " AP DMA , AP_DMA(M2) "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x08032680,0)
+	LINE.LONG 0x10 " CP DMA , CP_DMA(M5) "
+	BITFLD.LONG 0x10 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x10 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x10 29. " AW , AW_MIS"
+	BITFLD.LONG 0x10 28. " W , W_MIS"
+	BITFLD.LONG 0x10 27. " B , B_MIS"
+	BITFLD.LONG 0x10 26. " AR , AR_MIS"
+	BITFLD.LONG 0x10 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x08042680,0)
+	LINE.LONG 0x14 " AON , AON_AG_CP(M3) "
+	BITFLD.LONG 0x14 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x14 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x14 29. " AW , AW_MIS"
+	BITFLD.LONG 0x14 28. " W , W_MIS"
+	BITFLD.LONG 0x14 27. " B , B_MIS"
+	BITFLD.LONG 0x14 26. " AR , AR_MIS"
+	BITFLD.LONG 0x14 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x08052680,0)
+	LINE.LONG 0x18 " SRC , SRC44P1K(M4) "
+	BITFLD.LONG 0x18 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x18 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x18 29. " AW , AW_MIS"
+	BITFLD.LONG 0x18 28. " W , W_MIS"
+	BITFLD.LONG 0x18 27. " B , B_MIS"
+	BITFLD.LONG 0x18 26. " AR , AR_MIS"
+	BITFLD.LONG 0x18 25. " R , R_MIS"
+TREE.END
+
+TREE "PUBCP BUS STATUS"
+SGROUP "PUBCP"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x06002680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CR5 0 , CR5_0(M0) "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x06012680,0)
+	LINE.LONG 0x08 " CR5 1 , CR5_1(M1) "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x06022680,0)
+	LINE.LONG 0x0C " DMA , DMA(M2) "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x06032680,0)
+	LINE.LONG 0x10 " SEC0 , SEC0(M3) "
+	BITFLD.LONG 0x10 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x10 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x10 29. " AW , AW_MIS"
+	BITFLD.LONG 0x10 28. " W , W_MIS"
+	BITFLD.LONG 0x10 27. " B , B_MIS"
+	BITFLD.LONG 0x10 26. " AR , AR_MIS"
+	BITFLD.LONG 0x10 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x06042680,0)
+	LINE.LONG 0x14 " SEC1 , SEC1(M4) "
+	BITFLD.LONG 0x14 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x14 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x14 29. " AW , AW_MIS"
+	BITFLD.LONG 0x14 28. " W , W_MIS"
+	BITFLD.LONG 0x14 27. " B , B_MIS"
+	BITFLD.LONG 0x14 26. " AR , AR_MIS"
+	BITFLD.LONG 0x14 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x06052680,0)
+	LINE.LONG 0x18 " PPP0 , PPP0 "
+	BITFLD.LONG 0x18 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x18 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x18 29. " AW , AW_MIS"
+	BITFLD.LONG 0x18 28. " W , W_MIS"
+	BITFLD.LONG 0x18 27. " B , B_MIS"
+	BITFLD.LONG 0x18 26. " AR , AR_MIS"
+	BITFLD.LONG 0x18 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x1C %l DJTAG.EXECUTE(0x06062680,0)
+	LINE.LONG 0x1C " PPP1 , PPP1 "
+	BITFLD.LONG 0x1C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x1C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x1C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x1C 28. " W , W_MIS"
+	BITFLD.LONG 0x1C 27. " B , B_MIS"
+	BITFLD.LONG 0x1C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x1C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x20 %l DJTAG.EXECUTE(0x06072680,0)
+	LINE.LONG 0x20 " TFT0 , TFT0 "
+	BITFLD.LONG 0x20 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x20 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x20 29. " AW , AW_MIS"
+	BITFLD.LONG 0x20 28. " W , W_MIS"
+	BITFLD.LONG 0x20 27. " B , B_MIS"
+	BITFLD.LONG 0x20 26. " AR , AR_MIS"
+	BITFLD.LONG 0x20 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x24 %l DJTAG.EXECUTE(0x06092680,0)
+	LINE.LONG 0x24 " TFT1 , TFT1 "
+	BITFLD.LONG 0x24 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x24 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x24 29. " AW , AW_MIS"
+	BITFLD.LONG 0x24 28. " W , W_MIS"
+	BITFLD.LONG 0x24 27. " B , B_MIS"
+	BITFLD.LONG 0x24 26. " AR , AR_MIS"
+	BITFLD.LONG 0x24 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x28 %l DJTAG.EXECUTE(0x060A2680,0)
+	LINE.LONG 0x28 " TFT2 , TFT2 "
+	BITFLD.LONG 0x28 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x28 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x28 29. " AW , AW_MIS"
+	BITFLD.LONG 0x28 28. " W , W_MIS"
+	BITFLD.LONG 0x28 27. " B , B_MIS"
+	BITFLD.LONG 0x28 26. " AR , AR_MIS"
+	BITFLD.LONG 0x28 25. " R , R_MIS"
+TREE.END
+
+
+
+TREE "WTLCP BUS STATUS"
+SGROUP "WTLCP"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x07012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " LDSP D , LDSP D(M1) "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x07022680,0)
+	LINE.LONG 0x08 " LDSP DMA , LDSP DMA(M4) "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x07032680,0)
+	LINE.LONG 0x0C " LTE PCC , LTE PCC "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x07042680,0)
+	LINE.LONG 0x10 " TGDSP P , TGDSP P(M2) "
+	BITFLD.LONG 0x10 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x10 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x10 29. " AW , AW_MIS"
+	BITFLD.LONG 0x10 28. " W , W_MIS"
+	BITFLD.LONG 0x10 27. " B , B_MIS"
+	BITFLD.LONG 0x10 26. " AR , AR_MIS"
+	BITFLD.LONG 0x10 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x07052680,0)
+	LINE.LONG 0x14 " TGDSP D , TGDSP D(M3) "
+	BITFLD.LONG 0x14 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x14 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x14 29. " AW , AW_MIS"
+	BITFLD.LONG 0x14 28. " W , W_MIS"
+	BITFLD.LONG 0x14 27. " B , B_MIS"
+	BITFLD.LONG 0x14 26. " AR , AR_MIS"
+	BITFLD.LONG 0x14 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x07062680,0)
+	LINE.LONG 0x18 " TGDSP DMA , TGDSP DMA(M5) "
+	BITFLD.LONG 0x18 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x18 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x18 29. " AW , AW_MIS"
+	BITFLD.LONG 0x18 28. " W , W_MIS"
+	BITFLD.LONG 0x18 27. " B , B_MIS"
+	BITFLD.LONG 0x18 26. " AR , AR_MIS"
+	BITFLD.LONG 0x18 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x1C %l DJTAG.EXECUTE(0x07072680,0)
+	LINE.LONG 0x1C " CR5 , CR5_S5(M6) "
+	BITFLD.LONG 0x1C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x1C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x1C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x1C 28. " W , W_MIS"
+	BITFLD.LONG 0x1C 27. " B , B_MIS"
+	BITFLD.LONG 0x1C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x1C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x20 %l DJTAG.EXECUTE(0x07082680,0)
+	LINE.LONG 0x20 " BM0 , LTE PROC BUSMON0 "
+	BITFLD.LONG 0x20 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x20 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x20 29. " AW , AW_MIS"
+	BITFLD.LONG 0x20 28. " W , W_MIS"
+	BITFLD.LONG 0x20 27. " B , B_MIS"
+	BITFLD.LONG 0x20 26. " AR , AR_MIS"
+	BITFLD.LONG 0x20 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x24 %l DJTAG.EXECUTE(0x07092680,0)
+	LINE.LONG 0x24 " BM1 , LTE PROC BUSMON1 "
+	BITFLD.LONG 0x24 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x24 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x24 29. " AW , AW_MIS"
+	BITFLD.LONG 0x24 28. " W , W_MIS"
+	BITFLD.LONG 0x24 27. " B , B_MIS"
+	BITFLD.LONG 0x24 26. " AR , AR_MIS"
+	BITFLD.LONG 0x24 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x28 %l DJTAG.EXECUTE(0x070A2680,0)
+	LINE.LONG 0x28 " BM2 , LTE PROC BUSMON2 "
+	BITFLD.LONG 0x28 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x28 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x28 29. " AW , AW_MIS"
+	BITFLD.LONG 0x28 28. " W , W_MIS"
+	BITFLD.LONG 0x28 27. " B , B_MIS"
+	BITFLD.LONG 0x28 26. " AR , AR_MIS"
+	BITFLD.LONG 0x28 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x2C %l DJTAG.EXECUTE(0x070B2680,0)
+	LINE.LONG 0x2C " BM3 , LTE PROC BUSMON3 "
+	BITFLD.LONG 0x2C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x2C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x2C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x2C 28. " W , W_MIS"
+	BITFLD.LONG 0x2C 27. " B , B_MIS"
+	BITFLD.LONG 0x2C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x2C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x30 %l DJTAG.EXECUTE(0x070C2680,0)
+	LINE.LONG 0x30 " BM4 , LTE PROC BUSMON4 "
+	BITFLD.LONG 0x30 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x30 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x30 29. " AW , AW_MIS"
+	BITFLD.LONG 0x30 28. " W , W_MIS"
+	BITFLD.LONG 0x30 27. " B , B_MIS"
+	BITFLD.LONG 0x30 26. " AR , AR_MIS"
+	BITFLD.LONG 0x30 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x34 %l DJTAG.EXECUTE(0x070D2680,0)
+	LINE.LONG 0x34 " BM5 , LTE PROC BUSMON5 "
+	BITFLD.LONG 0x34 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x34 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x34 29. " AW , AW_MIS"
+	BITFLD.LONG 0x34 28. " W , W_MIS"
+	BITFLD.LONG 0x34 27. " B , B_MIS"
+	BITFLD.LONG 0x34 26. " AR , AR_MIS"
+	BITFLD.LONG 0x34 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x38 %l DJTAG.EXECUTE(0x07312680,0)
+	LINE.LONG 0x38 " BM6 , LTE PROC BUSMON6 "
+	BITFLD.LONG 0x38 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x38 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x38 29. " AW , AW_MIS"
+	BITFLD.LONG 0x38 28. " W , W_MIS"
+	BITFLD.LONG 0x38 27. " B , B_MIS"
+	BITFLD.LONG 0x38 26. " AR , AR_MIS"
+	BITFLD.LONG 0x38 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x3C %l DJTAG.EXECUTE(0x07322680,0)
+	LINE.LONG 0x3C " BM7 , LTE PROC BUSMON7 "
+	BITFLD.LONG 0x3C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x3C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x3C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x3C 28. " W , W_MIS"
+	BITFLD.LONG 0x3C 27. " B , B_MIS"
+	BITFLD.LONG 0x3C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x3C 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x40 %l DJTAG.EXECUTE(0x07332680,0)
+	LINE.LONG 0x40 " BM8 , LTE PROC BUSMON8 "
+	BITFLD.LONG 0x40 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x40 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x40 29. " AW , AW_MIS"
+	BITFLD.LONG 0x40 28. " W , W_MIS"
+	BITFLD.LONG 0x40 27. " B , B_MIS"
+	BITFLD.LONG 0x40 26. " AR , AR_MIS"
+	BITFLD.LONG 0x40 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x44 %l DJTAG.EXECUTE(0x07342680,0)
+	LINE.LONG 0x44 " BM9 , LTE PROC BUSMON9 "
+	BITFLD.LONG 0x44 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x44 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x44 29. " AW , AW_MIS"
+	BITFLD.LONG 0x44 28. " W , W_MIS"
+	BITFLD.LONG 0x44 27. " B , B_MIS"
+	BITFLD.LONG 0x44 26. " AR , AR_MIS"
+	BITFLD.LONG 0x44 25. " R , R_MIS"
+TREE.END
+TREE "GPU BUS STATUS"
+SGROUP "GPU"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x02012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " PUB0 , PUB0 "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x02022680,0)
+	LINE.LONG 0x08 " PUB1 , PUB1 "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+TREE.END
+
+TREE "VSP BUS STATUS"
+SGROUP "VSP"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x03012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " MM , MM_EMC "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x03022680,0)
+	LINE.LONG 0x08 " VSP , VSP_EMC "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+TREE.END
+
+TREE "CAM BUS STATUS"
+SGROUP "CAM"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x04012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " DSIPC , DSIPC "
+	BITFLD.LONG 0x04 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x04 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x04 29. " AW , AW_MIS"
+	BITFLD.LONG 0x04 28. " W , W_MIS"
+	BITFLD.LONG 0x04 27. " B , B_MIS"
+	BITFLD.LONG 0x04 26. " AR , AR_MIS"
+	BITFLD.LONG 0x04 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x04022680,0)
+	LINE.LONG 0x08 " CAM_ISP , CAM_ISP "
+	BITFLD.LONG 0x08 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x08 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x08 29. " AW , AW_MIS"
+	BITFLD.LONG 0x08 28. " W , W_MIS"
+	BITFLD.LONG 0x08 27. " B , B_MIS"
+	BITFLD.LONG 0x08 26. " AR , AR_MIS"
+	BITFLD.LONG 0x08 25. " R , R_MIS"
+
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x04032680,0)
+	LINE.LONG 0x0C " JPG_CPP , JPG_CPP "
+	BITFLD.LONG 0x0C 31. " W CHN , W_CHN_MIS"
+	BITFLD.LONG 0x0C 30. " R CHN , R_CHN_MIS"
+	BITFLD.LONG 0x0C 29. " AW , AW_MIS"
+	BITFLD.LONG 0x0C 28. " W , W_MIS"
+	BITFLD.LONG 0x0C 27. " B , B_MIS"
+	BITFLD.LONG 0x0C 26. " AR , AR_MIS"
+	BITFLD.LONG 0x0C 25. " R , R_MIS"
+TREE.END
+
+TREE.END
+
+TREE "DEBUG STATUS"
+TREE "AP DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x00000880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+	BITFLD.LONG 0x04 31. " axi_lp_ctrl_disable , axi_lp_ctrl_disable"
+	BITFLD.LONG 0x04 30. " ap_sys_frc_stop_req , ap_sys_frc_stop_req"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x04 28. "      ap_peri_frc_on , ap_peri_frc_on"
+	BITFLD.LONG 0x04 27. "     ap_peri_frc_off , ap_peri_frc_off"
+	BITFLD.LONG 0x04 21. " rom_clk_frc_on , rom_clk_force_on"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x04 23. "            dma_busy , dma_busy"
+	BITFLD.LONG 0x04 13. "            dma_busy , dma_busy"
+	BITFLD.LONG 0x04 22. "          m2_eb , m2_eb"
+	TEXTLINE "                                 ------------------ enable bit ------------------"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x04 20. "     bm , busmon0_eb|busmon1_eb|busmon2_eb|busmon3_eb"
+	BITFLD.LONG 0x04 19. " bia_lp , bia_lp_eb"
+	BITFLD.LONG 0x04 18. "    dap , dap_eb"
+	BITFLD.LONG 0x04 17. "   emmc , emmc_eb"
+	BITFLD.LONG 0x04 16. "  sdio2 , sdio2_eb"
+	BITFLD.LONG 0x04 15. "  sdio1 , sdio1_eb"
+	BITFLD.LONG 0x04 14. "  sdio0 , sdio0_eb"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x04 12. "    dma , dma_eb"
+	BITFLD.LONG 0x04 11. "    pti , pti_eb"
+	BITFLD.LONG 0x04 10. " ba_det , bus_align_det_eb"
+	BITFLD.LONG 0x04 9.  "    usb , usb3_eb|usb3_ref_eb|usb3_suspend_eb"
+	BITFLD.LONG 0x04 8.  "    ufs , ufs_eb"
+	BITFLD.LONG 0x04 7.  "    ce0 , ce0_eb"
+	BITFLD.LONG 0x04 6.  "    ce1 , ce1_eb"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x04 5.  "    efs , ce_efs_eb"
+	BITFLD.LONG 0x04 4.  "   uart , uart0_eb|uart1_eb|uart2_eb|uart3_eb|uart4_eb"
+	BITFLD.LONG 0x04 3.  "    i2c , i2c0_eb|i2c1_eb|i2c2_eb|i2c3_eb|i2c4_eb|i2c5_eb"
+	BITFLD.LONG 0x04 2.  "    iis , iis0_eb|iis1_eb|iis2_eb|iis3_eb"
+	BITFLD.LONG 0x04 1.  "    spi , spi0_eb|spi1_eb|spi2_eb|spi3_eb"
+	BITFLD.LONG 0x04 0.  "    sim , sim0_eb"
+	
+	TEXTLINE ""
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x00000980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x00000A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x00000B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x00000D80,0)
+	LINE.LONG 0x14 " CHAN5 , CHAN5 "
+	BITFLD.LONG 0x14 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x14 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x14 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x14 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x14 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x14 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x14 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x14 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x14 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x14 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x14 16. "         csysack , csysack"
+	BITFLD.LONG 0x14 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x14 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x14 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x14 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x14 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x14 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+TREE.END
+TREE "GPU DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x02000880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x02000980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x02000A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x02000B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+	BITFLD.LONG 0x10 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x10 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x10 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x10 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x10 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x10 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x10 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x10 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x10 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x10 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x10 16. "         csysack , csysack"
+	BITFLD.LONG 0x10 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x10 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x10 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x10 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x10 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x10 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x02000C80,0)
+	LINE.LONG 0x14 " CHAN4 , CHAN4 "
+	BITFLD.LONG 0x14 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x14 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x14 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x14 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x14 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x14 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x14 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x14 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x14 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x14 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x14 16. "         csysack , csysack"
+	BITFLD.LONG 0x14 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x14 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x14 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x14 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x14 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x14 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+TREE.END
+TREE "VSP DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x03001C80,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN20 , CHAN20 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x03001D80,0)
+	LINE.LONG 0x08 " CHAN21 , CHAN21 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x03001E80,0)
+	LINE.LONG 0x0C " CHAN22 , CHAN22 "
+	BITFLD.LONG 0x0C 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x0C 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x0C 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x0C 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x0C 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x0C 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x0C 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x0C 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x0C 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x0C 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x0C 16. "         csysack , csysack"
+	BITFLD.LONG 0x0C 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x0C 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x0C 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x0C 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x0C 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x0C 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x03001F80,0)
+	LINE.LONG 0x10 " CHAN23 , CHAN23 "
+	BITFLD.LONG 0x10 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x10 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x10 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x10 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x10 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x10 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x10 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x10 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x10 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x10 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x10 16. "         csysack , csysack"
+	BITFLD.LONG 0x10 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x10 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x10 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x10 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x10 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x10 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+TREE.END
+TREE "CAM DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x04002180,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN25 , CHAN25 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x04002280,0)
+	LINE.LONG 0x08 " CHAN26 , CHAN26 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x04002380,0)
+	LINE.LONG 0x0C " CHAN27 , CHAN27 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x04002480,0)
+	LINE.LONG 0x10 " CHAN28 , CHAN28 "
+	BITFLD.LONG 0x10 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x10 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x10 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x10 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x10 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x10 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x10 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x10 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x10 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x10 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x10 16. "         csysack , csysack"
+	BITFLD.LONG 0x10 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x10 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x10 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x10 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x10 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x10 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x04002580,0)
+	LINE.LONG 0x14 " CHAN29 , CHAN29 "
+	BITFLD.LONG 0x14 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x14 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x14 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x14 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x14 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x14 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x14 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x14 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x14 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x14 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x14 16. "         csysack , csysack"
+	BITFLD.LONG 0x14 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x14 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x14 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x14 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x14 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x14 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+TREE.END
+TREE "PUBCP DEBUG STATUS"
+SGROUP "DAP8"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x06080880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x06080980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x06080A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x06081980,0)
+	LINE.LONG 0x10 " CHAN17 , CHAN17 "
+	BITFLD.LONG 0x10 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x10 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x10 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x10 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x10 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x10 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x10 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x10 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x10 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x10 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x10 16. "         csysack , csysack"
+	BITFLD.LONG 0x10 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x10 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x10 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x10 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x10 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x10 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+TREE.END
+TREE "WTLCP DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x07000880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x07000980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x07000A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x07000B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x07000C80,0)
+	LINE.LONG 0x14 " CHAN4 , CHAN4 "
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x07000D80,0)
+	LINE.LONG 0x18 " CHAN5 , CHAN5 "
+SGROUP
+	VARX 0x1C %l DJTAG.EXECUTE(0x07000E80,0)
+	LINE.LONG 0x1C " CHAN6 , CHAN6 "
+SGROUP
+	VARX 0x20 %l DJTAG.EXECUTE(0x07000F80,0)
+	LINE.LONG 0x20 " CHAN7 , CHAN7 "
+SGROUP
+	VARX 0x24 %l DJTAG.EXECUTE(0x07001080,0)
+	LINE.LONG 0x24 " CHAN8 , CHAN8 "
+SGROUP
+	VARX 0x28 %l DJTAG.EXECUTE(0x07001180,0)
+	LINE.LONG 0x28 " CHAN9 , CHAN9 "
+SGROUP
+	VARX 0x2C %l DJTAG.EXECUTE(0x07004880,0)
+	LINE.LONG 0x2C " CHAN64 , CHAN64 "
+	BITFLD.LONG 0x2C 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x2C 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x2C 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x2C 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x2C 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x2C 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x2C 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x2C 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x2C 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x2C 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x2C 16. "         csysack , csysack"
+	BITFLD.LONG 0x2C 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x2C 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x2C 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x2C 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x2C 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x2C 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x30 %l DJTAG.EXECUTE(0x07004980,0)
+	LINE.LONG 0x30 " CHAN65 , CHAN65 "
+	BITFLD.LONG 0x30 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x30 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x30 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x30 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x30 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x30 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x30 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x30 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x30 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x30 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x30 16. "         csysack , csysack"
+	BITFLD.LONG 0x30 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x30 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x30 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x30 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x30 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x30 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x34 %l DJTAG.EXECUTE(0x07004A80,0)
+	LINE.LONG 0x34 " CHAN66 , CHAN66 "
+
+TREE.END
+
+TREE "AGCP DEBUG STATUS"
+SGROUP "DAP6"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x08060880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x08060980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x08060A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x08060B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x08060C80,0)
+	LINE.LONG 0x14 " CHAN4 , CHAN4 "
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x08061A80,0)
+	LINE.LONG 0x18 " CHAN18 , CHAN18 "
+	BITFLD.LONG 0x18 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x18 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x18 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x18 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x18 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x18 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x18 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x18 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x18 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x18 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x18 16. "         csysack , csysack"
+	BITFLD.LONG 0x18 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x18 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x18 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x18 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x18 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x18 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+SGROUP
+	VARX 0x1C %l DJTAG.EXECUTE(0x08061C80,0)
+	LINE.LONG 0x1C " CHAN20 , CHAN20 "
+
+TREE.END
+TREE "PUB0 DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x09000880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x09000980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x09000A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x09000B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+	BITFLD.LONG 0x10 7. " P5(CP) , PUB0 PORT5"
+	BITFLD.LONG 0x10 6. " P4(CP) , PUB0 PORT4"
+	BITFLD.LONG 0x10 5. " P3(GPU) , PUB0 PORT3"
+	BITFLD.LONG 0x10 4. " P2(DISP/CAM) , PUB0 PORT2"
+	BITFLD.LONG 0x10 3. " P1(VSP/GSP) , PUB0 PORT1"
+	BITFLD.LONG 0x10 2. " P0(BIA/AP) , PUB0 PORT0"
+
+TREE.END
+TREE "PUB1 DEBUG STATUS"
+SGROUP "DAP0"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x0A000880,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN0 , CHAN0 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x0A000980,0)
+	LINE.LONG 0x08 " CHAN1 , CHAN1 "
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x0A000A80,0)
+	LINE.LONG 0x0C " CHAN2 , CHAN2 "
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x0A000B80,0)
+	LINE.LONG 0x10 " CHAN3 , CHAN3 "
+	BITFLD.LONG 0x10 5. " P3(GPU) , PUB1 PORT3"
+	BITFLD.LONG 0x10 4. " P2(DISP/CAM) , PUB1 PORT2"
+	BITFLD.LONG 0x10 3. " P1(VSP/GSP) , PUB1 PORT1"
+	BITFLD.LONG 0x10 2. " P0(BIA/AP) , PUB1 PORT0"
+
+TREE.END
+
+TREE "AON DEBUG STATUS"
+SGROUP "DAP5"
+	VARX 0x00 %l DJTAG.SWITCH(0x01)
+	VARX 0x04 %l DJTAG.EXECUTE(0x0B050B80,0)
+	TEXTLINE ""
+	LINE.LONG 0x04 " CHAN3 , CHAN3 "
+SGROUP
+	VARX 0x08 %l DJTAG.EXECUTE(0x0B050F80,0)
+	LINE.LONG 0x08 " W-AGCP2AON-C7 , CHAN7 "
+	BITFLD.LONG 0x08 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x08 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x08 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x08 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x08 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x08 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x08 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x08 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x08 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x08 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x08 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x08 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x08 16. "         csysack , csysack"
+	BITFLD.LONG 0x08 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x08 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x08 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x08 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x08 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x08 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x08 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x08 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x0C %l DJTAG.EXECUTE(0x0B051080,0)
+	LINE.LONG 0x0C " R-AGCP2AON-C8 , CHAN8 "
+	BITFLD.LONG 0x0C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x0C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x0C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x0C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x0C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 6. "    async_config , async_config"
+	BITFLD.LONG 0x0C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x0C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x0C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x0C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x0C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x0C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x0C 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x10 %l DJTAG.EXECUTE(0x0B051180,0)
+	LINE.LONG 0x10 " W-PUBCP2AON-C9 , CHAN9 "
+	BITFLD.LONG 0x10 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x10 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x10 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x10 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x10 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x10 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x10 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x10 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x10 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x10 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x10 16. "         csysack , csysack"
+	BITFLD.LONG 0x10 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x10 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x10 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x10 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x10 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x10 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x14 %l DJTAG.EXECUTE(0x0B051280,0)
+	LINE.LONG 0x14 " R-PUBCP2AON-C10 , CHAN10 "
+	BITFLD.LONG 0x14 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x14 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x14 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x14 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x14 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 6. "    async_config , async_config"
+	BITFLD.LONG 0x14 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x14 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x14 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x14 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x14 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x14 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x14 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x18 %l DJTAG.EXECUTE(0x0B051380,0)
+	LINE.LONG 0x18 " W-WTLCP2AON-C11 , CHAN11 "
+	BITFLD.LONG 0x18 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x18 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x18 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x18 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x18 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x18 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x18 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x18 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x18 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x18 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x18 16. "         csysack , csysack"
+	BITFLD.LONG 0x18 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x18 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x18 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x18 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x18 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x18 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x18 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x1C %l DJTAG.EXECUTE(0x0B051480,0)
+	LINE.LONG 0x1C " R-WTLCP2AON-C12 , CHAN12 "
+	BITFLD.LONG 0x1C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x1C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x1C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x1C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x1C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x1C 6. "    async_config , async_config"
+	BITFLD.LONG 0x1C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x1C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x1C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x1C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x1C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x1C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x1C 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x20 %l DJTAG.EXECUTE(0x0B051580,0)
+	LINE.LONG 0x20 " W-AON2AGCP-C13 , CHAN13 "
+	BITFLD.LONG 0x20 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x20 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x20 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x20 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x20 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x20 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x20 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x20 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x20 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x20 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x20 16. "         csysack , csysack"
+	BITFLD.LONG 0x20 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x20 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x20 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x20 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x20 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x20 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x24 %l DJTAG.EXECUTE(0x0B051680,0)
+	LINE.LONG 0x24 " R-AON2AGCP-C14 , CHAN14 "
+	BITFLD.LONG 0x24 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x24 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x24 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x24 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x24 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x24 6. "    async_config , async_config"
+	BITFLD.LONG 0x24 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x24 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x24 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x24 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x24 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x24 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x24 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x28 %l DJTAG.EXECUTE(0x0B051780,0)
+	LINE.LONG 0x28 " W-AON2PUBCP-C15 , CHAN15 "
+	BITFLD.LONG 0x28 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x28 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x28 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x28 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x28 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x28 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x28 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x28 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x28 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x28 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x28 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x28 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x28 16. "         csysack , csysack"
+	BITFLD.LONG 0x28 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x28 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x28 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x28 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x28 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x28 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x28 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x28 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x2C %l DJTAG.EXECUTE(0x0B051880,0)
+	LINE.LONG 0x2C " R-AON2PUBCP-C16 , CHAN16 "
+	BITFLD.LONG 0x2C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x2C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x2C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x2C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x2C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 6. "    async_config , async_config"
+	BITFLD.LONG 0x2C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x2C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x2C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x2C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x2C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x2C 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x30 %l DJTAG.EXECUTE(0x0B051980,0)
+	LINE.LONG 0x30 " W-AON2PUB0-C17 , CHAN17 "
+	BITFLD.LONG 0x30 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x30 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x30 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x30 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x30 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x30 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x30 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x30 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x30 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x30 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x30 16. "         csysack , csysack"
+	BITFLD.LONG 0x30 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x30 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x30 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x30 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x30 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x30 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x34 %l DJTAG.EXECUTE(0x0B051A80,0)
+	LINE.LONG 0x34 " R-AON2PUB0-C18 , CHAN18 "
+	BITFLD.LONG 0x34 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x34 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x34 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x34 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x34 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x34 6. "    async_config , async_config"
+	BITFLD.LONG 0x34 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x34 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x34 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x34 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x34 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x34 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x34 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x38 %l DJTAG.EXECUTE(0x0B051B80,0)
+	LINE.LONG 0x38 " W-AON2PUB1-C19 , CHAN19 "
+	BITFLD.LONG 0x38 31. "    r_ch_w_empty , r_ch_w_empty"
+	BITFLD.LONG 0x38 30. "    b_ch_w_empty , b_ch_w_empty"
+	BITFLD.LONG 0x38 29. "    ar_ch_w_full , ar_ch_w_full"
+	BITFLD.LONG 0x38 28. "     w_ch_w_full , w_ch_w_full"
+	BITFLD.LONG 0x38 27. "    aw_ch_w_full , aw_ch_w_full"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x38 23. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x38 22. "         mask_ch , mask_ch"
+	BITFLD.LONG 0x38 21. "   idle_ack_sync , idle_ack_sync"
+	BITFLD.LONG 0x38 20. "        idle_req , idle_req"
+	BITFLD.LONG 0x38 19. "   mask_ack_sync , mask_ack_sync"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x38 18. "        mask_req , mask_req"
+	BITFLD.LONG 0x38 17. "   cactive_inter , cactive_inter"
+	BITFLD.LONG 0x38 16. "         csysack , csysack"
+	BITFLD.LONG 0x38 15. "    csysreq_sync , csysreq_sync"
+	BITFLD.LONG 0x38 14. "         cactive , cactive"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x38 13. "          mask_w , mask_w"
+	BITFLD.LONG 0x38 12. "      mask_aw_ar , mask_aw_ar"
+	BITFLD.LONG 0x38 11. " leading_wr_flag , leading_wr_flag"
+	BITFLD.LONG 0x38 24.--26. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x38 10.      " trans_idle , trans_idle"
+	BITFLD.LONG 0x38 0.--9.   "  trans_cnt , trans_cnt[9:0]"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x3C %l DJTAG.EXECUTE(0x0B051C80,0)
+	LINE.LONG 0x3C " R-AON2PUB1-C20 , CHAN20 "
+	BITFLD.LONG 0x3C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x3C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x3C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x3C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x3C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x3C 6. "    async_config , async_config"
+	BITFLD.LONG 0x3C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x3C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x3C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x3C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x3C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x3C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x3C 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x40 %l DJTAG.EXECUTE(0x0B051D80,0)
+	LINE.LONG 0x40 " R-AP-CH-C21 , CHAN21 "
+	BITFLD.LONG 0x40 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x40 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x40 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x40 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x40 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x40 6. "    async_config , async_config"
+	BITFLD.LONG 0x40 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x40 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x40 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x40 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x40 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x40 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x40 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x44 %l DJTAG.EXECUTE(0x0B051E80,0)
+	LINE.LONG 0x44 " R-CAM-CH0-C22 , CHAN22 "
+	BITFLD.LONG 0x44 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x44 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x44 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x44 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x44 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x44 6. "    async_config , async_config"
+	BITFLD.LONG 0x44 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x44 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x44 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x44 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x44 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x44 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x44 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x48 %l DJTAG.EXECUTE(0x0B051F80,0)
+	LINE.LONG 0x48 " R-CAM-CH1-C23 , CHAN23 "
+	BITFLD.LONG 0x48 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x48 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x48 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x48 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x48 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x48 6. "    async_config , async_config"
+	BITFLD.LONG 0x48 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x48 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x48 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x48 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x48 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x48 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x48 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x4C %l DJTAG.EXECUTE(0x0B052080,0)
+	LINE.LONG 0x4C " R-VSP-CH0-C24 , CHAN24 "
+	BITFLD.LONG 0x4C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x4C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x4C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x4C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x4C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x4C 6. "    async_config , async_config"
+	BITFLD.LONG 0x4C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x4C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x4C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x4C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x4C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x4C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x4C 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x50 %l DJTAG.EXECUTE(0x0B052180,0)
+	LINE.LONG 0x50 " R-VSP-CH1-C25 , CHAN25 "
+	BITFLD.LONG 0x50 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x50 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x50 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x50 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x50 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x50 6. "    async_config , async_config"
+	BITFLD.LONG 0x50 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x50 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x50 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x50 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x50 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x50 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x50 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x54 %l DJTAG.EXECUTE(0x0B052280,0)
+	LINE.LONG 0x54 " R-GPU-CH0-C26 , CHAN26 "
+	BITFLD.LONG 0x54 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x54 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x54 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x54 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x54 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x54 6. "    async_config , async_config"
+	BITFLD.LONG 0x54 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x54 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x54 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x54 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x54 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x54 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x54 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x58 %l DJTAG.EXECUTE(0x0B052380,0)
+	LINE.LONG 0x58 " R-GPU-CH0-C27 , CHAN27 "
+	BITFLD.LONG 0x58 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x58 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x58 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x58 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x58 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x58 6. "    async_config , async_config"
+	BITFLD.LONG 0x58 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x58 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x58 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x58 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x58 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x58 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x58 0. "   mask_req_sync , mask_req_sync"
+
+	TEXTLINE ""
+SGROUP
+	VARX 0x5C %l DJTAG.EXECUTE(0x0B052480,0)
+	LINE.LONG 0x5C " R-TOP-BUS-C28 , CHAN28 "
+	BITFLD.LONG 0x5C 14. "     r_ch_r_full , r_ch_r_full"
+	BITFLD.LONG 0x5C 13. "     b_ch_r_full , b_ch_r_full"
+	BITFLD.LONG 0x5C 12. "   ar_ch_r_empty , ar_ch_r_empty"
+	BITFLD.LONG 0x5C 11. "    w_ch_r_empty , w_ch_r_empty"
+	BITFLD.LONG 0x5C 10. "   aw_ch_r_empty , aw_ch_r_empty"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x5C 6. "    async_config , async_config"
+	BITFLD.LONG 0x5C 5. "   fifo_sync_clr , fifo_sync_clr"
+	BITFLD.LONG 0x5C 4. "         mask_en , mask_en"
+	BITFLD.LONG 0x5C 7.--9. "         cs , cs[2:0]"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x5C 3. "        idle_ack , idle_ack"
+	BITFLD.LONG 0x5C 2. "   idle_req_sync , idle_req_sync"
+	BITFLD.LONG 0x5C 1. "        mask_ack , mask_ack"
+	BITFLD.LONG 0x5C 0. "   mask_req_sync , mask_req_sync"
+
+
+TREE.END
+
+TREE.END
+
+
+TREE.END
+; ############################ END OF DJTAG ############################
+
+
+
+; ############################ START OF DDR ############################
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2E0000)
+TREE "DDR Info"
+	RGROUP.LONG 0x98++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " DDRFreq, AON_CGM_CFG "
+	BITFLD.LONG 0x00 8.--14.  " DDR0_CKG , EMC_DDR0_CKG_SEL_CUURENT" ",,,,,,,933MHz,,,,,,,,,,,,622MHz,,,,,,,,,,,,233MHz,,,,368MHz,%x..."
+	BITFLD.LONG 0x00 7. " DDR0_DFS , CLK_DMC1_SEL_HW_EN" "Software DFS,Hardware DFS"
+	BITFLD.LONG 0x00 6. " DDR0_1X_DIV , CLK_DMC1_1X_DIV" "%x..."
+	BITFLD.LONG 0x00 2.--5. " DDR0_2X_DIV , CLK_DMC1_2X_DIV" "%x..."
+	BITFLD.LONG 0x00 0.--1. " DDR0_SEL , CLK_DMC1_SEL" "CLK XTL 26MHz,AP PLL 624MHz,TWPLL 768MHz,1600MHz"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 24.--30. " DDR1_CKG , EMC_DDR1_CKG_SEL_CUURENT" ",,,,,,,933MHz,,,,,,,,,,,,622MHz,,,,,,,,,,,,233MHz,,,,368MHz,%x..."
+	BITFLD.LONG 0x00 23. " DDR1_DFS , CLK_DMC1_SEL_HW_EN" "Software DFS,Hardware DFS"
+	BITFLD.LONG 0x00 22. " DDR1_1X_DIV , CLK_DMC1_1X_DIV" "%x..."
+	BITFLD.LONG 0x00 18.--21. " DDR1_2X_DIV , CLK_DMC1_2X_DIV" "%x..."
+	BITFLD.LONG 0x00 16.--17. " DDR1_SEL , CLK_DMC1_SEL" "CLK XTL 26MHz,AP PLL 624MHz,TWPLL 768MHz,1600MHz"
+	TEXTLINE ""
+	BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2B0200)
+	RGROUP.LONG 0xCC++0x1F
+	LINE.LONG 0x00 " DDR0RDY, DDR0_ACC_RDY "
+	LINE.LONG 0x04 " DDR0LRDY, DDR0_LIGHT_ACC_RDY "
+	LINE.LONG 0x0C " DDR1RDY, DDR1_ACC_RDY "
+	LINE.LONG 0x10 " DDR1LRDY, DDR1_LIGHT_ACC_RDY "
+
+	TEXTLINE ""
+	TEXTLINE "--- DDR0 Reinit Info ---"
+	BASE &MEM_TYPE:(&AON_SIRAM_ADDR+0x19000)
+	RGROUP.LONG 0x00++0x3F
+	LINE.LONG 0x04 " PUB0 SLP CNT , PUB0_SLEEP_NUM "
+	LINE.LONG 0x08 " PUB0 WKU CNT , PUB0_WAKEUP_NUM "
+	LINE.LONG 0x0C " PUB0 PWR OFF , PUB0_POWER_OFF "
+	LINE.LONG 0x34 " PUB0 MAX TIM , PUB0_POWERON_TIME_MAX "
+	TEXTLINE "--- DDR1 Reinit Info ---"
+	LINE.LONG 0x14 " PUB1 SLP CNT , PUB1_SLEEP_NUM "
+	LINE.LONG 0x18 " PUB1 WKU CNT , PUB1_WAKEUP_NUM "
+	LINE.LONG 0x1C " PUB1 PWR OFF , PUB1_POWER_OFF "
+	LINE.LONG 0x3C " PUB1 MAX TIM , PUB1_POWERON_TIME_MAX "
+
+TREE.END
+; ############################ END OF DDR ############################
+
+
+; ############################ START OF PMU ############################
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2B0000)
+TREE "PMU Info"
+	RGROUP.LONG 0x15C++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " SYS Sleep Status, SYS_SLP_STATUS0 "
+	BITFLD.LONG 0x00 24.--27. " PUBCP , PUBCP_SYS_SLP_STATUS" "PowerDown,,,,,,PowerUp,%x..."
+	BITFLD.LONG 0x00 20.--23. "  AGCP , AGCP_SYS_SLP_STATUS"  "PowerDown,,,,,,PowerUp,%x..."
+	BITFLD.LONG 0x00 16.--19. " WTLCP , WTLCP_SYS_SLP_STATUS" "PowerDown,,,,,,PowerUp,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 4.--7.   "   CM4 , CM4_SYS_SLP_STATUS"   "PowerDown,,,,,,PowerUp,%x..."
+	BITFLD.LONG 0x00 0.--3.   "    AP , AP_SYS_SLP_STATUS"    "PowerDown,,,,,,PowerUp,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.--11.  "  PUB0 , PUB0_SYS_SLP_STATUS"  "BUSY,SLEEP_PRE,SLEEP_REQ,SLEEP_ACK,SLEEP,WAKEUP_REQ,WAKEUP_ACK,ACC_RDY,PWR_DOWN_PRE,PWR_DOWN_REQ,PWR_DOWN_ACK,PWR_DOWN,PWR_ON_REQ,PWR_ON_ACK,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 12.--15. "  PUB1 , PUB1_SYS_SLP_STATUS"  "BUSY,SLEEP_PRE,SLEEP_REQ,SLEEP_ACK,SLEEP,WAKEUP_REQ,WAKEUP_ACK,ACC_RDY,PWR_DOWN_PRE,PWR_DOWN_REQ,PWR_DOWN_ACK,PWR_DOWN,PWR_ON_REQ,PWR_ON_ACK,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x11C++0x03
+	LINE.LONG 0x00 " Power State 1, PWR_STATE_DBG1 "
+	BITFLD.LONG 0x00 25.--29. "   HU3GE_B , PD_WTLCP_HU3GE_B_STATE" "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 20.--24. "     TGDSP , PD_WTLCP_TGDSP_STATE"   "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 15.--19. "    LTE_P4 , PD_WTLCP_LTE_P4_STATE"  "PowerOn,,,,,,,PowerOff,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 10.--14. "  AGCP_SYS , PD_AGCP_SYS_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 5.--9.   " PUBCP_SYS , PD_PUBCP_SYS_STATE"     "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 0.--4.   "  BIA_S0IX , PD_BIA_S0IX_STATE"      "WakeUP,Active,WkUpAON,WkUpDAON,DVFS_PWD_CLR,PLL_ON,PLL_OFF,DOWN,WkUpDAOFF,StandBy,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x120++0x03
+	LINE.LONG 0x00 " Power State 2, PWR_STATE_DBG2 "
+	BITFLD.LONG 0x00 25.--29. "   VSP_SYS , PD_VSP_SYS_STATE"       "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 20.--24. "    LTE_P1 , PD_WTLCP_LTE_P1_STATE"  "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 15.--19. "  PUB0_SYS , PD_PUB0_SYS_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 10.--14. "  AGCP_DSP , PD_AGCP_DSP_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 5.--9.   "   GPU_PHM , PD_GPU_PHANTOM_STATE"   "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 0.--4.   "    AP_SYS , PD_AP_SYS_STATE"        "PowerOn,,,,,,,PowerOff,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x124++0x03
+	LINE.LONG 0x00 " Power State 3, PWR_STATE_DBG3 "
+	BITFLD.LONG 0x00 25.--29. "    LTE_P3 , PD_WTLCP_LTE_P3_STATE"  "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 15.--19. "        TD , PD_WTLCP_TD_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 20.--24. "       BIA , PD_BIA_STATE"           "WakeUP,PowerOnSeq,CorePowerOn,L2PowerOn,CPUPowerOn,EfuseSense,CPUPowerGoodOn,ShutDown,TAPPowerGoodOn,ISOON,Active,CLKLOCK,WakeUPLock,HALTDebug,CPUPowerGoodOff,CLKunLock,StandBy,ISOOFF,TAPPowerGoodOff,CorePowerOff,L2PowerOff,CPUPowerOff,PLL_ON,PLL_OFF,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 10.--14. "  PUB1_SYS , PD_PUB1_SYS_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 5.--9.   "   GPU_TOP , PD_GPU_TOP_STATE"       "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 0.--4.   "      LDSP , PD_WTLCP_LDSP_STATE"    "PowerOn,,,,,,,PowerOff,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x128++0x03
+	LINE.LONG 0x00 " Power State 4, PWR_STATE_DBG4 "
+	BITFLD.LONG 0x00 25.--29. "   HU3GE_A , PD_WTLCP_HU3GE_A_STATE" "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 20.--24. "   CAM_SYS , PD_CAM_SYS_STATE"       "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 15.--19. "  VSP_CORE , PD_VSP_CORE_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 10.--14. "    LTE_P2 , PD_WTLCP_LTE_P2_STATE"  "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 5.--9.   "  CAM_CORE , PD_CAM_CORE_STATE"      "PowerOn,,,,,,,PowerOff,%x..."
+	BITFLD.LONG 0x00 0.--4.   " WTLCP_SYS , PD_WTLCP_SYS_STATE"     "PowerOn,,,,,,,PowerOff,%x..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x12C++0x03
+	LINE.LONG 0x00 " PUB0 Sleep Ctrl, PUB0_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 11. "       CLK_GATED , DDR0_GLB_CGM_EN" "%d..."
+	BITFLD.LONG 0x00 10. "      POWER DOWN , PUB0_SYS_DDR_PWR_DOWN" "%d..."
+	BITFLD.LONG 0x00 9.  "           SLEEP , PUB0_SYS_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.  "    AUTO DSLP EN , DDR0_AUTO_DEEP_SLEEP_ENABLE" "%d..."
+	BITFLD.LONG 0x00 4.  "   AUTO SLEEP EN , DDR0_AUTO_SLEEP_ENABLE" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 7.  "     SLP DIS ACK , DDR0_SLEEP_DISABLE_ACK" "%d..."
+	BITFLD.LONG 0x00 6.  "         SLP DIS , DDR0_SLEEP_DISABLE" "%d..."
+	BITFLD.LONG 0x00 5.  " SLP DIS ACK BYP , DDR0_SLEEP_DISABLE_ACK_BYP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 3.  " FRC LIGHT SLEEP , PUB0_SYS_FORCE_LIGHT_SLEEP" "%d..."
+	BITFLD.LONG 0x00 2.  "  FRC DEEP SLEEP , PUB0_SYS_FORCE_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 0.  "  GLB CGM EN BYP , PUB0_SYS_DDR_GLB_CGM_EN_BYP" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x130++0x03
+	LINE.LONG 0x00 " PUB1 Sleep Ctrl, PUB1_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 11. "       CLK_GATED , DDR1_GLB_CGM_EN" "%d..."
+	BITFLD.LONG 0x00 10. "      POWER DOWN , PUB1_SYS_DDR_PWR_DOWN" "%d..."
+	BITFLD.LONG 0x00 9.  "           SLEEP , PUB1_SYS_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.  "    AUTO DSLP EN , DDR1_AUTO_DEEP_SLEEP_ENABLE" "%d..."
+	BITFLD.LONG 0x00 4.  "   AUTO SLEEP EN , DDR1_AUTO_SLEEP_ENABLE" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 7.  "     SLP DIS ACK , DDR1_SLEEP_DISABLE_ACK" "%d..."
+	BITFLD.LONG 0x00 6.  "         SLP DIS , DDR1_SLEEP_DISABLE" "%d..."
+	BITFLD.LONG 0x00 5.  " SLP DIS ACK BYP , DDR1_SLEEP_DISABLE_ACK_BYP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 3.  " FRC LIGHT SLEEP , PUB1_SYS_FORCE_LIGHT_SLEEP" "%d..."
+	BITFLD.LONG 0x00 2.  "  FRC DEEP SLEEP , PUB1_SYS_FORCE_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 0.  "  GLB CGM EN BYP , PUB1_SYS_DDR_GLB_CGM_EN_BYP" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x134++0x03
+	LINE.LONG 0x00 " AP Sleep Ctrl, AP_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 27. "       DOZE SLEEP , AP_SYS_DOZE_SLEEP" "%d..."
+	BITFLD.LONG 0x00 26. "   FRC DOZE SLEEP , AP_SYS_FORCE_DOZE_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25. "       DEEP SLEEP , AP_SYS_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 24. "   FRC DEEP SLEEP , AP_SYS_FORCE_DEEP_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 17. "     LIGHT SLEEP1 , AP_SYS_LIGHT_SLEEP1" "%d..."
+	BITFLD.LONG 0x00 16. " FRC LIGHT SLEEP1 , AP_SYS_FORCE_LIGHT_SLEEP1" "%d..."
+	BITFLD.LONG 0x00 15. "  LSLP1 WAKEUP EN , AP_SYS_LSLP1_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 14. "     LIGHT SLEEP0 , AP_SYS_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 13. " FRC LIGHT SLEEP0 , AP_SYS_FORCE_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 12. "  LSLP0 WAKEUP EN , AP_SYS_LSLP0_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 5.  "     PDEEP SLEEP1 , AP_SYS_PUB_DEEP_SLEEP1" "%d..."
+	BITFLD.LONG 0x00 4.  " FRC PDEEP SLEEP1 , AP_SYS_FORCE_PUB_DEEP_SLEEP1" "%d..."
+	BITFLD.LONG 0x00 3.  "  DSLP1 WAKEUP EN , AP_SYS_DSLP1_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.  "     PDEEP SLEEP0 , AP_SYS_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 1.  " FRC PDEEP SLEEP0 , AP_SYS_FORCE_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 0.  "  DSLP0 WAKEUP EN , AP_SYS_DSLP0_WAKEUP_EN" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x138++0x03
+	LINE.LONG 0x00 " CM4 Sleep Ctrl, CM4_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 27. "       DOZE SLEEP , CM4_SYS_DOZE_SLEEP" "%d..."
+	BITFLD.LONG 0x00 26. "   FRC DOZE SLEEP , CM4_SYS_FORCE_DOZE_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25. "       DEEP SLEEP , CM4_SYS_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 24. "   FRC DEEP SLEEP , CM4_SYS_FORCE_DEEP_SLEEP" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x144++0x03
+	LINE.LONG 0x00 " WTLCP Sleep Ctrl, WTLCP_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 27. "       DOZE SLEEP , WTLCP_SYS_DOZE_SLEEP" "%d..."
+	BITFLD.LONG 0x00 26. "   FRC DOZE SLEEP , WTLCP_SYS_FORCE_DOZE_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25. "       DEEP SLEEP , WTLCP_SYS_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 24. "   FRC DEEP SLEEP , WTLCP_SYS_FORCE_DEEP_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 14. "     LIGHT SLEEP0 , WTLCP_SYS_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 13. " FRC LIGHT SLEEP0 , WTLCP_SYS_FORCE_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 12. "  LSLP0 WAKEUP EN , WTLCP_SYS_LSLP0_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.  "     PDEEP SLEEP0 , WTLCP_SYS_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 1.  " FRC PDEEP SLEEP0 , WTLCP_SYS_FORCE_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 0.  "  DSLP0 WAKEUP EN , WTLCP_SYS_DSLP0_WAKEUP_EN" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x148++0x03
+	LINE.LONG 0x00 " AGCP Sleep Ctrl, AGCP_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 27. "       DOZE SLEEP , AGCP_SYS_DOZE_SLEEP" "%d..."
+	BITFLD.LONG 0x00 26. "   FRC DOZE SLEEP , AGCP_SYS_FORCE_DOZE_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25. "       DEEP SLEEP , AGCP_SYS_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 24. "   FRC DEEP SLEEP , AGCP_SYS_FORCE_DEEP_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 14. "     LIGHT SLEEP0 , AGCP_SYS_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 13. " FRC LIGHT SLEEP0 , AGCP_SYS_FORCE_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 12. "  LSLP0 WAKEUP EN , AGCP_SYS_LSLP0_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.  "     PDEEP SLEEP0 , AGCP_SYS_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 1.  " FRC PDEEP SLEEP0 , AGCP_SYS_FORCE_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 0.  "  DSLP0 WAKEUP EN , AGCP_SYS_DSLP0_WAKEUP_EN" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x14C++0x03
+	LINE.LONG 0x00 " PUBCP Sleep Ctrl, PUBCP_SYS_SLEEP_CTRL "
+	BITFLD.LONG 0x00 27. "       DOZE SLEEP , PUBCP_SYS_DOZE_SLEEP" "%d..."
+	BITFLD.LONG 0x00 26. "   FRC DOZE SLEEP , PUBCP_SYS_FORCE_DOZE_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 25. "       DEEP SLEEP , PUBCP_SYS_DEEP_SLEEP" "%d..."
+	BITFLD.LONG 0x00 24. "   FRC DEEP SLEEP , PUBCP_SYS_FORCE_DEEP_SLEEP" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 14. "     LIGHT SLEEP0 , PUBCP_SYS_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 13. " FRC LIGHT SLEEP0 , PUBCP_SYS_FORCE_LIGHT_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 12. "  LSLP0 WAKEUP EN , PUBCP_SYS_LSLP0_WAKEUP_EN" "%d..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.  "     PDEEP SLEEP0 , PUBCP_SYS_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 1.  " FRC PDEEP SLEEP0 , PUBCP_SYS_FORCE_PUB_DEEP_SLEEP0" "%d..."
+	BITFLD.LONG 0x00 0.  "  DSLP0 WAKEUP EN , PUBCP_SYS_DSLP0_WAKEUP_EN" "%d..."
+
+	TEXTLINE ""
+	RGROUP.LONG 0x254++0x0F
+	LINE.LONG 0x00 " BIA WAKEUP SOURCE, BASEIA_WAKEUP_SOURCE_EN0 "
+	LINE.LONG 0x04 " , BASEIA_WAKEUP_SOURCE_EN1 "
+	LINE.LONG 0x08 " , BASEIA_WAKEUP_SOURCE_EN2 "
+	LINE.LONG 0x0C " , BASEIA_WAKEUP_SOURCE_EN3 "
+
+	TEXTLINE ""
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x350000)
+	RGROUP.LONG 0x04++0x04
+	LINE.LONG 0x00 " AP INTC RAW STS, AP INTC0 INT_IRQ_RAW_STS "
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x360000)
+	RGROUP.LONG 0x04++0x04
+	LINE.LONG 0x00 " , AP INTC1 INT_IRQ_RAW_STS "
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x370000)
+	RGROUP.LONG 0x04++0x04
+	LINE.LONG 0x00 " , AP INTC2 INT_IRQ_RAW_STS "
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x380000)
+	RGROUP.LONG 0x04++0x04
+	LINE.LONG 0x00 " , AP INTC3 INT_IRQ_RAW_STS "
+
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2C0000)
+	TEXTLINE ""
+	GROUP.LONG 0xB0++0x07 "MPLL0 LP"
+	TEXTLINE ""
+	LINE.LONG 0x00 " CTRL0, CTRL0 "
+	BITFLD.LONG 0x00 4.--19. "         PWR_TIME1 , Timer - Control MPLL pwr state FSM interval" "     0x0,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.      " PWR_SEQ_CTL , MPLL power sequence control" "Timer,Status&Timer"
+	BITFLD.LONG 0x00 1.      "  RESET , MPLL reset when exit power gating status" "NoReset,Reset"
+	BITFLD.LONG 0x00 0.      "  PWR_GATE , MPLL power gating control" "Not Gate,Gate"
+	LINE.LONG 0x04 " PWR_TIME0, CTRL1 "
+
+	GROUP.LONG 0xB8++0x07 "MPLL1 LP"
+		COPY
+
+	GROUP.LONG 0xC0++0x07 "MPLL2 LP"
+		COPY
+
+	RGROUP.LONG 0xD0++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " FENCING_LOCK_BYP, FENCING_LOCK_BYP "
+	BITFLD.LONG 0x00 14. "    AP_SYS_M1 , AP_SYS_M1_FENCING_LOCK_BYP "
+	BITFLD.LONG 0x00 13. "    AP_SYS_M0 , AP_SYS_M0_FENCING_LOCK_BYP "
+	BITFLD.LONG 0x00 12. "  AGCP_SYS_F1 , AGCP_SYS_FENCING1_LOCK_BYP "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 11. " WTLCP_SYS_F1 , WTLCP_SYS_FENCING1_LOCK_BYP "
+	BITFLD.LONG 0x00 10. "    AP_SYS_F1 , AP_SYS_FENCING1_LOCK_BYP "
+	BITFLD.LONG 0x00 9.  "   CAM_SYS_F1 , CAM_SYS_FENCING1_LOCK_BYP "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.  "   VSP_SYS_F1 , VSP_SYS_FENCING1_LOCK_BYP "
+	BITFLD.LONG 0x00 7.  "   GPU_TOP_F1 , GPU_TOP_FENCING1_LOCK_BYP "
+	BITFLD.LONG 0x00 6.  " PUBCP_SYS_F0 , PUBCP_SYS_FENCING0_LOCK_BYP "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 5.  "  AGCP_SYS_F0 , AGCP_SYS_FENCING0_LOCK_BYP "
+	BITFLD.LONG 0x00 4.  " WTLCP_SYS_F0 , WTLCP_SYS_FENCING0_LOCK_BYP "
+	BITFLD.LONG 0x00 3.  "    AP_SYS_F0 , AP_SYS_FENCING0_LOCK_BYP "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 2.  "   CAM_SYS_F0 , CAM_SYS_FENCING0_LOCK_BYP "
+	BITFLD.LONG 0x00 1.  "   VSP_SYS_F0 , VSP_SYS_FENCING0_LOCK_BYP "
+	BITFLD.LONG 0x00 0.  "   GPU_TOP_F0 , GPU_TOP_FENCING0_LOCK_BYP "
+
+	RGROUP.LONG 0xD4++0x03 "FENCING0 CTRL"
+	TEXTLINE ""
+	LINE.LONG 0x00 " STATE, FENCING0_CTRL_STATE "
+	BITFLD.LONG 0x00 28.--31. " AP_SYS_M0 , AP_SYS_M0_FENCING_CTRL_STATE "
+	BITFLD.LONG 0x00 24.--27. " PUBCP_SYS , PUBCP_SYS_FENCING0_CTRL_STATE "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 20.--23. "  AGCP_SYS , AGCP_SYS_FENCING0_CTRL_STATE "
+	BITFLD.LONG 0x00 16.--19. " WTLCP_SYS , WTLCP_SYS_FENCING0_CTRL_STATE "
+	BITFLD.LONG 0x00 12.--15. "    AP_SYS , AP_SYS_FENCING0_CTRL_STATE "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.--11.  "   CAM_SYS , CAM_SYS_FENCING0_CTRL_STATE "
+	BITFLD.LONG 0x00 4.--7.   "   VSP_SYS , VSP_SYS_FENCING0_CTRL_STATE "
+	BITFLD.LONG 0x00 0.--3.   "   GPU_TOP , GPU_TOP_FENCING0_CTRL_STATE "
+
+	RGROUP.LONG 0xD8++0x03 "FENCING1 CTRL"
+	TEXTLINE ""
+	LINE.LONG 0x00 " STATE, FENCING1_CTRL_STATE "
+	BITFLD.LONG 0x00 20.--23. " AP_SYS_M1 , AP_SYS_M1_FENCING_CTRL_STATE "
+	BITFLD.LONG 0x00 16.--19. " WTLCP_SYS , WTLCP_SYS_FENCING1_CTRL_STATE "
+	BITFLD.LONG 0x00 12.--15. "    AP_SYS , AP_SYS_FENCING1_CTRL_STATE "
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 8.--11.  "   CAM_SYS , CAM_SYS_FENCING1_CTRL_STATE "
+	BITFLD.LONG 0x00 4.--7.   "   VSP_SYS , VSP_SYS_FENCING1_CTRL_STATE "
+	BITFLD.LONG 0x00 0.--3.   "   GPU_TOP , GPU_TOP_FENCING1_CTRL_STATE "
+
+TREE.END
+; ############################ END OF PMU ############################
+
+; ############################ START OF BIA ############################
+TREE "DVFS Info"
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x270000)
+	RGROUP.LONG 0xA0++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " DVFS Code, BIA_DVFS_DEBUG_CODE "
+	BITFLD.LONG 0x00 6.--11.   " M0 USE , CPU0_USE_CODE" "ShutDown,,,,,,,,,,,2184MHz,,,,,,,2340MHz,,,,,,,1404MHz,1092MHz,,,1716MHz,,,,,,,2496MHz,,1248MHz,,,,936MHz,780MHz,,2028MHz,,624MHz,,,,,,,1560MHz,1872MHz,,,,,312MHz,%x..."
+	BITFLD.LONG 0x00 0.--5.    " M0 REQ , CPU0_REQ_CODE" "ShutDown,,,,,,,,,,,2184MHz,,,,,,,2340MHz,,,,,,,1404MHz,1092MHz,,,1716MHz,,,,,,,2496MHz,,1248MHz,,,,936MHz,780MHz,,2028MHz,,624MHz,,,,,,,1560MHz,1872MHz,,,,,312MHz,%x..."
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 18.--23.  " M1 USE , CPU1_USE_CODE" "ShutDown,,,,,,,,,,,2184MHz,,,,,,,2340MHz,,,,,,,1404MHz,1092MHz,,,1716MHz,,,,,,,2496MHz,,1248MHz,,,,936MHz,780MHz,,2028MHz,,624MHz,,,,,,,1560MHz,1872MHz,,,,,312MHz,%x..."
+	BITFLD.LONG 0x00 12.--17.  " M1 REQ , CPU1_REQ_CODE" "ShutDown,,,,,,,,,,,2184MHz,,,,,,,2340MHz,,,,,,,1404MHz,1092MHz,,,1716MHz,,,,,,,2496MHz,,1248MHz,,,,936MHz,780MHz,,2028MHz,,624MHz,,,,,,,1560MHz,1872MHz,,,,,312MHz,%x..."
+
+	RGROUP.LONG 0xA4++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " DVFS BUS, BIA_DVFS_DEBUG_BUS "
+	BITFLD.LONG 0x00 25.      "      M0 LOCK , CPUCLK0's LOCK" 
+	BITFLD.LONG 0x00 24.      "  Re-Lock REQ , CPUCLK0's RELOCK REQ"
+	BITFLD.LONG 0x00 23.      " MPLL0 ENABLE , MPLL0's ENABLE"
+	BITFLD.LONG 0x00 22.      " MPLL0 STATUS , MPLL0's STATUS"
+	BITFLD.LONG 0x00 21.      "   MPLL0 LOCK , MPLL0's LOCK"
+	BITFLD.LONG 0x00 16.--20. "    FSM_STATE , DVFS 0 FSM_STATE"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x00 9.       "      M1 LOCK , CPUCLK1's LOCK" 
+	BITFLD.LONG 0x00 8.       "  Re-Lock REQ , CPUCLK1's RELOCK REQ"
+	BITFLD.LONG 0x00 7.       " MPLL1 ENABLE , MPLL1's ENABLE"
+	BITFLD.LONG 0x00 6.       " MPLL1 STATUS , MPLL1's STATUS"
+	BITFLD.LONG 0x00 5.       "   MPLL1 LOCK , MPLL1's LOCK"
+	BITFLD.LONG 0x00 0.--4.   "    FSM_STATE , DVFS 1 FSM_STATE"
+
+	RGROUP.LONG 0xCC++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " DVFS INT, BIA_DVFS_INT_RAW "
+	BITFLD.LONG 0x00 1.      "      M1 BADCODE , INT_DVFS1_BADCODE_RAW" 
+	BITFLD.LONG 0x00 0.      "      M0 BADCODE , INT_DVFS0_BADCODE_RAW" 
+
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x4B0000)
+	RGROUP.LONG 0x00++0x03 "M0 Configure"
+	TEXTLINE ""
+	LINE.LONG 0x00 " VOLT_MAP_CONFIG, VOLT_MAP_CONFIG "
+	BITFLD.LONG 0x00 6.       "  DVFS ADI EN , REG DVFS PWD ADI EN" 
+	BITFLD.LONG 0x00 5.       "  DVFS PWD EN , REG DVFS PWD EN" 
+	RGROUP.LONG 0x04++0x03 "M0 VID"
+	TEXTLINE ""
+	LINE.LONG 0x00 " VOLT_MAP_STATUS, VOLT_MAP_STATUS "
+	BITFLD.LONG 0x00 0.--2.       "  DVFS CODE , REG VOLTAGE CODE" 
+
+	RGROUP.LONG 0x20++0x2F "M0 VID TABLE"
+	TEXTLINE ""
+	LINE.LONG 0x00 " VOLT 0, VOLT_MAP_ADI_MAP_0 "
+	LINE.LONG 0x04 " VOLT 1, VOLT_MAP_ADI_MAP_1 "
+	LINE.LONG 0x08 " VOLT 2, VOLT_MAP_ADI_MAP_2 "
+	LINE.LONG 0x0C " VOLT 3, VOLT_MAP_ADI_MAP_3 "
+	LINE.LONG 0x10 " VOLT 4, VOLT_MAP_ADI_MAP_4 "
+	LINE.LONG 0x14 " VOLT 5, VOLT_MAP_ADI_MAP_5 "
+	LINE.LONG 0x18 " VOLT 6, VOLT_MAP_ADI_MAP_6 "
+	LINE.LONG 0x1C " VOLT 7, VOLT_MAP_ADI_MAP_7 "
+
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x4C0000)
+	RGROUP.LONG 0x00++0x03 "M1 Configure"
+		COPY 3
+
+	RGROUP.LONG 0x04++0x03 "M1 VID"
+		COPY 3
+
+	RGROUP.LONG 0x20++0x2F "M1 VID TABLE"
+		COPY 3
+
+TREE.END
+
+BASE &MEM_TYPE:(&AON_BASE_ADDR+0x2E0000)
+TREE "BOOT Info"
+	RGROUP.LONG 0x360++0x03
+	TEXTLINE ""
+	LINE.LONG 0x00 " BOOT Cause, BIA_BOOT_CAUSE_FLAG "
+	BITFLD.LONG 0x00 0.--2.   " BOOT CAUSE , BIA_BOOT_CAUSE_FLAG" "Cood-Boot,Exit-S3,BIA WDG,SoC Soft,BADCODE..."
+
+	RGROUP.LONG 0x3270++0x0F
+	TEXTLINE ""
+	LINE.LONG 0x08 " BIA DAT1, BIA DAT1 "
+	LINE.LONG 0x0C " BIA DAT2, BIA DAT2 "
+
+	RGROUP.LONG 0x3024++0x0F "Reset Monitor"
+	TEXTLINE ""
+	LINE.LONG 0x00 "    WDG_RST_FLAG, WDG_RST_MONITOR "
+	BITFLD.LONG 0x00 0.   "  SEC , SEC_WDG_RST_FLAG"
+	BITFLD.LONG 0x00 1.   "   AP , AP_WDG_RST_FLAG"
+	BITFLD.LONG 0x00 2.   " AGCP , AGCP_WDG_RST_FLAG"
+	BITFLD.LONG 0x00 3.   "   TG , WTLCP_TG_WDG_RST_FLAG"
+	BITFLD.LONG 0x00 4.   "  LTE , WTLCP_LTE_WDG_RST_FLAG"
+	BITFLD.LONG 0x00 5.   "  PCP , PCP_WDG_RST_FLAG"
+	LINE.LONG 0x04 " PMU_RST_MONITOR, PMU_RST_MONITOR "
+	LINE.LONG 0x08 " THM_RST_MONITOR, THM_RST_MONITOR "
+	LINE.LONG 0x0C "  AP_RST_MONITOR, AP_RST_MONITOR "
+
+	RGROUP.LONG 0x003C++0x07 "DCXO_LC"
+	TEXTLINE ""
+	LINE.LONG 0x00 " Flag, DCXO_LC_REG0 "
+	BITFLD.LONG 0x00 8.   "  FLAG , DCXO_LC_FLAG"
+	LINE.LONG 0x04 " Count, DCXO_LC_REG0 "
+	
+TREE.END
+
+TREE "PMIC Info, **NOTE** DO NOT OPEN IT WHEN SYSTEM IS RUNNING"
+SGROUP "PMIC"
+	VARX 0x00 %l ADI.READ(0x8C00)
+	TEXTLINE ""
+	LINE.LONG 0x00 " CHIPID LOW , PMIC CHIPID LOW"
+	VARX 0x04 %l ADI.READ(0x8C04)
+	LINE.LONG 0x04 " CHIPID HIGH , PMIC CHIPID HIGH"
+	VARX 0x08 %l ADI.READ(0x8C54)
+	TEXTLINE ""
+	LINE.LONG 0x08 " DCDCCPU0 , DCDC_ARM0_VOL"
+	BITFLD.LONG 0x08 5.--9.   "  CTRL , DCDC_ARM0_CTRL"
+	BITFLD.LONG 0x08 0.--4.   "  CAL , DCDC_ARM0_CAL"
+	VARX 0x0C %l ADI.READ(0x8C64)
+	TEXTLINE ""
+	LINE.LONG 0x0C " DCDCCPU1 , DCDC_ARM1_VOL"
+	BITFLD.LONG 0x0C 5.--9.   "  CTRL , DCDC_ARM1_CTRL"
+	BITFLD.LONG 0x0C 0.--4.   "  CAL , DCDC_ARM1_CAL"
+
+	VARX 0x10 %l ADI.READ(0x8C28)
+	TEXTLINE ""
+	LINE.LONG 0x10 " SW PD , POWER_PD_SW"
+	BITFLD.LONG 0x10 13.   "  DCXO , LDO_DCXO_PD"
+	BITFLD.LONG 0x10 12.   "  SRAM , LDO_SRAM_PD_SW"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 11.   "    RF , DCDC_RF_PD"
+	BITFLD.LONG 0x10 10.   "   EMM , DCDC_EMM_PD"
+	BITFLD.LONG 0x10 9.    " CLK6M , DCDC_TOPCLK6M_PD"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 8.    "   GEN , DCDC_GEN_PD"
+	BITFLD.LONG 0x10 7.    "   MEM , DCDC_MEM_PD"
+	BITFLD.LONG 0x10 6.    "  CORE , DCDC_CORE_PD"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 5.    "   GPU , DCDC_GPU_PD_SW"
+	BITFLD.LONG 0x10 4.    "  CPU0 , DCDC_ARM0_PD"
+	BITFLD.LONG 0x10 3.    "  CPU1 , DCDC_ARM1_PD"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x10 2.    "  AV18 , LDO_AVDD18_PD"
+	BITFLD.LONG 0x10 1.    "  VD28 , LDO_VDD28_PD"
+	BITFLD.LONG 0x10 0.    "    BG , BG_PD"
+
+TREE "PMIC SLP SETTING"
+SGROUP "Sleep"
+	VARX 0x1C %l ADI.READ(0x8DF0)
+	TEXTLINE ""
+	LINE.LONG 0x1C " SLP CTRL , SLP_CTRL"
+	BITFLD.LONG 0x1C 3.    " XTL , LDO_XTL_EN: LDO and DCDC can be controlled by external device if this bit is set"
+	BITFLD.LONG 0x1C 2.    "  LP , SLP_BG_LP_EN: Bandgap low power mode enable in deep sleep mode"
+	BITFLD.LONG 0x1C 1.    "  IO , SLP_IO_EN: IO PAD sleep enable in deep sleep mode"
+	BITFLD.LONG 0x1C 0.    "  PD , SLP_LDO_PD_EN: All LDO and DCDC power down enable in deep sleep mode"
+
+	VARX 0x20 %l ADI.READ(0x8DF4)
+	TEXTLINE ""
+	LINE.LONG 0x20 " SLP DCDC , SLP_DCDC_PD_CTRL"
+	BITFLD.LONG 0x20 9.    "    GPU_PD , SLP_DCDCGPU_PD_EN"
+	BITFLD.LONG 0x20 8.    "  GPU_DROP , SLP_DCDCGPU_DROP_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 7.    " CORE_DROP , SLP_DCDCCORE_DROP_EN"
+	BITFLD.LONG 0x20 6.    "     RF_PD , SLP_DCDCRF_PD_EN"
+	BITFLD.LONG 0x20 3.    "    WPA_PD , SLP_DCDCWPA_PD_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x20 2.    "   ARM0_PD , SLP_DCDCARM0_PD_EN"
+	BITFLD.LONG 0x20 1.    "   ARM1_PD , SLP_DCDCARM1_PD_EN"
+	BITFLD.LONG 0x20 0.    "    MEM_PD , SLP_DCDCMEM_PD_EN"
+
+	VARX 0x24 %l ADI.READ(0x8DF8)
+	TEXTLINE ""
+	LINE.LONG 0x24 " SLP LDO0 , SLP_LDO_PD_CTRL0"
+	BITFLD.LONG 0x24 15.    "         RF0 , SLP_LDORF0_PD_EN"
+	BITFLD.LONG 0x24 14.    "    EMMCCore , SLP_LDOEMMCCORE_PD_EN"
+	BITFLD.LONG 0x24 13.    "        DCXO , SLP_LDODCXO_PD_EN"
+	BITFLD.LONG 0x24 12.    "      WIFIPA , SLP_LDOWIFIPA_PD_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x24 11.    "       VDD28 , SLP_LDOVDD28_PD_EN"
+	BITFLD.LONG 0x24 10.    "      SDCORE , SLP_LDOSDCORE_PD_EN"
+	BITFLD.LONG 0x24 9.     "        SDIO , SLP_LDOSDIO_PD_EN"
+	BITFLD.LONG 0x24 8.     "       USB33 , SLP_LDOUSB33_PD_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x24 7.     "      CAMMOT , SLP_LDOCAMMOT_PD_EN"
+	BITFLD.LONG 0x24 6.     "       CAMIO , SLP_LDOCAMIO_PD_EN"
+	BITFLD.LONG 0x24 5.     "       CAMD0 , SLP_LDOCAMD0_PD_EN"
+	BITFLD.LONG 0x24 4.     "       CAMD1 , SLP_LDOCAMD1_PD_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x24 3.     "       CAMA0 , SLP_LDOCAMA0_PD_EN"
+	BITFLD.LONG 0x24 2.     "       CAMA1 , SLP_LDOCAMA1_PD_EN"
+	BITFLD.LONG 0x24 1.     "        VLDO , SLP_VLDO_PD_EN"
+	BITFLD.LONG 0x24 0.     "        SIM1 , SLP_LDOSIM1_PD_EN"
+
+	VARX 0x28 %l ADI.READ(0x8DFC)
+	TEXTLINE ""
+	LINE.LONG 0x28 " SLP LDO1 , SLP_LDO_PD_CTRL1"
+	BITFLD.LONG 0x28 3.     "         CON , SLP_LDOCON_PD_EN"
+	BITFLD.LONG 0x28 2.     "        SIM0 , SLP_LDOSIM0_PD_EN"
+	BITFLD.LONG 0x28 1.     "      AVDD18 , SLP_LDOAVDD18_PD_EN"
+	BITFLD.LONG 0x28 0.     "        SRAM , SLP_LDOSRAM_PD_EN"
+
+
+	VARX 0x2C %l ADI.READ(0x8E3C)
+	VARX 0x30 %l ADI.READ(0x8E40)
+	VARX 0x34 %l ADI.READ(0x8E44)
+	VARX 0x38 %l ADI.READ(0x8E48)
+	TEXTLINE ""
+	LINE.LONG 0x2C " XTL_EN0 , DCDC_XTL_EN0"
+	BITFLD.LONG 0x2C 15.     "DCDC_CORE XTL0 , DCDC_CORE_EXT_XTL0_EN"
+	BITFLD.LONG 0x2C 14.     " XTL1 , DCDC_CORE_EXT_XTL1_EN"
+	BITFLD.LONG 0x2C 13.     " XTL2 , DCDC_CORE_EXT_XTL2_EN"
+	BITFLD.LONG 0x2C 12.     " XTL3 , DCDC_CORE_EXT_XTL3_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x2C 3.     " DCDC_GPU XTL0 , DCDC_GPU_EXT_XTL0_EN"
+	BITFLD.LONG 0x2C 2.     " XTL1 , DCDC_GPU_EXT_XTL1_EN"
+	BITFLD.LONG 0x2C 1.     " XTL2 , DCDC_GPU_EXT_XTL2_EN"
+	BITFLD.LONG 0x2C 0.     " XTL3 , DCDC_GPU_EXT_XTL3_EN"
+	LINE.LONG 0x30 " XTL_EN1 , DCDC_XTL_EN1"
+	BITFLD.LONG 0x30 15.     "DCDC_ARM0 XTL0 , DCDC_ARM0_EXT_XTL0_EN"
+	BITFLD.LONG 0x30 14.     " XTL1 , DCDC_ARM0_EXT_XTL1_EN"
+	BITFLD.LONG 0x30 13.     " XTL2 , DCDC_ARM0_EXT_XTL2_EN"
+	BITFLD.LONG 0x30 12.     " XTL3 , DCDC_ARM0_EXT_XTL3_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x30 3.     "DCDC_ARM1 XTL0 , DCDC_ARM1_EXT_XTL0_EN"
+	BITFLD.LONG 0x30 2.     " XTL1 , DCDC_ARM1_EXT_XTL1_EN"
+	BITFLD.LONG 0x30 1.     " XTL2 , DCDC_ARM1_EXT_XTL2_EN"
+	BITFLD.LONG 0x30 0.     " XTL3 , DCDC_ARM1_EXT_XTL3_EN"
+	LINE.LONG 0x34 " XTL_EN2 , DCDC_XTL_EN2"
+	BITFLD.LONG 0x34 15.     " DCDC_MEM XTL0 , DCDC_MEM_EXT_XTL0_EN"
+	BITFLD.LONG 0x34 14.     " XTL1 , DCDC_MEM_EXT_XTL1_EN"
+	BITFLD.LONG 0x34 13.     " XTL2 , DCDC_MEM_EXT_XTL2_EN"
+	BITFLD.LONG 0x34 12.     " XTL3 , DCDC_MEM_EXT_XTL3_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x34 3.     " DCDC_GEN XTL0 , DCDC_GEN_EXT_XTL0_EN"
+	BITFLD.LONG 0x34 2.     " XTL1 , DCDC_GEN_EXT_XTL1_EN"
+	BITFLD.LONG 0x34 1.     " XTL2 , DCDC_GEN_EXT_XTL2_EN"
+	BITFLD.LONG 0x34 0.     " XTL3 , DCDC_GEN_EXT_XTL3_EN"
+	LINE.LONG 0x38 " XTL_EN3 , DCDC_XTL_EN3"
+	BITFLD.LONG 0x38 15.     "  DCDC_RF XTL0 , DCDC_RF_EXT_XTL0_EN"
+	BITFLD.LONG 0x38 14.     " XTL1 , DCDC_RF_EXT_XTL1_EN"
+	BITFLD.LONG 0x38 13.     " XTL2 , DCDC_RF_EXT_XTL2_EN"
+	BITFLD.LONG 0x38 12.     " XTL3 , DCDC_RF_EXT_XTL3_EN"
+	TEXTLINE "                                "
+	BITFLD.LONG 0x38 3.     " DCDC_WPA XTL0 , DCDC_WPA_EXT_XTL0_EN"
+	BITFLD.LONG 0x38 2.     " XTL1 , DCDC_WPA_EXT_XTL1_EN"
+	BITFLD.LONG 0x38 1.     " XTL2 , DCDC_WPA_EXT_XTL2_EN"
+	BITFLD.LONG 0x38 0.     " XTL3 , DCDC_WPA_EXT_XTL3_EN"
+	
+TREE.END
+
+TREE.END
+
+
+; ############################ END OF BIA ############################
+
+

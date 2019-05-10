@@ -1,0 +1,93 @@
+;CONFIG 16. 8.
+WIDTH 15.
+ENTRY &BASE=0x83010000
+BASE EDAP:(&BASE)
+
+GROUP.LONG 0x20200++0x0F "PC Sample Low"
+TEXTLINE ""
+LINE.LONG 0x00 " EDPCSRlo, External Debug Program Counter Sample Register "
+LINE.LONG 0x0C " EDPCSRhi, External Debug Program Counter Sample Register "
+
+GROUP.LONG 0x88++0x03
+LINE.LONG 0x00 " EDSCR, External Debug Status and Control Register "
+RBITFLD.LONG 0x00 0.--5.   "  STATUS , Debug status flags" ",Restarting,Non-debug,,,,,Breakpoint,,,,,,,,,,,,External Debug,,,,,,,,Halting step(normal),,,,Halting step(exclusive),,,,OS Unlock Catch,,,,Reset Catch,,,,Watchpoint,,,,HLT instuction,,,,Software access,,,,Exception Catch,,,,Halting step(no syndrome),%x..."
+
+GROUP.LONG 0x00++0x3F "Dump"
+TEXTLINE ""
+LINE.LONG 0x24 " Dump, Dump "
+BUTTON "Dump" "D.Dump EDAP:(&BASE) /SL"
+
+
+GROUP.LONG 0x300++0x03 "OS Lock Access Register"
+TEXTLINE ""
+HIDE.LONG 0x00 " OSLAR_EL1, OS Lock Access Register "
+BUTTON "Unlock" "D.S EDAP:(&BASE+0x300) %LE %Long 0"
+BUTTON "Lock" "D.S EDAP:(&BASE+0x300) %LE %Long 1"
+
+
+TREE "Status and Control"
+GROUP.LONG 0x88++0x03 "External Debug Status and Control Register"
+TEXTLINE ""
+LINE.LONG 0x00 " EDSCR, External Debug Status and Control Register "
+TEXTLINE "                   ------Non-debug Don't Care------"
+TEXTLINE "                   "
+RBITFLD.LONG 0x00 28.      " ITO , ITR overrun"
+RBITFLD.LONG 0x00 24.      " ITE , ITR empty"
+RBITFLD.LONG 0x00 7.       "   A , System Error interrupt pending"
+RBITFLD.LONG 0x00 18.      "  NS , Non-secure status" "Secure, Non-secure"
+TEXTLINE "                   "
+RBITFLD.LONG 0x00 8.--9.   "  EL , Exception level"
+RBITFLD.LONG 0x00 10.--13. "  RW , Exception level Execution state" "All AArch32,All AArch32,All AArch32,All AArch32,All AArch32,All AArch32,All AArch32,All AArch32,EL0&1&2 AArch32,EL0&1&2 AArch32,EL0&1&2 AArch32,EL0&1&2 AArch32,EL0&1 AArch32,EL0&1 AArch32,EL0 AArch32,AArch64"
+TEXTLINE ""
+TEXTLINE "                   ------Non-debug Care------"
+TEXTLINE "                   "
+RBITFLD.LONG 0x00 30.      "  RXfull , DRXfull"
+RBITFLD.LONG 0x00 29.      "  TXfull , DRXfull"
+RBITFLD.LONG 0x00 27.      "     RXO , DTRRX overrun"
+RBITFLD.LONG 0x00 26.      "     TXU , DTRTX underrun"
+TEXTLINE "                   "
+RBITFLD.LONG 0x00 25.      " PipeAdv , Pipeline advance"
+RBITFLD.LONG 0x00 21.      "     TDA , Traps accesses"
+RBITFLD.LONG 0x00 16.      "     SDD , Secure debug disabled"
+BITFLD.LONG 0x00 14.       "     HDE , Halting debug enable"
+RBITFLD.LONG 0x00 6.       "     ERR , Cumulative error flag"
+TEXTLINE "                   "
+BITFLD.LONG 0x00 22.--23.  "  INTdis , Interrupt disable" "Do not disable, Disable to Non-secure EL1, Disable to Non-secure EL1&2(S EL1), Disable to Non-secure EL1&2 (All)"
+TEXTLINE "                   "
+RBITFLD.LONG 0x00 0.--5.   "  STATUS , Debug status flags" ",Restarting,Non-debug,,,,,Breakpoint,,,,,,,,,,,,External Debug,,,,,,,,Halting step(normal),,,,Halting step(exclusive),,,,OS Unlock Catch,,,,Reset Catch,,,,Watchpoint,,,,HLT instuction,,,,Software access,,,,Exception Catch,,,,Halting step(no syndrome),%x..."
+
+
+GROUP.LONG 0x90++0x03 "External Debug Reserve Control Register"
+TEXTLINE ""
+LINE.LONG 0x00 " EDRCR, External Debug Reserve Control Register "
+BITFLD.LONG 0x00 4. " CBRRQ , Allow imprecise entry to Debug state"
+BITFLD.LONG 0x00 3. "  CSPA , Clear Sticky Pipeline Advance"
+BITFLD.LONG 0x00 2. "   CSE , Clear Sticky Error"
+
+
+
+GROUP.LONG 0x310++0x03 "External Debug Power/Reset Control Register"
+TEXTLINE ""
+LINE.LONG 0x00 " EDPRCR, External Debug Power/Reset Control Register "
+BITFLD.LONG 0x00 3. "   COREPURQ  , Core powerup request"
+BITFLD.LONG 0x00 1. "   CWRR      , Warm reset request"
+BITFLD.LONG 0x00 0. "   CORENPDRQ , Core no powerdown request"
+
+RGROUP.LONG 0x314++0x03 "External Debug Processor Status Register"
+TEXTLINE ""
+LINE.LONG 0x00 " EDPRSR, External Debug Processor Status Register "
+BITFLD.LONG 0x00 11. "   SDR    , Sticky debug restart"
+BITFLD.LONG 0x00 10. "   SPMAD  , Sticky EPMAD error"
+BITFLD.LONG 0x00 9.  "   EPMAD  , External Performance Monitors access disable status"
+BITFLD.LONG 0x00 8.  "   SDAD   , Sticky EDAD error"
+BITFLD.LONG 0x00 7.  "   EDAD   , External debug access disable status"
+BITFLD.LONG 0x00 6.  "   DLK    , OS Double Lock status bit"
+TEXTLINE "                        "
+BITFLD.LONG 0x00 5.  "   OSLK   , OS lock status bit"
+BITFLD.LONG 0x00 4.  "   HALTED , Halted status bit"
+BITFLD.LONG 0x00 3.  "   SR     , Sticky core reset status bit"
+BITFLD.LONG 0x00 2.  "   R      , PE reset status bit"
+BITFLD.LONG 0x00 1.  "   SPD    , Sticky core powerdown status bit"
+BITFLD.LONG 0x00 0.  "   PU     , Core powerup status bit"
+
+TREE.END

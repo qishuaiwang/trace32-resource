@@ -1,0 +1,42 @@
+system.mode down
+global &sys_sel
+local &mem_tpye &CUR_DIR
+
+&mem_tpye="EAXI"
+local 
+&CUR_DIR=os.ppd()
+
+
+if ("&sys_sel"=="os_sys")
+(
+	
+	system.Option EnReset off
+	system.Option TRST off
+
+)
+else
+(
+	system.reset
+	system.Option EnReset on
+	system.Option ResBreak off
+	system.option waitReset on
+) 
+
+system.jtagclock 10mhz
+system.cpu CORTEXA7 
+system.config MEMORYACCESSPORT		0
+system.config DEBUGACCESSPORT 		1
+system.config AXIACCESSPORT		0
+system.config AHBACCESSPORT		0
+system.config APBACCESSPORT		1
+
+system.multicore SWDP ON ;2 Wire JTAG switch
+system.cpuaccess enable
+;system.memaccess dap
+sys.Mode.prepare
+
+ENDDO
+
+
+
+

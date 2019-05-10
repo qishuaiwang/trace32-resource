@@ -1,0 +1,118 @@
+;---------------------------------------------------------------------------------------
+; Menu reprogram, add customized bottons and menus
+;---------------------------------------------------------------------------------------
+GLOBAL &g_proj_dir &os_sel
+ENTRY &os_sel
+LOCAL &temp
+&temp=OS.PPD()
+&g_proj_dir="&temp"
+DO "&g_proj_dir/GLB_CONFIG.cmm"
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+ELSE IF "&os_sel"=="swd"
+(
+	DO "&g_proj_dir/DEBUG/sys/&(project_sel)_SWD.cmm"
+	ENDDO
+)
+ELSE IF "&os_sel"=="ese-swd"
+(
+	DO "&g_proj_dir/DEBUG/sys/&(project_sel)_ESE_SWD.cmm"
+	ENDDO
+)
+
+
+GLOBALON CMD menuedit DO "&g_proj_dir/EDIT_CMM.cmm"
+GLOBALON CMD menusrst DO "&g_proj_dir/jtag_SRST.cmm"
+GLOBALON CMD menuap DO "&g_proj_dir/A55_A75.cmm"
+GLOBALON CMD menupcp DO "&g_proj_dir/R5.cmm"
+GLOBALON CMD menusp DO "&g_proj_dir/CM4.cmm"
+GLOBALON CMD menutl4 DO "&g_proj_dir/TL420.cmm"
+GLOBALON CMD menuddr DO "&g_proj_dir/DDR.cmm"
+GLOBALON CMD menudsp DO "&g_proj_dir/boot_dsp.cmm"
+GLOBALON CMD menuab DO "&g_proj_dir/attach.cmm"
+GLOBALON CMD menuchk DO "&g_proj_dir/DEBUG/sys/Per_Preload.cmm"
+GLOBALON CMD menulod DO "&g_proj_dir/DEBUG/sys/cmd_load.cmm"
+GLOBALON CMD menudd DO "&g_proj_dir/DEBUG/sys/unisoc_dump.cmm"
+GLOBALON CMD menure DO "&g_main_path/main.cmm"
+GLOBALON CMD menupy DO "&lib_do_Py"
+GLOBALON CMD menudbg DO "&lib_debug_bus_cfg_64"
+GLOBALON CMD menubma DO "&lib_busmon_eb_dis_all"
+GLOBALON CMD menubmb DO "&lib_busmon_addr_cfg"
+GLOBALON CMD menubmc DO "&lib_busmon_addr_scan"
+GLOBALON CMD menubmd DO "&lib_busmon_reg_read"
+GLOBALON CMD menuars DO "&g_proj_dir/DEBUG/sys/&(project_sel)_autoreg_save_dump.cmm"
+GLOBALON CMD menulnx DO "&lib_setup_linux"
+GLOBALON CMD menuese DO "&g_proj_dir/eSE.cmm"
+GLOBALON CMD menuipa DO "&g_proj_dir/IPA.cmm"
+
+MENU.RESET
+(&
+	MENU.REPROGRAM
+	(&
+		ADD
+		TOOLBAR
+		(
+			IF (CPUFAMILY()=="ARM")
+			(
+				IF (CPUIS64BIT())
+				(
+					TOOLITEM "AP A55A75 All Core" "AP,a" "menuap 8"
+					TOOLITEM "A55 C0" "C0,b" "menuap 1 0"
+				)
+				ELSE
+				(
+					TOOLITEM "PCP" "CP,a" "menupcp"
+					TOOLITEM "SP" "SP,c" "menusp"
+					TOOLITEM "eSE" "SE,b" "menuese"
+					TOOLITEM "IPA" "PA,b" "menuipa"
+				)
+				SEPARATOR
+				TOOLITEM "Attach_break" "AT,c" "menuab 0x1"
+				TOOLITEM "Attach Break Go" "BG,c" "menuab 0x2"
+				IF ("&os_sel"=="small_sys")
+				(
+					SEPARATOR
+					TOOLITEM "Reset SYS" "RS,r" "menusrst"
+					TOOLITEM "Init DDR" "DR,b" "menuddr"
+					TOOLITEM "DSP" "DP,r" "menudsp"
+				)
+				SEPARATOR
+				TOOLITEM "Check via EAXI" "CK,g" "menuchk EAXI"
+				TOOLITEM "Check via EAHB" "CA,r" "menuchk EAHB"
+				TOOLITEM "Check via CPU" "CC,b" "menuchk D"
+				SEPARATOR
+				TOOLITEM "Dump Info" "DD,r" "menudd"
+				SEPARATOR
+				IF (CPUIS64BIT())
+				(
+					TOOLITEM "Python" "PY,r" "menupy"
+				)
+			)
+			IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")
+			(
+				TOOLITEM "TGDSP" "TD,b" "menutl4 2"
+				TOOLITEM "LTEDSP" "LT,b" "menutl4 1"
+				TOOLITEM "AGDSP" "AG,r" "menutl4 3 TL420-RTL310"
+				SEPARATOR
+				TOOLITEM "Attach_break" "AT,c" "menuab 0x1"
+				TOOLITEM "Attach Break Go" "BG,c" "menuab 0x2"
+				SEPARATOR
+				TOOLITEM "Reset SYS" "RS,r" "menusrst"
+			)
+			ELSE IF (CPUFAMILY()=="CEVA-X")
+			(
+				TOOLITEM "CEVA-XM6" "XM,c" "menutl4 5 CEVA-XM6"		
+				SEPARATOR
+				TOOLITEM "Attach_break" "AT,c" "menuab 0x1"
+				TOOLITEM "Attach Break Go" "BG,c" "menuab 0x2"
+				SEPARATOR
+				TOOLITEM "Reset SYS" "RS,r" "menusrst"
+			)			
+		)
+	)
+	MENU.ReProgram "&g_proj_dir/&(project_sel).men"
+)
+ENDDO

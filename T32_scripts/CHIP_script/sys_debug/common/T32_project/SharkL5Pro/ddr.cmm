@@ -1,0 +1,22 @@
+local &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF STATE.POWER()==FALSE()
+(
+	PRINT %ERROR "Please Power up device, and then, try it again!"
+	ENDDO
+)
+
+D.S ZSD:0x327E0250 %LE %Long 0x1
+
+D.TEST 0x80000000++0xfff /RANDOM
+IF FOUND()
+	WAIT 1.MS
+	PRINT "DDR INIT Failed!"
+ELSE
+	WAIT 1.MS
+	PRINT "DDR INIT OK!"
+ENDDO
+
+
+

@@ -1,0 +1,16 @@
+GLOBAL &api_debug
+&api_debug=1
+GLOBAL &api_path
+LOCAL &temp
+&temp=OS.PPD()
+&api_path=STRing.Replace("&temp", "\", "/", 0)
+DO "&api_path/define_TAP_Network.cmm"
+GLOBALON CMD comOPS DO "&api_path/comOPS.cmm"
+GLOBALON CMD lowJTAG DO "&api_path/lowJTAG.cmm"
+GLOBALON CMD pTAP DO "&api_path/pTAP.cmm"
+GLOBALON CMD biaTAP DO "&api_path/biaTAP.cmm"
+GLOBALON CMD dapTAP DO "&api_path/dapTAP.cmm"
+GLOBALON CMD fuseTAP DO "&api_path/fuseTAP.cmm"
+GLOBAL &api_temp_path
+&api_temp_path="~~~"
+ENDDO

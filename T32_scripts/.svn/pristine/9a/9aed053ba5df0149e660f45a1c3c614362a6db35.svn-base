@@ -1,0 +1,10 @@
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+DO &CUR_DIR/iWhale2_JTAG.cmm "BIA"
+comOPS jtag_low_lock
+lowJTAG jtag_reset_tms
+DO "&CUR_DIR/orange_unlock_run.cmm" pdaj124ad4
+comOPS jtag_low_unlock
+
+ENDDO

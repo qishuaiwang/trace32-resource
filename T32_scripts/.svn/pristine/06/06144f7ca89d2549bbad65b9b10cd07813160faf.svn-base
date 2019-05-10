@@ -1,0 +1,50 @@
+IF sYmbol.EXIST(linux_banner)
+(
+	LOCAL &addr
+	&addr=ADDRESS.OFFSET(swapper_pg_dir)
+	SYStem.Mode.Down
+	SYStem.Option MMUSPACES ON
+	SYStem.Mode Attach
+	IF (&addr>0x100000000)
+	(
+		MMU.FORMAT LINUX swapper_pg_dir 0xFFFFFF8008000000--0xFFFFFF9F08000000 0x0000000080000000
+		TRANSLATION.COMMON 0xFFFFFF8000000000--0ffffffffffffffff            ; common area for kernel and processes
+	)
+	ELSE
+	(
+		MMU.FORMAT LINUX swapper_pg_dir 0xc0000000--0xc1ffffff 0x80000000
+		TRANSlation.COMMON 0xbf000000--0xffffffff              ; common area for kernel and processes
+	)
+	TRANSLATION.TableWalk ON   ; debugger uses a table walk to decode virtual addresses
+	TRANSlation.ON             ; switch on debugger(!) address translation 
+	IF CPUIS64BIT()
+	(
+		IF (CPUFAMILY()=="I386")
+		(
+			TASK.CONFIG ~~/demo/x64/kernel/linux/linux-3.x/linux3.t32
+			MENU.ReProgram ~~/demo/x64/kernel/linux/linux-3.x/linux.men
+		)
+		ELSE IF (CPUFAMILY()=="ARM")
+		(
+			IF (&addr>0x100000000)
+			(
+				TASK.CONFIG ~~/demo/arm64/kernel/linux/linux-3.x/linux3.t32
+				MENU.ReProgram ~~/demo/arm64/kernel/linux/linux-3.x/linux.men
+			)
+			ELSE
+			(
+				TASK.CONFIG ~~/demo/arm/kernel/linux/linux-3.x/linux3.t32
+				MENU.ReProgram ~~/demo/arm/kernel/linux/linux-3.x/linux.men
+			)
+		)
+	)
+	ELSE
+	(
+		TASK.CONFIG ~~/demo/arm/kernel/linux/linux-3.x/linux3.t32
+		MENU.ReProgram ~~/demo/arm/kernel/linux/linux-3.x/linux.men
+	)
+)
+ELSE
+(
+	PRINT %ERROR "Please load the vmlinux firstly!"
+)

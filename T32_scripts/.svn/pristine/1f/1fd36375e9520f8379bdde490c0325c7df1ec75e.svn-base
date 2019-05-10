@@ -1,0 +1,25 @@
+ADD
+menu "sprd.od.menu"
+(
+	menuitem "Show Matrix"
+	(
+		LOCAL &mtx_name
+		&mtx_name=track.string()
+		EXTension.OtDetect "&project_sel" 1 "&mtx_name"
+	)
+	menuitem "Show SUBSYS Matrix"
+	(
+		LOCAL &mtx_name &pos_ &subsys_name 
+		&mtx_name=track.string()
+		&pos_=STRing.SCAN("&mtx_name", "_", 0)
+		IF &pos_==-1
+		(
+			&subsys_name="&mtx_name"
+		)
+		ELSE
+		(
+			&subsys_name=STRing.MID("&mtx_name", 0, &pos_);
+		)
+		EXTension.OtDetect "&project_sel" 0 "&subsys_name"
+	)
+)

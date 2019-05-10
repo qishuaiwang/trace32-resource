@@ -1,0 +1,573 @@
+; qingwen.fang for busmon address monitor configure through DAP
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<3
+(
+	PRINT %ERROR "Please make sure Trace32 in Prepare MODE!"
+	ENDDO
+)
+
+Var.NEWGLOBAL char[6][6] \ItemSel
+Var.NEWGLOBAL int[6] \sys_order
+Var.NEWGLOBAL int[6] \dap_start_order
+Var.NEWGLOBAL int[6] \dap_end_order
+
+Var.NEWLOCAL char[6][8] \SysSel
+Var.NEWLOCAL char[6][20] \DapStartSel
+Var.NEWLOCAL char[6][20] \DapEndSel
+Var.NEWLOCAL char[6][6] \RW_Mode
+Var.NEWLOCAL char[6][15] \AddrMin
+Var.NEWLOCAL char[6][15] \AddrMax
+
+LOCAL   &default_sys &all_sys &sys_number
+LOCAL   &all_dap_sel0 &all_dap_sel1 &all_dap_sel2 &all_dap_sel3 &all_dap_sel4 &all_dap_sel5
+LOCAL   &proj_low &path_proj
+
+&proj_low=STRing.LoWeR("&project_sel")
+&path_proj=STRing.Replace("&g_proj_dir", "\", "/", 0)
+if "&proj_low"=="iwhale2"
+	&path_proj="&path_proj/sys/script"
+else
+	&path_proj="&path_proj/DEBUG/sys"
+DO "&path_proj/&(proj_low)_djtag_busmon_info.cmm"
+
+GOSUB read_busmon_cfg
+GOSUB init_interface
+
+DIALOG
+(
+  HEADER "Bus Monitor Config"
+; define dialog width by printine empty text: POS 0. 0. <width> 1.
+  POS 0. 0. 110. 2.
+  TEXT ""
+  
+  POS 1. 1. 4. 1.
+  TEXT "Sel:"
+  cbsel0: CHECKBOX "" ""
+  POS 7. 1. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL0:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 0."
+  POS 21. 1. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL0:		DYNPULLDOWN ",,," ""
+  POS 41. 1. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL0:		DYNPULLDOWN ",,," ""
+  POS 61. 1. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL0:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 1. 12. 1.
+  TEXT "Addr Min:"
+  TextA0:		EDIT "" ""
+  POS 94. 1. 12. 1.
+  TEXT "Addr Max:"
+  TextB0:		EDIT "" ""
+
+  POS 1. 4. 4. 1.
+  cbsel1: CHECKBOX "" ""
+  POS 7. 3. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL1:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 1."
+  POS 21. 3. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL1:		DYNPULLDOWN ",,," ""
+  POS 41. 3. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL1:		DYNPULLDOWN ",,," ""
+  POS 61. 3. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL1:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 3. 12. 1.
+  TEXT "Addr Min:"
+  TextA1:		EDIT "" ""
+  POS 94. 3. 12. 1.
+  TEXT "Addr Max:"
+  TextB1:		EDIT "" ""
+  
+  POS 1. 6. 4. 1.
+  cbsel2: CHECKBOX "" ""
+  POS 7. 5. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL2:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 2."
+  POS 21. 5. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL2:		DYNPULLDOWN ",,," ""
+  POS 41. 5. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL2:		DYNPULLDOWN ",,," ""
+  POS 61. 5. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL2:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 5. 12. 1.
+  TEXT "Addr Min:"
+  TextA2:		EDIT "" ""
+  POS 94. 5. 12. 1.
+  TEXT "Addr Max:"
+  TextB2:		EDIT "" ""
+  
+  POS 1. 8. 4. 1.
+  cbsel3: CHECKBOX "" ""
+  POS 7. 7. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL3:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 3."
+  POS 21. 7. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL3:		DYNPULLDOWN ",,," ""
+  POS 41. 7. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL3:		DYNPULLDOWN ",,," ""
+  POS 61. 7. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL3:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 7. 12. 1.
+  TEXT "Addr Min:"
+  TextA3:		EDIT "" ""
+  POS 94. 7. 12. 1.
+  TEXT "Addr Max:"
+  TextB3:		EDIT "" ""
+  
+  POS 1. 10. 4. 1.
+  cbsel4: CHECKBOX "" ""
+  POS 7. 9. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL4:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 4."
+  POS 21. 9. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL4:		DYNPULLDOWN ",,," ""
+  POS 41. 9. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL4:		DYNPULLDOWN ",,," ""
+  POS 61. 9. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL4:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 9. 12. 1.
+  TEXT "Addr Min:"
+  TextA4:		EDIT "" ""
+  POS 94. 9. 12. 1.
+  TEXT "Addr Max:"
+  TextB4:		EDIT "" ""
+  
+  POS 1. 12. 4. 1.
+  cbsel5: CHECKBOX "" ""
+  POS 7. 11. 10. 1.
+  TEXT "SubSys:"
+  OptionA.SEL5:		DYNPULLDOWN ",,," "GOSUB change_sys_dap_list 5."
+  POS 21. 11. 16. 1.
+  TEXT "Dap Start:"
+  OptionB.SEL5:		DYNPULLDOWN ",,," ""
+  POS 41. 11. 16. 1.
+  TEXT "Dap End:"
+  OptionC.SEL5:		DYNPULLDOWN ",,," ""
+  POS 61. 11. 10. 1.
+  TEXT "Rd/Wt:"
+  OptionD.SEL5:		PULLDOWN "Read,Write,Rd&Wt" ""
+  POS 78. 11. 12. 1.
+  TEXT "Addr Min:"
+  TextA5:		EDIT "" ""
+  POS 94. 11. 12. 1.
+  TEXT "Addr Max:"
+  TextB5:		EDIT "" ""
+
+;buttons OK (Default) and Cancel
+  POS 1. 14. 12. 1.
+  DEFBUTTON "OK" "CONTinue"
+  POS 16. 14. 12. 1.
+  BUTTON    "Cancel" "GOTO cancel"
+;define action when window is closed
+  CLOSE "GOTO cancel"
+)
+
+;set default selections
+  GOSUB refresh_cfg
+
+;STOP command halts script execution 
+  STOP
+
+;script will continue here when "OK" button is clicked
+
+;get selection
+&i=0
+while &i<6.
+(
+	&i_str=FORMAT.Decimal(1+((&i/10.)%1),&i)
+	if DIALOG.BOOLEAN(cbsel&i_str)
+		Var.set \ItemSel[&i]="[Yes]"
+    else
+		Var.set \ItemSel[&i]="[No]"
+	&temp_string=DIALOG.STRING(OptionA.SEL&i_str)
+	Var.set \SysSel[&i]="&temp_string";
+	&temp_string=DIALOG.STRING(OptionB.SEL&i_str)
+	Var.set \DapStartSel[&i]="&temp_string";
+	&temp_string=DIALOG.STRING(OptionC.SEL&i_str)
+	Var.set \DapEndSel[&i]="&temp_string";
+	&temp_string=DIALOG.STRING(OptionD.SEL&i_str)
+	Var.set \RW_Mode[&i]="&temp_string";
+	&temp_string=DIALOG.STRING(TextA&i_str)
+	Var.set \AddrMin[&i]="&temp_string";
+	&temp_string=DIALOG.STRING(TextB&i_str)
+	Var.set \AddrMax[&i]="&temp_string";
+	&i=&i+1
+)
+;close dialog window 
+  GOSUB save_busmon_cfg
+  DIALOG.END
+;print result 
+
+  DIALOG.OK Var.STRing(\ItemSel[0])+"  "+Var.STRing(\SysSel[0])+" : "+Var.STRing(\AddrMin[0])+" -- "+Var.STRing(\AddrMax[0]) Var.STRing(\ItemSel[1])+"  "+Var.STRing(\SysSel[1])+" : "+Var.STRing(\AddrMin[1])+" -- "+Var.STRing(\AddrMax[1]) Var.STRing(\ItemSel[2])+"  "+Var.STRing(\SysSel[2])+" : "+Var.STRing(\AddrMin[2])+" -- "+Var.STRing(\AddrMax[2]) Var.STRing(\ItemSel[3])+"  "+Var.STRing(\SysSel[3])+" : "+Var.STRing(\AddrMin[3])+" -- "+Var.STRing(\AddrMax[3]) Var.STRing(\ItemSel[4])+"  "+Var.STRing(\SysSel[4])+" : "+Var.STRing(\AddrMin[4])+" -- "+Var.STRing(\AddrMax[4]) Var.STRing(\ItemSel[5])+"  "+Var.STRing(\SysSel[5])+" : "+Var.STRing(\AddrMin[5])+" -- "+Var.STRing(\AddrMax[5])
+   
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	DO "&cur_path/DJTAG_via_T32_edk.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+)
+
+run_djtag DJ_switch 0xFFFFFFFF
+
+&BUSMON_CHN_INT=0x8
+&BUSMON_BUS_STATUS=0x26
+&MATCH_USER=0x28
+
+LOCAL &ssys &dap &chan &retval &rw_mode &addr_min &addr_max 
+LOCAL &sys_order_size &dap_start_sel &dap_end_sel &dap_end
+
+&j=0
+while &j<6.
+(
+	&temp_order=Var.STRing(\sys_order[&j])
+	&sys_order_size=Var.SIZEOF(\busmon_sys&temp_order)/Var.SIZEOF(\busmon_sys&temp_order[0])
+	&i=0
+	while (&i<&sys_order_size)
+	(
+		&temp_dap=Var.STRing(\busmon_sys&temp_order[&i])
+		;&temp_dap=STRing.SPLIT("&temp_dap","_dap",0)
+		GOSUB str_split "&temp_dap" "_dap" 0
+		ENTRY &temp_dap
+		&dap_start_sel=Var.STRing(\DapStartSel[&j])
+		&dap_end_sel=Var.STRing(\DapEndSel[&j])
+		if ("&temp_dap"=="&dap_start_sel")
+			Var.set \dap_start_order[&j]=&i
+		if ("&temp_dap"=="&dap_end_sel")
+			Var.set \dap_end_order[&j]=&i
+		&i=&i+1
+	)
+	&j=&j+1
+)
+
+;**************************************************
+&j=0
+while &j<6.
+(
+	if (Var.STRing(\ItemSel[&j])=="[Yes]")
+	(
+		&ssys=Var.STRing(\sys_order[&j])
+		&addr_min=Var.STRing(\AddrMin[&j])
+		&addr_max=Var.STRing(\AddrMax[&j])
+		&i=Var.Value(\dap_start_order[&j])
+		&dap_end=Var.Value(\dap_end_order[&j])
+		&temp_rw=Var.STRing(\RW_Mode[&j])
+		if "&temp_rw"=="Read"
+			&rw_mode=1
+		else if "&temp_rw"=="Write"
+			&rw_mode=3
+		else
+			&rw_mode=0
+		while &i<=&dap_end
+		(
+			&temp_dap=Var.STRing(\busmon_sys&ssys[&i])
+			;&dap=STRing.SPLIT("&temp_dap","_dap",-1)
+			GOSUB str_split "&temp_dap" "_dap" 1
+			ENTRY &dap
+			run_djtag DJ_excute &ssys. &dap. 0x8 0x00000000 0
+			run_djtag DJ_excute &ssys. &dap. 0x9 &rw_mode 0
+			run_djtag DJ_excute &ssys. &dap. 0xA 0x00000000 0
+			run_djtag DJ_excute &ssys. &dap. 0xB (&addr_min&0xFFFFFFFF) 0
+			run_djtag DJ_excute &ssys. &dap. 0xC (&addr_min>>32&0xFFFFFFFF) 0
+			run_djtag DJ_excute &ssys. &dap. 0xD (&addr_max&0xFFFFFFFF) 0
+			run_djtag DJ_excute &ssys. &dap. 0xE (&addr_max>>32&0xFFFFFFFF) 0
+			run_djtag DJ_excute &ssys. &dap. 0xF 0x00000000 0
+			run_djtag DJ_excute &ssys. &dap. 0x10 0x00000000 0
+			run_djtag DJ_excute &ssys. &dap. 0x11 0x0000ffff 0
+			run_djtag DJ_excute &ssys. &dap. 0x15 0x00000000 0
+			run_djtag DJ_excute &ssys. &dap. 0x8 0x00000005 0
+			run_djtag DJ_excute &ssys. &dap. 0x8 0x20000005 0
+			&i=&i+1
+		)
+	)
+	&j=&j+1
+)
+
+run_djtag DJ_switch 0
+DIALOG.YESNO "BUSMON Configure Completed!!!" "If 'Yes', Scan now" "If 'NO', Press 'Busmon Addr Scan' to scan later"
+ENTRY &result
+IF &result
+(
+	PRINT "Scan started"
+	DO "&cur_path/addr_bus_mon_scan.cmm"
+)
+ELSE
+	PRINT "Scan aborted"
+
+ENDDO
+
+;script continues here when Cancel is clicked"
+cancel:
+  DIALOG.END
+  DIALOG.OK "Cancelled"
+ENDDO
+
+;****************************************************
+
+;read busmon_cfg info form file:busmon_cfg.txt
+read_busmon_cfg:
+	LOCAL &data &headerline 
+			
+	OPEN #1 &path_proj\busmon_cfg.txt /Read
+	READ #1 %line &headerline 
+	PRINT "&headerline"
+	; script for newer software versions
+	&i=0
+	while (&i<6.)
+	(
+		READ #1 %line &data
+		if "&data"==""
+		(
+			Var.set \ItemSel[&i]="[No]"
+			&temp_sys=Var.STRing(\sys_name[0])
+			Var.set \SysSel[&i]="&temp_sys"
+			&temp_dap=Var.STRing(\busmon_sys0[0])
+			GOSUB str_split "&temp_dap" "_dap" 0
+			ENTRY &temp_dap
+			Var.set \DapStartSel[&i]="&temp_dap"
+			Var.set \DapEndSel[&i]="&temp_dap"
+			Var.set \RW_Mode[&i]="Read"
+			GOTO next_line
+		)
+		&unix_pan=STRING.MID("&data",0.,3.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		if &unix_pan==1
+			Var.set \ItemSel[&i]="[Yes]"
+		else
+			Var.set \ItemSel[&i]="[No]"
+				
+		&unix_pan=STRING.MID("&data",9.,10.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \SysSel[&i]="&unix_pan"
+		
+		&unix_pan=STRING.MID("&data",23.,20.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \DapStartSel[&i]="&unix_pan"
+		
+		&unix_pan=STRING.MID("&data",43.,20.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \DapEndSel[&i]="&unix_pan"
+		
+		&unix_pan=STRING.MID("&data",63.,10.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \RW_Mode[&i]="&unix_pan"
+		
+		&unix_pan=STRING.MID("&data",76.,15.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \AddrMin[&i]="&unix_pan"
+		
+		&unix_pan=STRING.MID("&data",93.,15.)
+		&unix_pan=STRing.TRIM("&unix_pan")
+		Var.set \AddrMax[&i]="&unix_pan"
+next_line:		&i=&i+1
+	)
+	CLOSE #1
+	RETURN 
+	
+;save busmon_cfg info to file:busmon_cfg.txt
+save_busmon_cfg:
+	LOCAL &data &headerline &temp_str &str_file
+		
+	OPEN #1 &path_proj\busmon_cfg.txt /Create
+	WRITE #1 "sel      subsys        dap_start           dap_end             rd_wt        addr_min         addr_max"
+	&i=0.
+	while (&i<6.)
+	(
+		if (Var.STRing(\ItemSel[&i])=="[Yes]")
+			&unix_pan="1        "+FORMAT.STRing(Var.STRing(\SysSel[&i]),14.,' ')+FORMAT.STRing(Var.STRing(\DapStartSel[&i]),20.,' ')+FORMAT.STRing(Var.STRing(\DapEndSel[&i]),20.,' ')+FORMAT.STRing(Var.STRing(\RW_Mode[&i]),13.,' ')+FORMAT.STRing(Var.STRing(\AddrMin[&i]),17.,' ')+Var.STRing(\AddrMax[&i])
+		else
+			&unix_pan="0        "+FORMAT.STRing(Var.STRing(\SysSel[&i]),14.,' ')+FORMAT.STRing(Var.STRing(\DapStartSel[&i]),20.,' ')+FORMAT.STRing(Var.STRing(\DapEndSel[&i]),20.,' ')+FORMAT.STRing(Var.STRing(\RW_Mode[&i]),13.,' ')+FORMAT.STRing(Var.STRing(\AddrMin[&i]),17.,' ')+Var.STRing(\AddrMax[&i])
+		WRITE #1 "&unix_pan"
+		&i=&i+1.
+	)
+	CLOSE #1
+	RETURN 
+
+init_interface:
+	LOCAL &temp_sys &temp_dap &temp_dap_all
+	Var.set \sys_order[0..5]=(0,0,0,0,0,0)
+	Var.set \dap_start_order[0..5]=(0,0,0,0,0,0)
+	Var.set \dap_end_order[0..5]=(0,0,0,0,0,0)
+	
+	&default_sys=Var.STRing(\sys_name[0])
+	&sys_number=Var.STRing(\sys_num)+'.'
+	&i=0
+	while (&i<&sys_number)
+	(
+		&temp_sys=Var.STRing(\sys_name[&i])
+		if "&temp_sys"==""
+			GOTO next_sys
+		if (&i==0)
+			&all_sys="&default_sys"
+		else
+			&all_sys="&all_sys"+','+"&temp_sys"
+next_sys:		&i=&i+1
+	)
+;*************************************************
+	&j=0
+	while (&j<6.)
+	(
+		&i=0
+		while (&i<&sys_number)
+		(
+			&temp_sys=Var.STRing(\sys_name[&i])
+			&initial_sys=Var.STRing(\SysSel[&j])
+			if ("&temp_sys"=="&initial_sys")
+				Var.set \sys_order[&j]=&i
+			&i=&i+1
+		)
+		&j=&j+1
+	)
+;**************************************************	
+	&j=0
+	while (&j<6.)
+	(
+		&j_str=FORMAT.Decimal(1+((&j/10.)%1),&j)
+		&tmp_sys_num=FORMAT.Decimal(1,Var.Value(\sys_order[&j]))
+		&tmp_dap_size=Var.SIZEOF(\busmon_sys&tmp_sys_num)/Var.SIZEOF(\busmon_sys&tmp_sys_num[0])
+		&tmp_default_dap=Var.STRing(\busmon_sys&tmp_sys_num[0])
+		;&tmp_default_dap=STRing.SPLIT("&tmp_default_dap","_dap",0)
+		GOSUB str_split "&tmp_default_dap" "_dap" 0
+		ENTRY &tmp_default_dap
+		&i=0
+		while (&i<&tmp_dap_size)
+		(
+			&temp_dap=Var.STRing(\busmon_sys&tmp_sys_num[&i])
+			;&temp_dap=STRing.SPLIT("&temp_dap","_dap",0)
+			GOSUB str_split "&temp_dap" "_dap" 0
+			ENTRY &temp_dap
+			if (&i==0)
+				&temp_dap_all="&tmp_default_dap"
+			else
+				&temp_dap_all="&temp_dap_all"+','+"&temp_dap"
+			&i=&i+1
+		)
+		&all_dap_sel&j_str="&temp_dap_all"
+		&j=&j+1
+	)
+	RETURN
+
+change_sys_dap_list:
+	LOCAL &sys_sel_num
+	ENTRY &sys_sel_num
+	LOCAL &size &default_dap &all_dap &sys_sel_number
+	&i=0
+	&sys_sel_number=FORMAT.Decimal(1,&sys_sel_num)
+	while (&i<&sys_number)
+	(
+		&temp_sys=Var.STRing(\sys_name[&i])
+		&select_sys=DIALOG.STRING(OptionA.SEL&sys_sel_number)
+		if ("&temp_sys"=="&select_sys")
+			Var.set \sys_order[&sys_sel_num]=&i
+		&i=&i+1
+	)
+	&temp_order=Var.STRing(\sys_order[&sys_sel_num])
+	&size=Var.SIZEOF(\busmon_sys&temp_order)/Var.SIZEOF(\busmon_sys&temp_order[0])
+	
+	&default_dap=Var.STRing(\busmon_sys&temp_order[0])
+	;&default_dap=STRing.SPLIT("&default_dap","_dap",0)
+	GOSUB str_split "&default_dap" "_dap" 0
+	ENTRY &default_dap
+	&i=0
+	while (&i<&size)
+	(
+		&temp_dap=Var.STRing(\busmon_sys&temp_order[&i])
+		;&temp_dap=STRing.SPLIT("&temp_dap","_dap",0)
+		GOSUB str_split "&temp_dap" "_dap" 0
+		ENTRY &temp_dap
+		if (&i==0)
+			&all_dap="&default_dap"
+		else
+			&all_dap="&all_dap"+','+"&temp_dap"
+		&i=&i+1
+	)
+  
+	DIALOG.SET OptionB.SEL&sys_sel_number "&default_dap" "&all_dap"
+	DIALOG.SET OptionC.SEL&sys_sel_number "&default_dap" "&all_dap"
+	 
+	RETURN
+
+refresh_cfg:
+	&FALSE=(0==1)
+	&i=0
+	while &i<6.
+	(
+		&i_str=FORMAT.Decimal(1+((&i/10.)%1),&i)
+		DIALOG.SET OptionA.SEL&i_str Var.STRing(\SysSel[&i]) "&all_sys"
+		DIALOG.SET OptionD.SEL&i_str Var.STRing(\RW_Mode[&i])
+		DIALOG.SET TextA&i_str Var.STRing(\AddrMin[&i])
+		DIALOG.SET TextB&i_str Var.STRing(\AddrMax[&i])
+		if (Var.STRing(\ItemSel[&i])=="[Yes]")
+			DIALOG.SET cbsel&i_str
+		ELSE
+			DIALOG.SET cbsel&i_str &FALSE
+		&i=&i+1
+	)
+	DIALOG.SET OptionB.SEL0 Var.STRing(\DapStartSel[0]) "&all_dap_sel0"
+	DIALOG.SET OptionC.SEL0 Var.STRing(\DapEndSel[0]) "&all_dap_sel0"
+	DIALOG.SET OptionB.SEL1 Var.STRing(\DapStartSel[1]) "&all_dap_sel1"
+	DIALOG.SET OptionC.SEL1 Var.STRing(\DapEndSel[1]) "&all_dap_sel1"
+	DIALOG.SET OptionB.SEL2 Var.STRing(\DapStartSel[2]) "&all_dap_sel2"
+	DIALOG.SET OptionC.SEL2 Var.STRing(\DapEndSel[2]) "&all_dap_sel2"
+	DIALOG.SET OptionB.SEL3 Var.STRing(\DapStartSel[3]) "&all_dap_sel3"
+	DIALOG.SET OptionC.SEL3 Var.STRing(\DapEndSel[3]) "&all_dap_sel3"
+	DIALOG.SET OptionB.SEL4 Var.STRing(\DapStartSel[4]) "&all_dap_sel4"
+	DIALOG.SET OptionC.SEL4 Var.STRing(\DapEndSel[4]) "&all_dap_sel4"
+	DIALOG.SET OptionB.SEL5 Var.STRing(\DapStartSel[5]) "&all_dap_sel5"
+	DIALOG.SET OptionC.SEL5 Var.STRing(\DapEndSel[5]) "&all_dap_sel5"
+	RETURN
+	
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %WARNING "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""

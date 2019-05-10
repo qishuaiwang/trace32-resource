@@ -1,0 +1,93 @@
+LOCAL &mem_type &mem_type_sel
+ENTRY &mem_type
+
+&mem_type_sel=0
+ON ERROR GOSUB ERROR_Handler
+DO ~~/t32.cmm
+SYStem.RESet
+SYStem.CONFIG.SWDP ON
+SYStem.CONFIG AHBACCESSPORT 0xFF
+SYStem.CONFIG AXIACCESSPORT 0xFF
+SYStem.CONFIG APBACCESSPORT 0xFF
+SYStem.CONFIG MEMORYACCESSPORT 0xFF
+SYStem.CONFIG DEBUGACCESSPORT 0xFF
+SYStem.CONFIG SWDPTargetSel ((0x1<<28.)|0x1)
+DO "&g_proj_dir/GLB_CONFIG.cmm"
+
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+IF STATE.POWER()==FALSE()
+(
+	DIALOG.MESSAGE "Please Power up device, and then, try it again!"
+	QUIT
+)
+
+SYStem.JtagClock &jtag_clock_str
+SYStem.Mode.Prepare
+
+IF "X&mem_type"=="X"
+(
+	&mem_type="EAXI"
+)
+ELSE IF "&mem_type"=="EAXI"
+(
+	&mem_type="EAXI"
+)
+ELSE IF "&mem_type"=="EAHB"
+(
+	&mem_type_sel=1
+)
+ELSE IF "&mem_type"=="D"
+(
+	&mem_type_sel=3
+)
+
+;EXTension.DEBUG 1
+&SPRD_EXT="SPRD.t32"
+;EXTension.CONFIG "C:/Users/ken.kuang/Documents/code/git/git_repo/script/edk_windows32/&SPRD_EXT" &mem_type_sel
+EXTension.CONFIG "&lib_SPRD_t32" &mem_type_sel
+MENU.ReProgram "&lib_sprd_menu"
+
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+; DO the per file
+; PER "&cur_path/swd.per" /SL
+PER "&cur_path/&(project_sel)_Debug_Bus_Signal_List.per" /SL
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+GLOBALON CMD menulod DO "&CUR_DIR/cmd_load.cmm"
+
+MENU.REPROGRAM
+(&
+	ADD
+	TOOLBAR
+	(
+		TOOLITEM "SWD Debug BUS" "DB,a" "menulod re-swd"
+		TOOLITEM "OT DETECT" "OD,r" "menulod od"
+	)
+)
+
+
+ENDDO
+
+ERROR_Handler:
+	ON ERROR
+	LOCAL &answer
+	DIALOG.YESNO "Some Error happened, Do you want to Debug it?"
+	ENTRY &answer
+	IF &answer==TRUE()
+	(
+		PLIST
+		STOP
+	)
+	ELSE
+	(
+		QUIT
+	)
+RETURN
+

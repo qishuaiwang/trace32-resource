@@ -1,0 +1,138 @@
+; --------------------------------------------------------------------------------
+; @Title: Script File to store the ETR ring buffer Data to a File
+; @Description: 
+;   This script stores the ETR ring buffer data to the etr.bin file and
+;   generate etr_sim_import.cmm file useful to load the etr.bin in
+;   a simulator.
+;   
+;   usage:
+;     CD.DO etr_readout.cmm
+; @Keywords: ETR, trace, Ring Buffer
+; @Author: MSA
+; @Copyright: (C) 1989-2015 Lauterbach GmbH, licensed for use with TRACE32(R) only
+; --------------------------------------------------------------------------------
+; $Id: etr_readout.cmm 8758 2015-10-06 08:27:27Z msamet $
+&cur_path_dir=os.ppd()
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPv2
+SYStem.CONFIG.FUNNEL1.ATBSource STM1 1
+
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.ETF1.Base 0x80003000 
+SYStem.CONFIG.ETR1.Base 0x80005000
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+SYStem.CONFIG.ETR1.ATBSource ETF1
+
+LOCAL &ETRBase &etrbaseaddr &COMPNAME &addr &size &cmmfile &binfile &buffstart &coreindex &RP &WP &start_buffer &end_buffer &copied_data_len &offset
+; get Coresight address of ETR1
+&ETRBase=COMPonent.BASE("ETR1",0)
+IF ADDRESS.OFFSET(COMPonent.BASE("ETR2",0))!=0.
+(
+  PRINT "Multiple ETRs configured, this demo uses ETR1 per default!"
+)
+IF ADDRESS.OFFSET(&ETRBase)==0.
+(
+  DIALOG.OK "No ETR configured."
+  ENDDO
+)
+IF RUN()
+(
+  PRINT %ERROR "We can't dump it at Running State!"
+  ENDDO
+  SYStem.Mode.Prepare
+)
+IF !SYStem.Up()
+(
+  PRINT %ERROR "We can't dump it at Down State!"
+  ENDDO
+  SYStem.Mode.Prepare
+)
+;per ~~/pertmc.per dap:0x80005000
+(
+  PRIVATE &size &RP &WP &start_buffer &end_buffer &copied_data_len &STS
+  ; Control Register
+  D.S EDAP:(&ETRBase+0x020) %LE %Long 0x0
+  &STS=Data.Long(&ETRBase+0x00C)
+  &size=Data.Long(&ETRBase+0x004)
+  ;&RP=Data.Long(&ETRBase+0x14)
+  &WP=Data.Long(&ETRBase+0x18)
+  &start_buffer=Data.LongLong(&ETRBase+0x118)
+  &end_buffer=&start_buffer+(&size<<0x02)
+  &copied_data_len=0x0
+  ; access class EA:   physical memory using core
+  ; access class EAHB: physical memory using AHB-AP
+  ; access class EAXI: physical memory using AXI-AP
+  ;Data.COPY A:(&RP--&end_buffer) AVM:0x0
+  ;Data.COPY A:(&start_buffer--&WP) AVM:(&end_buffer-&RP)
+  PRIVATE &CP_DDR_OFFSET
+  &CP_DDR_OFFSET=0x80000000
+  ;&RP=&RP-&CP_DDR_OFFSET
+  &WP=&WP-&CP_DDR_OFFSET
+  &start_buffer=&start_buffer-&CP_DDR_OFFSET
+  &end_buffer=&end_buffer-&CP_DDR_OFFSET
+  IF ((&STS&0x1)==0x1)
+  (
+    Data.COPY EAXI:(&WP--&end_buffer) AVM:0x0
+    Data.COPY EAXI:(&start_buffer--&WP) AVM:(&end_buffer-&WP)
+    &copied_data_len=(&size<<0x02)-1
+  )
+  ELSE
+  (
+    Data.COPY EAXI:(&start_buffer--&WP) AVM:0x0
+    &copied_data_len=(&WP-&start_buffer)-1
+  )
+  ; saving data from virtual memory to etr.bin
+  Data.SAVE.Binary "&cur_path_dir/etr.bin" AVM:0x0++(&copied_data_len)
+  ;RETURN
+)
+;GOSUB CreateSimImport
+ENDDO
+CreateSimImport:
+(
+  LOCAL &cpuname &smpcores
+  &cpuname=CPU()
+  &smpcores=CORENUMBER()
+  OPEN #1 "./etr_sim_import.cmm" /Create
+  WRITE #1 "; Template file generated automatically by etr_readout.cmm script"
+  WRITE #1 ";"
+  WRITE #1 "; Please fill SYStem.CONFIG missing informations"
+  WRITE #1 "  SYStem.CPU &cpuname"
+  IF STRing.SCAN(STRing.LoWeR(CPU()),"cortex",0.)>=0.
+  (
+    WRITE #1 "; please add your SoC specific coresight configuration here"
+    WRITE #1 "; SYStem.CONFIG CoreNumber <>"
+    WRITE #1 "; SYStem.CONFIG ETM Base DAP:<> DAP:<> DAP:<> ..."
+    WRITE #1 "; SYStem.CONFIG ETR Base DAP:<> "
+  )
+  IF CORENUMBER()>1.
+  (
+    WRITE #1 "  CORE.NUMber &smpcores"
+  )
+  WRITE #1 "  SYStem.Up"
+  WRITE #1 ""
+  WRITE #1 "; load target code"
+  WRITE #1 "  Data.LOAD.Elf *"
+  WRITE #1 ""
+  WRITE #1 "; ETM Settings: these must match the settings when recording the trace !"
+  WRITE #1 "  ETM.PortSize 8."
+  WRITE #1 "  ETM.ContextID OFF"
+  WRITE #1 "  ETM.DataTrace OFF"
+  WRITE #1 "; ETM Settings: automatically generated:"
+  IF CORENUMBER()>1.
+    WRITE #1 "  ETM.PortMode Wrapped"
+  ELSE
+    WRITE #1 " ETM.PortMode Bypass"
+  WRITE #1 "  ETM.Trace ON"
+  WRITE #1 "  ETM.ON"
+  WRITE #1 ""
+  WRITE #1 "; import trace data"
+  WRITE #1 "  LA.Mode FLOWTRACE ON"
+  WRITE #1 "  LA.IMPORT.ETB etr.bin"
+  WRITE #1 "  LA.List"
+  
+  WRITE #1 ""
+  WRITE #1 "  ENDDO"
+  CLOSE #1
+  RETURN
+)

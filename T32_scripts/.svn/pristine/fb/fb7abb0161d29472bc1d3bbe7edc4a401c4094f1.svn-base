@@ -1,0 +1,84 @@
+LOCAL &mem_tpye &AON_BASE
+&mem_tpye="SD"
+LOCAL &set &clr
+&set=0x1000
+&clr=0x2000
+&AON_BASE=0x40000000
+IF CPU()=="CortexR5"
+	&AON_BASE=0x02000000
+
+GOSUB ARM7_BOOT_JVL
+
+ENDDO
+
+ARM7_BOOT_JVL:
+	LOCAL &boot_addr &code_boot_addr
+	; 3B800EC4 EBF6AD79 8FAB1616 F2B1D13B
+	; 79E7A77E A9D3C033 1FA61AB5 1BDBB09A
+	&boot_addr=0x50000000
+;	&boot_addr=0x90000000
+	&code_boot_addr=&boot_addr
+	IF CPU()=="CortexR5"
+		&code_boot_addr=0x00007000
+	; While(1) @ 
+	D.S &mem_tpye:&code_boot_addr %LONG 0x14000000
+	; RVBARADDR
+	D.S &mem_tpye:&AON_BASE+0x00460024 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460028 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x0046002C %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460030 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460034 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460038 %LONG (&boot_addr>>8.)
+
+
+
+	; CA53 LIT C0 force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0004+&clr %LONG (0x1<<24.)
+	D.S &mem_tpye:&AON_BASE+0x002B0004+&set %LONG (0x1<<25.)
+	; CA53 LIT C1 force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0008+&clr %LONG (0x1<<24.)
+	D.S &mem_tpye:&AON_BASE+0x002B0008+&set %LONG (0x1<<25.)
+	WAIT 100.MS
+	; CA53 LIT Cluster force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0400+&clr %LONG (0x1<<24.)
+	D.S &mem_tpye:&AON_BASE+0x002B0400+&set %LONG (0x1<<25.)
+
+	; CA53 BIG C0(T0&T1) force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B000C+&clr %LONG (0x1<<24.)|(0x1<<29.)
+	D.S &mem_tpye:&AON_BASE+0x002B000C+&set %LONG (0x1<<25.)|(0x1<<30.)
+	; CA53 BIG C1(T0&T1) force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0010+&clr %LONG (0x1<<24.)|(0x1<<29.)
+	D.S &mem_tpye:&AON_BASE+0x002B0010+&set %LONG (0x1<<25.)|(0x1<<30.)
+	WAIT 100.MS
+	; CA53 BIG Cluster force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0404+&clr %LONG (0x1<<24.)
+	D.S &mem_tpye:&AON_BASE+0x002B0404+&set %LONG (0x1<<25.)
+
+	; CA53 TOP force OFF
+	D.S &mem_tpye:&AON_BASE+0x002B0000+&clr %LONG (0x1<<24.)
+	D.S &mem_tpye:&AON_BASE+0x002B0000+&set %LONG (0x1<<25.)
+	
+	WAIT 100.MS
+	; CCI Soft RST
+;	D.S &mem_tpye:&AON_BASE+0x002E0600+&set %LONG 0x1
+;	WAIT 10.MS
+;	D.S &mem_tpye:&AON_BASE+0x002E0600+&clr %LONG 0x1
+
+	; CA53 TOP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0000+&clr %LONG (0x3<<24.)
+
+	; CA53 LIT Cluster force on
+	D.S &mem_tpye:&AON_BASE+0x002B0400+&clr %LONG (0x3<<24.)
+	; CA53 LIT C0 force on
+	D.S &mem_tpye:&AON_BASE+0x002B0004+&clr %LONG (0x3<<24.)
+	; CA53 LIT C1 force on
+	;D.S &mem_tpye:&AON_BASE+0x002B0008+&clr %LONG (0x3<<24.)
+
+;	; CA53 BIG Cluster force on
+;	D.S &mem_tpye:&AON_BASE+0x002B0404+&clr %LONG (0x3<<24.)
+;	; CA53 BIG C0(T0&T1) force on
+;	D.S &mem_tpye:&AON_BASE+0x002B000C+&clr %LONG (0x3<<24.)|(0x3<<29.)
+;	; CA53 BIG C1(T0&T1) force on
+;	D.S &mem_tpye:&AON_BASE+0x002B0010+&clr %LONG (0x3<<24.)|(0x3<<29.)
+
+	RETURN

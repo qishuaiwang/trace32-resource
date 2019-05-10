@@ -1,0 +1,83 @@
+local &cs_romtbl &ap_romtbl &cp_romtbl
+LOCAL &cur_path 
+&cur_path=os.ppd()
+&cs_romtbl=0x80000000
+&ap_romtbl=0x80240000
+&cp_romtbl=0x80100000
+area.clear
+system.mode down
+SYS.JC 1.0MHz
+sys.cpu CortexA7
+SYS.CONFIG SWDP  ON 
+
+SYStem.MultiCore MEMORYACCESSPORT 0
+system.MultiCore DEBUGACCESSPORT 1
+system.MultiCore AXIACCESSPORT 0
+system.MultiCore AHBACCESSPORT 0
+system.MultiCore APBACCESSPORT 1
+
+
+on error jumpto error_message
+AREA.OPEN &cur_path\checker.lst
+on error inherit
+system.mode prepare
+if (STATE.TARGET()=="system prepare")&&(SYStem.CONFIG.DEBUGPORTTYPE()=="SWD")
+	(
+	if (d.long(edbg:0x41000010)==0x5BA02477)
+		print "dap dp check ok"
+	else
+		print "use adb lookat 0x402a01cc,if bit[4:5]!=0,means JTAG pin(TCK/TMS) fuction switch to other function"
+	)
+	if (d.long(edbg:0x400000fc)==0x64770001)
+		print "dap ahb/axi-ap check ok"
+	else
+		print "dap ahb/axi-ap check fail"
+	if (d.long(edbg:0x400001fc)==0x44770002)
+		(
+		print "dap apb-ap check ok"
+		if ((d.long(eapb:0x80000000)&0x3)==0x3)
+			print "coresight romtable access ok"
+		else
+			print "please power up debug sys/aon and check again"
+		if ((d.long(eapb:0x80240000)&0x3)==0x3)
+			print "ap romtable access ok"
+		else
+			print "please power up ap and check again"
+		if ((d.long(eapb:0x80100000)&0x3)==0x3)
+			print "cp romtable access ok"
+		else
+			print "please power up pubcp and check again"
+		)
+	else
+		print "dap apb-ap check fail"	
+
+	print "system prepare success"
+	
+else
+	print "please check sys mode is prepare or not ,and jtag type is swd  or not"
+	
+
+
+sys.down
+diag 3411
+wait 100.ms
+PRINT "check done!"
+area.close
+
+on error jumpto other_path
+copy &cur_path\checker.lst \\shexsrv\To_Internal\Platform\huigui.liu\checker.lst
+on error inherit
+enddo
+error_message:
+	print "file open fail,check fail"
+	enddo
+
+other_path:
+	copy &cur_path\checker.lst \\ds5\share\huigui.liu\sharkl2\checker.lst
+	enddo
+
+
+
+
+
+

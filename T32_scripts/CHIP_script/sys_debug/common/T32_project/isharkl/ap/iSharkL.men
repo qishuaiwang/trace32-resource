@@ -1,0 +1,34 @@
+
+;add mode is required, as we want to add new items to the existing menu
+ADD
+
+;definition of the main pulldown menu bar
+MENU
+(
+    separator
+    POPUP "iSharkL"
+    (
+		IF (CPUFAMILY()=="I386")
+		(
+			separator
+			MENUITEM "BIA"				"do ~~/demo/SPRD/iSharkL/butter.cmm"
+		)
+        separator
+        ;MENUITEM "Release"			"do ~~/demo/SPRD/iSharkL/DAP_or_AP_release_cp_arm7.cmm"
+        MENUITEM "RESET JTAG"		"do ~~/demo/SPRD/iSharkL/jtag_nTRST.cmm"
+		IF (CPUFAMILY()=="ARM")
+		(
+			separator
+			MENUITEM "CP0ARM0"			"do ~~/demo/SPRD/iSharkL/cosight_arm926_CP0_arm0.cmm"
+			MENUITEM "CP0ARM1"			"do ~~/demo/SPRD/iSharkL/cosight_arm926_cp0_arm1.cmm"
+			MENUITEM "CP1"				"do ~~/demo/SPRD/iSharkL/cosight_cp1_cortexa5.cmm"
+			MENUITEM "ARM7"				"do ~~/demo/SPRD/iSharkL/cosight_arm7.cmm"
+			separator
+			MENUITEM "CP0ARM0 anyway"	"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM0"
+			MENUITEM "CP0ARM1 anyway"	"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM1"
+			MENUITEM "CP1 anyway"		"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm CP1"
+			MENUITEM "ARM7 anyway"		"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM7"
+		)
+    )
+)
+

@@ -1,0 +1,315 @@
+LOCAL &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+GOSUB &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+
+tap_read:
+	LOCAL &tap_id &tap_ir &dr_len &val &val_h &old_ir
+	ENTRY &tap_id &tap_ir &dr_len
+	LOCAL &ir_len &pre_ir &post_ir &pre_dr &post_dr
+	&ir_len=Var.VALUE(\tap_network[&tap_id][&IR])
+	&pre_ir=Var.VALUE(\cur_tap_chain[&tap_id][&PREIR])
+	&post_ir=Var.VALUE(\cur_tap_chain[&tap_id][&POSTIR])
+	&pre_dr=Var.VALUE(\cur_tap_chain[&tap_id][&PREDR])
+	&post_dr=Var.VALUE(\cur_tap_chain[&tap_id][&POSTDR])
+	lowJTAG select_ir &tap_ir &ir_len &pre_ir &post_ir
+	ENTRY &old_ir
+	lowJTAG shift_dr 0 &dr_len &pre_dr &post_dr
+	ENTRY &val &val_h
+	GOSUB api_pr "TAP(&tap_id) Read IR(&tap_ir)=(&val_h, &val), old IR(&old_ir)"
+	RETURN &val &val_h
+;end of tap_read
+
+tap_write:
+	LOCAL &tap_id &tap_ir &dr_len &val &val_h &old_ir &o_val &o_val_h
+	ENTRY &tap_id &tap_ir &dr_len &val &val_h
+	LOCAL &ir_len &pre_ir &post_ir &pre_dr &post_dr
+	&ir_len=Var.VALUE(\tap_network[&tap_id][&IR])
+	&pre_ir=Var.VALUE(\cur_tap_chain[&tap_id][&PREIR])
+	&post_ir=Var.VALUE(\cur_tap_chain[&tap_id][&POSTIR])
+	&pre_dr=Var.VALUE(\cur_tap_chain[&tap_id][&PREDR])
+	&post_dr=Var.VALUE(\cur_tap_chain[&tap_id][&POSTDR])
+	lowJTAG select_ir &tap_ir &ir_len &pre_ir &post_ir
+	ENTRY &old_ir
+	lowJTAG shift_dr &val &dr_len &pre_dr &post_dr &val_h
+	ENTRY &o_val &o_val_h
+	GOSUB api_pr "TAP(&tap_id) Write IR(&tap_ir)=(&val_h, &val), old IR(&old_ir), old value(&o_val_h, &o_val)"
+	RETURN &o_val &o_val_h
+;end of tap_write
+
+
+reorder_tap:
+	LOCAL &after_tap_id &my_tap_id &tap_ir &tap_dr &id &r_id &tap_id &temp &temp2
+	ENTRY &after_tap_id &my_tap_id
+	Var.NEWLOCAL int[&max_tap_cnt] \temp_tap_order
+	&tap_ir=Var.VALUE(\tap_network[&my_tap_id][&IR])
+	&tap_dr=Var.VALUE(\tap_network[&my_tap_id][&DR])
+	&id=0
+	WHILE &id<&added_tap_cnt
+	(
+		&tap_id=Var.VALUE(\tap_order[&id])
+		&id=&id+1
+		IF &tap_id==&after_tap_id
+		(
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&PREIR])
+			Var.ASSIGN \cur_tap_chain[&my_tap_id][&PREIR]=&temp
+			&temp=&temp+&tap_ir
+			Var.ASSIGN \cur_tap_chain[&tap_id][&PREIR]=&temp
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&PREDR])
+			Var.ASSIGN \cur_tap_chain[&my_tap_id][&PREDR]=&temp
+			&temp=&temp+&tap_dr
+			Var.ASSIGN \cur_tap_chain[&tap_id][&PREDR]=&temp
+
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&POSTIR])
+			&temp2=Var.VALUE(\tap_network[&tap_id][&IR])
+			&temp=&temp+&temp2
+			Var.ASSIGN \cur_tap_chain[&my_tap_id][&POSTIR]=&temp
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&POSTDR])
+			&temp2=Var.VALUE(\tap_network[&tap_id][&DR])
+			&temp=&temp+&temp2
+			Var.ASSIGN \cur_tap_chain[&my_tap_id][&POSTDR]=&temp
+
+			GOTO pre_deal
+		)
+		ELSE
+		(
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&PREIR])
+			&temp=&temp+&tap_ir
+			Var.ASSIGN \cur_tap_chain[&tap_id][&PREIR]=&temp
+			&temp=Var.VALUE(\cur_tap_chain[&tap_id][&PREDR])
+			&temp=&temp+&tap_dr
+			Var.ASSIGN \cur_tap_chain[&tap_id][&PREDR]=&temp
+		)
+	)
+pre_deal:
+	&r_id=&added_tap_cnt
+	WHILE &r_id>&id
+	(
+		&tap_id=Var.VALUE(\tap_order[(&r_id-1)])
+		Var.ASSIGN \tap_order[&r_id]=&tap_id
+
+		&temp=Var.VALUE(\cur_tap_chain[&tap_id][&POSTIR])
+		&temp=&temp+&tap_ir
+		Var.ASSIGN \cur_tap_chain[&tap_id][&POSTIR]=&temp
+		&temp=Var.VALUE(\cur_tap_chain[&tap_id][&POSTDR])
+		&temp=&temp+&tap_dr
+		Var.ASSIGN \cur_tap_chain[&tap_id][&POSTDR]=&temp
+
+		&r_id=&r_id-1
+	)
+	Var.ASSIGN \tap_order[&id]=&my_tap_id
+	&added_tap_cnt=&added_tap_cnt+1
+	RETURN
+;end of reorder_tap
+
+get_ops_by_id:
+	LOCAL &tap_id &ops_cmd
+	ENTRY &tap_id
+	&ops_cmd=Var.STRING(\ops_cmd[&tap_id])
+	RETURN &ops_cmd
+;end of get_ops_by_id
+
+get_b_id_by_id:
+	LOCAL &tap_id &ops_cmd &b_id
+	ENTRY &tap_id
+	GOSUB get_ops_by_id &tap_id
+	ENTRY &ops_cmd
+	&ops_cmd get_b_id
+	ENTRY &b_id
+	RETURN &b_id
+;end of get_b_id_by_id
+
+get_after_tap_id_by_id:
+	LOCAL &my_tap_id &after_tap_id &tap_id &id 
+	ENTRY &my_tap_id
+	GOSUB get_b_id_by_id &my_tap_id
+	ENTRY &after_tap_id
+	WHILE &after_tap_id!=&ENDOFTAPID
+	(
+		&id=0
+		WHILE &id<&added_tap_cnt
+		(
+			&tap_id=Var.VALUE(\tap_order[&id])
+			&id=&id+1
+			IF &tap_id==&after_tap_id
+			(
+				RETURN &after_tap_id
+			)
+		)
+		GOSUB get_b_id_by_id &after_tap_id
+		ENTRY &after_tap_id
+	)
+	PRINT %ERROR "Your setting is incorrect!"
+	comOPS jtag_low_unlock
+	END
+	RETURN
+;end of get_after_tap_id_by_id
+
+add_tap:
+	LOCAL &after_tap_id &tap_id &id
+	ENTRY &tap_id
+	&id=0
+	WHILE &id<&added_tap_cnt
+	(
+		&after_tap_id=Var.VALUE(\tap_order[&id])
+		&id=&id+1
+		IF &tap_id==&after_tap_id
+		(
+			RETURN
+		)
+	)
+	GOSUB get_after_tap_id_by_id &tap_id
+	ENTRY &after_tap_id
+	GOSUB reorder_tap &after_tap_id &tap_id
+	RETURN
+;end of add_tap
+
+detect_the_len:
+	LOCAL &ops &ret_len &temp_val
+	ENTRY &ops
+	&ret_len=0
+	lowJTAG &ops
+	ENTRY &temp_val
+	IF (&temp_val==0)
+	(
+		;PRINT %ERROR "We can't connect the TAP network!"
+		RETURN &ret_len
+	)
+	IF "&ops"=="detect_ir"
+		&temp_val=&temp_val+1
+	WHILE ((&ret_len<64.)&&(((&temp_val>>&ret_len)&0x1)==0))
+	(
+		&ret_len=&ret_len+1
+	)
+	RETURN &ret_len
+;end of detect_the_len
+
+detect_ir_len:
+	LOCAL &ret_len
+	&ret_len=0
+	GOSUB detect_the_len detect_ir
+	ENTRY &ret_len
+	RETURN &ret_len
+;end of detect_ir_len
+
+detect_dr_len:
+	LOCAL &ret_len
+	&ret_len=0
+	GOSUB detect_the_len detect_dr
+	ENTRY &ret_len
+	RETURN &ret_len
+;end of detect_dr_len
+
+ptap_detect:
+	LOCAL &the_len &tap_the_len &tap_id &temp
+	ENTRY &tap_id
+	&tap_the_len=Var.VALUE(\tap_network[&tap_id][&IR])
+	GOSUB detect_ir_len
+	ENTRY &the_len
+	&temp=&the_len-&tap_the_len
+	Var.ASSIGN \cur_tap_chain[&tap_id][&PREIR]=&temp
+	&tap_the_len=Var.VALUE(\tap_network[&tap_id][&DR])
+	GOSUB detect_dr_len
+	ENTRY &the_len
+	&temp=&the_len-&tap_the_len
+	Var.ASSIGN \cur_tap_chain[&tap_id][&PREDR]=&temp
+	RETURN
+;end of ptap_detect
+
+tap_network_detect:
+	LOCAL &the_len &tap_the_len &tap_id &temp
+	pTAP init
+	pTAP get_id
+	ENTRY &tap_id
+	&temp=1
+pTAP_detect:
+	GOSUB ptap_detect &tap_id
+	pTAP read 0x1 32.
+	LOCAL &val &e_idcode
+	ENTRY &val
+	&e_idcode=Var.VALUE(\tap_network[&tap_id][&IDCODE])
+	IF &val!=&e_idcode
+	(
+		lowJTAG jtag_reset
+		IF &temp==1
+		(
+			&temp=0
+			GOTO pTAP_detect
+		)
+		PRINT %ERROR "Primary TAP IDCODE not match, R(&val) E(&e_idcode)"
+		comOPS jtag_low_unlock
+		END
+	)
+	pTAP read 0x0 32.
+	ENTRY &val
+	Var.ASSIGN \cur_tap_chain[&tap_id][&PREIR]=0
+	Var.ASSIGN \cur_tap_chain[&tap_id][&PREDR]=0
+	RETURN &val
+;end of tap_network_detect
+
+tap_network_reset:
+	lowJTAG jtag_reset
+	LOCAL &id &tap_id
+	&id=1
+	WHILE &id<&added_tap_cnt
+	(
+		&tap_id=Var.VALUE(\tap_order[&id])
+		Var.ASSIGN \cur_tap_chain[&tap_id][0..(&tap_pp_cnt-1)]=(0, 0, 0, 0)
+		Var.ASSIGN \tap_order[&id]=0
+	)
+	&added_tap_cnt=1
+	pTAP write 0x0 32. 0
+	RETURN
+;end of tap_network_reset
+
+jtag_low_lock:
+	IF &JTAG_LOW_LOCK==0
+		lowJTAG jtag_acq
+	ELSE IF &JTAG_LOW_LOCK<0
+	(
+		lowJTAG jtag_acq
+		&JTAG_LOW_LOCK=0
+	)
+	&JTAG_LOW_LOCK=&JTAG_LOW_LOCK+1
+	lowJTAG jtag_reset_tms
+	WAIT 500.MS
+	RETURN
+;end of jtag_low_lock
+
+jtag_low_unlock:
+	&JTAG_LOW_LOCK=&JTAG_LOW_LOCK-1
+	IF &JTAG_LOW_LOCK<=0
+		lowJTAG jtag_rel
+	RETURN
+;end of jtag_low_unlock
+
+is_tap_added:
+	LOCAL &id &tap_id &detect_id
+	ENTRY &detect_id
+	IF &detect_id==&NOTAPID
+		RETURN 0
+	&id=0
+	WHILE &id<&added_tap_cnt
+	(
+		&tap_id=Var.VALUE(\tap_order[&id])
+		&id=&id+1
+		IF &tap_id==&detect_id
+		(
+			RETURN 1
+		)
+	)
+	RETURN 0
+;end of is_tap_added
+
+
+api_pr:
+	LOCAL &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	IF &api_debug==1
+		PRINT &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	RETURN
+;end of api_pr
+

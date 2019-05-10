@@ -1,0 +1,75 @@
+; Ken.Kuang for Per file preload
+LOCAL &project &mem_type &aon_siram_addr &mem_type_sel
+ENTRY &mem_type &project
+&project="iSharkL2"
+;&mem_type="EAHB"
+;&aon_siram_addr=0x20000000
+&mem_type_sel=0
+IF "&mem_type"=="EAHB"
+	&mem_type_sel=1
+
+
+
+IF "X&project"=="X"
+(
+	&project="iWhale2"
+)
+
+IF SOFTWARE.BUILD.BASE()<57080.
+(
+	PRINT %ERROR "The Trace32 software too old"
+)
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF ICD()
+(
+	IF SYStem.MODE()<=3
+	(
+		IF CPUIS64BIT()
+		(
+			&DAP_Script="DAP.cmm"
+			DO "&cur_path/&(project)_&DAP_Script"
+			SYStem.MODE.Prepare
+		)
+		ELSE
+		(
+			PRINT %ERROR "Please make sure DAP already prepare!"
+			ENDDO
+		)
+	)
+)
+ELSE
+(
+	SYStem.MODE.Up
+)
+
+&SPRD_EXT="SPRD.t32"
+;EXTension.CONFIG "C:\Users/ken.kuang/Documents/code/git/git_repo/script/edk_windows32/&SPRD_EXT" &mem_type_sel 0xE4000000
+EXTension.CONFIG "&lib_SPRD_t32" &mem_type_sel 0xE4000000
+
+D.S AVM:0x0 %LE %Long 0x5577
+IF "X&mem_type"=="X"
+(
+	&mem_type="EAXI"
+	&aon_siram_addr=0xE6012000
+)
+ELSE IF "&mem_type"=="EAXI"
+(
+	&aon_siram_addr=0xE6012000
+)
+ELSE IF "&mem_type"=="EAXI:4"
+(
+	&aon_siram_addr=0xE6012000
+)
+ELSE IF "&mem_type"=="EAHB"
+(
+	&aon_siram_addr=0x20000000
+)
+
+IF ICD()
+(
+	;PRINT DJTAG.SWITCH(0x01)
+)
+PER "&cur_path/&project.per" "&mem_type" &aon_siram_addr /SL

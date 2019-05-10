@@ -1,0 +1,64 @@
+; Ken.Kuang for Per file preload
+LOCAL &project &mem_type &aon_siram_addr &mem_type_sel &aon_base
+ENTRY &mem_type &project
+;&project="SharkLE"
+;&aon_siram_addr=0x00010000
+&dmc_base_addr=0x30000000
+&aon_base=0x40000000
+&mem_type_sel=0
+
+IF "X&project"=="X"
+(
+	&project="SharkLE"
+)
+
+IF SOFTWARE.BUILD.BASE()<57080.
+(
+	PRINT %ERROR "The Trace32 software too old"
+)
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<=3
+(
+	&DAP_Script="DAP.cmm"
+	DO "&cur_path/&(project)_&DAP_Script"
+	SYStem.MODE.Prepare
+)
+IF "X&mem_type"=="X"
+(
+	&mem_type="EAXI"
+	&aon_siram_addr=0x00010000
+)
+ELSE IF "&mem_type"=="EAXI"
+(
+	&aon_siram_addr=0x00010000
+)
+ELSE IF "&mem_type"=="EAHB"
+(
+	&aon_siram_addr=0x20010000
+	&aon_base=0xA1000000
+	&dmc_base_addr=0xA0000000
+	&mem_type_sel=1
+)
+ELSE IF "&mem_type"=="D"
+(
+	IF SYStem.CPU()!="CortexR5"
+	(
+		PRINT %ERROR "Only Support PUBCP Read from CPU!"
+		END
+	)
+	&aon_siram_addr=0x00000000
+	&aon_base=0x02000000
+	&dmc_base_addr=0x01000000
+	&mem_type_sel=3
+)
+
+&SPRD_EXT="SPRD.t32"
+;EXTension.CONFIG "C:\Users/ken.kuang/Documents/code/git/git_repo/script/edk_windows32/&SPRD_EXT" &mem_type_sel &aon_base
+EXTension.CONFIG "&lib_SPRD_t32" &mem_type_sel &aon_base
+
+D.S AVM:0x0 %LE %Long 0x5577
+
+PER "&cur_path/&project.per" "&mem_type" &aon_siram_addr &aon_base &dmc_base_addr /SL

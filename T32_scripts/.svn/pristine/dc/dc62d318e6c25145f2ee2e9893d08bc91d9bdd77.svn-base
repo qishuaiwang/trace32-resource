@@ -1,0 +1,141 @@
+; ken.kuang for SCAN DUMP
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+GLOBAL &lib_dap_jtag_ap
+GLOBAL &lib_DJTAG_via_DAP_jtag_ap
+
+IF "X&lib_DJTAG_via_DAP_jtag_ap"=="X"
+(
+	&lib_path="&cur_path/../../../../lib"
+	&lib_dap_jtag_ap="&lib_path/DAP_jtag_ap.cmm"
+	&lib_DJTAG_via_DAP_jtag_ap="&lib_path/DJTAG_via_DAP_jtag_ap.cmm"
+)
+
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	DO "&lib_DJTAG_via_DAP_jtag_ap" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op10
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &op9 &op10
+)
+
+run_djtag DJ_switch 0x01
+LOCAL &subsys &dap &temp
+&subsys=8.
+&dap=7.
+
+run_djtag DJ_exec &subsys &dap 1
+ENTRY &temp
+PRINT "SCAN DUMP DJTAG IDCODE is &temp"
+
+LOCAL &sd_ctrl &c &l
+&c=8.
+&l=16.
+run_djtag DJ_exec &subsys &dap &c
+ENTRY &sd_ctrl
+PRINT "b SCAN DUMP sd_ctrl is &sd_ctrl"
+;1.  ptest_sd_mode = 1 
+&sd_ctrl=(&sd_ctrl)|(1<<0.)
+run_djtag DJ_exec &subsys &dap &c &sd_ctrl 0 9 &l
+;2.  sd_iso = 1 
+&sd_ctrl=(&sd_ctrl)|(1<<1.)
+run_djtag DJ_exec &subsys &dap &c &sd_ctrl 0 9 &l
+;3.  sd_func_clk_dis = 1 
+&sd_ctrl=(&sd_ctrl)|(1<<2.)
+run_djtag DJ_exec &subsys &dap &c &sd_ctrl 0 9 &l
+;4.  sd_set_ports = 1 && edt_one_chain = 1
+&sd_ctrl=(&sd_ctrl)|(1<<4.)|(1<<5.)
+run_djtag DJ_exec &subsys &dap &c &sd_ctrl 0 9 &l
+;5.  sd_se = 1 && sd_set_scan_mode =1
+&sd_ctrl=(&sd_ctrl)|(1<<6.)|(1<<7.)
+run_djtag DJ_exec &subsys &dap &c &sd_ctrl 0 9 &l
+
+PRINT "e SCAN DUMP sd_ctrl is &sd_ctrl"
+
+run_djtag DJ_exec &subsys &dap &c
+ENTRY &sd_ctrl
+PRINT "a SCAN DUMP sd_ctrl is &sd_ctrl"
+
+LOCAL &time
+&time=DATE.TIME()
+PRINT "Start APCPU scan dump @ &time"
+
+;scan dump
+; APCPU
+&c=8.+(2.)
+&l=178108.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/apcpu.txt"
+
+&time=DATE.TIME()
+PRINT "APCPU done @ &time"
+
+; Core0
+&c=8.+(3.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core0.txt"
+
+&time=DATE.TIME()
+PRINT "Core0 done @ &time"
+
+; Core1
+&c=8.+(4.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core1.txt"
+
+&time=DATE.TIME()
+PRINT "Core1 done @ &time"
+
+; Core2
+&c=8.+(5.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core2.txt"
+
+&time=DATE.TIME()
+PRINT "Core2 done @ &time"
+
+; Core3
+&c=8.+(6.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core3.txt"
+
+&time=DATE.TIME()
+PRINT "Core3 done @ &time"
+
+; Core4
+&c=8.+(7.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core4.txt"
+
+&time=DATE.TIME()
+PRINT "Core4 done @ &time"
+
+; Core5
+&c=8.+(8.)
+&l=81245.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core5.txt"
+
+&time=DATE.TIME()
+PRINT "Core5 done @ &time"
+
+; Core6
+&c=8.+(9.)
+&l=191443.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core6.txt"
+
+&time=DATE.TIME()
+PRINT "Core6 done @ &time"
+
+; Core7
+&c=8.+(10.)
+&l=191443.
+run_djtag DJ_scan &subsys &dap &c  &l "&cur_path/core7.txt"
+
+&time=DATE.TIME()
+PRINT "Core7 done @ &time"
+
+run_djtag DJ_switch 0x00
+ENDDO 

@@ -1,0 +1,20 @@
+LOCAL &CUR_DIR
+
+system.mode down
+system.reset
+
+&CUR_DIR=OS.PPD() 
+
+on error CONTinue
+DO "&CUR_DIR/iWhale2_TAP_Network.cmm"
+DO "&CUR_DIR/../CMM_api/api_ops.cmm"
+;DO &CUR_DIR/iWhale2_JTAG.cmm "RST"
+comOPS jtag_low_lock
+lowJTAG jtag_reset_tms
+JTAG.PIN NRESET HIGH
+JTAG.PIN NTRST LOW
+WAIT 50.MS
+JTAG.PIN NTRST HIGH
+WAIT 150.MS
+lowJTAG jtag_reset_tms
+comOPS jtag_low_unlock

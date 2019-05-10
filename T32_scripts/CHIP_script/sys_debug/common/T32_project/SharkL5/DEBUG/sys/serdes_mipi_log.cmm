@@ -1,0 +1,157 @@
+;;;;;;;
+;SharkL5 procedure serdes/csi 2p2lane setup;
+;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ch_sel: SerDes Channel selection
+;	bit1: WTL/MDAR
+;	bit2: DBG(TPIU)
+;	bit3: DBUS
+;	bit14: TRAINING
+;	bit15: TRAINING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LOCAL &set &clr
+
+&mem_type="EZAXI"
+
+&set=0x1000
+&clr=0x2000
+&AON_APB_BASE=0x327D0000
+&PMU_APB_BASE=0x327E0000
+&MM_AHB_BASE=0x62200000
+&DSI_GLB_BASE=0x323F0000
+&SERDES_BASE=0x324F0000
+
+;enable cphy cfg clk
+GOSUB reg_write (&AON_APB_BASE+&set+0x13C) 0x8000
+
+;enable mm eb
+GOSUB reg_write (&AON_APB_BASE+&set+0x0000) 0x200
+
+;enable ana eb
+GOSUB reg_write (&AON_APB_BASE+&set+0x0004) 0x1000
+
+;power-on for MM subsys
+GOSUB reg_write (&PMU_APB_BASE+&clr+0x0024) 0x3000000
+
+;here need wait
+wait 10.ms
+
+;enable cphy cfg clk in mm
+GOSUB reg_write (&MM_AHB_BASE+&set+0x8) 0x100
+
+;here need wait
+wait 1.ms
+
+;set 2P2L DSI TEST_CLR
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x7C) 0x1
+
+;disable 2P2L DSI SHUTDOWNZ_DB[15] and RSTZ_DB[14]
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x78) 0xC000
+
+;set dbg sel 2P2L DSI SHUTDOWNZ_DB
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x8C) 0x40
+
+;set MIPI CSI SEL CTRL[2:0] = 3'B001
+GOSUB reg_write (&MM_AHB_BASE+&set+0x30) 0x1
+GOSUB reg_write (&MM_AHB_BASE+&set+0x30) 0x6
+
+;set csi_2p2l_test_clr_m_sel and csi_2p2l_test_clr_m
+GOSUB reg_write (&DSI_GLB_BASE+&set+0xb4) 0x300000
+
+;100ns
+wait 1.ms
+
+;clr csi_2p2l_test_clr_m_sel and csi_2p2l_test_clr_m
+GOSUB reg_write (&DSI_GLB_BASE+&clr+0xb4) 0x300000
+
+;set MIPI CSI SEL CTRL[2:0] = 3'B000
+GOSUB reg_write (&MM_AHB_BASE+&clr+0x30) 0x7
+
+;set csi_2p2l_test_clr_s_sel and csi_2p2l_test_clr_s
+GOSUB reg_write (&DSI_GLB_BASE+&set+0xb4) 0x60000
+
+;100ns
+wait 1.ms
+
+;clr csi_2p2l_test_clr_s_sel and csi_2p2l_test_clr_s
+GOSUB reg_write (&DSI_GLB_BASE+&clr+0xb4) 0x60000
+
+;set MIPI CSI SEL CTRL[2:0] = 3'B010
+GOSUB reg_write (&MM_AHB_BASE+&set+0x30) 0x2
+
+;set dbg_sel_csi_2p2l_dsi_if_sel_db
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x8C) 0x20
+
+;release 2P2L DSI TEST_CLR
+GOSUB reg_write (&DSI_GLB_BASE+&clr+0x7C) 0x1
+
+;enable 2P2L DSI CLK DB
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x78) 0x200
+
+;enable 2P2L DSI CLK EN
+GOSUB reg_write (&DSI_GLB_BASE+&set+0x78) 0x3C00
+
+;500ns
+wait 5.ms
+
+;wire PHY REG[8] : ee
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x8<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x8<<11.)|(0x1<<2.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x8<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xEE<<11.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xEE<<11.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xEE<<11.)
+
+;wire PHY REG[6] : 3B
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x6<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x6<<11.)|(0x1<<2.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x6<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x3B<<11.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x3B<<11.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x3B<<11.)
+
+;wire PHY REG[9] : 0x13
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x9<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x9<<11.)|(0x1<<2.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x9<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x13<<11.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x13<<11.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x13<<11.)
+
+;wire PHY REG[A] : 0xB1
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xA<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xA<<11.)|(0x1<<2.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xA<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB1<<11.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB1<<11.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB1<<11.)
+
+;wire PHY REG[B] : 0x31
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB<<11.)|(0x1<<2.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0xB<<11.)|(0x1<<2.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x31<<11.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x31<<11.)|(0x1<<1.)
+GOSUB reg_write (&DSI_GLB_BASE+0x7C) (0x31<<11.)
+
+;130us
+wait 1.ms
+
+;serdes enable
+GOSUB reg_write (&SERDES_BASE) 0x1
+;serdes channel enable, for this sample, we enable channel #2 (Soc Coresight TPIU's output)
+;GOSUB reg_write (&SERDES_BASE+0x4) 0x4		;one-hot or all zeros are legal setting
+;GOSUB reg_write (&SERDES_BASE+0x4) 0x8000	;training CH15
+;serdes funnel enable
+;GOSUB reg_write (&SERDES_BASE+0x8) 0x1
+
+ENDDO
+
+reg_write:
+		ENTRY &addr &data
+		
+		D.S &mem_type:&addr %LE %Long &data
+		RETURN
+		
+;endprocedure
+

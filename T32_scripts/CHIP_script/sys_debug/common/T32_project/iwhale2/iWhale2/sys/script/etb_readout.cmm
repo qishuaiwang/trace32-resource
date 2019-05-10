@@ -1,0 +1,141 @@
+; --------------------------------------------------------------------------------
+; @Title: Script File to store the ETB Raw Data to a File
+; @Description: 
+;   This script stores the ETB raw data to the etb.bin file.
+;   A template script to import the ETB data into the simulator is generated.
+; @Keywords: ETB, raw, trace
+; @Author: -
+; @Copyright: (C) 1989-2014 Lauterbach GmbH, licensed for use with TRACE32(R) only
+; --------------------------------------------------------------------------------
+; $Id: etb_readout.cmm 9566 2016-07-08 15:22:43Z hdammak $
+&cur_path_dir=os.ppd()
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPv2
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.FUNNEL1.ATBSource STM1 1
+SYStem.CONFIG.ETB1.Base 0x80003000
+SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+
+; Checking if ETB is a CoreSight or TAP based ETB
+&isCoresightEtb=(ADDRESS.OFFSET(ETBBASE())!=0x0)
+&EtbAddress=ETBBASE()
+&EtbAddress="E&(EtbAddress)"
+&EtbAddress=STRing.Replace("&EtbAddress","EE","E",0.)
+&depth=0
+
+IF !&isCoresightEtb
+(
+  &depth=Data.Long(EETB:1)
+)
+ELSE
+(
+  &depth=Data.Long(&EtbAddress+0x004)
+)
+
+IF &depth==0
+(
+  DIALOG.OK "Size of the ETB is zero!"
+  ENDDO
+)
+IF &isCoresightEtb
+(
+  IF (Data.Long(&EtbAddress+0x020)!=0x0)
+  (
+    DIALOG.OK "ETB is still enabled, please disable ETB before! e.g. Onchip.OFF"
+    ENDDO
+  )
+)
+
+; set read pointer to the beginning
+IF !&isCoresightEtb
+(
+  Data.Set ETB:5 %Long Data.Long(EETB:6)
+)
+ELSE
+(
+  D.S EDAP:(&EtbAddress+0x020) %LE %Long 0x0
+  PRIVATE &STS
+  &STS=Data.Long(&EtbAddress+0x00C)
+  IF ((&STS&0x1)==0x1)
+  (
+    Data.Set &EtbAddress+0x014 %Long Data.Long(&EtbAddress+0x018)
+  )
+  ELSE
+  (
+    &depth=(Data.Long(&EtbAddress+0x018)-Data.Long(&EtbAddress+0x014))>>2.
+  )
+)
+
+; Readout content
+&addr=0
+WHILE &addr<=(&depth*4)-1
+(
+  IF !&isCoresightEtb
+  (
+    Data.Set AVM:&addr %Long Data.Long(EETB:0x4)
+  )
+  ELSE
+  (
+    Data.Set AVM:&addr %Long Data.Long(&EtbAddress+0x010)
+  )
+  &addr=&addr+4
+)
+
+; Save it into a binary file
+Data.SAVE.Binary &cur_path_dir/etb.bin AVM:0x000++((&depth*4)-1)
+
+;GOSUB CreateSimImport
+
+ENDDO
+
+CreateSimImport:
+(
+  LOCAL &cpuname &smpcores
+  &cpuname=CPU()
+  &smpcores=CORENUMBER()
+  OPEN #1 "./etb_sim_import_generated.cmm" /Create
+
+  WRITE #1 "; Template file generated automatically by etb_readout.cmm script"
+  WRITE #1 ";"
+  WRITE #1 "; Please fill SYStem.CONFIG missing informations"
+  WRITE #1 "  SYStem.CPU &cpuname"
+  IF STRing.SCAN(STRing.LoWeR(CPU()),"cortex",0.)>=0.
+  (
+    WRITE #1 "; please add your SoC specific coresight configuration here"
+    WRITE #1 "; SYStem.CONFIG CoreNumber <>"
+    WRITE #1 "; SYStem.CONFIG ETM Base DAP:<> DAP:<> DAP:<> ..."
+    WRITE #1 "; SYStem.CONFIG ETR Base DAP:<> "
+  )
+  IF CORENUMBER()>1.
+  (
+    WRITE #1 "  CORE.NUMber &smpcores"
+  )
+  WRITE #1 "  SYStem.Up"
+  WRITE #1 ""
+  WRITE #1 "; load target code"
+  WRITE #1 "  Data.LOAD.Elf *"
+  WRITE #1 ""
+  WRITE #1 "; ETM Settings: these must match the settings when recording the trace !"
+  WRITE #1 "  ETM.PortSize 8."
+  WRITE #1 "  ETM.ContextID OFF"
+  WRITE #1 "  ETM.DataTrace OFF"
+  WRITE #1 "; ETM Settings: automatically generated:"
+  IF CORENUMBER()>1.
+    WRITE #1 "  ETM.PortMode Wrapped"
+  ELSE
+    WRITE #1 "  ETM.PortMode Bypass"
+  WRITE #1 "  ETM.Trace ON"
+  WRITE #1 "  ETM.ON"
+  WRITE #1 ""
+  WRITE #1 "; import trace data"
+  WRITE #1 "  LA.Mode FLOWTRACE ON"
+  WRITE #1 "  LA.IMPORT.ETB ./etb.bin"
+  WRITE #1 "  LA.List"
+  
+  WRITE #1 ""
+  WRITE #1 "  ENDDO"
+  CLOSE #1
+  RETURN
+)
+

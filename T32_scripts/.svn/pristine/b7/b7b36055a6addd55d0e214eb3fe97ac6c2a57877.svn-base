@@ -1,0 +1,98 @@
+; by xiaopeng.bai
+LOCAL &AHB_PORT &TargetID
+ENTRY &AHB_PORT &TargetID
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+IF "X&TargetID"=="X"
+(
+	&TargetID=&target_id
+)
+
+IF ("&os_sel"!="os_sys")
+(
+	LOCAL &save_os_sel
+	&save_os_sel="&os_sel"
+	&os_sel="os_sys"
+	CD.DO "&CUR_DIR\CM4.cmm"
+	&os_sel="&save_os_sel"
+	GOSUB BOOT
+	WAIT 500.MS
+)
+
+IF "X&AHB_PORT"=="X"
+(
+	&AHB_PORT=0.
+)
+
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+
+&TargetID=(0x4<<28.)|0x1
+
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+
+
+
+SYStem.Mode Down
+SYStem.RESet
+SYStem.CPU CORTEXM4
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+
+SYStem.CONFIG MEMORYACCESSPORT &AHB_PORT
+SYStem.CONFIG AHBACCESSPORT   &AHB_PORT
+SYStem.MemAccess.DAP
+
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+ON ERROR GOTO ERROR_Handle
+SYStem.CONFIG SWDPTargetSel &TargetID
+SYStem.JtagClock &jtag_clock_str
+SYStem.Mode.Prepare
+ON ERROR
+
+IF ("&os_sel"=="os_sys")
+(
+
+	WAIT 1.MS
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" IPA_BOOT 1
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO

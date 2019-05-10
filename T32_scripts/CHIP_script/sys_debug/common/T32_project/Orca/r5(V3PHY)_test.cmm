@@ -1,0 +1,38 @@
+system.mode down
+system.reset
+
+system.jtagclock 5Mhz
+system.option.palladium on
+system.option.memstatuscheck ON
+system.cpu cortexr5
+
+
+sys.config corebase 0x80230000
+sys.config ctibase 0x80238000
+sys.config etmbase 0x8023c000
+
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+system.config swdptargetsel 0x1000001
+sys.config swdp on
+;system.multicore jtagaccessport 2
+
+;sys.option enreset off
+system.mode prepare
+
+d.s eaxi:0x8:0x4000 %le %long 0xEAFFFFFE
+d.s eaxi:0x8:0x4004 %le %long 0xEAFFFFFE
+
+
+d.s eaxi:0x8:0x64010054 %le %long 0x20a804
+d.s eaxi:0x8:0x64010048 %le %long 0x20a804
+d.s eaxi:0x8:0x64020220 %le %long 0x0
+d.s eaxi:0x8:0x640100b0 %le %long 0x0
+
+system.mode up
+ 

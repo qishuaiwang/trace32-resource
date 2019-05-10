@@ -1,0 +1,39 @@
+
+system.mode down
+system.reset 
+
+system.jtagclock 20mhz
+
+system.cpu CORTEXA53
+
+System.config CORENUMBER 1. 
+core.assign 1 
+
+system.multicore debugaccessport 1. 
+
+system.config corebase  0x81410000 
+system.config ctibase   0x81420000
+
+area.clear
+area
+on error nothing
+on error gosub ERROR
+system.up 
+wait 1.s 
+system.mode prepare 
+print "0x81410088= " data.long(eahb:0x81410088)
+data.set eapb:0x81410084   %l 0xee15ee10 
+print "0x81410088= " data.long(eahb:0x81410088)
+system.mode down 
+system.mode up 
+
+Break.set 0x31f4 /program
+
+d.load.elf \\easonzhaopc\view\Whale2\script\WHALE_AP_ddr.axf
+
+go
+
+END
+
+ERROR:
+	return 

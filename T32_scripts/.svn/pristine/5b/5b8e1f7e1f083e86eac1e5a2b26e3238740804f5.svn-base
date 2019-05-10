@@ -1,0 +1,31 @@
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+TREE "A53 CoreDebug"
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core0 -----"
+include A53_CoreDebug.per 0x81410000
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core1 -----"
+include A53_CoreDebug.per 0x81510000
+
+TEXTLINE ""
+TEXTLINE "----- JVL Core0 T0 -----"
+include A53_CoreDebug.per 0x81810000
+
+TEXTLINE ""
+TEXTLINE "----- JVL Core0 T1 -----"
+include A53_CoreDebug.per 0x81910000
+
+TEXTLINE ""
+TEXTLINE "----- JVL Core1 T0 -----"
+include A53_CoreDebug.per 0x81A10000
+
+TEXTLINE ""
+TEXTLINE "----- JVL Core1 T1 -----"
+include A53_CoreDebug.per 0x81B10000
+
+TREE.END

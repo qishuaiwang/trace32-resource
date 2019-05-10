@@ -1,0 +1,54 @@
+LOCAL &TargetID
+ENTRY &TargetID
+IF "X&TargetID"=="X"
+(
+	&TargetID=&target_id
+)
+
+IF &is_swd
+(
+	ON ERROR CONTinue
+	SYStem.CONFIG SWDP ON
+	ON ERROR
+	SYStem.CONFIG SWDPTargetSel &TargetID
+	ON ERROR GOTO JTAG_Config
+	SYStem.JtagClock &jtag_clock_str
+	SYStem.Mode.Prepare
+	ON ERROR
+	GOTO SWD_Config
+JTAG_Config:
+	ON ERROR CONTinue
+	SYStem.CONFIG SWDP OFF
+	ON ERROR
+	ON ERROR GOTO ERROR_Handle
+	SYStem.JtagClock &jtag_clock_str
+	SYStem.DETECT DaisyChain
+	SYStem.Mode.Prepare
+	ON ERROR
+SWD_Config:
+)
+ELSE
+(
+	ON ERROR CONTinue
+	SYStem.CONFIG SWDP OFF
+	ON ERROR
+	ON ERROR GOTO ERROR_Handle
+	SYStem.JtagClock &jtag_clock_str
+	SYStem.DETECT DaisyChain
+	SYStem.Mode.Prepare
+	ON ERROR
+)
+
+ENDDO
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	END

@@ -1,0 +1,49 @@
+;---------------------------------------------------------------------------------------
+; Menu reprogram, add customized bottons and menus
+;---------------------------------------------------------------------------------------
+&CUR_DIR=OS.PPD()
+&DST_DIR=OS.PSD()
+&DST_DIR="&DST_DIR\demo\SPRD\iSharkL"
+
+OS.Hidden mkdir "&DST_DIR"
+print OS.RETURN()
+
+
+OS.Hidden xcopy /Y /E /C /Q /R &CUR_DIR\* &DST_DIR\*
+print OS.RETURN()
+print "xcopy /Y /E /C /Q /R &CUR_DIR\* &DST_DIR\*"
+;ENDDO
+MENU.RESET
+
+(
+    MENU.REPROGRAM
+    (
+        ADD
+        TOOLBAR
+        (
+			IF (CPUFAMILY()=="I386")
+			(
+				;separator
+				toolitem "BIA" "Bi,a"				"do ~~/demo/SPRD/iSharkL/butter.cmm"
+				separator
+			)
+            ;toolitem "Release" "Rl,e"			"do ~~/demo/SPRD/iSharkL/DAP_or_AP_release_cp_arm7.cmm"
+            toolitem "RESET JTAG" "Rs,r"		"do ~~/demo/SPRD/iSharkL/jtag_nTRST.cmm"
+			IF (CPUFAMILY()=="ARM")
+			(
+				separator
+				toolitem "CP0ARM0" "A0,b"			"do ~~/demo/SPRD/iSharkL/cosight_arm926_CP0_arm0.cmm"
+				toolitem "CP0ARM1" "A1,c"			"do ~~/demo/SPRD/iSharkL/cosight_arm926_cp0_arm1.cmm"
+				toolitem "CP1" "C1,d"				"do ~~/demo/SPRD/iSharkL/cosight_cp1_cortexa5.cmm"
+				toolitem "ARM7" "A7,e"				"do ~~/demo/SPRD/iSharkL/cosight_arm7.cmm"
+				separator
+				toolitem "CP0ARM0 anyway" "A0,ab"	"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM0"
+				toolitem "CP0ARM1 anyway" "A1,ac"	"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM1"
+				toolitem "CP1 anyway" "C1,ad"		"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm CP1"
+				toolitem "ARM7 anyway" "A7,ae"		"cd.do ~~/demo/SPRD/iSharkL/iSharkL_anyway.cmm ARM7"
+			)			
+        )
+    )
+
+    MENU.ReProgram "~~/demo/SPRD/iSharkL/iSharkL.men"
+)

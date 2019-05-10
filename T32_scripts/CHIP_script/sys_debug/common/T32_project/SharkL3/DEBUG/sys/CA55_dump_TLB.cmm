@@ -1,0 +1,110 @@
+; ken.kuang for dump TLB.
+; LTB dump failed. 2018-05
+;&TLB_MAX_INDEX=0x120
+&TLB_MAX_INDEX=0x100
+&TLB_MAX_WAY=4.
+
+&W=190.
+&H=6.
+
+AREA.CREATE TLB.US &W (&H*&TLB_MAX_INDEX)
+AREA.SELECT TLB.US
+AREA.VIEW TLB.US
+
+PRINT "WAY INDEX V ASIC      VA           PA      NS  VMID Size  nG  AP  S2AP  Domain S1Size  AS  DBM P XS1U  XS1NU XS2U  XS2NU TYPE S2L NS  P         RAW_TAG_RAM                RAW_DATA_RAM"
+LOCAL &w &i
+&i=0
+WHILE (&i<&TLB_MAX_INDEX)
+(
+	&w=0
+	WHILE (&w<&TLB_MAX_WAY)
+	(
+		GOSUB show_tlb_dump &w &i
+		&w=&w+1
+	)
+	&i=&i+1
+)
+
+
+AREA.SELECT A000
+WinPOS 1 1 &W (&H*10) 0. 0. W002
+;AREA.VIEW TLB.US
+AREA.CLOSE TLB.US
+
+
+ENDDO
+
+raw_dump:
+	LOCAL &way &indx &tag0 &tag1 &tag2 &data0 &data1
+	ENTRY &way &indx
+	; read TAG
+	D.S SPR:0x16F22 %LE %Quad (&way<<30.)|(&indx&0x1FF)
+	&tag0=DATA.Quad(SPR:0x36F00)&0xFFFFFFFF
+	&tag1=DATA.Quad(SPR:0x36F01)&0xFFFFFFFF
+	&tag2=DATA.Quad(SPR:0x36F02)&0xFFFFFFFF
+	; read DATA
+	D.S SPR:0x16F42 %LE %Quad (&way<<30.)|(&indx&0x1FF)
+	&data0=DATA.Quad(SPR:0x36F00)&0xFFFFFFFF
+	&data1=DATA.Quad(SPR:0x36F01)&0xFFFFFFFF
+RETURN &tag0 &tag1 &tag2 &data0 &data1
+
+show_tlb_dump:
+	LOCAL &way &indx &tag0 &tag1 &tag2 &data0 &data1
+	ENTRY &way &indx
+	GOSUB raw_dump &way &indx
+	ENTRY &tag0 &tag1 &tag2 &data0 &data1
+	&Valid=(&tag0>>0.)&0x1
+	&NS_TAG=(&tag0>>1.)&0x1
+	&ASID=(&tag0>>2.)&0xFFFF
+	&VMID=((&tag0>>18.)&0x3FFF)|(((&tag1>>0.)&0x3)<<14.)
+	&Size=(&tag1>>2.)&0x7
+	&nG=(&tag1>>5.)&0x1
+	&AP=(&tag1>>6.)&0x7
+	&S2AP=(&tag1>>9.)&0x3
+	&Domain=(&tag1>>11.)&0xF
+	&S1Size=(&tag1>>15.)&0x7
+	&AS=(&tag1>>18.)&0x1
+	&VA=((&tag1>>19.)&0x1FFF)|(((&tag2>>0.)&0x7FFF)<<13.)
+	&DBM=(&tag2>>15.)&0x1
+	&P_TAG=(&tag2>>16.)&0x3
+	&XS1U=(&data0>>0.)&0x1
+	&XS1NU=(&data0>>1.)&0x1
+	&XS2U=(&data0>>2.)&0x1
+	&XS2NU=(&data0>>3.)&0x1
+	&TYPE=(&data0>>4.)&0xFF
+	&S2L=(&data0>>12.)&0x3
+	&NS_DATA=(&data0>>14.)&0x1
+	&PA=((&data0>>15.)&0x1FFFF)|(((&data1>>0.)&0x7FF)<<17.)
+	&P_DATA=(&data1>>11.)&0x1
+	PRINT " " FORMAT.HEX(1, &way) " "
+	PRINT %CONTINUE "  " FORMAT.HEX(3, &indx) "  "
+	PRINT %CONTINUE FORMAT.HEX(1, &Valid) " "
+	PRINT %CONTINUE FORMAT.HEX(4., &ASID) " "
+	PRINT %CONTINUE FORMAT.HEX(7., &VA) FORMAT.HEX(2, &indx) "000 "
+	PRINT %CONTINUE "00" FORMAT.HEX(7., &PA) "000 "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &NS_TAG) "  "
+	PRINT %CONTINUE FORMAT.HEX(4., &VMID) " "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &Size) "   "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &nG) "  "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &AP) "  "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &S2AP) "   "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &Domain) "    "
+	PRINT %CONTINUE "   " FORMAT.HEX(1., &S1Size) "    "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &AS) "  "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &DBM) "  "
+	PRINT %CONTINUE FORMAT.HEX(1., &P_TAG) " "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &XS1U) "   "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &XS1NU) "   "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &XS2U) "   "
+	PRINT %CONTINUE "  " FORMAT.HEX(1., &XS2NU) "   "
+	PRINT %CONTINUE " " FORMAT.HEX(2., &TYPE) "  "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &S2L) "  "
+	PRINT %CONTINUE " " FORMAT.HEX(1., &NS_DATA) "  "
+	PRINT %CONTINUE FORMAT.HEX(1., &P_DATA) " "
+	PRINT %CONTINUE "  " FORMAT.HEX(8., &tag2) " "
+	PRINT %CONTINUE FORMAT.HEX(8., &tag1) " "
+	PRINT %CONTINUE FORMAT.HEX(8., &tag0) "    "
+	PRINT %CONTINUE FORMAT.HEX(8., &data1) " "
+	PRINT %CONTINUE FORMAT.HEX(8., &data0) " "
+RETURN
+

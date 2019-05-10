@@ -1,0 +1,15 @@
+GLOBAL &a55_romtable_base &a55_coredebug_base &a55_pmu_base &a55_cti_base &a55_etm_base &a55_coredebug_offset &a55_pmu_offset &a55_cti_offset &a55_etm_offset
+
+&a55_romtable_base=0x0
+
+&a55_coredebug_base=0x10000
+&a55_pmu_base=0x30000
+&a55_cti_base=0x20000
+&a55_etm_base=0x40000
+
+&a55_coredebug_offset=0x100000
+&a55_pmu_offset=0x100000
+&a55_cti_offset=0x100000
+&a55_etm_offset=0x100000
+
+ENDDO

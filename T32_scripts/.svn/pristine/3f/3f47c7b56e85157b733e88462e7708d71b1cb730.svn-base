@@ -1,0 +1,144 @@
+; qingwen.fang for scan busmon address monitor through DAP
+;*********************************************************
+GLOBALON STOP GOTO stop_scan
+ON ERROR GOTO stop_scan
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<3
+(
+	PRINT %ERROR "Please make sure Trace32 in Prepare MODE!"
+	ENDDO
+)
+
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	DO "&cur_path/DJTAG_via_T32_edk.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+)
+
+run_djtag DJ_switch 0xFFFFFFFF
+
+AREA.CREATE BUSMON 80. 200.
+AREA.SELECT BUSMON
+AREA.VIEW BUSMON
+
+LOCAL &ssys &dap &chan &retval
+LOCAL &index &clr_screen &temp_sys_name &dap_end
+&MATCH_USER=0x28
+&clr_screen=0
+&j=0
+&index=0
+WHILE &index<1
+(
+	while &j<6.
+	(
+		if (Var.STRing(\ItemSel[&j])=="[Yes]")
+		(
+			&ssys=Var.STRing(\sys_order[&j])
+			&temp_sys_name=Var.STRing(\sys_name[&ssys])
+			&i=Var.Value(\dap_start_order[&j])
+			&dap_end=Var.Value(\dap_end_order[&j])
+			WHILE &i<=&dap_end
+			(
+				if &clr_screen==0
+				(
+					AREA.CLEAR BUSMON
+					PRINT "*************************Scanning..."
+					&clr_screen=&clr_screen+1
+				)
+				else
+				(
+					PRINT %CONTinue "..."
+					if &clr_screen<3
+						&clr_screen=&clr_screen+1
+					else
+						&clr_screen=0
+				)
+				&temp_dap=Var.STRing(\busmon_sys&ssys[&i])
+				;&dap=STRing.SPLIT("&temp_dap","_dap",-1)
+				GOSUB str_split "&temp_dap" "_dap" 1
+				ENTRY &dap
+				&chan=0x8
+				WHILE &chan<=&MATCH_USER
+				(			
+					run_djtag DJ_excute &ssys. &dap. &chan 0 1
+					ENTRY &retval
+					if (&chan==0x8)&&(((&retval)&(1<<30.))>0)
+					(
+						&index=&index+1
+						AREA.CLEAR BUSMON
+						PRINT "**************************capture access!***************************"
+						PRINT "===================================================================="
+						PRINT "                chain0:CHN_INT--chain32:MATCH_USER"
+						PRINT "===================================================================="
+					)
+					if &index==1
+					(
+						&reg_name=Var.STRing(\busmon_regname[&chan-0x8])
+						&reg_name=FORMAT.STRing("&reg_name",18.,' ')
+						PRINT %Decimal " subsys: &temp_sys_name" "    dap: &temp_dap" "    &reg_name" ": 0x" FORMAT.HEX(8., &retval)
+					)
+					&chan=&chan+1
+				)
+				if &index==1
+				(
+					&i=&dap_end
+					&j=5
+				)
+				&i=&i+1
+			)
+		)
+		&j=&j+1
+	)
+	&j=0
+)
+
+run_djtag DJ_switch 0
+stop_scan:
+GLOBALON STOP
+ON ERROR
+AREA.SELECT A000
+END
+
+;****************************************************
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %WARNING "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""

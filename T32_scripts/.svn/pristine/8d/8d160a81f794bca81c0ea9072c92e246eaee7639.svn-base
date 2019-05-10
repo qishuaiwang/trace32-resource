@@ -1,0 +1,332 @@
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+LOCAL &ENABLE_RTIT &core_number 	&number &ddr_base &ddr_size
+LOCAL &Trace_En_bit &Cycle_Acc_bit &OS_bit &User_bit &STS_on_CR3_bit &CR3En_bit &Dest_bit &MTC_En_bit &STS_En_bit &Cmprs_Ret_bit
+LOCAL &Less_Pkts_bit &TraceActive_bit &MTC_Range_bit &RTIT_MSR_configure
+LOCAL &Trace_En &Cycle_Acc &OS &User &STS_on_CR3 &CR3En &Dest &MTC_En &STS_En &Cmprs_Ret
+LOCAL &Less_Pkts &TraceActive &MTC_Range
+LOCAL &RTIT_OUTPUT_ADDR &RTIT_OUTPUT_ADDR_MASK
+local &RTIT_CONFIG &PTI_BIT
+GLOBAL &RTIT_INPUT
+ENTRY &RTIT_INPUT
+&CUR_DIR=OS.PPD()
+&RTIT_CONFIG="PTI"
+&core_number=CORE.NUMBER()
+
+IF (&RTIT_INPUT==0x1)
+(
+	OPEN #1 &CUR_DIR\rtit_config.txt /Read
+	READ #1 %line &ddr_base
+	READ #1 %line &ddr_size
+	CLOSE #1
+	GOSUB RTIT_CONFIG
+	Trace.METHOD Onchip
+	Onchip.Buffer BASE &RTIT_OUTPUT_ADDR ; inform TRACE32 that the SDRAM
+	;set all core RTIT size	
+	Onchip.Buffer SIZE (&RTIT_OUTPUT_ADDR_MASK+0x1)*&core_number
+	Onchip.Buffer IPT ; inform TRACE32 that the SDRAM
+	IPT.ON
+	trace.init
+	
+	; for iSharkL RTIT
+	
+	&Trace_En_bit=0.
+	&Cycle_Acc_bit=1.
+	&OS_bit=2.
+	&User_bit=3.
+	&STS_on_CR3_bit=4.
+	&CR3En_bit=7.
+	&Dest_bit=8.
+	&MTC_En_bit=9.
+	&STS_En_bit=10.
+	&Cmprs_Ret_bit=11.
+	&Less_Pkts_bit=12.
+	&TraceActive_bit=13.
+	&MTC_Range_bit=14.
+	
+	;PSB packets
+	&pkt_Mask=1
+	&RTIT_MSR_configure=(&MTC_Range<<&MTC_Range_bit)|(&TraceActive<<&TraceActive_bit)|(&Less_Pkts<<&Less_Pkts_bit)|(&Cmprs_Ret<<&Cmprs_Ret_bit)|(&STS_En<<&STS_En_bit)|(&MTC_En<<&MTC_En_bit)|(&Dest<<&Dest_bit)|(&CR3En<<&CR3En_bit)|(&STS_on_CR3<<&STS_on_CR3_bit)|(&User<<&User_bit)|(&OS<<&OS_bit)|(&Cycle_Acc<<&Cycle_Acc_bit)|(&Trace_En<<&Trace_En_bit)
+	
+	;D.S MSR:0x77c %LE %Quad (&pkt_Mask<<16.)
+	&number=0.
+	while (&number<&core_number)
+	(
+
+		core.select &number
+		wait 100.ms
+		&ENABLE_RTIT=Data.Quad(MSR:0x768)
+		D.S MSR:0x77c %LE %Quad (&pkt_Mask<<16.)
+		D.S MSR:0x770 %LE %Quad &RTIT_OUTPUT_ADDR
+		D.S MSR:0x771 %LE %Quad &RTIT_OUTPUT_ADDR_MASK
+		D.S MSR:0x768 %LE %Quad 0x1
+		D.S MSR:0x768 %LE %Quad &RTIT_MSR_configure
+		D.S MSR:0x76C %LE %Quad 0x37
+		&number=&number+1.
+		&RTIT_OUTPUT_ADDR=&RTIT_OUTPUT_ADDR+(&RTIT_OUTPUT_ADDR_MASK+0x1)
+	)
+	core.select 0.
+	wait 100.ms
+	;Trace.list tpinfo list.address default
+
+	OPEN #1 &CUR_DIR\rtit_config.txt /Create
+	WRITE #1 "&ddr_base"
+	WRITE #1 "&ddr_size"
+	CLOSE #1
+)
+ELSE IF (&RTIT_INPUT==0x2)
+(
+	GOSUB RTIT_CONFIG
+	;ipt.portroute Analyzer
+	IPT.TraceID 0x00800000
+	SYStem.CONFIG STM1.Mode STP64
+	Trace.METHOD Analyzer
+	Trace.THreshold 0.9
+	Trace.Init
+	IF (&PTI_BIT==8)
+	(
+	; PTI Enable, 8BIT
+		STM.PortSize 8
+		D.S AND:0xF0009000 %LE %Long 0x0000E524
+	)
+	ELSE IF (&PTI_BIT==16)
+	(
+	; PTI Enable, 16BIT
+		STM.PortSize 16
+		D.S AND:0xF0009000 %LE %Long 0x0000E544
+	)
+	ELSE IF (&PTI_BIT==32)
+	(
+	; PTI Enable, 32BIT
+		STM.PortSize 16
+		D.S AND:0xF0009000 %LE %Long 0x0000E534
+	)
+	Trace.Arm
+	IPT.ON
+	; for iSharkL RTIT
+
+	&Trace_En_bit=0.
+	&Cycle_Acc_bit=1.
+	&OS_bit=2.
+	&User_bit=3.
+	&STS_on_CR3_bit=4.
+	&CR3En_bit=7.
+	&Dest_bit=8.
+	&MTC_En_bit=9.
+	&STS_En_bit=10.
+	&Cmprs_Ret_bit=11.
+	&Less_Pkts_bit=12.
+	&TraceActive_bit=13.
+	&MTC_Range_bit=14.
+	&pkt_Mask=1
+	;D.S MSR:0x77c %LE %Quad (&pkt_Mask<<16.)
+	&RTIT_MSR_configure=(&MTC_Range<<&MTC_Range_bit)|(&TraceActive<<&TraceActive_bit)|(&Less_Pkts<<&Less_Pkts_bit)|(&Cmprs_Ret<<&Cmprs_Ret_bit)|(&STS_En<<&STS_En_bit)|(&MTC_En<<&MTC_En_bit)|(&Dest<<&Dest_bit)|(&CR3En<<&CR3En_bit)|(&STS_on_CR3<<&STS_on_CR3_bit)|(&User<<&User_bit)|(&OS<<&OS_bit)|(&Cycle_Acc<<&Cycle_Acc_bit)|(&Trace_En<<&Trace_En_bit)
+	&number=0.
+	while (&number<&core_number)
+(
+	&RTIT_OUTPUT_ADDR=&RTIT_OUTPUT_ADDR+(0x80+0x1)*&number
+		core.select &number
+		wait 100.ms
+		&ENABLE_RTIT=Data.Quad(MSR:0x768)
+		D.S MSR:0x770 %LE %Quad &RTIT_OUTPUT_ADDR
+		D.S MSR:0x768 %LE %Quad 0x1
+		D.S MSR:0x768 %LE %Quad &RTIT_MSR_configure
+		&number=&number+1.
+)
+	core.select 0.
+)
+ENDDO
+RTIT_CONFIG:
+	DIALOG
+	(
+		  HEADER "RTIT_CONFIG"
+		  POS 0. 0. 28. 1.
+		  TEXT ""
+		  	  
+		  POS 1. 1. 12. 1.
+		  TEXT "buffer_base:"
+		  POS 15. 1. 12. 1.
+		  LAB: EDIT "" ""
+			
+			POS 1. 2. 12. 1.
+		  TEXT "size(32B_4MB):"
+		  POS 15. 2. 12. 1.
+		  LAB0: EDIT "" ""
+		  
+		  POS 1. 3.5 12. 1.
+		  LINE "RTIT Enable:"
+		  Option0: CHECKBOX "Trace_En" ""
+		  Option1: CHECKBOX "Cycle_Acc" ""
+		  Option2: CHECKBOX "OS" ""
+			Option3: CHECKBOX "User" ""
+			Option4: CHECKBOX "STS_on_CR3" ""
+			Option5: CHECKBOX "CR3En" ""
+			
+			POS 15. 4.5 12. 1.
+			Option6: CHECKBOX "Dest" ""
+			Option7: CHECKBOX "MTC_En" ""
+			Option8: CHECKBOX "STS_En" ""
+			Option9: CHECKBOX "Cmprs_Ret" ""
+			Option10: CHECKBOX "Less_Pkts" ""
+			Option11: CHECKBOX "TraceActive" ""
+			POS 1. 10.5 12. 1.
+		  TEXT "MTC_Range(0-3):"
+		  POS 15. 10.5 12. 1.
+		  LAB1: EDIT "" ""
+		  
+		  POS 1. 11.5 12. 1.
+		  TEXT "PTI_BIT:"
+		  POS 15. 11.5 12. 1.
+		  OptionA.SEL:	DEFCOMBOBOX "0,4,8,16,32" ""
+		  
+		;buttons OK (Default) and Cancel
+		  POS 2. 13. 10. 1.
+		  DEFBUTTON "OK" "CONTinue"
+		  POS 15. 13. 10. 1.
+		  BUTTON "Cancel" "GOTO cancel"
+		;define action when window is closed
+		  CLOSE "GOTO cancel"
+		)	
+		;set default selections
+		DIALOG.SET Option2
+		DIALOG.SET Option0
+		DIALOG.SET Option11
+		IF (&RTIT_INPUT==0x1)
+		(
+			DIALOG.SET Option6
+			DIALOG.SET Option4
+			DIALOG.SET Option5
+			DIALOG.SET Option9
+			DIALOG.Set LAB "&ddr_base"
+			DIALOG.Set LAB0 "&ddr_size"
+			DIALOG.Set LAB1 "3"
+			DIALOG.SET OptionA.SEL  "0" "0,4,8,16,32"
+			DIALOG.Disable OptionA.SEL
+		)
+		ELSE IF (&RTIT_INPUT==0x2)
+		(
+			DIALOG.Set LAB "0xF4C00000"
+			DIALOG.Set LAB0 "0x7F"
+			DIALOG.Set LAB1 "3"
+			DIALOG.SET OptionA.SEL  "16" "0,4,8,16,32"
+		)
+		;STOP command halts script execution 
+		STOP
+		;script will continue here when "OK" button is clicked
+		;get selection
+		&PTI_BIT=DIALOG.STRING(OptionA.SEL)
+		&MTC_Range=DIALOG.STRing(LAB1);0 1 2 3
+		&RTIT_OUTPUT_ADDR=DIALOG.STRing(LAB)
+; MAX 22 - 4MB
+; MIN 05 - 32B
+; DEFAULT: 06 - 64B
+		&RTIT_OUTPUT_ADDR_MASK=DIALOG.STRing(LAB0)
+		&ddr_base=&RTIT_OUTPUT_ADDR
+		&ddr_size=&RTIT_OUTPUT_ADDR_MASK
+		IF DIALOG.BOOLEAN(Option0)
+		(
+			&Trace_En=1
+		)
+		ELSE 
+		(
+			&Trace_En=0
+		)
+		IF DIALOG.BOOLEAN(Option1)
+		(
+			&Cycle_Acc=1
+		)
+		ELSE 
+		(
+			&Cycle_Acc=0
+		)
+		IF DIALOG.BOOLEAN(Option2)
+		(
+			&OS=1
+		)
+		ELSE 
+		(
+			&OS=0
+		)
+		IF DIALOG.BOOLEAN(Option3)
+		(
+			&User=1
+		)
+		ELSE 
+		(
+			&User=0
+		)
+		IF DIALOG.BOOLEAN(Option4)
+		(
+			&STS_on_CR3=1
+		)
+		ELSE 
+		(
+			&STS_on_CR3=0
+		)
+		IF DIALOG.BOOLEAN(Option5)
+		(
+			&CR3En=1
+		)
+		ELSE 
+		(
+			&CR3En=0
+		)
+		IF DIALOG.BOOLEAN(Option6)
+		(
+			&Dest=1
+		)
+		ELSE 
+		(
+			&Dest=0
+		)
+		IF DIALOG.BOOLEAN(Option7)
+		(
+			&MTC_En=1
+		)
+		ELSE 
+		(
+			&MTC_En=0
+		)
+		IF DIALOG.BOOLEAN(Option8)
+		(
+			&STS_En=1
+		)
+		ELSE 
+		(
+			&STS_En=0
+		)
+		IF DIALOG.BOOLEAN(Option9)
+		(
+			&Cmprs_Ret=1
+		)
+		ELSE 
+		(
+			&Cmprs_Ret=0
+		)
+		IF DIALOG.BOOLEAN(Option10)
+		(
+			&Less_Pkts=1
+		)
+		ELSE 
+		(
+			&Less_Pkts=0
+		)
+		IF DIALOG.BOOLEAN(Option11)
+		(
+			&TraceActive=1
+		)
+		ELSE 
+		(
+			&TraceActive=0
+		)
+		DIALOG.END
+		RETURN
+cancel:
+	DIALOG.END
+	ENDDO
+		
+
+

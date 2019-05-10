@@ -1,0 +1,59 @@
+LOCAL &cur_state &cur_flag &os_sel
+ENTRY &os_sel 
+;&os_sel="small_sys"
+system.mode down
+system.reset
+
+system.jtagclock 5Mhz
+
+system.cpu CORTEXA53 
+system.config CORENUMBER 1.
+core.assign 1
+
+sys.config corebase 0x81410000
+SYS.CONFIG.CTIBase       0x81420000
+sys.config.bmc.base       0x81430000
+sys.config.etm.base       0x81440000
+
+;system.multiCore JTAGACCESSPORT 0
+;system.multicore COREJTAGPORT 0
+system.config MEMORYACCESSPORT 0.
+system.config DEBUGACCESSPORT 1.
+
+system.config AXIACCESSPORT   0.
+system.config APBACCESSPORT   1.
+system.config AHBACCESSPORT   3.
+sys.MemAccess DAP
+System.CpuAccess Enable
+
+
+
+if ("&os_sel"=="small_sys")
+(
+	SYS.CONFIG SWDP ON
+	ON ERROR JUMPTO connect_error
+	system.mode attach
+	Break
+connect_continue:
+	wait 100.ms
+	&cur_state=STATE.TARGET()
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*system down*")
+	&cur_flag=STRing.ComPare(STRing.LoWeR("&cur_state"),"*running*")||&cur_flag
+	IF (&cur_flag==True())
+	(
+		SYS.CONFIG SWDP OFF
+		system.mode attach
+		Break
+	)
+	ON ERROR inherit	
+)
+ELSE IF ("&os_sel"=="os_sys")
+(
+	SYS.CONFIG SWDP ON
+	system.mode Prepare
+	print "this is os_sys.if core debug, please system.mode attach"
+)
+ENDDO
+connect_error:
+	GOSUB connect_continue
+	

@@ -1,0 +1,19 @@
+LOCAL &count
+&count=1
+LOCAL &portType
+&portType=SYStem.CONFIG.DEBUGPORTTYPE()
+SYStem.Mode Down
+SYStem.CONFIG.DEBUGPORTTYPE JTAG
+SYStem.Mode Prepare
+WHILE &count>0||SYStem.MODE()>5
+(
+	JTAG.PIN NRESET 0
+	WAIT 1.S
+	JTAG.PIN NRESET 1
+	&count=&count-1
+)
+
+WAIT 100.MS
+SYStem.Mode Down
+	SYStem.CONFIG.DEBUGPORTTYPE &portType
+ENDDO

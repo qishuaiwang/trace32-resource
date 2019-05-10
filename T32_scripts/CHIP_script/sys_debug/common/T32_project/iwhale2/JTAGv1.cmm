@@ -1,0 +1,12 @@
+LOCAL &temp &project &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &project &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+GLOBAL &root_path
+&temp=OS.PPD()
+&root_path=STRing.Replace("&temp", "\", "/", 0)
+IF "X&project"=="X"
+	&project="iWhale2"
+IF "X&config"=="X"
+	&config="RST"
+DO "&root_path/&project/JTAG.cmm" &config &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+ENDDO

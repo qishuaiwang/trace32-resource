@@ -1,0 +1,481 @@
+LOCAL &DC_CHAN_LEN &CUR_DIR
+
+&CUR_DIR=OS.PPD()
+
+LOCAL &Iopcode_head &SM_ADDR &FA_BANK_ADDR &IFAVOR &ISENSELV &EFUSE_RESET
+LOCAL &FA_ROW_ADDR &LENGTH &EFUSE_DC &Efuse_Key_Access_Value
+&Iopcode_head=0x1<<63.
+&SM_ADDR=0x0<<54.
+&FA_BANK_ADDR=0x0<<47.
+&IFAVOR=0x0<<34.
+&ISENSELV=0x0<<31.
+&EFUSE_RESET=0x0<<36.
+
+;&cur_path=os.ppd()
+;DO &cur_path/iSharkl2_JTAG.cmm "RST"
+;&EFUSE_RDDATA="0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000202048c7410d0106a1520206a435ecb07518007"
+;GOSUB SEL_FA_WRITE &EFUSE_RDDATA 0x26
+
+LOCAL &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+GOSUB &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+
+;START EFUSE_Auto_Download
+EFUSE_Auto_Download:
+	LOCAL &Iopcode_cmd
+	LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+
+	&Iopcode_cmd=0x0<<59.
+	:&Iopcode=&Iopcode_head|&Iopcode_cmd
+	&EFFUSE_DATA=&Iopcode
+	
+	fuseTAP write 0x20 112. &EFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	
+	RETURN
+;END EFUSE_Auto_Download
+
+EFUSE_FA_Set:
+	ENTRY &ADDR &WDATA
+	&ADDR=format.hex(8.,&ADDR)
+	&ADDR="0x"+STRing.TRIM("&ADDR")
+	&ADDR=&ADDR<<40.
+	&IADDR=&SM_ADDR|&FA_BANK_ADDR|&ADDR
+	&Iopcode_cmd=0x1<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	&WEFFUSE_DATA=&Iopcode|&IADDR|&WDATA
+	;0x2 Voltage Control
+	&Direction=0x1<<58.
+	&Iopcode_type=0x2<<59.
+	&Iopcode_WRITE=&Iopcode_head|&Iopcode_type
+	&EFFUSE_DATA_WRITW_CTRL=&Iopcode_WRITE|&Direction
+	&Direction=0x0<<58.
+	&EFFUSE_DATA_WRITW_SET=&Iopcode_WRITE|&Direction
+
+	DIALOG.OK "Please Change the Voltage to Write!"
+	fuseTAP write 0x20 112. &EFFUSE_DATA_WRITW_CTRL 0x0
+	ENTRY &ret &ret_h
+	RETURN
+EFUSE_FA_CLR:
+	;LOCAL &ADDR &WDATA &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	ENTRY &ADDR &WDATA
+	&ADDR=format.hex(8.,&ADDR)
+	&ADDR="0x"+STRing.TRIM("&ADDR")
+	&ADDR=&ADDR<<40.
+	&IADDR=&SM_ADDR|&FA_BANK_ADDR|&ADDR
+	&Iopcode_cmd=0x1<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	&WEFFUSE_DATA=&Iopcode|&IADDR|&WDATA
+	;0x2 Voltage Control
+	&Direction=0x1<<58.
+	&Iopcode_type=0x2<<59.
+	&Iopcode_WRITE=&Iopcode_head|&Iopcode_type
+	&EFFUSE_DATA_WRITW_CTRL=&Iopcode_WRITE|&Direction
+	&Direction=0x0<<58.
+	&EFFUSE_DATA_WRITW_SET=&Iopcode_WRITE|&Direction
+	
+	DIALOG.OK "Please Change the Voltage to Read!"
+	fuseTAP write 0x20 112. &EFFUSE_DATA_WRITW_SET 0x0
+	ENTRY &ret &ret_h
+	RETURN
+;EFUSE_FA_WRITE
+EFUSE_FA_WRITE:
+	;LOCAL &ADDR &WDATA &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	ENTRY &ADDR &WDATA
+	&ADDR=format.hex(8.,&ADDR)
+	&ADDR="0x"+STRing.TRIM("&ADDR")
+	&ADDR=&ADDR<<40.
+	&IADDR=&SM_ADDR|&FA_BANK_ADDR|&ADDR
+	&Iopcode_cmd=0x1<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	&WEFFUSE_DATA=&Iopcode|&IADDR|&WDATA
+	;0x2 Voltage Control
+	&Direction=0x1<<58.
+	&Iopcode_type=0x2<<59.
+	&Iopcode_WRITE=&Iopcode_head|&Iopcode_type
+	&EFFUSE_DATA_WRITW_CTRL=&Iopcode_WRITE|&Direction
+	&Direction=0x0<<58.
+	&EFFUSE_DATA_WRITW_SET=&Iopcode_WRITE|&Direction
+
+	fuseTAP write 0x20 112. &WEFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	
+	RETURN
+;end EFUSE_FA_WRITE
+
+;EFUSE_FA_READ
+EFUSE_FA_READ:
+	;LOCAL &ADDR &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	ENTRY &ADDR
+	&block=&ADDR
+	&ADDR=format.hex(8.,&ADDR)
+	&ADDR="0x"+STRing.TRIM("&ADDR")
+	&ADDR=&ADDR<<40.
+	&IADDR=&SM_ADDR|&FA_BANK_ADDR|&ADDR
+	&Iopcode_cmd=0x5<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	&REFFUSE_DATA=&Iopcode|&IADDR|&IFAVOR|&ISENSELV
+
+	fuseTAP write 0x20 112. &REFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	&RDDATA=(&ret_h&0xFFFFFFFF0000)>>16.
+	
+	print "&block 0 fuse fa_read &RDDATA"
+	fuseTAP write 0x20 112. &REFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	
+	fuseTAP write 0x20 112. 0x0 0x0
+	ENTRY &ret &ret_h
+	
+	;print "1st FA read: &ret_h"
+	;GOSUB shift_n_bit 113. 0x0
+        ;ENTRY &ret &ret_h
+	;print "2st FA_read: &ret_h"
+
+	;&RDY=(&ret_h&0x1)>>0.
+	;&CLERR=(&ret_h&0x2)>>1.
+	;&PERR=(&ret_h&0x4)>>2.
+	;&ROWADDR=(&ret_h&0x1F8)>>3.
+	;&BANKADDR=(&ret_h&0xFE00)>>9.
+	&RDDATA=(&ret_h&0xFFFFFFFF0000)>>16.
+	
+	print "&block 1 fuse fa_read &RDDATA"
+	RETURN &RDDATA
+;end EFUSE_FA_READ
+
+;start EFUSE_DC_WRITE
+EFUSE_DC_WRITE:
+	LOCAL &Iopcode_cmd &WRDATA &EFUSE_LEN_SUR &WDATA_value
+	LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	LOCAL &EFUSE_LEN &DC &WDATA &EFUSE_ALL_LEN &EFFUSE_DATA
+	ENTRY &EFUSE_LEN &DC &WDATA
+	&Iopcode_cmd=0x3<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd  
+	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+	LOCAL &N
+	IF ("&DC"=="0x0")
+	(
+		&EFUSE_ALL_LEN=0x60
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	ELSE IF ("&DC"=="0x1")
+	(
+		&EFUSE_ALL_LEN=0x340
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	ELSE IF ("&DC"=="0x2")
+	(
+		&EFUSE_ALL_LEN=0x40
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	IF (&EFUSE_LEN_SUR!=0)
+	(
+		&N=&N+1.
+	)
+	VAR.NEWLOCAL char[&N][10] \string_write_vlaue
+	&i=0.
+	while (&i<&N)
+	(
+		IF (&EFUSE_LEN_SUR==0)
+		(
+			&WDATA_value=STRing.MID("&WDATA",((&EFUSE_ALL_LEN/4.)-(&EFUSE_LEN/4.)*(&i+1.)),&EFUSE_LEN/4.)
+		)
+		ELSE
+		(
+			IF (&i!=(&N-1))
+			(
+				&WDATA_value=STRing.MID("&WDATA",((&EFUSE_ALL_LEN/4.)-(&EFUSE_LEN/4.)*(&i+1.)),&EFUSE_LEN/4.)
+			)
+			ELSE
+			(
+				&WDATA_value=STRing.MID("&WDATA",0.,&EFUSE_LEN_SUR/4.)
+			)
+		)
+		Var.set \string_write_vlaue[&i]="&WDATA_value"
+		&i=&i+1.
+	)
+	&EFUSE_LEN=&EFUSE_LEN<<37.
+	&EFUSE_LEN_SUR=&EFUSE_LEN_SUR<<37.
+	&DC=&DC<<32.
+	&j=0.
+	While (&j<&i)
+	(
+		IF (&EFUSE_LEN_SUR==0)
+		(
+			&WRDATA=Var.STRing(\string_write_vlaue[&j])
+			&WRDATA="0x"+"&WRDATA"
+			&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN|&EFUSE_RESET|&DC|&WRDATA
+		)
+		ELSE
+		(
+			IF (&j==(&i-1.))
+			(
+				&WRDATA=Var.STRing(\string_write_vlaue[&j])
+				&WRDATA="0x"+"&WRDATA"
+				&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN_SUR|&EFUSE_RESET|&DC|&WRDATA
+			)
+			ELSE
+			(
+				&WRDATA=Var.STRing(\string_write_vlaue[&j])
+				&WRDATA="0x"+"&WRDATA"
+				&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN|&EFUSE_RESET|&DC|&WRDATA
+			)
+		)
+		fuseTAP write 0x20 112. &EFFUSE_DATA 0x0
+		ENTRY &ret &ret_h
+		&j=&j+1.
+	)
+	fuseTAP write 0x20 112. 0x0 0x0
+	ENTRY &ret &ret_h
+
+	print "DC write end"
+	RETURN
+;end EFUSE_DC_write
+
+;start EFUSE_DC_READ
+EFUSE_DC_READ:
+(
+	LOCAL &Iopcode_cmd &EFFUSE_DATA
+	LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA &EFUSE_RDDATA
+	LOCAL &EFUSE_LEN &DC &EFUSE_ALL_LEN &EFUSE_LEN_SUR &dc_read_len
+	ENTRY &EFUSE_LEN &DC
+	&dc_read_len=&EFUSE_LEN/4.
+	&EFUSE_RDDATA=""
+	&Iopcode_cmd=0x6<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd  
+	LOCAL &N
+	IF ("&DC"=="0x0")
+	(
+		&EFUSE_ALL_LEN=0x60
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	ELSE IF ("&DC"=="0x1")
+	(
+		&EFUSE_ALL_LEN=0x340
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	ELSE IF ("&DC"=="0x2")
+	(
+		&EFUSE_ALL_LEN=0x40
+		&N=&EFUSE_ALL_LEN/&EFUSE_LEN
+		&EFUSE_LEN_SUR=&EFUSE_ALL_LEN%&EFUSE_LEN
+	)
+	IF (&EFUSE_LEN_SUR!=0)
+	(
+		&N=&N+1.
+	)
+	;VAR.NEWLOCAL char[&N][10] \string_read_vlaue
+	&i=0.
+	&EFUSE_LEN=&EFUSE_LEN<<37.
+	&EFUSE_LEN_SUR=&EFUSE_LEN_SUR<<37.
+	&DC=&DC<<32.
+	&N=&N+3.
+	While (&i<&N)
+	(
+		IF (&EFUSE_LEN_SUR==0)
+		(
+			&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN|&DC
+		)
+		ELSE
+		(
+			IF (&i==(&N-1.))
+			(
+				&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN_SUR|&DC
+			)
+			ELSE
+			(
+				&EFFUSE_DATA=&Iopcode|&SM_ADDR|&EFUSE_LEN|&DC
+			)
+		)
+		fuseTAP write 0x20 112. &EFFUSE_DATA 0x0
+		ENTRY &ret &ret_h
+		;GOSUB shift_run_tms
+		&RDDATA=(&ret_h&0xFFFFFFFF0000)>>16.
+		&RDDATA=FORMAT.Hex(&dc_read_len,&RDDATA)
+		PRINT "7*&i IS &RDDATA"
+		IF (&i>0x1)
+		(
+			&EFUSE_RDDATA="&RDDATA"+"&EFUSE_RDDATA"
+		)
+		ELSE IF (&i==0x1)
+		(
+			&EFUSE_RDDATA="&RDDATA"
+		)
+		&i=&i+1
+	)
+	;print "&EFUSE_RDDATA"
+	fuseTAP write 0x20 112. 0x0 0x0
+	ENTRY &ret &ret_h
+	;&EFUSE_RDDATA="0000000000000000000000000000000000000000000000000000000000000000000000000000000010DC305B401CB73C4580000000000000000000000000000106E382DC00E5B9E42C000000000000000000000001C1C48C0000000210000000000000CB0751000C"
+	 ;&EFUSE_RDDATA="000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000CB0750000C"
+
+	RETURN &EFUSE_RDDATA
+)
+;END EFUSE_DC_READ
+
+;START EFUSE_CTRL_DC
+FUSE_CTRL_DC:
+	;LOCAL &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	;LOCAL &DC
+	ENTRY &DC
+	&DC=&DC<<32.
+  &Iopcode_cmd=0x4<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd 
+	&SEFFUSE_DATA=&Iopcode|&SM_ADDR|&DC 
+	
+	fuseTAP write 0x20 112. &SEFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	RETURN 
+;END EFUSE_CTRL_DC
+
+;START EFUSE_DC_STATUS
+EFUSE_DC_STATUS:
+	;LOCAL &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	;LOCAL &DC
+	ENTRY &DC
+	&DC=&DC<<32.
+  	&Iopcode_cmd=0x7<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd 
+	&EFFUSE_DATA=&Iopcode|&SM_ADDR|&DC 
+	
+	fuseTAP write 0x20 112. &EFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	&RDY=(&ret_h&0x1)>>0.
+	&CLERR=(&ret_h&0x2)>>1.
+	&PERR=(&ret_h&0x4)>>2.
+	&ROWADDR=(&ret_h&0x1F8)>>3.
+	&BANKADDR=(&ret_h&0xFE00)>>9.
+	&RDDATA=(&ret_h&0xFFFFFFFF0000)>>16.
+	
+	RETURN &RDDATA &BANKADDR &ROWADDR &PERR &CLERR &RDY
+;END EFUSE_DC_STATUS
+
+;START EFUSE_KEY_WRITE_ACCESS
+EFUSE_KEY_WRITE_ACCESS:
+	LOCAL &Iopcode_cmd
+	LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	&write_read=0x1<<23.
+	&key_access_value=0x55AA55
+	&Iopcode_cmd=0x8<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	
+	&WKEFFUSE_DATA=&Iopcode|&write_read|&key_access_value
+			
+	fuseTAP write 0x20 112. &WKEFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	RETURN
+;END EFUSE_KEY_WRITE_ACCESS
+
+;START EFUSE_KEY_READ_ACCESS
+EFUSE_KEY_READ_ACCESS:
+	;LOCAL &Iopcode_cmd
+	;LOCAL &RDY &CLERR &PERR &ROWADDR &BANKADDR &RDDATA
+	&write_read=0x0<<23.
+	&key_access_value=0x55AA55
+	&Iopcode_cmd=0x8<<59.
+	&Iopcode=&Iopcode_head|&Iopcode_cmd
+	
+	&KREFFUSE_DATA=&Iopcode|&write_read|&key_access_value
+		
+	fuseTAP write 0x20 112. &KREFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+
+	;GOSUB shift_run_tms
+	
+	fuseTAP write 0x20 112. &KREFFUSE_DATA 0x0
+	ENTRY &ret &ret_h
+	
+	&RDY=(&ret_h&0x1)>>0.
+	&CLERR=(&ret_h&0x2)>>1.
+	&PERR=(&ret_h&0x4)>>2.
+	&ROWADDR=(&ret_h&0x1F8)>>3.
+	&BANKADDR=(&ret_h&0xFE00)>>9.
+	&RDDATA=(&ret_h&0xFFFFFFFF0000)>>16.
+	
+	RETURN &RDDATA
+	
+;END EFUSE_KEY_READ_ACCESS
+SEL_FA_ALL_BLOCK_WRITE:
+	LOCAL &DATA &i &end &len &temp &block_data
+	ENTRY &DATA
+	
+	GOSUB EFUSE_KEY_WRITE_ACCESS
+	GOSUB EFUSE_KEY_READ_ACCESS
+	ENTRY &key_value
+	GOSUB EFUSE_KEY_WRITE_ACCESS
+	
+	&len=STRing.LENgth("&DATA")
+	&end=(&len/8.)
+	&i=0.
+	WHILE (&i<&end)
+	(
+		&block_data=&i
+		&temp="0x"+string.mid("&DATA",(&len-8.*&i-8.),8.)
+		IF (&i==0)
+		(
+			GOSUB EFUSE_FA_WRITE &block_data &temp
+			wait 200.ms
+			GOSUB EFUSE_FA_Set &block_data &temp
+			wait 200.ms
+		)
+		ELSE
+		(
+			GOSUB EFUSE_FA_WRITE &block_data &temp
+			wait 200.ms
+		)
+		&i=&i+1.
+	)
+	GOSUB EFUSE_FA_CLR &block_data 0x0101
+	wait 200.ms
+	RETURN
+;END SEL_FA_WRITE
+
+SEL_FA_WRITE:
+	LOCAL &DATA &i &end &len &temp &block_data &block_start
+	ENTRY &DATA &block_start
+	
+	GOSUB EFUSE_KEY_WRITE_ACCESS
+	GOSUB EFUSE_KEY_READ_ACCESS
+	ENTRY &key_value
+	GOSUB EFUSE_KEY_WRITE_ACCESS
+
+	&len=STRing.LENgth("&DATA")
+	&end=(&len/8.)
+	&i=0.
+	WHILE (&i<&end)
+	(
+		&block_data=&i+&block_start
+		&temp="0x"+string.mid("&DATA",(&len-8.*&i-8.),8.)
+		if (&i==0)
+		(
+			GOSUB EFUSE_FA_WRITE &block_data &temp
+			wait 200.ms
+			GOSUB EFUSE_FA_Set &block_data &temp
+			wait 200.ms
+		)
+		ELSE
+		(
+			GOSUB EFUSE_FA_WRITE &block_data &temp
+			wait 200.ms
+		)
+
+		&i=&i+1.
+	)
+	GOSUB EFUSE_FA_CLR &block_data 0x0101
+	wait 200.ms
+	RETURN
+;END SEL_FA_WRITE

@@ -1,0 +1,113 @@
+LOCAL &MEM_TYPE &Core_N &SIZE &ADDR_MIN &ADDR_MAX
+&MEM_TYPE="A"
+&SIZE=0x1000
+&ADDR_MIN=0x41000000
+&ADDR_MAX=0x43000000
+
+LOCAL &W &H
+&W=80.
+&H=1024.
+AREA.CREATE pagewalk &W &H
+AREA.SELECT pagewalk
+WinPOS 1 1 &W 24. 0. 0. W002
+AREA.VIEW pagewalk
+
+LOCAL &TTBR0_EL1 &l1 &l2 &l3 &TTBR1_EL1 &s_ttbr
+&TTBR0_EL1=Data.Quad(SPR:0x30200)&0xFFFFFFFFFFFF
+&TTBR1_EL1=Data.Quad(SPR:0x30201)&0xFFFFFFFFFFFF
+&l1=&TTBR1_EL1
+&s_ttbr=&l1
+LOCAL &addr
+
+PRINT "Leve1 Start &l1 ..."
+WHILE (&l1<(&s_ttbr+&SIZE))
+(
+	LOCAL &l1_e
+	&l1_e=Data.Quad(A:&l1)
+	IF (&l1_e==0)
+	(
+		GOTO l1_next
+	)
+	ELSE IF ((&l1_e&0x3)==0x1)
+	(
+		&addr=(&l1_e&0xFFFFFFF000)
+		IF ((&addr>=(&ADDR_MIN&0xC0000000))&&(&addr<(&ADDR_MAX&0xC0000000)))
+		(
+			PRINT %ERROR "Level(1) Address(&l1) Entry(&l1_e) invalid! va(&addr)"
+		)
+		GOTO l1_next
+	)
+	ELSE IF ((&l1_e&0x3)==0x2)
+	(
+		PRINT %ERROR "Level(1) Address(&l1) Entry(&l1_e) invalid!"
+		GOTO l1_next
+	)
+	&l1_e=(&l1_e&0xFFFFFFF000)
+	&l2=&l1_e
+	;;;;;;;;;;L2;;;;;;;;;;;;;;;;;;;;;;
+	PRINT "Leve2 Start &l2 ..."
+	WHILE (&l2<(&l1_e+&SIZE))
+	(
+		LOCAL &l2_e
+		&l2_e=Data.Quad(A:&l2)
+		IF (&l2_e==0)
+		(
+			GOTO l2_next
+		)
+		ELSE IF ((&l2_e&0x3)==0x1)
+		(
+			&addr=(&l2_e&0xFFFFFFF000)
+			IF ((&addr>=(&ADDR_MIN&0xFFFE0000))&&(&addr<(&ADDR_MAX&0xFFFE0000)))
+			(
+				PRINT %ERROR "Level(2) Address(&l2) Entry(&l2_e) invalid! va(&addr)"
+			)
+			GOTO l2_next
+		)
+		ELSE IF ((&l2_e&0x3)==0x2)
+		(
+			PRINT %ERROR "Level(2) Address(&l2) Entry(&l2_e) invalid!"
+			GOTO l2_next
+		)
+		&l2_e=(&l2_e&0xFFFFFFF000)
+		&l3=&l2_e
+		;;;;;;;;;;L3;;;;;;;;;;;;;;;;;;;;;;
+		PRINT "Leve3 Start &l3 ..."
+		WHILE (&l3<(&l2_e+&SIZE))
+		(
+			LOCAL &l3_e
+			&l3_e=Data.Quad(A:&l3)
+			IF (&l3_e==0)
+			(
+				GOTO l3_next
+			)
+			ELSE IF ((&l3_e&0x3)==0x1)||((&l3_e&0x3)==0x2)
+			(
+				PRINT %ERROR "Level(3) Address(&l3) Entry(&l3_e) invalid!"
+				GOTO l3_next
+			)
+			ELSE
+			(
+				&addr=(&l3_e&0xFFFFFFF000)
+				IF ((&addr>=&ADDR_MIN)&&(&addr<&ADDR_MAX))
+				(
+					PRINT %ERROR "Level(3) Address(&l3) Entry(&l3_e) invalid! va(&addr)"
+				)
+			)
+l3_next:
+			&l3=&l3+0x8
+		)
+l2_next:
+		&l2=&l2+0x8
+	)
+l1_next:
+	&l1=&l1+0x8
+)
+
+PRINT "Scan Done!"
+
+AREA.SELECT A000
+WinPOS 1 1 &W (&H) 0. 0. W002
+AREA.CLOSE pagewalk
+
+
+ENDDO

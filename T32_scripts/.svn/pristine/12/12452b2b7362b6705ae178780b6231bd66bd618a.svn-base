@@ -1,0 +1,98 @@
+LOCAL &t32_info_file_path &t32_info_file &file_lock &is_err &inner_path &out_path &hip
+&inner_path="\\cvsrv1\Share\T32_info"
+&out_path="\\shnas01\PublicShared\PLD\ChipTest\exchange_ken\T32_info"
+&hip=HOSTIP()
+IF (&hip&0xFF000000)==0x0A000000
+(
+	&t32_info_file_path="&out_path"
+)
+ELSE
+(
+	&t32_info_file_path="&inner_path"
+)
+
+&t32_info_file="&t32_info_file_path\T32_info.info"
+&file_lock="&t32_info_file_path\file_lock"
+&is_err=0
+
+
+
+ON ERROR GOTO ERROR_UNKNOW
+
+LOCAL &wait_file_release
+&wait_file_release=1
+WHILE (&wait_file_release==1)
+(
+RETRY_GET_LOCK:
+	IF FILE.EXIST("&file_lock")
+	(
+		WAIT 500.MS
+	)
+	ELSE
+	(
+		ON ERROR GOTO RETRY_GET_LOCK
+		OPEN #10 &file_lock /Create
+		ON ERROR
+		&wait_file_release=0
+	)
+)
+OPEN #1 &t32_info_file /Append
+
+GOSUB get_hw_info
+
+the_end:
+CLOSE #1
+CLOSE #10
+OS.Command "CMD /C DEL &file_lock"
+IF (&is_err!=1)
+	DIALOG.OK "Done"
+ON ERROR
+ENDDO
+
+ERROR_UNKNOW:
+	&is_err=1
+	DIALOG.MESSAGE "Some Error! Please Try it later!"
+	GOTO the_end
+
+get_hw_info:
+	LOCAL &ID &fnum &i &fs &t_str &MID
+	&fnum=LICENSE.getINDEX()
+	&fnum=&fnum+1
+	&i=0
+	&MID=LICENSE.MSERIAL(0)
+	&ID=LICENSE.SERIAL(0)
+	WRITE #1 "Debug Cable	&ID"
+	WHILE ("&ID"=="&MID")
+	(
+		&fs="&ID"
+		&t_str=LICENSE.FAMILY(&i)
+		&fs="	&fs	&t_str"
+		&t_str=LICENSE.DATE(&i)
+		&fs="&fs	&t_str"
+		&t_str=LICENSE.FEATURES(&i)
+		&fs="&fs	&t_str"
+		WRITE #1 "&fs"
+		&i=&i+1
+		&MID=LICENSE.MSERIAL(&i)
+		&ID=LICENSE.SERIAL(&i)
+		IF "X&ID"=="X"
+		(
+			&MID="X"
+		)
+	)
+	WRITE #1 ""
+	&ID=LICENSE.SERIAL(&i)
+	IF ("X&ID"!="X")
+	(
+		WRITE #1 "Preprocessor	&ID"
+		&t_str=LICENSE.FEATURES(&i)
+		&fs="	&t_str"
+		WRITE #1 "	&ID		&fs"
+		WRITE #1 ""
+	)
+RETURN
+
+get_hw_num:
+	LOCAL &MID &ID &fnum
+	IF 
+RETURN

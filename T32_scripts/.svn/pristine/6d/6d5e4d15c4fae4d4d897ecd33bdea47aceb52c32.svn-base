@@ -1,0 +1,26 @@
+; include all gen per file
+
+include Roc1_Debug_Bus_Signal_List.AP.per
+
+include Roc1_Debug_Bus_Signal_List.GPU.per
+
+include Roc1_Debug_Bus_Signal_List.MM.per
+
+include Roc1_Debug_Bus_Signal_List.APCPU.per
+
+include Roc1_Debug_Bus_Signal_List.PUB.per
+
+include Roc1_Debug_Bus_Signal_List.WTLCP.per
+
+include Roc1_Debug_Bus_Signal_List.AUDCP.per
+
+include Roc1_Debug_Bus_Signal_List.PUBCP.per
+
+include Roc1_Debug_Bus_Signal_List.AON.per
+
+include Roc1_Debug_Bus_Signal_List.AON_EXT.per
+
+include Roc1_Debug_Bus_Signal_List.IPA.per
+
+include Roc1_Debug_Bus_Signal_List.AI.per
+

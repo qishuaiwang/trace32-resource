@@ -1,0 +1,44 @@
+ENTRY &core_num &trace_output
+
+DO "&CUR_DIR/Orca_Trace_Path_config.cmm"
+
+;plist
+;stop
+
+IF (&core_num==2)
+(
+	CORE.ASSIGN 1 2
+
+	SYStem.CONFIG.COREDEBUG.Base (&apcpu_coredebug_base) (&apcpu_coredebug_base+&a55_coredebug_offset)
+	SYStem.CONFIG.BMC.Base (&apcpu_pmu_base) (&apcpu_pmu_base+&a55_pmu_offset)
+	SYStem.CONFIG.CTI.Base (&apcpu_cti_base) (&apcpu_cti_base+&a55_cti_offset)
+	SYStem.CONFIG.ETM.Base (&apcpu_etm_base) (&apcpu_etm_base+&a55_etm_offset)
+)
+ELSE
+(
+	SYStem.CONFIG.COREDEBUG.Base (&apcpu_coredebug_base)
+	SYStem.CONFIG.BMC.Base (&apcpu_pmu_base)
+	SYStem.CONFIG.CTI.Base (&apcpu_cti_base)
+	SYStem.CONFIG.ETM.Base (&apcpu_etm_base)
+)
+SYStem.CONFIG.CTI.Config ARMV8V2
+
+; APCPU(corinth)
+SYStem.CONFIG.FUNNEL2.Base &corinth_funnel
+SYStem.CONFIG.ETF2.Base &corinth_etf
+SYStem.CONFIG.FUNNEL3.Base &corinth_soc_funnel
+SYStem.CONFIG.ETR2.Base &corinth_etr
+
+; connect trace path
+IF (&core_num==2)
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1
+ELSE
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+SYStem.CONFIG.ETF2.ATBSource FUNNEL2
+SYStem.CONFIG.FUNNEL3.ATBSource ETF2 0
+SYStem.CONFIG.ETR2.ATBSource FUNNEL3
+
+;config replicator, soc, etc
+DO "&CUR_DIR/Orca_Trace_Path_common.cmm" &trace_output FUNNEL3 0 ETF2
+
+ENDDO

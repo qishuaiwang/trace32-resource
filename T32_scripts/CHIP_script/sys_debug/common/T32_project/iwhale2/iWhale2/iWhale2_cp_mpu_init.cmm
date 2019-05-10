@@ -1,0 +1,22 @@
+PER.Set C15:0x26 %LONG 0x0			;Select Region 0
+PER.Set C15:0x16 %LONG 0x00000000	;Base Address is 0x00000000
+PER.Set C15:0x416 %LONG 0x1300		;Strongly-ordered, Read/write, Execute Never
+PER.Set C15:0x216 %LONG 0x3f		;Size 4GB, Enabled
+
+PER.Set C15:0x26 %LONG 0x1			;Select Region 1
+PER.Set C15:0x16 %LONG 0x00000000	;Base Address is 0x00000000
+PER.Set C15:0x416 %LONG 0x308		;Outer and Inner Non-cacheable, Normal, Read/write
+PER.Set C15:0x216 %LONG 0x2f		;Size 16MB, Enabled
+
+;PER.Set C15:0x26 %LONG 0x2			;Select Region 2
+;PER.Set C15:0x16 %LONG 0x30000000	;Base Address is 0x30000000
+;PER.Set C15:0x416 %LONG 0x308		;Outer and Inner Non-cacheable, Normal, Read/write
+;PER.Set C15:0x216 %LONG 0x37		;Size 256MB, Enabled
+
+PER.Set C15:0x26 %LONG 0x3			;Select Region 3
+PER.Set C15:0x16 %LONG 0x80000000	;Base Address is 0x80000000
+PER.Set C15:0x416 %LONG 0x308		;Outer and Inner Non-cacheable, Normal, Read/write
+PER.Set C15:0x216 %LONG 0x3d		;Size 2GB, Enabled
+
+PER.Set C15:0x1 %LONG 0x1			;Enable MPU
+ENDDO

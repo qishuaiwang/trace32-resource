@@ -1,0 +1,97 @@
+system.mode down
+
+global &os_sel
+local &core_num &core_id &mem_tpye
+
+&core_num=1; sel core number
+&core_id=0;  sel core id
+
+&mem_tpye="EAXI"
+local &CUR_DIR
+&CUR_DIR=os.ppd()
+system.jtagclock 5mhz
+system.cpu CortexA7MPCore
+
+if ("&os_sel"=="os_sys")
+(
+	&core_num=4
+	system.Option EnReset off
+	system.Option TRST off
+	TrOnchip.Set RESET OFF
+	TrOnchip.Set UNDEF OFF
+)
+else
+(
+	system.reset
+	system.Option EnReset on
+	system.Option ResBreak off
+	system.option waitReset on
+) 
+
+
+
+if &core_num==4
+(
+	system.config CORENUMBER 4
+	core.assign 1 2 3 4               
+	SYStem.CONFIG COREBASE  0x80250000 0x80252000 0x80254000 0x80256000
+	SYStem.CONFIG CTIBASE   0x80258000 0x80259000 0x8025A000 0x8025B000
+	SYStem.CONFIG ETMBASE   0x8025c000 0x8025d000 0x8025e000 0x8025f000
+)
+else
+(
+	system.config CORENUMBER 1
+	core.assign 1                
+	SYStem.CONFIG COREBASE         0x80250000+0x2000*&core_id 
+	SYStem.CONFIG CTIBASE          0x80258000+0x1000*&core_id 
+	SYStem.CONFIG ETMBASE          0x8025c000+0x1000*&core_id
+)
+
+SYStem.MultiCore MEMORYACCESSPORT 0
+system.MultiCore DEBUGACCESSPORT 1
+system.MultiCore AXIACCESSPORT 0
+system.MultiCore AHBACCESSPORT 0
+system.MultiCore APBACCESSPORT 1
+
+system.multicore SWDP ON
+system.cpuaccess enable
+system.memaccess dap
+sys.Mode.prepare
+
+
+if ("&os_sel"=="os_sys")
+(
+	sys.Mode.Attach
+)
+
+else
+(
+	if &core_num==4
+		gosub BOOT
+	system.mode up
+	Data.Set 0x4042f000++0x7 %LE %Long 0.   ;clear trustzone
+)
+
+ENDDO
+
+BOOT:
+	D.S &mem_tpye:0x402b0000+0X2000 %LONG 1<<24.
+	D.S &mem_tpye:0x402b00cc+0X2000 %LONG 1<<16.
+	D.S &mem_tpye:0x402b00b0+0X2000 %LONG 1<<5.
+	
+	;enable power registers for other cores
+	Data.Set &mem_tpye:0x402B0018+0X2000 %LE %Long 1<<24.  ;clear A7 auto shutdown
+	
+	Data.Set &mem_tpye:0x402B0004+0X2000 %LE %Long 1<<24.  ;clear c0 auto shutdown
+	Data.Set &mem_tpye:0x402B0008+0X2000 %LE %Long 1<<24.|1<<25.  ;clear c1
+	Data.Set &mem_tpye:0x402B000C+0X2000 %LE %Long 1<<24.|1<<25.  ;clear c2
+	Data.Set &mem_tpye:0x402B0010+0X2000 %LE %Long 1<<24.|1<<25.	;clear c3
+	return
+
+
+
+
+
+
+
+

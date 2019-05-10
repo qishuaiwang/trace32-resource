@@ -1,0 +1,278 @@
+;;;;;;;
+;Roc1 procedure serdes/csi 2p2lane setup;
+;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ch_sel: SerDes Channel selection
+;	bit1: WTL/MDAR
+;	bit2: DBG(TPIU)
+;	bit3: DBUS
+;	bit14: TRAINING
+;	bit15: TRAINING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+LOCAL &set &clr
+
+&mem_type="EZAXI"
+
+;&set=0x1000
+;&clr=0x2000
+&AON_APB_BASE=0x32090000
+&PMU_APB_BASE=0x32280000
+&MM_AHB_BASE=0x62200000
+&DSI_GLB_BASE=0x323F0000
+&SERDES_BASE=0x324F0000
+&ANALOG_TOP_1_REG=0x32424000
+&ANALOG_G10_REG=0x323F0000
+
+
+GOSUB reg_write_setclr 1 (&AON_APB_BASE+0x0) (1<<19.)|(1<<20.)
+
+
+;GOSUB switch_aux2_clk
+
+;need to add, clear the MM force_shut_down
+GOSUB reg_write_setclr 0 (&PMU_APB_BASE+0x24) (1<<24.)|(1<<25.)
+
+;need to add, MM EB
+GOSUB reg_write_setclr 1 (&AON_APB_BASE+0x0) (1<<9.)
+
+WAIT 10.MS
+
+;enable ANLG_EB时钟源
+GOSUB reg_write_setclr 1 (&AON_APB_BASE+0x4) 0x1000
+
+;Put PHY in shutdown status, PD/ISO=1: shutdown status
+;pd_l set
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x200000	;bit 21, shutdown
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x40000	;bit 18, select
+
+;pd_s set
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x400000	;bit 22, shutdown
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x80000	;bit 19, select
+
+;mipi 2p2lane iso enable set to one
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x800000	;bit 23, shutdown
+GOSUB reg_write_setclr 1 (&ANALOG_TOP_1_REG+0x8) 0x100000	;bit 20, select
+
+;test clr set, debug_select
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x400000	;bit 22, debug test_clr_m select
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x200000	;bit 21, debug test_clr_s select
+
+;mipi 2p2lane shutdownz set
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x20000000	;bit 29, debug shutdownz_m select
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x10000		;bit 16, debug shutdownz_s select
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x10		;bit 4, debug shutdownz_db select
+
+;mipi 2p2lane rstz set
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x10000000	;bit 28, debug rstz_m select
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x60) 0x1000		;bit 15, debug rstz_s select
+
+;#1000ns
+WAIT 1.MS
+
+;pd_s clr, power on status
+GOSUB reg_write_setclr 0 (&ANALOG_TOP_1_REG+0x8) 0x400000	;bit 22
+
+;#1000ns
+WAIT 1.MS
+
+;pd_l clr, power on status
+GOSUB reg_write_setclr 0 (&ANALOG_TOP_1_REG+0x8) 0x200000	;bit 21
+
+;#1000ns
+WAIT 1.MS
+
+;mipi 2p2lane iso enable clear, power on status
+GOSUB reg_write_setclr 0 (&ANALOG_TOP_1_REG+0x8) 0x800000	;bit 23
+
+;#5000ns
+WAIT 5.MS
+
+;mipi 2p2lane testclr clear, 0->1->0, testclear
+;test clr set
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x8) 0x2	;bit 1, set csi_test_clr_m
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x8) 0x1	;bit 0, set csi_test_clr_s
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) 0x1	;bit 0, set csi_test_clr_db
+;#1000ns
+WAIT 1.MS
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x8) 0x2	;bit 1, clr csi_test_clr_m
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x8) 0x1	;bit 0, clr csi_test_clr_s
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0x1	;bit 0, clr csi_test_clr_db
+
+;#5000ns
+WAIT 5.MS
+
+;mipi 2p2lane shutdown set, 1->0->1
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x8) 0x200	;bit 9, clr shutdownz_m
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x18) 0x80	;bit 7, clr shutdownz_s
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x4C) 0x8000	;bit 15, clr shutdownz_db
+;#1000ns
+WAIT 1.MS
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x8) 0x200	;bit 9, set shutdownz_m
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x18) 0x80	;bit 7, set shutdownz_s
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x8000	;bit 15, set shutdownz_db
+
+;mipi 2p2lane rstz set, 1->0->1
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x8) 0x100	;bit 8, clr rstz_m
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x18) 0x40	;bit 6, clr rstz_s
+GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x4C) 0x4000	;bit 14, add refer dv sequence, clr rstz_db
+
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x8) 0x100	;bit 8, set rstz_m
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x18) 0x40	;bit 6, set rstz_s
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x4000	;bit 14, add refer dv sequence, set rstz_db
+
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x4000	;bit 14, add refer dv sequence
+
+;#5000ns
+WAIT 5.MS
+
+;CSI_M/CSI_S/DSI CFG CLOCK Enable to MM 26M
+
+;picture
+GOSUB reg_write (&MM_AHB_BASE+0x8) 0x100	
+
+;enableclk set
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x200	;bit 9
+
+;enable debug mode set
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x2000	;bit 13
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x1000	;bit 12
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x800	;bit 11
+GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x4C) 0x400	;bit 10
+
+;switch from 2G (2G/8/8=30Mhz) to 1.6G (1.6G/8/8=24Mhz) 提高稳定性
+GOSUB test_io 0x3 0x7
+GOSUB test_io 0x4 0xC8
+GOSUB test_io 0x6 0x3B
+GOSUB test_io 0x7 0x4
+GOSUB test_io 0x8 0xDE
+GOSUB test_io 0x9 0x13
+GOSUB test_io 0xA 0xB1
+GOSUB test_io 0xB 0x31
+GOSUB test_io 0xC 0x2
+GOSUB test_io 0xD 0x8A
+GOSUB test_io 0xE 0x0
+GOSUB test_io 0xF 0x81
+
+;量clk_dsi_test
+
+ENDDO
+
+
+
+;picture
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x60) 0x10
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x4C) 0xC000
+
+;107c, bit0, set
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x50) 0x1	;bit[0], cfg it be 1
+;#100;
+WAIT 1.MS
+;207c, bit0, clr
+GOSUB reg_write_setclr 0 (&DSI_GLB_BASE+0x50) 0x1	;bit[0], cfg it be 1
+
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x60) 0x600000	;bit[2:0], cfg it be 3'b001
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x8) 0x3	;bit[21:20], cfg it be 2'b11
+;#100;
+WAIT 1.MS
+GOSUB reg_write_setclr 0 (&DSI_GLB_BASE+0x8) 0x3	;bit[21:20], cfg it be 2'b11
+
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x50) 0x1	;bit[0], cfg it be 1
+;#100;
+WAIT 1.MS
+GOSUB reg_write_setclr 0 (&DSI_GLB_BASE+0x50) 0x1	;bit[0], cfg it be 1
+
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x60) 0x600000	;bit[2:0], cfg it be 3'b001
+GOSUB reg_write_setclr 1 (&DSI_GLB_BASE+0x8) 0x3	;bit[21:20], cfg it be 2'b11
+;#100;
+WAIT 1.MS
+GOSUB reg_write_setclr 0 (&DSI_GLB_BASE+0x8) 0x3	;bit[21:20], cfg it be 2'b11
+
+;serdes_eb=1: 确定时钟配置完毕后，serdes的时钟源clk_dsi_test已经toggle，此时可配置serdes_eb=1，
+;并在之后进行serdes内部寄存器访问。
+;当serdes_eb=0，透过Debug-APB访问serdes内部寄存器会读到不可预测值，但是可以避免总线因没有时钟而挂死。
+;serdes default 1, you may don't need set.
+
+GOSUB reg_write_setclr 1 (&AON_APB_BASE+0x8) 0x80000000
+
+;soft reset serdes
+
+;picture
+GOSUB reg_write_setclr 1 (&AON_APB_BASE+0x14) 0x80000000	;set rst
+;#20;
+WAIT 1.MS
+GOSUB reg_write_setclr 0 (&DSI_GLB_BASE+0x14) 0x80000000	;clr rst
+
+;serdes channel enable, for this sample, we enable channel #2 (SoCCoresight TPIU's output)
+;GOSUB reg_write (&SERDES_BASE+0x4) 0x4		;channel=#2		;one-hot or all zeros are legal setting
+;GOSUB reg_write (&SERDES_BASE+0x8) 0x1		;funnel enable
+;GOSUB reg_write (&SERDES_BASE+0x0) 0x1		;func enable
+;GOSUB reg_write (&SERDES_BASE+0x0) 0x1		;func enable
+
+
+;picture
+;GOSUB reg_write (&SERDES_BASE+0x10) 0x41		;fsm_cut_off= 33n+32
+;GOSUB reg_write (&SERDES_BASE+0x8) 0x1		;funnel enable
+;GOSUB reg_write (&SERDES_BASE+0x0) 0x1		;func enable
+
+
+ENDDO
+
+reg_write:
+		ENTRY &addr &data
+		
+		D.S &mem_type:&addr %LE %Long &data
+		RETURN
+		
+reg_write_setclr:
+		ENTRY &set_or_clr &addr &data
+		LOCAL &read_value
+		
+		&read_value=DATA.LONG(&mem_type:&addr)
+		IF (&set_or_clr==1)
+		(
+			D.S &mem_type:&addr %LE %Long &read_value|&data
+		)
+		ELSE
+		(
+			D.S &mem_type:&addr %LE %Long &read_value&(~(&data))
+		)		
+		RETURN
+		
+switch_aux2_clk:
+		;CGM_RESCUE
+		GOSUB reg_write_setclr 1 (0x32090b14) 1<<3.
+		
+		;aux2_eb
+		GOSUB reg_write_setclr 1 (0x32090000) 1<<6.
+		
+		;cgm_aux2_sel = CSI_2P2L([4:0]=0x11), cgm_aux2_div([11:8]=0x0)
+		GOSUB reg_write (0x32080230) 0x11
+		;GOSUB reg_write (0x32080230) 0x111
+		;GOSUB reg_write (0x32080230) 0x311
+		
+		;pin (RFCTRL9) switch to CLK_AUX2(=1)
+		GOSUB reg_write (0x3243C000+0x12C) 1<<4.
+		
+		;WAIT 10.MS
+
+		RETURN
+				
+test_io:
+		ENTRY &addr1 &data1
+		
+		GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) 0x4				;set test en	
+		GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0xFF<<11.		
+		GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) &addr1<<11.		;set read address from bit 18:11		
+		GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) 0x2				;set test clock
+		GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0x2				;clr test clock
+		GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0x4				;clr test en
+	
+		GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0xFF<<11.		
+		GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) &data1<<11.		;set read address from bit 18:11		
+		GOSUB reg_write_setclr 1 (&ANALOG_G10_REG+0x50) 0x2				;set test clock
+		GOSUB reg_write_setclr 0 (&ANALOG_G10_REG+0x50) 0x2				;clr test clock
+		
+		RETURN
+								
+;endprocedure
+

@@ -1,0 +1,189 @@
+; qingwen.fang for scan busmon address monitor through DAP
+;*********************************************************
+GLOBALON STOP GOTO stop_scan
+ON ERROR GOTO stop_scan
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+IF SYStem.MODE()<3
+(
+	PRINT %ERROR "Please make sure Trace32 in Prepare MODE!"
+	ENDDO
+)
+
+ON CMD run_djtag GOSUB
+(
+	LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	DO "&cur_path/DJTAG_via_T32_edk.cmm" &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+)
+
+LOCAL   &default_sys &all_sys &sys_number
+LOCAL   &proj_low &path_proj
+
+&proj_low=STRing.LoWeR("&project_sel")
+&path_proj=STRing.Replace("&g_proj_dir", "\", "/", 0)
+if ("&proj_low"=="iwhale2")||("&proj_low"=="isharkl2")
+	&path_proj="&path_proj/sys/script"
+else
+	&path_proj="&path_proj/DEBUG/sys"
+DO "&path_proj/&(proj_low)_djtag_busmon_info.cmm"
+
+GOSUB init_interface
+
+DIALOG
+(
+  HEADER "Select Subsys Busmon in"
+; define dialog width by printine empty text: POS 0. 0. <width> 1.
+  POS 0. 0. 27. 1.
+  TEXT ""
+  
+  POS 1. 0. 25. 1.
+  TEXT "Sel One or More SubSys Busmon in:"
+  POS 1. 1. 25. 6.
+  OptionA.SEL:		MLISTBOX ",,," ""
+  
+;buttons OK (Default) and Cancel
+  POS 1. 8. 10. 1.
+  DEFBUTTON "OK" "CONTinue"
+  POS 14. 8. 10. 1.
+  BUTTON    "Cancel" "GOTO cancel"
+;define action when window is closed
+  CLOSE "GOTO cancel"
+)
+
+;set default selections
+ 
+  DIALOG.SET OptionA.SEL "&default_sys" "&all_sys"
+  
+;STOP command halts script execution 
+  STOP
+
+;script will continue here when "OK" button is clicked
+
+;get selection
+  &SysSel=DIALOG.STRING(OptionA.SEL);
+;close dialog window  
+  DIALOG.END
+;print result 
+  DIALOG.OK "Subsys Busmon Located Selection : &SysSel"
+  
+;run_djtag DJ_switch 0xFFFFFFFF
+
+AREA.CREATE BUSMON 80. 1000.
+AREA.SELECT BUSMON
+AREA.VIEW BUSMON
+
+LOCAL &ssys &dap &chan &retval
+LOCAL &temp_sys &dap_end
+&MATCH_USER=0x28
+LOCAL &i &j
+
+&j=0
+while (&j<&sys_number)
+(
+	&temp_sys=Var.STRing(\sys_name[&j])
+	if (STRing.SCAN("&SysSel","&temp_sys",0)!=-1)
+	(
+		&ssys=&j
+		&j_str=FORMAT.Decimal(1+((&j/10.)%1),&j)
+		&i=0
+		&dap_end=Var.SIZEOF(\busmon_sys&j_str)/Var.SIZEOF(\busmon_sys&j_str[0])
+		WHILE &i<&dap_end
+		(
+			&temp_dap=Var.STRing(\busmon_sys&j_str[&i])
+			if "&temp_dap"=="N/A"
+				GOTO next_dap
+			GOSUB str_split "&temp_dap" "_dap" 1
+			ENTRY &dap
+			PRINT "===================================================================="
+			PRINT "                chain0:CHN_INT--chain32:MATCH_USER"
+			PRINT "===================================================================="
+			&chan=0x8
+			WHILE &chan<=&MATCH_USER
+			(			
+				run_djtag DJ_excute &ssys &dap. &chan 0 1
+				ENTRY &retval
+				&reg_name=Var.STRing(\busmon_regname[&chan-0x8])
+				&reg_name=FORMAT.STRing("&reg_name",18.,' ')
+				PRINT %Decimal " subsys: &temp_sys" "    dap: &temp_dap" "    &reg_name" ": 0x" FORMAT.HEX(8., &retval)
+				&chan=&chan+1
+			)
+next_dap:	&i=&i+1
+		)
+	)
+	&j=&j+1
+)
+
+;run_djtag DJ_switch 0
+stop_scan:
+GLOBALON STOP
+ON ERROR
+AREA.SELECT A000
+ENDDO
+
+;script continues here when Cancel is clicked"
+cancel:
+  DIALOG.END
+  DIALOG.OK "Cancelled"
+ENDDO
+
+;****************************************************
+init_interface:
+	LOCAL &temp_sys 
+	
+	&default_sys=Var.STRing(\sys_name[0])
+	&sys_number=Var.STRing(\sys_num)+'.'
+	&i=0
+	while (&i<&sys_number)
+	(
+		&temp_sys=Var.STRing(\sys_name[&i])
+		if "&temp_sys"==""
+			GOTO next_sys
+		if (&i==0)
+			&all_sys="&default_sys"
+		else
+			&all_sys="&all_sys"+','+"&temp_sys"
+next_sys:		&i=&i+1
+	)
+	RETURN
+	
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %WARNING "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""

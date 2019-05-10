@@ -1,0 +1,25 @@
+system.cpu CORTEXR5
+sys.config corebase 		 0x80030000
+SYS.CONFIG CTIBase       0x80038000
+sys.config etmbase       0x8003c000
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPv2
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+sys.mode.up
+
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPv2
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.FUNNEL1.ATBSource STM1 1
+
+SYStem.CONFIG.ETB1.Base 0x80003000
+SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+
+
+&cur_path_stm=os.ppd()
+stmla.IMPORT.ETB &cur_path_stm\etb.bin 
+SYStem.CONFIG.STM1.Mode STPv2	
+st.METHOD LA
+stmla.list

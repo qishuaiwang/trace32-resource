@@ -1,0 +1,442 @@
+LOCAL &MEM_TYPE &core_flag
+ENTRY &core_flag
+IF (CPUFAMILY()=="I386")
+(
+	&MEM_TYPE="EA"
+	;PRINT %ERROR "The Trace32 can't do this! open ARM version please!"
+)
+ELSE
+(
+	&MEM_TYPE="EAXI"
+	;SYStem.Mode Prepare
+)
+
+&TL420_SEL=2 ; 0: LDSP , 1: TDSP, 2: AGDSP
+&JTAG_SEL=0 ; 0: DAP, 1: AUD-JTAG , 2 :DSP-JTAG, 3 :LTE-JTAG
+
+&AON_BASE=0xe4000000 ; AP: 0xe4000000  , PUBCP: 0x02000000
+
+&SET=0x1000
+&CLR=0x2000
+;&SLEEP_CTRL=0x002B00E8
+&SYS_SOFT_RST=0x002C0000
+
+;change dsp 26m clk
+&temp=(~(1<<7.))&(Data.Long(&MEM_TYPE:0xe42d005c))
+D.S &MEM_TYPE:(0xe42d005c) %LE %Long &temp
+&temp=(~(1<<2.))&(Data.Long(&MEM_TYPE:0xe42d0040))
+D.S &MEM_TYPE:(0xe42d0040) %LE %Long &temp
+
+&CP_ARM_JTAG_CTRL=0x002E0034
+
+IF ("&core_flag"=="CR5")
+(
+	GOSUB PREPARE_FOR_PUBCP
+	GOSUB RELEASE_FOR_PUBCP
+	;GOSUB PREPARE_FOR_DSP_JTAG
+	;GOSUB PREPARE_FOR_DSP
+	;GOSUB RELEASE_FOR_DSP
+	D.S &MEM_TYPE:(&AON_BASE+0x002B02CC+&SET) %LE %Long (1<<0.)
+)
+ELSE IF ("&core_flag"=="CM4")
+(
+	GOSUB PREPARE_FOR_CM4
+	GOSUB RELEASE_FOR_CM4
+)
+ELSE IF ("&core_flag"=="DSP")
+(
+	GOSUB PREPARE_FOR_DSP_JTAG
+	GOSUB PREPARE_FOR_DSP
+	GOSUB RELEASE_FOR_DSP
+	D.S &MEM_TYPE:(&AON_BASE+0x002B02CC+&SET) %LE %Long (1<<0.)
+)
+ENDDO
+
+
+;################################### PUBCP BOOT ########################
+PREPARE_FOR_PUBCP:
+	; !!! FOR TGDSP FREQ. UP
+	; 0: 26MHz
+	; 1: 256MHz
+	; 2: 307.2MHz
+	; 3: 384MHz
+	; 4: 512MHz
+	; 5: 614.4MHz
+	&CODE_BASE=0xE6022000
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0
+	&CODE_BASE=(&CODE_BASE+20)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xEAFFFFFE
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 5
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0x515D0020
+	
+	; PMU DEEPSLEEP RELEASE PUBCP
+	;D.S &MEM_TYPE:(&AON_BASE+&SLEEP_CTRL+&CLR) %LE %Long ((1<<26.)|(1<<19.))
+
+	; PMU FOREC RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+0x002B0020+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(&AON_BASE+0x002B014c) %LE %Long 0x0
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long ((1<<20.)|(1<<1.))
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<15.)
+	WAIT 500.MS
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long ((1<<20.)|(1<<1.))
+	RETURN
+
+RELEASE_FOR_PUBCP:
+	; AON PUBCP CORE RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<15.)
+	RETURN
+
+
+;################################### CM4 BOOT ########################
+PREPARE_FOR_CM4:
+	; open iram gate 
+	D.S &MEM_TYPE:0xC0014050 %LE %Long  0x0
+	
+	;Common APB/SP_CFG_BUS/SP_CFG_BUS_SLEEP
+	D.S &MEM_TYPE:0xe4300124 %LE %Long 0x00000000
+
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<8.)
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long (1<<0.)
+	WAIT 500.MS
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<8.)
+	D.S &MEM_TYPE:(&AON_BASE+0x002B0138) %LE %Long 0x0
+	D.S &MEM_TYPE:0xE6040004 %LE %Long 0x9 ; dump 0x0
+	D.S &MEM_TYPE:0xE6040008 %LE %Long 0xE7FEE7FE ; 0xE7FE is While(1);
+	D.S &MEM_TYPE:0xE604000C %LE %Long 0x00000001 ; the first code address
+	RETURN
+
+RELEASE_FOR_CM4:
+	; PMU RESET RELEASE CM4 CORE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long (1<<0.)
+	RETURN
+	
+;################################### MP8 BOOT ########################
+
+PREPARE_FOR_MP8:
+	&CODE_BASE=0x40880034
+	&MP8_BOOT=0x1000
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long (&MP8_BOOT>>8.)
+	&CODE_BASE=(&CODE_BASE+4)
+
+	D.S &MEM_TYPE:0x00001000 %LE %Long 0x14000000
+	RETURN
+
+RELEASE_FOR_MP8:
+	; PMU FOREC RELEASE
+	D.S &MEM_TYPE:(0x402B0064+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(0x402B0068+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(0x402B006C+&CLR) %LE %Long (1<<25.)
+	; BIG
+	D.S &MEM_TYPE:(0x402B0070+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(0x402B0074+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(0x402B0078+&CLR) %LE %Long (1<<25.)
+	D.S &MEM_TYPE:(0x402B007C+&CLR) %LE %Long (1<<25.)
+	RETURN
+
+
+
+;################################### DSP BOOT ########################
+PREPARE_FOR_DSP_JTAG:
+	D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&CLR) %LE %Long 0x0000000F
+
+	IF &JTAG_SEL==0
+	(; 0: DAP
+		; DAP -- ALL TL420
+		D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x0000000F
+	)
+	ELSE IF &JTAG_SEL==1
+	(; 1: AUD-JTAG
+		; AUD-JTAG PIN SEL Function3
+		&CODE_BASE=0xE42A0304
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000020|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000020|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000020|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000020|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000020|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+	)
+	ELSE IF &JTAG_SEL==2
+	(; 2 :DSP-JTAG
+		; DSP-JTAG PIN SEL Function2
+		&CODE_BASE=0xE42A02F0
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000010|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000010|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000010|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000010|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+		&CODE_BASE=(&CODE_BASE+0x4)
+		D.S &MEM_TYPE:&CODE_BASE %LE %Long (0x00000010|(Data.LONG(&MEM_TYPE:&CODE_BASE)&0xFFFFFFCF))
+	)
+		ELSE IF &JTAG_SEL==3
+	(; 3 :LTE-JTAG
+		; LTE-JTAG PIN SEL Function2
+	)
+
+	IF &TL420_SEL==0
+	(; 0: LDSP 
+		IF &JTAG_SEL==1
+		(
+			PRINT %ERROR "Can't Select AUD-JTAG"
+			ENDDO
+		)
+		ELSE IF &JTAG_SEL==2
+		(
+			; DSP-JTAG to JTAG_LDSP
+			D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x00000008
+		)
+		ELSE IF &JTAG_SEL==3
+		(
+			; LTE-JTAG to JTAG_LDSP
+			D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x00000000
+		)
+	)
+	ELSE IF &TL420_SEL==1
+	(; 1: TDSP
+		IF &JTAG_SEL==1
+		(
+			PRINT %ERROR "Can't Select AUD-JTAG"
+			ENDDO
+		)
+		ELSE IF &JTAG_SEL==2
+		(
+			; DSP-JTAG to JTAG_TDSP
+			D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x00000000
+		)
+		ELSE IF &JTAG_SEL==3
+		(
+			; LTE-JTAG to JTAG_TDSP
+			PRINT %ERROR "Can't Select LTE-JTAG"
+		)
+	)
+	ELSE IF &TL420_SEL==2
+	(; 2: AGDSP
+
+		IF &JTAG_SEL==1
+		(
+			; AUD-JTAG to JTAG_AGDSP
+			D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x00000000
+		)
+		ELSE IF &JTAG_SEL==2
+		(
+			; DSP-JTAG to JTAG_AGDSP
+			D.S &MEM_TYPE:(&AON_BASE+&CP_ARM_JTAG_CTRL+&SET) %LE %Long 0x00000006
+		)
+		ELSE IF &JTAG_SEL==3
+		(
+			; LTE-JTAG to JTAG_TDSP
+			PRINT %ERROR "Can't Select LTE-JTAG"
+		)
+	)
+	RETURN
+
+PREPARE_FOR_DSP:
+	;DAP 26MHz
+	D.S &MEM_TYPE:0xe42d0284 %LE %Long 0x1
+	&dsp_boot_base=0xe6023000
+	D.S &MEM_TYPE:&dsp_boot_base++0x2FF %LE %Long 0
+	;D.S &MEM_TYPE:0xe42E0150 %LE %Long 0
+	;D.S &MEM_TYPE:0xe42E0140 %LE %Long 0
+;----------------------------------------------------------------------
+; 0: LDSP
+	;IF (&TL420_SEL==0)
+	;(
+	&OFFSET=0x000
+	&CODE_BASE=(&dsp_boot_base+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	
+	; PMU RESET
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long ((1<<17.)|(1<<14.)|(1<<10.))
+	;!!!RPLL0 WTL SEL!!!
+	&temp=(1<<7.)|(Data.Long(&MEM_TYPE:0xe42b010C))
+	D.S &MEM_TYPE:(0xe42B010C) %LE %Long &temp
+	; mov ##data, r0
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long ((&DSP_BASE+0x20)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xfffffffc ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7ee1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+	
+	;!!!RPLL0 WTL SEL!!!
+	;D.S &MEM_TYPE:(0xe42B016C+&SET) %LE %Long (1<<4.)
+
+	;&temp=(~((1<<24.)|(1<<25.)))&(Data.Long(&MEM_TYPE:0xE42D0068))
+	;D.S &MEM_TYPE:(0xE42D0068) %LE %Long &temp
+	
+	; Clear LDSP Prot
+	D.S &MEM_TYPE:0xe42E007C %LE %Long 0x00009620
+	;WTLCP_LDSP_EXTERNAL_WAIT
+	D.S &MEM_TYPE:(0xe42E0154+&SET) %LE %Long (1<<1.)
+	; LDSP BOOT FROM P-RAM
+	D.S &MEM_TYPE:(0xe42E0154+&CLR) %LE %Long (1<<0.)
+
+	; LDSP BOOT FROM DSP_BASE
+	D.S &MEM_TYPE:0xe42E0150 %LE %Long ((&DSP_BASE)/2)
+	;LDSP BOOT FROM P-RAM
+	D.S &MEM_TYPE:(0xe42E0154+&SET) %LE %Long (1<<0.)
+	;WAIT 500.ms
+	; PMU RESET RELEASE
+	;D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long ((1<<17.)|(1<<14.)|(1<<10.))
+	;WTLCP_LDSP_EXTERNAL_WAIT
+	D.S &MEM_TYPE:(0xe42E0154+&CLR) %LE %Long (1<<1.)
+	
+	; PMU FOREC RELEASE
+	&temp=(~(1<<25.))&(Data.Long(&MEM_TYPE:0xe42b0050))
+	D.S &MEM_TYPE:(0xe42B0050) %LE %Long &temp
+	&temp=(~(1<<25.))&(Data.Long(&MEM_TYPE:0xe42b0084))
+	D.S &MEM_TYPE:(0xe42B0084) %LE %Long &temp
+
+	; PMU DEEPSLEEP RELEASE
+	&temp=(~((0x1<<26.)|(1<<24.)|(1<<13.)|(1<<1.)))&(Data.Long(&MEM_TYPE:0xe42b0144))
+	D.S &MEM_TYPE:(0xe42b0144) %LE %Long &temp
+	WAIT 500.ms
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long ((1<<17.)|(1<<14.)|(1<<10.))
+	
+	;)
+;----------------------------------------------------------------------
+	;ELSE IF (&TL420_SEL==1)
+	;(
+;  1: TDSP
+	&OFFSET=0x200
+	&CODE_BASE=(&dsp_boot_base+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; 0: 26MHz
+	; 1: 256MHz
+	; 2: 384MHz
+	; 3: 512MHz
+	
+	; PMU RESET
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&SET) %LE %Long ((1<<16.)|(1<<14.)|(1<<10.))
+	;!!!RPLL0 WTL SEL!!!
+	&temp=(1<<7.)|(Data.Long(&MEM_TYPE:0xe42b010C))
+	D.S &MEM_TYPE:(0xe42B010C) %LE %Long &temp
+	; mov ##data, r0
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0x2 ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long ((0x015D0020)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; mov ##data, r0
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0x100 ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long ((0x015D0024)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; mov ##data, r0
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long ((&DSP_BASE+0x20)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xfffffffc ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &MEM_TYPE:&CODE_BASE %LE %Long 0xd7ee1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	;&temp=(~((1<<24.)|(1<<25.)))&(Data.Long(&MEM_TYPE:0xE42D0068))
+	;D.S &MEM_TYPE:(0xE42D0068) %LE %Long &temp
+
+	; Clear LDSP Prot
+	D.S &MEM_TYPE:0xe42E007C %LE %Long 0x00009620
+	;WTLCP_TDSP_EXTERNAL_WAIT
+	D.S &MEM_TYPE:(0xe42E015C+&SET) %LE %Long (1<<1.)
+	; TDSP BOOT FROM P-RAM
+	D.S &MEM_TYPE:(0xe42E015C+&CLR) %LE %Long (1<<0.)
+
+	; TDSP BOOT FROM DSP_BASE
+	D.S &MEM_TYPE:0xe42E0158 %LE %Long (&DSP_BASE/2)
+	; TDSP BOOT FROM P-RAM
+	D.S &MEM_TYPE:(0xe42E015C+&SET) %LE %Long (1<<0.)
+	;WAIT 500.ms
+	; PMU RESET RELEASE
+	;D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long ((1<<16.)|(1<<14.)|(1<<10.))
+	;WTLCP_TDSP_EXTERNAL_WAIT
+	D.S &MEM_TYPE:(0xe42E015C+&CLR) %LE %Long (1<<1.)
+	
+	; PMU DEEPSLEEP RELEASE
+	&temp=(~((0x1<<26.)|(1<<24.)|(1<<13.)|(1<<1.)))&(Data.Long(&MEM_TYPE:0xe42b0144))
+	D.S &MEM_TYPE:(0xe42b0144) %LE %Long &temp
+	
+	; PMU FOREC RELEASE
+	;&temp=(~(1<<25.))&(Data.Long(&MEM_TYPE:0xe42b0060))
+	;D.S &MEM_TYPE:(0xe42B0060) %LE %Long &temp
+	&temp=(~(1<<25.))&(Data.Long(&MEM_TYPE:0xe42b002c))
+	D.S &MEM_TYPE:(0xe42B002C) %LE %Long &temp
+	&temp=(~(1<<25.))&(Data.Long(&MEM_TYPE:0xe42b0084))
+	D.S &MEM_TYPE:(0xe42B0084) %LE %Long &temp
+WAIT 500.ms
+	; PMU RESET RELEASE
+	D.S &MEM_TYPE:(&AON_BASE+&SYS_SOFT_RST+&CLR) %LE %Long ((1<<16.)|(1<<14.)|(1<<10.))
+	
+	;)
+
+	RETURN
+
+RELEASE_FOR_DSP:
+	; AON LDSP CORE RESET RELEASE
+	;D.S &MEM_TYPE:(0xe42E0160+&CLR) %LE %Long (1<<0.)
+	; AON TDSP CORE RESET RELEASE
+	;D.S &MEM_TYPE:(0xe42E0160+&CLR) %LE %Long (1<<1.)
+
+	
+	RETURN
+

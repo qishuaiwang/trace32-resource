@@ -1,0 +1,7 @@
+sel      subsys        dap_start           dap_end             rd_wt        addr_min         addr_max
+1        PUBCP         CR5_L2              SDIO                Read         0x022e0000       0x022e0084
+1        AON           PUBCP               PUBCP               Write        0x022e00f0       0x022e00f0
+0        AON           ARM7                ARM7                Write        0x402e0084       0x402e0084
+0        AON           AP                  AP                  Write        0x402e0084       0x402e0084
+0        AP            CA53                CA53                Read         0x100400         0x100500
+0        CA53          CCI2NIC             CCI2NIC             Write                         

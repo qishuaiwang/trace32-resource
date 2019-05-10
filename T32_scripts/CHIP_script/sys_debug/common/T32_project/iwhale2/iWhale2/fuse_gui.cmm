@@ -1,0 +1,390 @@
+LOCAL &FA_ALL_BLOCK &FA_SINGLE_SEL &FA_MULT_SEL &DC_SEL &DC_LEN &efuse_val
+LOCAL &FA_SINGLE_TYPE &DC_TYPE &FA_MULT_TYPE &detail_return_data &WRITE_Method
+LOCAL &FA_BLOCK_DATA &DC_READ_DATA &WRITE_DATA
+LOCAL &cur_path
+&cur_path=OS.PPD()
+DO &cur_path/jtag_nTRST.cmm
+DO &cur_path/iWhale2_JTAG.cmm "RST"
+
+IF (CPUFAMILY()=="I386")
+(
+	DO &cur_path/butter.cmm DAP
+	&efuse_val=data.long(EAQD:0xE42e0000)
+	D.S EAQD:0xE42e0000 %LE %Long (&efuse_val|0x2000)
+	D.S EAQD:0xE4240024 %LE %Long 0x00000008 
+)
+ELSE
+(
+	menur5 DAP
+	&efuse_val=data.long(EAXI:0xE42e0000)
+	D.S EAXI:0xE42e0000 %LE %Long (&efuse_val|0x2000)
+	D.S EAXI:0xE4240024 %LE %Long 0x00000008 
+)
+	
+DO &cur_path/iWhale2_JTAG.cmm "RST"
+DO &cur_path/iWhale2_JTAG.cmm "FUSE"
+
+GOSUB FA_MULT_VIEW
+efuse_recovery:
+DO &cur_path/jtag_nTRST.cmm
+DO &cur_path/butter.cmm DAP
+on.error CONTinue
+D.S EAQD:0xE4240024 %LE %Long 0x00000000 
+D.S EAQD:0xE42e0000 %LE %Long &efuse_val 
+ENDDO
+
+FA_MULT_VIEW:
+	comOPS jtag_low_lock
+	lowJTAG jtag_reset_tms
+
+	&i=0.
+	&WRITE_DATA=""
+	while (&i<=63.)
+	(
+		menuef EFUSE_FA_READ &i
+		ENTRY &READ_DATA
+		&READ_DATA=FORMAT.Hex(8.,&READ_DATA)
+		&WRITE_DATA="&READ_DATA"+"&WRITE_DATA"
+		;DIALOG.DISABLE &NAME
+		&i=&i+1.
+	)	
+	comOPS jtag_low_unlock
+	DIALOG
+	(&
+		  HEADER "FA_VIEW"
+		  POS 0. 0. 28. 1.
+		  TEXT ""
+		  
+		  POS 1. 1. 4. 1.
+		  TEXT "F00:"	
+		  POS 5. 1. 10. 1.
+		  FA_BLOCK00: EDIT "" ""
+		  POS 1. 2. 4. 1.
+		  TEXT "F01:"	
+		  POS 5. 2. 10. 1.
+		  FA_BLOCK01: EDIT "" ""
+		  POS 1. 3. 4. 1.
+		  TEXT "F02:"	
+		  POS 5. 3. 10. 1.
+		  FA_BLOCK02: EDIT "" ""
+		  POS 1. 4. 4. 1.
+		  TEXT "F03:"	
+		  POS 5. 4. 10. 1.
+		  FA_BLOCK03: EDIT "" ""
+		  POS 1. 5. 4. 1.
+		  TEXT "F04:"	
+		  POS 5. 5. 10. 1.
+		  FA_BLOCK04: EDIT "" ""
+		  POS 1. 6. 4. 1.
+		  TEXT "F05:"	
+		  POS 5. 6. 10. 1.
+		  FA_BLOCK05: EDIT "" ""
+		  POS 1. 7. 4. 1.
+		  TEXT "F06:"	
+		  POS 5. 7. 10. 1.
+		  FA_BLOCK06: EDIT "" ""
+		  POS 1. 8. 4. 1.
+		  TEXT "F07:"	
+		  POS 5. 8. 10. 1.
+		  FA_BLOCK07: EDIT "" ""
+		  POS 1. 9. 4. 1.
+		  TEXT "F08:"	
+		  POS 5. 9. 10. 1.
+		  FA_BLOCK08: EDIT "" ""
+		  POS 1. 10. 4. 1.
+		  TEXT "F09:"	
+		  POS 5. 10. 10. 1.
+		  FA_BLOCK09: EDIT "" ""
+		  POS 1. 11. 4. 1.
+		  TEXT "F10:"	
+		  POS 5. 11. 10. 1.
+		  FA_BLOCK10: EDIT "" ""
+		  POS 1. 12. 4. 1.
+		  TEXT "F11:"	
+		  POS 5. 12. 10. 1.
+		  FA_BLOCK11: EDIT "" ""
+		  POS 1. 13. 4. 1.
+		  TEXT "F12:"	
+		  POS 5. 13. 10. 1.
+		  FA_BLOCK12: EDIT "" ""
+		  POS 1. 14. 4. 1.
+		  TEXT "F13:"	
+		  POS 5. 14. 10. 1.
+		  FA_BLOCK13: EDIT "" ""
+		  POS 1. 15. 4. 1.
+		  TEXT "F14:"	
+		  POS 5. 15. 10. 1.
+		  FA_BLOCK14: EDIT "" ""
+		  POS 1. 16. 4. 1.
+		  TEXT "F15:"	
+		  POS 5. 16. 10. 1.
+		  FA_BLOCK15: EDIT "" ""
+		  POS 1. 17. 4. 1.
+		  TEXT "F16:"	
+		  POS 5. 17. 10. 1.
+		  FA_BLOCK16: EDIT "" ""
+		  POS 1. 18. 4. 1.
+		  TEXT "F17:"	
+		  POS 5. 18. 10. 1.
+		  FA_BLOCK17: EDIT "" ""
+		  POS 1. 19. 4. 1.
+		  TEXT "F18:"	
+		  POS 5. 19. 10. 1.
+		  FA_BLOCK18: EDIT "" ""
+		  POS 1. 20. 4. 1.
+		  TEXT "F19:"	
+		  POS 5. 20. 10. 1.
+		  FA_BLOCK19: EDIT "" ""
+		  POS 1. 21. 4. 1.
+		  TEXT "F20:"	
+		  POS 5. 21. 10. 1.
+		  FA_BLOCK20: EDIT "" ""
+		  POS 1. 22. 4. 1.
+		  TEXT "F21:"	
+		  POS 5. 22. 10. 1.
+		  FA_BLOCK21: EDIT "" ""
+		  
+		  POS 16. 1. 4. 1.
+		  TEXT "F22:"	
+		  POS 20. 1. 10. 1.
+		  FA_BLOCK22: EDIT "" ""
+		  POS 16. 2. 4. 1.
+		  TEXT "F23:"	
+		  POS 20. 2. 10. 1.
+		  FA_BLOCK23: EDIT "" ""
+		  POS 16. 3. 4. 1.
+		  TEXT "F24:"	
+		  POS 20. 3. 10. 1.
+		  FA_BLOCK24: EDIT "" ""
+		  POS 16. 4. 4. 1.
+		  TEXT "F25:"	
+		  POS 20. 4. 10. 1.
+		  FA_BLOCK25: EDIT "" ""
+		  POS 16. 5. 4. 1.
+		  TEXT "F26:"	
+		  POS 20. 5. 10. 1.
+		  FA_BLOCK26: EDIT "" ""
+		  POS 16. 6. 4. 1.
+		  TEXT "F27:"	
+		  POS 20. 6. 10. 1.
+		  FA_BLOCK27: EDIT "" ""
+		  POS 16. 7. 4. 1.
+		  TEXT "F28:"	
+		  POS 20. 7. 10. 1.
+		  FA_BLOCK28: EDIT "" ""
+		  POS 16. 8. 4. 1.
+		  TEXT "F29:"	
+		  POS 20. 8. 10. 1.
+		  FA_BLOCK29: EDIT "" ""
+		  POS 16. 9. 4. 1.
+		  TEXT "F30:"	
+		  POS 20. 9. 10. 1.
+		  FA_BLOCK30: EDIT "" ""
+		  POS 16. 10. 4. 1.
+		  TEXT "F31:"	
+		  POS 20. 10. 10. 1.
+		  FA_BLOCK31: EDIT "" ""
+		  POS 16. 11. 4. 1.
+		  TEXT "F32:"	
+		  POS 20. 11. 10. 1.
+		  FA_BLOCK32: EDIT "" ""
+		  POS 16. 12. 4. 1.
+		  TEXT "F33:"	
+		  POS 20. 12. 10. 1.
+		  FA_BLOCK33: EDIT "" ""
+		  POS 16. 13. 4. 1.
+		  TEXT "F34:"	
+		  POS 20. 13. 10. 1.
+		  FA_BLOCK34: EDIT "" ""
+		  POS 16. 14. 4. 1.
+		  TEXT "F35:"	
+		  POS 20. 14. 10. 1.
+		  FA_BLOCK35: EDIT "" ""
+		  POS 16. 15. 4. 1.
+		  TEXT "F36:"	
+		  POS 20. 15. 10. 1.
+		  FA_BLOCK36: EDIT "" ""
+		  POS 16. 16. 4. 1.
+		  TEXT "F37:"	
+		  POS 20. 16. 10. 1.
+		  FA_BLOCK37: EDIT "" ""
+		  POS 16. 17. 4. 1.
+		  TEXT "F38:"	
+		  POS 20. 17. 10. 1.
+		  FA_BLOCK38: EDIT "" ""
+		  POS 16. 18. 4. 1.
+		  TEXT "F39:"	
+		  POS 20. 18. 10. 1.
+		  FA_BLOCK39: EDIT "" ""
+		  POS 16. 19. 4. 1.
+		  TEXT "F40:"	
+		  POS 20. 19. 10. 1.
+		  FA_BLOCK40: EDIT "" ""
+		  POS 16. 20. 4. 1.
+		  TEXT "F41:"	
+		  POS 20. 20. 10. 1.
+		  FA_BLOCK41: EDIT "" ""
+		  POS 16. 21. 4. 1.
+		  TEXT "F42:"	
+		  POS 20. 21. 10. 1.
+		  FA_BLOCK42: EDIT "" ""
+		  POS 16. 22. 4. 1.
+		  TEXT "F43:"	
+		  POS 20. 22. 10. 1.
+		  FA_BLOCK43: EDIT "" ""
+		  
+		  POS 31. 1. 4. 1.
+		  TEXT "F44:"	
+		  POS 35. 1. 10. 1.
+		  FA_BLOCK44: EDIT "" ""
+		  POS 31. 2. 4. 1.
+		  TEXT "F45:"	
+		  POS 35. 2. 10. 1.
+		  FA_BLOCK45: EDIT "" ""
+		  POS 31. 3. 4. 1.
+		  TEXT "F46:"	
+		  POS 35. 3. 10. 1.
+		  FA_BLOCK46: EDIT "" ""
+		  POS 31. 4. 4. 1.
+		  TEXT "F47:"	
+		  POS 35. 4. 10. 1.
+		  FA_BLOCK47: EDIT "" ""
+		  POS 31. 5. 4. 1.
+		  TEXT "F48:"	
+		  POS 35. 5. 10. 1.
+		  FA_BLOCK48: EDIT "" ""
+		  POS 31. 6. 4. 1.
+		  TEXT "F49:"	
+		  POS 35. 6. 10. 1.
+		  FA_BLOCK49: EDIT "" ""
+		  POS 31. 7. 4. 1.
+		  TEXT "F50:"	
+		  POS 35. 7. 10. 1.
+		  FA_BLOCK50: EDIT "" ""
+		  POS 31. 8. 4. 1.
+		  TEXT "F51:"	
+		  POS 35. 8. 10. 1.
+		  FA_BLOCK51: EDIT "" ""
+		  POS 31. 9. 4. 1.
+		  TEXT "F52:"	
+		  POS 35. 9. 10. 1.
+		  FA_BLOCK52: EDIT "" ""
+		  POS 31. 10. 4. 1.
+		  TEXT "F53:"	
+		  POS 35. 10. 10. 1.
+		  FA_BLOCK53: EDIT "" ""		  
+		  POS 31. 11. 4. 1.
+		  TEXT "F54:"	
+		  POS 35. 11. 10. 1.
+		  FA_BLOCK54: EDIT "" ""
+		  POS 31. 12. 4. 1.
+		  TEXT "F55:"	
+		  POS 35. 12. 10. 1.
+		  FA_BLOCK55: EDIT "" ""
+		  POS 31. 13. 4. 1.
+		  TEXT "F56:"	
+		  POS 35. 13. 10. 1.
+		  FA_BLOCK56: EDIT "" ""
+		  POS 31. 14. 4. 1.
+		  TEXT "F57:"	
+		  POS 35. 14. 10. 1.
+		  FA_BLOCK57: EDIT "" ""
+		  POS 31. 15. 4. 1.
+		  TEXT "F58:"	
+		  POS 35. 15. 10. 1.
+		  FA_BLOCK58: EDIT "" ""
+		  POS 31. 16. 4. 1.
+		  TEXT "F59:"	
+		  POS 35. 16. 10. 1.
+		  FA_BLOCK59: EDIT "" ""
+		  POS 31. 17. 4. 1.
+		  TEXT "F60:"	
+		  POS 35. 17. 10. 1.
+		  FA_BLOCK60: EDIT "" ""
+		  POS 31. 18. 4. 1.
+		  TEXT "F61:"	
+		  POS 35. 18. 10. 1.
+		  FA_BLOCK61: EDIT "" ""
+		  POS 31. 19. 4. 1.
+		  TEXT "F62:"	
+		  POS 35. 19. 10. 1.
+		  FA_BLOCK62: EDIT "" ""
+		  POS 31. 20. 4. 1.
+		  TEXT "F63:"	
+		  POS 35. 20. 10. 1.
+		  FA_BLOCK63: EDIT "" ""
+		  
+		POS 6. 23. 10. 1.
+		Option2: CHECKBOX "FA_Write" ""	
+		;buttons OK (Default) and Cancel
+		POS 6. 24. 10. 1.
+		DEFBUTTON "FA_WRITE" "CONTinue"
+		  
+		POS 18. 24. 10. 1.
+		BUTTON "LOAD" "GOTO Load_block_fuse"
+	
+		POS 30. 24. 10. 1.
+		BUTTON "Cancel" "GOTO cancel"
+		;define action when window is closed
+		  CLOSE "GOTO cancel"
+	)	
+	;set default selections
+	LOCAL &BLOCK_NAME &BLOCK_DATA &i
+	&i=0.
+	&BLOCK_NAME="FA_BLOCK"
+	;&READ_DATA=0xe60012aa
+block_fuse_show_gui:		
+	&i=0.
+	while (&i<=63.)
+	(
+		&BLOCK_DATA=FORMAT.Decimal(2.,&i)
+		&BLOCK_DATA=STRing.Replace("&BLOCK_DATA"," ","0",0.)
+		&NAME="&BLOCK_NAME"+"&BLOCK_DATA"
+		&READ_DATA="0x"+string.mid("&WRITE_DATA",(63.*8.-8.*&i),8.)
+		DIALOG.Set &NAME "&READ_DATA"
+		;DIALOG.DISABLE &NAME
+		&i=&i+1.
+	)
+	STOP
+		
+	IF !DIALOG.BOOLEAN(Option2)
+	(
+		DIALOG.MESSAGE "please select FA_WRITE!!!"
+		GOSUB FA_MULT_VIEW
+	)
+	ELSE
+	(
+		comOPS jtag_low_lock
+		lowJTAG jtag_reset_tms
+		&i=0.
+		&WRITE_DATA=""
+		while (&i<=63.)
+		(
+			&BLOCK_DATA=FORMAT.Decimal(2.,&i)
+			&BLOCK_DATA=STRing.Replace("&BLOCK_DATA"," ","0",0.)
+			;&READ_DATA=&READ_DATA+0x1fff
+			&NAME="&BLOCK_NAME"+"&BLOCK_DATA"
+			&READ_DATA=DIALOG.STRing(&NAME)
+			&READ_DATA=FORMAT.Hex(8.,&READ_DATA)
+			&WRITE_DATA="&READ_DATA"+"&WRITE_DATA"
+			;DIALOG.DISABLE &NAME
+			&i=&i+1.
+		)
+		OPEN #1 &cur_path\block_all_fuse_value.txt /Create
+		WRITE #1 "&WRITE_DATA"
+		CLOSE #1
+		menuef SEL_FA_ALL_BLOCK_WRITE &WRITE_DATA 
+		comOPS jtag_low_unlock
+	)		
+	DIALOG.END
+	RETURN
+Load_block_fuse:
+	OPEN #1 &cur_path\block_all_fuse_value.txt /Read
+	READ #1 %line &WRITE_DATA
+	CLOSE #1
+	Gosub block_fuse_show_gui
+cancel:
+	DIALOG.END
+	&DC_TYPE="READ"
+	gosub efuse_recovery
+	ENDDO

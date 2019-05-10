@@ -1,0 +1,114 @@
+; by Ken.Kuang
+LOCAL &core_num &core_id &trace_output
+
+ENTRY &core_num &core_id
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=4
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC_ETB"
+	;&trace_output="SoC_ETR"
+	;&trace_output="CPU_ETB"
+	;&trace_output="CPU_ETR"
+	;&trace_output="TPIU"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+
+SYStem.Mode Down
+SYStem.RESet
+
+ON ERROR GOTO TIPS_UPDATE
+SYStem.CPU CortexA55
+GOTO NEXT
+TIPS_UPDATE:
+PRINT %ERROR "Please update your Trace32 Software!"
+NEXT:
+ON ERROR
+SYStem.CONFIG CoreNumber &core_num
+
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+
+
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+TrOnchip.Set RESET OFF
+
+;used for no trace path
+;SYStem.CONFIG.COREDEBUG.Base 0x83010000
+;;SYStem.CONFIG.BMC.Base 0x83030000
+;SYStem.CONFIG.CTI.Base 0x83020000
+;SYStem.CONFIG.ETM.Base 0x83040000
+DO "&CUR_DIR/Orca_Trace_Path_apcpu.cmm" &core_num &trace_output
+
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+
+DO "&CUR_DIR/Prepare.cmm"
+
+DO "&CUR_DIR/Orca_Trace_Path_replicator.cmm" &trace_output
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=1||&core_id!=0
+	(
+		GOSUB BOOT
+		WAIT &delay_times*500.MS
+	)
+	;ON ERROR CONTinue
+	;AREA.OPEN A000 c:\step_log.txt
+	;AREA.CLEAR A000
+	;SYStem.POLLING DEFault OFF
+	;diag 0x30E0 1.
+	;diag 0x3208 1.
+	;SYStem.Mode Attach
+	;diag 0x30E0 0.
+	;diag 0x3208 0.
+	;SYStem.POLLING DEFault DEFault
+	;AREA.CLOSE A000
+	;ON ERROR DEFault
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" AP_MP_CORE_BOOT 0
+	RETURN
+; end of BOOT

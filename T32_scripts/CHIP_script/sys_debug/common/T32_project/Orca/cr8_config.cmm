@@ -1,0 +1,16 @@
+GLOBAL &cr8_romtable_base &cr8_coredebug_base &cr8_pmu_base &cr8_cti_base &cr8_etm_base &cr8_coredebug_offset &cr8_pmu_offset &cr8_cti_offset &cr8_etm_offset
+
+&cr8_romtable_base=0x0
+
+&cr8_coredebug_base=0x10000
+&cr8_pmu_base=0x11000
+&cr8_cti_base=0x18000
+&cr8_etm_base=0x1C000
+
+&cr8_coredebug_offset=0x2000
+&cr8_pmu_offset=0x2000
+&cr8_cti_offset=0x1000
+&cr8_etm_offset=0x1000
+
+
+ENDDO

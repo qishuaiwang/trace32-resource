@@ -1,0 +1,68 @@
+; ken.kuang for DAP access jtag-ap
+LOCAL &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+ENTRY &cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+
+LOCAL &temp &cur_path
+&temp=OS.PPD()
+&cur_path=STRing.Replace("&temp", "\", "/", 0)
+
+&SPRD_EXT="SPRD.t32"
+;EXTension.CONFIG "C:/Users/ken.kuang/Documents/code/git/git_repo/script/edk_windows32/&SPRD_EXT"
+EXTension.CONFIG "&lib_SPRD_t32"
+
+
+ON CMD DJ_switch GOSUB
+(
+	LOCAL &data
+	ENTRY &data
+	&ret_value=DJTAG.SWITCH(&data)
+	RETURN &ret_value
+)
+
+ON CMD DJ_excute GOSUB
+(
+	LOCAL &sys &dap &chan &data &rnw &ir_len &dr_len &data1 &ret_value
+	&DJTAG_SYS_P_MASK=(0xFF)
+	&DJTAG_SYS_P_OFFSET=(24.)
+	&DJTAG_DAP_P_MASK=(0xFF)
+	&DJTAG_DAP_P_OFFSET=(16.)
+	&DJTAG_CHAN_P_MASK=(0xFF)
+	&DJTAG_CHAN_P_OFFSET=(8.)
+	&DJTAG_R_NW_P_MASK=(0x1)
+	&DJTAG_R_NW_P_OFFSET=(7.)
+	&DJTAG_DR_LEN_P_MASK=(0x7F)
+	&DJTAG_DR_LEN_P_OFFSET=(0.)
+	ENTRY &sys &dap &chan &data &rnw &ir_len &dr_len &data1
+	IF "X&chan"=="X"
+		&chan=1
+	IF "X&data"=="X"
+		&data=0
+	IF "X&rnw"=="X"
+		&rnw=0
+	IF "X&data1"=="X"
+		&data1=0
+	IF "X&dr_len"=="X"
+		&dr_len=0
+	LOCAL &par_one
+	&par_one=((&sys&&DJTAG_SYS_P_MASK)<<&DJTAG_SYS_P_OFFSET)
+	&par_one=&par_one|((&dap&&DJTAG_DAP_P_MASK)<<&DJTAG_DAP_P_OFFSET)
+	&par_one=&par_one|((&chan&&DJTAG_CHAN_P_MASK)<<&DJTAG_CHAN_P_OFFSET)
+	&par_one=&par_one|((&rnw&&DJTAG_R_NW_P_MASK)<<&DJTAG_R_NW_P_OFFSET)
+	&par_one=&par_one|((&dr_len&&DJTAG_DR_LEN_P_MASK)<<&DJTAG_DR_LEN_P_OFFSET)
+	IF &rnw==0
+	(
+		D.S AVM:0x1100 %LE %Quad &data
+		D.S AVM:0x1108 %LE %Quad &data1
+		&ret_value=DJTAG.EXECUTE(&par_one,0x1100)
+	)
+	ELSE
+	(
+		&ret_value=DJTAG.EXECUTE(&par_one,0)
+	)
+	RETURN &ret_value
+)
+
+&cmd &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8

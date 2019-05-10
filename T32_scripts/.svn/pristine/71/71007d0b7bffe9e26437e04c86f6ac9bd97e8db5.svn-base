@@ -1,0 +1,49 @@
+GLOBAL &cur_tap_cnt &added_tap_cnt
+GLOBAL &max_tap_cnt
+GLOBAL &tap_info_cnt
+GLOBAL &tap_pp_cnt
+&cur_tap_cnt=0.
+&max_tap_cnt=15.
+&tap_info_cnt=3.
+GLOBAL &IDCODE &IR &DR
+&IDCODE=0
+&IR=1
+&DR=2
+Var.NEWGLOBAL int[&max_tap_cnt][&tap_info_cnt] \tap_network
+; IDCODE, IR, DR
+
+GLOBAL &PREIR &POSTIR &PREDR &POSTDR
+&tap_pp_cnt=4.
+&PREIR=0
+&POSTIR=1
+&PREDR=2
+&POSTDR=3
+Var.NEWGLOBAL int[&max_tap_cnt][&tap_pp_cnt] \cur_tap_chain
+;PREIR, POSTIR, PREDR, POSTDR
+&added_tap_cnt=0
+Var.NEWGLOBAL int[&max_tap_cnt] \tap_order
+Var.NEWGLOBAL char[&max_tap_cnt][15] \ops_cmd
+
+GLOBAL &ENDOFTAPID
+&ENDOFTAPID=0xFFFFFFFF
+GLOBAL &NOTAPID
+&NOTAPID=0xFFFFFFFF
+
+GLOBAL &BIA_tap_id
+&BIA_tap_id=&NOTAPID
+GLOBAL &DAP_tap_id
+&DAP_tap_id=&NOTAPID
+GLOBAL &primary_tap_id
+&primary_tap_id=&NOTAPID
+GLOBAL &FUSE_tap_id
+&FUSE_tap_id=&NOTAPID
+
+GLOBAL &JTAG_LOCKED
+&JTAG_LOCKED=0
+GLOBAL &JTAG_PIN_ENABLED
+&JTAG_PIN_ENABLED=0
+GLOBAL &JTAG_LOW_LOCK
+&JTAG_LOW_LOCK=0
+
+ENDDO
+

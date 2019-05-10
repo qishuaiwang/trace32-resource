@@ -1,0 +1,34 @@
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+
+system.mode down
+system.reset
+
+system.jtagclock 5mhz
+
+system.cpu ARM926EJ
+
+SYStem.MultiCore JTAGACCESSPORT 2
+SYStem.MultiCore MEMORYACCESSPORT 0
+system.MultiCore DEBUGACCESSPORT 1
+
+SYStem.Multicore COREJTAGPORT 3
+
+&CUR_DIR=OS.PPD()
+CD.DO "&CUR_DIR/jtagv0.cmm"
+
+system.cpuaccess enable
+;system.multicore SWDP ON
+
+;system.memaccess dap
+
+system.mode up
+PRINT "CP0 ARM1 Up"
+
+;tronchip.set.dabort .off
+;tronchip.set.pabort.off
+;tronchip.set.undef.off
+;tronchip.set.reset.off

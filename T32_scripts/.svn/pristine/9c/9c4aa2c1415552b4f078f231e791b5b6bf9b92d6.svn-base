@@ -1,0 +1,186 @@
+; by Ken.Kuang
+LOCAL &core_num &core_id &trace_output
+
+ENTRY &core_num &core_id &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=4
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC_ETB"
+	;&trace_output="A53_ETB"
+	;&trace_output="ETR"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+SYStem.CPU CortexA53
+SYStem.CONFIG CoreNumber &core_num
+
+SYStem.JtagClock 20MHz
+
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+
+TrOnchip.Set RESET OFF
+
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+;SYStem.CONFIG.CTI.Base 0x80002000
+SYStem.CONFIG.TPIU.Base 0x80004000
+;SYStem.CONFIG.CTI.Base 0x80005000
+
+; A53
+SYStem.CONFIG.FUNNEL2.Base 0x80A00000
+
+;PTM 4
+SYStem.CONFIG.FUNNEL1.ATBSource FUNNEL2 0
+
+
+IF (&core_num==4)
+(
+	CORE.ASSIGN 1 2 3 4
+	SYStem.CONFIG.COREDEBUG.Base (0x80C10000) (0x80D10000) (0x80E10000) (0x80F10000)
+	SYStem.CONFIG.BMC.Base (0x80C30000) (0x80D30000) (0x80E30000) (0x80F30000)
+	SYStem.CONFIG.CTI.Base (0x80C20000) (0x80D20000) (0x80E20000) (0x80F20000)
+	SYStem.CONFIG.ETM.Base (0x80C40000) (0x80D40000) (0x80E40000) (0x80F40000)
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3
+)
+ELSE
+(
+	CORE.ASSIGN 1
+	PRIVATE &offset
+	&offset=0x00100000*&core_id
+	SYStem.CONFIG.COREDEBUG.Base (0x80C10000+&offset)
+	SYStem.CONFIG.BMC.Base (0x80C30000+&offset)
+	SYStem.CONFIG.CTI.Base (0x80C20000+&offset)
+	SYStem.CONFIG.ETM.Base (0x80C40000+&offset)
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+)
+
+IF ("&trace_output"=="SoC_ETB")
+(
+	; ETB
+	SYStem.CONFIG.ETB1.Base 0x80003000
+	SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+)
+ELSE
+(
+	; ETF
+	SYStem.CONFIG.ETF1.Base 0x80003000
+	SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+	SYStem.CONFIG.TPIU.ATBSource ETF1 
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+SYStem.CONFIG SWDP ON
+SYStem.CONFIG SWDPTargetSel 0x0
+; for SharkLE AP LightSleep
+GOSUB LE_DAPSYSPWRUP OFF
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+SYStem.CONFIG SWDP OFF
+SYStem.JtagClock 3MHz
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=1||&core_id!=0
+	(
+		GOSUB BOOT
+		WAIT 500.MS
+	)
+	;ON ERROR CONTinue
+	;AREA.OPEN A000 c:\step_log.txt
+	;AREA.CLEAR A000
+	;SYStem.POLLING DEFault OFF
+	;diag 0x30E0 1.
+	;diag 0x3208 1.
+	;SYStem.Mode Attach
+	;diag 0x30E0 0.
+	;diag 0x3208 0.
+	;SYStem.POLLING DEFault DEFault
+	;AREA.CLOSE A000
+	;ON ERROR DEFault
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" AP_MP_CORE_BOOT
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO
+
+LE_DAPSYSPWRUP:
+	LOCAL &ON_FF
+	ENTRY &ON_FF
+	ON ERROR GOTO OLD_SYSPWRUP
+	SYStem.Option.DAPSYSPWRUPREQ &ON_FF
+	GOTO L_RE
+OLD_SYSPWRUP:
+	SYStem.Option.SYSPWRUPREQ &ON_FF
+L_RE:
+	ON ERROR
+	RETURN
+
+
+
+
+
+

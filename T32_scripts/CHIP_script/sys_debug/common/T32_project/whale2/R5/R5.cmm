@@ -1,0 +1,28 @@
+system.mode down
+system.reset
+
+system.jtagclock 5Mhz
+
+system.cpu CORTEXR5 
+;system.config CORENUMBER 1.
+;core.assign 1
+
+sys.config corebase 	0x80030000
+SYS.CONFIG CTIBase       0x80038000
+sys.config etmbase       0x8003c000
+
+;system.multiCore JTAGACCESSPORT 2
+;system.multicore COREJTAGPORT 0
+;system.config MEMORYACCESSPORT 0
+;system.config AXIACCESSPORT   0
+system.config DEBUGACCESSPORT 1
+
+;system.mode Prepare
+
+system.mode Up
+
+;data.load  Z:\whale2_cr5\build\WHALE_R5_FPGA\img\i2s_pcm_test\WHALE_R5_FPGA_i2s_pcm_test_test.axf /strippart 3 /sourcepath Z:\whale2_cr5
+
+
+
+

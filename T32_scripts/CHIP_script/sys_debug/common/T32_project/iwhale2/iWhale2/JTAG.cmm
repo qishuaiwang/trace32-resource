@@ -1,0 +1,206 @@
+LOCAL &temp &ptap &config
+ENTRY &config &p1
+DO "&project_path/iWhale2_TAP_Network.cmm"
+DO "&root_path/CMM_api/api_ops.cmm"
+PRINT "Config is &config"
+
+SYStem.CONFIG.TAPState 7.
+
+ON ERROR GOTO error_end
+comOPS jtag_low_lock
+&ptap=1
+detect_jtag:
+comOPS detect_ir_len
+ENTRY &temp
+IF &temp==8
+(
+	GOSUB bia_orange_unlock
+	GOTO end_of_this
+)
+ELSE IF &temp==4
+(
+	GOTO end_of_this
+)
+ELSE IF (&temp<2)||(&temp>63.)
+(
+	IF &ptap==1
+	(
+		&ptap=0
+		lowJTAG jtag_reset_tms
+		GOTO detect_jtag
+	)
+	ELSE
+	(
+		PRINT %ERROR "Detect TAP ERROR! Please Try again!"
+		comOPS jtag_low_unlock
+		SYStem.DETECT DaisyChain
+		END
+	)
+)
+pTAP init
+biaTAP init
+dapTAP init
+fuseTAP init
+&temp=STRing.SCAN("&config", "RST", 0)
+IF &temp!=-1
+(
+	comOPS tap_network_reset
+)
+comOPS tap_network_detect
+ENTRY &ptap
+
+IF (&ptap&&BIA_P_BIT)!=0
+(
+	biaTAP add
+)
+IF (&ptap&&DAP_P_BIT)!=0
+(
+	dapTAP add
+)
+IF (&ptap&&FUSE_P_BIT)!=0
+(
+	fuseTAP add
+)
+
+&temp=STRing.SCAN(&config, "BIA", 0)
+IF ((&ptap&&BIA_P_BIT)==0)&&(&temp!=-1)
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	&temp=&temp|&BIA_P_BIT
+	pTAP write 0 32. &temp
+	biaTAP add
+	biaTAP read 0x2 32.
+	ENTRY &temp
+	comOPS api_pr "the BIA IDCODE is &temp"
+	PRINT "the BIA add to JTAG"
+	;GOSUB bia_orange_unlock
+)
+&temp=STRing.SCAN(&config, "DAP", 0)
+IF ((&ptap&&DAP_P_BIT)==0)&&(&temp!=-1)
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	&temp=&temp|&DAP_P_BIT
+	pTAP write 0 32. &temp
+	dapTAP add
+	dapTAP read 0xE 32.
+	ENTRY &temp
+	comOPS api_pr "the DAP IDCODE is &temp"
+	PRINT "the DAP add to JTAG"
+)
+&temp=STRing.SCAN(&config, "FUSE", 0)
+IF ((&ptap&&FUSE_P_BIT)==0)&&(&temp!=-1)
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	&temp=&temp|&FUSE_P_BIT
+	pTAP write 0 32. &temp
+	fuseTAP add
+	PRINT "the Fuse add to JTAG"
+)
+&temp=STRing.SCAN(&config, "RPT", 0)
+IF &temp!=-1
+(
+	pTAP read 1 32.
+	ENTRY &temp
+	PRINT "The Primary TAP's IDCODE is &temp"
+	pTAP read 0 32.
+	ENTRY &temp
+	PRINT "The Primary TAP's Chain Select is &temp"
+)
+&temp=STRing.SCAN(&config, "RB", 0)
+IF &temp!=-1
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	IF "X&p1"=="X"
+		&p1=0
+	IF &p1==0
+		&temp=&temp&~(1<<18.)
+	ELSE
+		&temp=&temp|(1<<18.)
+	pTAP write 0 32. &temp
+)
+&temp=STRing.SCAN(&config, "SoC", 0)
+IF &temp!=-1
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	&temp=&temp&~(1<<19.)
+	pTAP write 0 32. &temp
+)
+&temp=STRing.SCAN(&config, "VISA", 0)
+IF &temp!=-1
+(
+	pTAP read 0 32.
+	ENTRY &temp
+	&temp=&temp&~((1<<20.)|(1<<21.))
+	&temp=&temp|(1<<19.)|((&p1&0x3)<<20.)
+	pTAP write 0 32. &temp
+)
+&temp=STRing.SCAN(&config, "PHY", 0)
+IF &temp!=-1
+(
+	comOPS tap_network_reset
+	&temp=1<<&p1.
+	pTAP write 0 32. &temp
+)
+
+end_of_this:
+comOPS jtag_low_unlock
+
+pTAP read 0 32.
+ENTRY &ptap
+IF ((&ptap&&BIA_P_BIT)!=0)||((&ptap&&DAP_P_BIT)!=0)
+	GOSUB jtag_chain_config
+WAIT 10.MS
+
+ENDDO
+error_end:
+PRINT %ERROR "DETECT ERROR!"
+comOPS jtag_low_unlock
+END
+
+
+jtag_chain_config:
+	IF (CPUFAMILY()=="I386")
+	(
+		LOCAL &temp
+		&temp=STRing.SCAN(&config, "IAP", 0)
+		IF (&temp!=-1)
+		(
+			; for Traec32 access DAP
+			dapTAP t32_setup 1
+		)
+		ELSE
+		(
+			biaTAP t32_setup
+		)
+	)
+	IF (CPUFAMILY()=="ARM")||(CPUFAMILY()=="TEAKLITE4")
+		dapTAP t32_setup
+	RETURN
+;end of jtag_chain_config
+
+bia_orange_unlock:
+	;Orange check
+	PRINT "Try Orange check"
+	LOCAL &bia_val &bia_val_h
+	biaTAP read 0x34 72.
+	ENTRY &bia_val &bia_val_h
+	PRINT "The BIA 0x34 is H(&bia_val_h) L(&bia_val)"
+	IF (&bia_val&(1<<62.))==0
+	(
+		DO "&project_path/orange_unlock_run.cmm" pdaj124ad4
+		;DO "&project_path/orange_unlock.cmm" pdaj124ad4
+		; iSharkL:0xB8FFB65FF39158D580000000(from FPGA script)
+		;biaTAP write 0xF3 96. 0xF39158D580000000 0xB8FFB65F
+		;ENTRY &bia_val &bia_val_h
+		;PRINT "The BIA 0xF3 is H(&bia_val_h) L(&bia_val)"
+	)
+	biaTAP read 0x34 72.
+	ENTRY &bia_val &bia_val_h
+	PRINT "The BIA 0x34 is H(&bia_val_h) L(&bia_val)"
+	RETURN
+;end of bia_orange_unlock

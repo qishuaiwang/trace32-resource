@@ -1,0 +1,35 @@
+PER.Set C15:0x26 %LONG 0x0 		;Select Region 0
+PER.Set C15:0x16 %LONG 0x0 		;Base Address is 0x0
+PER.Set C15:0x416 %LONG 0x301 		;Device
+PER.Set C15:0x216 %LONG 0x3F 		;Size 4GB,Enabled
+
+PER.Set C15:0x26 %LONG 0x1 		;Select Region 1
+PER.Set C15:0x16 %LONG 0x0 		;Base Address is 0x0~0xFFF
+PER.Set C15:0x416 %LONG 0x308 		;Device
+PER.Set C15:0x216 %LONG 0x17 		;Size 4K,Enabled
+
+PER.Set C15:0x26 %LONG 0x2 		;Select Region 2 llram
+PER.Set C15:0x16 %LONG 0x54100000 		;Base Address is 0x54100000~0x5416FFFF
+PER.Set C15:0x416 %LONG 0x308 		;Outer and Inner Non-cacheable, Normal, Read/write
+PER.Set C15:0x216 %LONG 0x25 		;Size 512KB,Enabled
+
+PER.Set C15:0x26 %LONG 0x3 		;Select Region 3
+PER.Set C15:0x16 %LONG 0x54700000 		;Base Address is 0x54700000~0x547FFFFF
+PER.Set C15:0x416 %LONG 0x310 		;Device
+PER.Set C15:0x216 %LONG 0x27 		;Size 1MB,Enabled
+
+PER.Set C15:0x26 %LONG 0x4 		;Select Region 4
+PER.Set C15:0x16 %LONG 0x80000000 		;Base Address is 0x80000000
+PER.Set C15:0x416 %LONG 0x308 		;Device
+PER.Set C15:0x216 %LONG 0x39 		;Size 512MB,Enabled
+
+PER.Set C15:0x26 %LONG 0x5 		;Select Region 5
+PER.Set C15:0x16 %LONG 0xA0000000 		;Base Address is 0xA0000000
+PER.Set C15:0x416 %LONG 0x339 		;Device
+PER.Set C15:0x216 %LONG 0x39 		;Size 512MB,Enabled
+
+PER.Set C15:0x1 %LONG 0x1			;Enable MPU
+
+TrOnchip.Set.DABORT.OFF 			;close auto catch
+TrOnchip.Set.PABORT.OFF
+TrOnchip.Set.UNDEF.OFF

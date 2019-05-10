@@ -1,0 +1,322 @@
+; Ken.Kuang for SharkL2 Debug information
+; 2017
+; Version @ 0000
+ASSERT SOFTWARE.BUILD.BASE()>=57080. "The Trace32 software too old"
+
+;cp_pub_address
+;0x02000000
+;cp_wtl_address
+;0x32000000
+;ap_address
+;0x40000000
+
+;share IRAM
+;0x50000000
+ENTRY &MEM_TYPE="EAXI" &AON_SIRAM_ADDR=0x50000000 &AON_BASE_ADDR=0x40000000 
+ASSERT DATA.LONG(AVM:0x0)==0x5577 "Please use Per_Preload.cmm!"
+
+CONFIG 16. 8.
+WIDTH 23.
+
+; ############################ START OF DJTAG ############################
+BASE EAPB:0x0
+TREE "DJTAG Scan"
+TREE "BUSMON BUS STATUS"
+TREE "AP BUS STATUS"
+SGROUP "AP"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x000A2680,0)
+	TEXTLINE ""
+	LINE.LONG 0x00 " CA7 , CA7(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00032680,0)
+	LINE.LONG 0x00 " DMA , DMA(M2) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00012680,0)
+	LINE.LONG 0x00 " CE PUB , CE PUB(M3) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00022680,0)
+	LINE.LONG 0x00 " CE SEC , CE SEC(M9) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00042680,0)
+	LINE.LONG 0x00 " SDIO0 , SDIO0(M4) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00052680,0)
+	LINE.LONG 0x00 " SDIO1 , SDIO1(M5) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00062680,0)
+	LINE.LONG 0x00 " SDIO2 , SDIO2(M6) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00072680,0)
+	LINE.LONG 0x00 " EMMC , EMMC(M7) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00082680,0)
+	LINE.LONG 0x00 " USB , USB OTG(M8) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x00092680,0)
+	LINE.LONG 0x00 " DAP , DAP-AXI(M0) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x000B2680,0)
+	LINE.LONG 0x00 " AP_PUB , AP_PUB(M10) "
+	include BusMon_status.per
+
+TREE.END
+
+TREE "AON BUS STATUS"
+SGROUP "AON"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x03012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x00 " DMA , DMA(M4) "
+	include BusMon_status.per
+
+TREE.END
+
+TREE "PUBCP BUS STATUS"
+SGROUP "PUBCP"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x06002680,0)
+	TEXTLINE ""
+	LINE.LONG 0x00 " CR5 0 , CR5_0(M0) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06012680,0)
+	LINE.LONG 0x00 " CR5 1 , CR5_1(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06022680,0)
+	LINE.LONG 0x00 " DMA , DMA(M2) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06032680,0)
+	LINE.LONG 0x00 " SEC0 , SEC0(M3) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06042680,0)
+	LINE.LONG 0x00 " SEC1 , SEC1(M4) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06052680,0)
+	LINE.LONG 0x00 " TFT , TFT(M5) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06062680,0)
+	LINE.LONG 0x00 " AON , AON(M6) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06072680,0)
+	LINE.LONG 0x00 " SDIO , SDIO(M7) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x06092680,0)
+	LINE.LONG 0x00 " DMALINK1 , DMALINK1(M8) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x060A2680,0)
+	LINE.LONG 0x00 " DMALINK0 , DMALINK0(M9) "
+	include BusMon_status.per
+
+TREE.END
+
+
+
+TREE "WTLCP BUS STATUS"
+SGROUP "WTLCP"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x05012680,0)
+	TEXTLINE ""
+	LINE.LONG 0x00 " LDSP P , LDSP P(M0) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05022680,0)
+	LINE.LONG 0x00 " LDSP D , LDSP D(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05032680,0)
+	LINE.LONG 0x00 " LDSP DMA , LDSP DMA(M4) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05042680,0)
+	LINE.LONG 0x00 " TGDSP P , TGDSP P(M2) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05052680,0)
+	LINE.LONG 0x00 " TGDSP D , TGDSP D(M3) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05062680,0)
+	LINE.LONG 0x00 " TGDSP DMA , TGDSP DMA(M5) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05072680,0)
+	LINE.LONG 0x00 " LTE PCC , LTE PCC(M7) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05082680,0)
+	LINE.LONG 0x00 " CR5 , CR5_S5(M6) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05092680,0)
+	LINE.LONG 0x00 " LTE_CSDFE , LTE PROC LTE_CSDFE(M0) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x050A2680,0)
+	LINE.LONG 0x00 " LTE_CE , LTE PROC LTE_CE(M1) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x050B2680,0)
+	LINE.LONG 0x00 " LTE_DPFEC , LTE PROC LTE_DPFEC(M3) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x050C2680,0)
+	LINE.LONG 0x00 " LTE_ULCH , LTE PROC LTE_ULCH(M4) "
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x050D2680,0)
+	LINE.LONG 0x00 " HSDL , LTE PROC HSDL(M5)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x052B2680,0)
+	LINE.LONG 0x00 " WCDMA_S0 , DDR MTX(M0)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x052C2680,0)
+	LINE.LONG 0x00 " LTE_PROC_S9 , DDR MTX(M1)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x052D2680,0)
+	LINE.LONG 0x00 " HU3GE_A , DDR MTX(M2)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x052E2680,0)
+	LINE.LONG 0x00 " HU3GE_B , DDR MTX(M3)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x052F2680,0)
+	LINE.LONG 0x00 " DSP , DDR MTX(M4)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05312680,0)
+	LINE.LONG 0x00 " WDMA_LINK0 , WDMA_LINK0(M0)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05322680,0)
+	LINE.LONG 0x00 " WDMA1 , WDMA1(M1)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05332680,0)
+	LINE.LONG 0x00 " CR5_S4 , CR5_S4(M2)"
+	include BusMon_status.per
+
+SGROUP
+	VARX 0x00 %l DJTAG.EXECUTE(0x05342680,0)
+	LINE.LONG 0x00 " DSP_S8 , DSP_S8(M3)"
+	include BusMon_status.per
+
+TREE.END
+
+
+TREE.END
+
+
+TREE "VOLTAGE DOMAIN STATUS"
+SGROUP "AP Voltage Domain"
+	VARX 0x04 %l DJTAG.SWITCH(0x01)
+	VARX 0x00 %l DJTAG.EXECUTE(0x00000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "MM Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x01000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "GPU Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x02000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "AON Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x03000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "PUB Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x04000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "WTLCP Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x05000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+SGROUP "PUBCP Voltage Domain"
+	VARX 0x00 %l DJTAG.EXECUTE(0x06000180,0)
+	LINE.LONG 0x00 " TAPID , TAPID(Chan01) "
+	BITFLD.LONG 0x00 0. " Voltage , Voltage" "Off,On"
+
+TREE.END
+
+
+
+TREE "DEBUG STATUS"
+
+;include the auto gen file!
+;include djtag_chain_sharklj1.per
+
+include djtag_chain_sharklj1_wtlcp.per
+
+CONFIG 16. 8.
+WIDTH 23.
+
+
+;include the auto gen file!
+TREE.END
+
+TREE.END
+; ############################ END OF DJTAG ############################
+

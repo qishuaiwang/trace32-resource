@@ -1,0 +1,44 @@
+; by Ken.Kuang
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+SYStem.Mode Down
+SYStem.RESet
+SYStem.JtagClock 1.MHz
+SYStem.CPU TL420-RTL201 ;TL420-RTL111
+
+
+Break.SELect.Program Onchip
+Break.SELect.Read Onchip
+Break.SELect.Write Onchip
+
+SYStem.CONFIG JTAGACCESSPORT 2
+SYStem.CONFIG COREJTAGPORT 1 ;3 -> ARM7  ;1 -> LDSP  ;2 -> TGDSP 
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 0xFF
+SYStem.CONFIG APBACCESSPORT 1
+
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+SYStem.Mode.Prepare
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO

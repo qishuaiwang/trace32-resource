@@ -1,0 +1,16 @@
+local &CUR_DIR
+&CUR_DIR=os.ppd()
+;d.load &CUR_DIR\u-boot-spl
+d.load &CUR_DIR\640_init
+go
+wait 4s
+break
+d.test 0x80000000++0xfff /random
+if found()
+	print "test ddr fail"
+else
+	print "test ddr ok"
+enddo
+
+
+

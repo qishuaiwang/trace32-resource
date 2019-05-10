@@ -1,0 +1,115 @@
+;***************************BUSMON REG INFO*********************************
+Var.NEWGLOBAL char[33][20] \busmon_regname
+Var.set \busmon_regname[0]="CHN_INT"
+Var.set \busmon_regname[1]="CHN_CFG"
+Var.set \busmon_regname[2]="ID_CFG"
+Var.set \busmon_regname[3]="ADDR_MIN"
+Var.set \busmon_regname[4]="ADDR_MIN_H32"
+Var.set \busmon_regname[5]="ADDR_MAX"
+Var.set \busmon_regname[6]="ADDR_MAX_H32"
+Var.set \busmon_regname[7]="ADDR_MASK"
+Var.set \busmon_regname[8]="ADDR_MASK_H32"
+Var.set \busmon_regname[9]="DATA_MIN_L32"
+Var.set \busmon_regname[10]="DATA_MIN_H32"
+Var.set \busmon_regname[11]="DATA_MIN_EXT_L32"
+Var.set \busmon_regname[12]="DATA_MIN_EXT_H32"
+Var.set \busmon_regname[13]="DATA_MAX_L32"
+Var.set \busmon_regname[14]="DATA_MAX_H32"
+Var.set \busmon_regname[15]="DATA_MAX_EXT_L32"
+Var.set \busmon_regname[16]="DATA_MAX_EXT_H32"
+Var.set \busmon_regname[17]="DATA_MASK_L32"
+Var.set \busmon_regname[18]="DATA_MASK_H32"
+Var.set \busmon_regname[19]="DATA_MASK_EXT_L32"
+Var.set \busmon_regname[20]="DATA_MASK_EXT_H32"
+Var.set \busmon_regname[21]="MON_TRANS_LEN"
+Var.set \busmon_regname[22]="MATCH_ID"
+Var.set \busmon_regname[23]="MATCH_ADDR"
+Var.set \busmon_regname[24]="MATCH_ADDR_H32"
+Var.set \busmon_regname[25]="MATCH_CMD"
+Var.set \busmon_regname[26]="MATCH_DATA_L32"
+Var.set \busmon_regname[27]="MATCH_DATA_H32"
+Var.set \busmon_regname[28]="MATCH_DATA_EXT_L32"
+Var.set \busmon_regname[29]="MATCH_DATA_EXT_H32"
+Var.set \busmon_regname[30]="BUS_STATUS"
+Var.set \busmon_regname[31]="USER_CFG"
+Var.set \busmon_regname[32]="MATCH_USER"
+
+;***************************SYS INFO****************************************
+;sys_num means the number of subsys
+Var.NEWGLOBAL int \sys_num
+Var.set \sys_num=9
+
+;sys_name array includes different name of every subsys
+;sys_name[x] is subsys name, 'x' is djtag_dap_sel[15:8] of the sys, please refer to 'DJTAG SPEC' for the project
+Var.NEWGLOBAL char[9][6] \sys_name
+Var.set \sys_name[0]="AP"
+Var.set \sys_name[1]="APCPU"
+Var.set \sys_name[2]="GPU"
+Var.set \sys_name[3]="MM"
+Var.set \sys_name[4]="PUBCP"
+Var.set \sys_name[5]="WTLCP"
+Var.set \sys_name[6]="AUDCP"
+Var.set \sys_name[7]="PUB"
+Var.set \sys_name[8]="AON"
+
+;BUSMON IN AP
+;there's none busmon in the subsys, please descript it like below
+;'x' in busmon_sysx below is the same as 'x' in sys_name[x], "N/A" means none busmon
+Var.NEWGLOBAL char[1][15] \busmon_sys0
+Var.set \busmon_sys0[0]="VDSP_dap0"
+
+;BUSMON IN APCPU
+Var.NEWGLOBAL char[1][5] \busmon_sys1
+Var.set \busmon_sys1[0]="N/A"
+
+;BUSMON IN GPU
+Var.NEWGLOBAL char[1][5] \busmon_sys2
+Var.set \busmon_sys2[0]="N/A"
+
+;BUSMON IN MM
+Var.NEWGLOBAL char[1][5] \busmon_sys3
+Var.set \busmon_sys3[0]="N/A"
+
+;BUSMON IN PUBCP
+Var.NEWGLOBAL char[1][5] \busmon_sys4
+Var.set \busmon_sys4[0]="N/A"
+
+;BUSMON IN WTLCP
+;\busmon_sys5[x] is the 'x'th busmon name, please name it like XXXX_dapy, and 'y' is equal to djtag_dap_sel[7:0]
+Var.NEWGLOBAL char[13][26] \busmon_sys5
+Var.set \busmon_sys5[0]="LDSP_DCACHE_dap1"
+Var.set \busmon_sys5[1]="LTE_DMA_dap2"
+Var.set \busmon_sys5[2]="TGDSP_DCACHE_dap3"
+Var.set \busmon_sys5[3]="TG_DMA_dap4"
+Var.set \busmon_sys5[4]="LTE_PROC_MTX_S8_dap5"
+Var.set \busmon_sys5[5]="LTE_PROC_MTX_M0_dap6"
+Var.set \busmon_sys5[6]="LTE_PROC_MTX_M1_dap7"
+Var.set \busmon_sys5[7]="LTE_FEC_dap8"
+Var.set \busmon_sys5[8]="LTE_ULCH_dap9"
+Var.set \busmon_sys5[9]="LTE_HSDL_dap10"
+Var.set \busmon_sys5[10]="PUBCP_dap11"
+Var.set \busmon_sys5[11]="HU3GE_B_dap12"
+Var.set \busmon_sys5[12]="HU3GE_A_dap13"
+
+;BUSMON IN AUDCP
+Var.NEWGLOBAL char[4][26] \busmon_sys6
+Var.set \busmon_sys6[0]="AUDDSP_DCACHE_dap0"
+Var.set \busmon_sys6[1]="DMAAP_dap1"
+Var.set \busmon_sys6[2]="DMACP_dap2"
+Var.set \busmon_sys6[3]="AON_dap3"
+
+;BUSMON IN PUB
+Var.NEWGLOBAL char[1][5] \busmon_sys7
+Var.set \busmon_sys7[0]="N/A"
+
+;BUSMON IN AON
+;\busmon_sys8[x] is the 'x'th busmon name, please name it like XXXX_dapy, and 'y' is equal to djtag_dap_sel[7:0]
+Var.NEWGLOBAL char[6][15] \busmon_sys8
+Var.set \busmon_sys8[0]="AP_dap0"
+Var.set \busmon_sys8[1]="WTLCP_dap1"
+Var.set \busmon_sys8[2]="AUDCP_dap2"
+Var.set \busmon_sys8[3]="PUBCP_dap3"
+Var.set \busmon_sys8[4]="USB_dap4"
+Var.set \busmon_sys8[5]="SP_dap5"
+
+ENDDO

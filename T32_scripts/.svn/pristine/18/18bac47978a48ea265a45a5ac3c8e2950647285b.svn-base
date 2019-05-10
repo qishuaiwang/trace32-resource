@@ -1,0 +1,222 @@
+; by Ken.Kuang
+LOCAL &core_num &core_id &mem_tpye &trace_output
+
+ENTRY &core_num &core_id &mem_tpye &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=6
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&mem_tpye"=="X"
+(
+	;&mem_tpye="EAXI"
+	&mem_tpye="EZAXI"
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC ETB"
+	;&trace_output="A53 ETB"
+	;&trace_output="ETR"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+SYStem.CPU CortexA53
+SYStem.CONFIG CoreNumber &core_num
+SYStem.JtagClock 20MHz
+
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+
+TrOnchip.Set RESET OFF
+
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.ETF1.Base 0x80003000
+SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+SYStem.CONFIG.TPIU.Base 0x80004000
+SYStem.CONFIG.ETR1.Base 0x80005000
+SYStem.CONFIG.STM1.Base 0x80006000
+SYStem.CONFIG.STM1.Type ARM
+SYStem.CONFIG.STM1.Mode STPV2
+SYStem.CONFIG.ETR1.ATBSource ETF1
+SYStem.CONFIG.TPIU.ATBSource ETF1 
+;TPIU.PortMode Wrapped
+
+
+; A53
+SYStem.CONFIG.FUNNEL2.Base 0x81001000
+SYStem.CONFIG.FUNNEL3.Base 0x81002000
+SYStem.CONFIG.ETF2.Base 0x81003000
+SYStem.CONFIG.ETF3.Base 0x81004000
+SYStem.CONFIG.FUNNEL4.Base 0x81005000
+SYStem.CONFIG.FUNNEL4.ATBSource ETF2 0 ETF3 1
+SYStem.CONFIG.ETF2.ATBSource FUNNEL2
+SYStem.CONFIG.ETF3.ATBSource FUNNEL3
+
+SYStem.CONFIG.FUNNEL1.ATBSource FUNNEL4 0 STM1 4
+
+LOCAL &BIG &LIT
+&LIT=0 ; 0: LIT 0x400000: BIG
+&BIG=0x400000 ; 0: LIT 0x400000: BIG
+
+
+IF (&core_num==2)
+(
+	CORE.ASSIGN 1 2
+	SYStem.CONFIG.COREDEBUG.Base (0x81410000+&LIT) (0x81510000+&LIT)
+	SYStem.CONFIG.BMC.Base (0x81430000+&LIT) (0x81530000+&LIT)
+	SYStem.CONFIG.CTI.Base (0x81420000+&LIT) (0x81520000+&LIT)
+	SYStem.CONFIG.ETM.Base (0x81440000+&LIT) (0x81540000+&LIT)
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1
+)
+ELSE IF (&core_num==4)
+(
+	CORE.ASSIGN 1 2 3 4
+	SYStem.CONFIG.COREDEBUG.Base (0x81410000+&BIG) (0x81510000+&BIG) (0x81610000+&BIG) (0x81710000+&BIG)
+	SYStem.CONFIG.BMC.Base (0x81430000+&BIG) (0x81530000+&BIG) (0x81630000+&BIG) (0x81730000+&BIG)
+	SYStem.CONFIG.CTI.Base (0x81420000+&BIG) (0x81520000+&BIG) (0x81620000+&BIG) (0x81720000+&BIG)
+	SYStem.CONFIG.ETM.Base (0x81440000+&BIG) (0x81540000+&BIG) (0x81640000+&BIG) (0x81740000+&BIG)
+
+	SYStem.CONFIG.FUNNEL3.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3
+)
+ELSE IF (&core_num==6)
+(
+	CORE.ASSIGN 1 2 3 4 5 6
+	SYStem.CONFIG.COREDEBUG.Base (0x81410000+&LIT) (0x81510000+&LIT) (0x81410000+&BIG) (0x81510000+&BIG) (0x81610000+&BIG) (0x81710000+&BIG)
+	SYStem.CONFIG.BMC.Base (0x81430000+&LIT) (0x81530000+&LIT) (0x81430000+&BIG) (0x81530000+&BIG) (0x81630000+&BIG) (0x81730000+&BIG)
+	SYStem.CONFIG.CTI.Base (0x81420000+&LIT) (0x81520000+&LIT) (0x81420000+&BIG) (0x81520000+&BIG) (0x81620000+&BIG) (0x81720000+&BIG)
+	SYStem.CONFIG.ETM.Base (0x81440000+&LIT) (0x81540000+&LIT) (0x81440000+&BIG) (0x81540000+&BIG) (0x81640000+&BIG) (0x81740000+&BIG)
+
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1
+	SYStem.CONFIG.FUNNEL3.ATBSource ETM.2 0 ETM.3 1 ETM.4 2 ETM.5 3
+)
+ELSE
+(
+	CORE.ASSIGN 1
+	PRIVATE &step &offset
+	&step=0x00100000
+	IF (&core_id>1)
+	(
+		&offset=&BIG+(&step*(&core_id-2))
+	)
+	ELSE
+	(
+		&offset=&LIT+(&step*(&core_id))
+	)
+	SYStem.CONFIG.COREDEBUG.Base (0x81410000+&offset)
+	SYStem.CONFIG.BMC.Base (0x81430000+&offset)
+	SYStem.CONFIG.CTI.Base (0x81420000+&offset)
+	SYStem.CONFIG.ETM.Base (0x81440000+&offset)
+	IF (&core_id>1)
+	(
+		SYStem.CONFIG.FUNNEL3.ATBSource ETM 0
+	)
+	ELSE
+	(
+		SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+	)
+)
+
+IF ("&trace_output"=="SoC ETB")
+(
+	; ETB
+	Onchip.TraceCONNECT ETF1
+)
+ELSE IF ("&trace_output"=="A53 ETB")
+(
+	Onchip.TraceCONNECT ETF2
+	;Onchip.TraceCONNECT ETF3
+)
+ELSE IF ("&trace_output"=="ETR")
+(
+	Onchip.TraceCONNECT ETR1
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 0xFF
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CONFIG SWDP ON
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+SYStem.Mode.Prepare
+
+D.S EDAP:0x80008000 %LE %Long 0xFFFFFFFF
+D.S EDAP:0x80008004 %LE %Long 0xFFFFFFFF
+IF ("&trace_output"=="ETR")
+(
+	D.S EDAP:0x80008000 %LE %Long 0
+)
+ELSE IF ("&trace_output"=="TPIU")
+(
+	D.S EDAP:0x80008004 %LE %Long 0
+)
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=0||&core_id!=0
+	(
+		GOSUB BOOT
+		WAIT 500.MS
+	)
+	;ON ERROR CONTinue
+	;AREA.OPEN A000 c:\step_log.txt
+	;AREA.CLEAR A000
+	;SYStem.POLLING DEFault OFF
+	;diag 0x30E0 1.
+	;diag 0x3208 1.
+	;SYStem.Mode Attach
+	;diag 0x30E0 0.
+	;diag 0x3208 0.
+	;SYStem.POLLING DEFault DEFault
+	;AREA.CLOSE A000
+	;ON ERROR DEFault
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" AP_MP_CORE_BOOT
+	RETURN
+; end of BOOT
+
+
+
+
+
+
+
+

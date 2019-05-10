@@ -1,0 +1,79 @@
+;add mode is required, as we want to add new items to the existing menu
+ADD
+;definition of the main pulldown menu bar
+
+MENU
+(
+	SEPARATOR
+	POPUP "SharkL5"
+	(
+		POPUP "EDIT_CMM"
+		(
+			MENUITEM "edit AP" "menuedit A55_A75"
+			MENUITEM "edit CP" "menuedit R5"
+			MENUITEM "edit SP" "menuedit CM4"
+			MENUITEM "edit boot" "menuedit boot_all"
+			MENUITEM "edit DDR" "menuedit ddr"
+		)      
+		IF (CPUFAMILY()=="ARM")
+		(
+			POPUP "A55A75"
+			(
+				MENUITEM "AP" "menuap 4"
+				SEPARATOR
+				MENUITEM "A55 C0" "menuap 1 0"
+				MENUITEM "A55 C1" "menuap 1 1"
+				MENUITEM "A55 C2" "menuap 1 2"
+				MENUITEM "A75 C3" "menuap 1 3"
+			)
+			SEPARATOR
+			POPUP "CPs"
+			(
+				MENUITEM "PCP" "menupcp"
+				SEPARATOR
+				MENUITEM "SP" "menusp"
+			)
+			POPUP "Bare Metal"
+			(
+				MENUITEM "EXTRSTB" "menusrst"
+				SEPARATOR
+				MENUITEM "INITDDR" "menuddr"  
+				SEPARATOR
+				MENUITEM "BOOTDSP" "menudsp" 
+			)
+			SEPARATOR
+			MENUITEM "CHECK EAXI" "menuchk EAXI"
+			MENUITEM "CHECK EAHB" "menuchk EAHB"
+			MENUITEM "CHECK CPU" "menuchk D"
+			;MENUITEM "CHECK SWD" "menulod swd"
+			SEPARATOR
+			MENUITEM "Dump Info" "menudd"  
+			SEPARATOR
+			MENUITEM "Py" "menupy"  
+			separator
+			MENUITEM "DBUS EAXI"    	"menudbg EAXI"
+			;MENUITEM "DBUS EAHB"    	"menudbg EAHB"
+			MENUITEM "DBUS CPU"    		"menudbg D"
+			POPUP "BUSMON"
+			(
+				MENUITEM "Busmon All En"    "menubma 1"
+				MENUITEM "Busmon All Dis"   "menubma 0"
+				MENUITEM "Busmon Addr Cfg"  "menubmb"
+				MENUITEM "Busmon Addr Scan" "menubmc"
+				MENUITEM "Busmon Reg Read" "menubmd"
+			)
+			MENUITEM "AUTOREG SAVE"    		"menuars"			
+		)
+		IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")	
+		(
+				MENUITEM "TGDSP" "menutl4 2"
+				MENUITEM "LTEDSP" "menutl4 1"
+				MENUITEM "AGDSP" "menutl4 3 TL420-RTL310"
+				SEPARATOR
+				MENUITEM "EXTRSTB" "menusrst"
+		)
+		SEPARATOR
+		MENUITEM "Linux"		"menulnx"
+		MENUITEM "ReConfig" "menure"
+	)
+)

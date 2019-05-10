@@ -1,0 +1,451 @@
+; --------------------------------------------------------------------------------
+; @Title: Script File for Configuring the ARM CoreSight Embedded Trace Router (ETR)
+; @Description:
+;
+;   Provides a dialog with setting and command line tool to setup the ETR.
+;
+;   Version History
+;    V1.0 - dialog, read and write settings
+;
+; @Author: MAZ
+; @Copyright: (C) 1989-2014 Lauterbach GmbH, licensed for use with TRACE32(R) only
+; --------------------------------------------------------------------------------
+; $Id: etr_utility.cmm 8006 2015-01-07 16:30:22Z hlohn $
+
+
+goto start
+help:
+print "usage:"
+print " "
+print "do etr_utility"
+print "   opens dialog"
+print " "
+print "do etr_utility <ETR> set <PROPERTY> <VALUE> [<MASK>]"
+print "   set the passed property"
+print " "
+print "    properties:"
+print "       DAB       - set 64 AXI destination address (DABLO, DABHI)"
+print "       DABHI     - set upper 32 bit of AXI destination address (DABHI)"
+print "       DABLO     - set lower 32 bit of AXI destination address (DABLO)"
+print "       AXICTL    - set AXICTL register, <MASK> possible"
+print "       RSZ       - set RSZ register"
+print " "
+area
+if &FILEOPEN==1.
+  close #1
+ENDDO
+
+
+start:
+
+
+local &COMPNAME &CMD &PAR1 &PAR2 &PAR3 &PPF &PTD &FILEOPEN &SCRIPTVERSION
+entry &COMPNAME &CMD &PAR1 &PAR2 &PAR3
+
+&PPF=OS.PPF()
+&PTD=OS.PTD()
+&FILEOPEN=0.
+&SCRIPTVERSION="V1.2"
+
+
+if "&CMD"=="DIALOG_CLOSE"
+(
+   dialog.end
+   ENDDO
+)
+
+if "&CMD"=="DIALOG_SET"
+  goto dialogset
+
+if "&CMD"=="DIALOG_GET"
+  goto dialogget
+
+if "&CMD"=="DIALOG_SET_INIT"
+  goto dialogsetinit
+
+if "&CMD"=="DIALOG_REGISTERS"
+  goto showregisters
+
+if "&CMD"=="DIALOG_SHOWPROGRAMMING"
+  goto showprogramming
+
+if "&CMD"=="set"
+(
+  if !comp.available("&COMPNAME")
+  (
+    print %error "ETR <&COMPNAME> not available"
+    goto help;
+  )
+  if "&PAR1"=="DAB"
+  (
+    local &LO &HI
+    &LO=(&PAR2)&0xFFFFFFFF
+    &HI=(&PAR2)>>32.
+    gosub writereg 0x118 &LO 0xFFFFFFFF
+    gosub writereg 0x11C &HI 0xFFFFFFFF
+    ENDDO
+  )
+  if "&PAR1"=="DABLO"
+  (
+    local &LO
+    &LO=(&PAR2)&0xFFFFFFFF
+    gosub writereg 0x118 &LO 0xFFFFFFFF
+    ENDDO
+  )
+  if "&PAR1"=="DABHI"
+  (
+    local &HI
+    &HI=(&PAR2)&0xFFFFFFFF
+    gosub writereg 0x11C &HI 0xFFFFFFFF
+    ENDDO
+  )
+  if "&PAR1"=="RSZ"
+  (
+    gosub writereg 0x4 &PAR2 0xFFFFFFFF
+    ENDDO
+  )
+  if "&PAR1"=="AXICTL"
+  (
+    if "&PAR3"==""
+      gosub writereg 0x110 &PAR2 0xFFFFFFFF
+    else
+      gosub writereg 0x110 &PAR2 &PAR3
+    ENDDO
+  )
+  print "unkown property <&PAR1>"
+  goto help
+)
+
+if "&CMD"!=""
+(
+  print %error "unknown command &CMD"
+  goto help;
+)
+
+if ("&COMPNAME"!="")&&!comp.available("&COMPNAME")
+(
+  print %error "ETR <&COMPNAME> not available"
+  goto help;
+)
+
+if "&COMPNAME"==""
+(
+  if comp.available("ETR1")
+    &COMPNAME="ETR1"
+  else if comp.available("ETR2")
+    &COMPNAME="ETR2"
+  else if comp.available("ETR3")
+    &COMPNAME="ETR3"
+  else if comp.available("ETR4")
+    &COMPNAME="ETR4"
+  else if comp.available("ETR5")
+    &COMPNAME="ETR5"
+  else
+  (
+    print %error "no ETR available, use SYStem.CONFIG.ETR.Base !"
+    goto help
+    ENDDO
+  )
+)
+
+if "&CMD"==""
+  goto createdialog
+
+print %error "etr_utility: unknown command: &CMD"
+goto help
+ENDDO
+
+
+readreg:
+local &OFFSET &i &RES
+entry &OFFSET
+
+if !comp.available("&COMPNAME")
+(
+  print %error "ETR <&COMPNAME> not available"
+  goto help;
+)
+&i=0.
+while &i<corenumber()
+(
+  if address.offset(comp.base("&COMPNAME",&i))!=0x0
+  (
+    &RES=data.long(comp.base("&COMPNAME",&i)+&OFFSET)
+    return &RES
+  )
+  &i=&i+1.
+)
+print  %error "internal error"
+goto help
+
+writereg:
+local &OFFS &VALUE &MASK &NEWVALUE &READVALUE
+entry &OFFS &VALUE &MASK
+&NEWVALUE=&VALUE
+if "&MASK"!=""
+(
+  if (&MASK!=0xFFFFFFFF)
+  (
+    gosub readreg &OFFS
+    entry &READVALUE
+    &NEWVALUE=(&READVALUE&~(&MASK))|((&VALUE)&(&MASK))
+  )
+)
+&i=0.
+while &i<corenumber()
+(
+  if address.offset(comp.base("&COMPNAME", &i))!=0x0
+  (
+    data.set comp.base("&COMPNAME", &i)+&OFFS %l &NEWVALUE /verify
+  )
+  &i=&i+1.
+)
+return
+
+createdialog:
+dialog
+(&+
+header "ETR Utility &SCRIPTVERSION"
+
+pos 1. 0. 18. 1.
+text "ETR Name"
+posx 1. 11. 1.
+val.CompName:	edit "" ""
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "AXIBase"
+posx 1. 18. 1.
+val.AXIBase:	edit "" ""
+posx -37. 1. 1.
+
+posy 1. 18. 1.
+text "Size (bytes)"
+posx 1. 11. 1.
+val.Size:	edit "" ""
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "BurstLen"
+posx 1. 11. 1.
+val.BurstLen: PULLDOWN "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "ScatterGatherMode"
+posx 1. 11. 1.
+val.ScatterGatherMode: PULLDOWN "Disabled,Enabled"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "CacheAllocateOnWrites"
+posx 1. 11. 1.
+val.CacheAllocateOnWrites: PULLDOWN "Disabled,Enabled"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "CacheAllocateOnReads"
+posx 1. 11. 1.
+val.CacheAllocateOnReads: PULLDOWN "Disabled,Enabled"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "Cacheable"
+posx 1. 11. 1.
+val.Cacheable: PULLDOWN "No,Yes"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "Bufferable"
+posx 1. 11. 1.
+val.Bufferable: PULLDOWN "No,Yes"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "SecureAccess"
+posx 1. 11. 1.
+val.SecureAccess: PULLDOWN "Yes,No"
+(
+)
+posx -30. 1. 1.
+
+posy 1. 18. 1.
+text "PrivilegedAccess"
+posx 1. 11. 1.
+val.PrivilegedAccess: PULLDOWN "No,Yes"
+(
+)
+posx -30. 1. 1.
+
+posy 2. 10. 1.
+BUTTON "Get" "do ""&PPF"" NONE DIALOG_GET"
+posx 1. 10. 1.
+BUTTON "Set" "do ""&PPF"" NONE DIALOG_SET"
+posx 1. 10. 1.
+BUTTON "Set && Init" "do ""&PPF"" NONE DIALOG_SET_INIT"
+
+posx -32. 1. 1.
+
+posy 1. 10. 1.
+BUTTON "Register" "do ""&PPF"" NONE DIALOG_REGISTERS"
+posx 1. 10. 1.
+BUTTON "Show Programming" "do ""&PPF"" NONE DIALOG_SHOWPROGRAMMING"
+posx 1. 10. 1.
+BUTTON "CLOSE" "do ""&PPF"" NONE DIALOG_CLOSE"
+
+)
+dialog.set val.CompName "&COMPNAME"
+dialog.set val.AXIBase "0x0"
+dialog.set val.Size "0x0"
+if system.up()
+  goto dialogget
+ENDDO
+
+showregisters:
+&COMPNAME=dialog.string(val.CompName)
+if !comp.available("&COMPNAME")
+(
+  print %error "ETR <&COMPNAME> not available"
+  goto help;
+)
+local &COMPADDR
+&COMPADDR="comp.base(""&COMPNAME"",-1)"
+per "~~/pertmc.per" &COMPADDR
+ENDDO
+
+setorshow:
+local &tmp &tmp2 &tmp3 &AXIREG &AXIREGMASK
+&tmp=dialog.string(val.AXIBase)
+&WRITEOREXECUTE DO "&WRITEOREXECUTEPATH" &COMPNAME set DAB &tmp
+&tmp3=dialog.string(val.Size)
+&tmp="0x"+Format.Hex(0,&tmp3)
+&tmp2=&tmp>>2.
+&WRITEOREXECUTE DO "&WRITEOREXECUTEPATH" &COMPNAME set RSZ &tmp2
+&AXIREG=0x0
+&AXIREGMASK=0x0
+&tmp=dialog.string(val.BurstLen)+"."
+&AXIREG=&AXIREG|((&tmp-1.)<<8.)
+&AXIREGMASK=&AXIREGMASK|(0xF<<8.)
+if dialog.string(val.ScatterGatherMode)=="Enabled"
+  &AXIREG=&AXIREG|(1.<<7.)
+&AXIREGMASK=&AXIREGMASK|(1.<<7.)
+if dialog.string(val.CacheAllocateOnWrites)=="Enabled"
+  &AXIREG=&AXIREG|(1.<<5.)
+&AXIREGMASK=&AXIREGMASK|(1.<<5.)
+if dialog.string(val.CacheAllocateOnReads)=="Enabled"
+  &AXIREG=&AXIREG|(1.<<4.)
+&AXIREGMASK=&AXIREGMASK|(1.<<4.)
+if dialog.string(val.Cacheable)=="Yes"
+  &AXIREG=&AXIREG|(1.<<3.)
+&AXIREGMASK=&AXIREGMASK|(1.<<3.)
+if dialog.string(val.Bufferable)=="Yes"
+  &AXIREG=&AXIREG|(1.<<2.)
+&AXIREGMASK=&AXIREGMASK|(1.<<2.)
+if dialog.string(val.SecureAccess)=="No"
+  &AXIREG=&AXIREG|(1.<<1.)
+&AXIREGMASK=&AXIREGMASK|(1.<<1.)
+if dialog.string(val.PrivilegedAccess)=="Yes"
+  &AXIREG=&AXIREG|(1.<<0.)
+&AXIREGMASK=&AXIREGMASK|(1.<<0.)
+&tmp2="0x"+Format.Hex(8,&AXIREG)
+&tmp3="0x"+Format.Hex(8,&AXIREGMASK)
+
+&WRITEOREXECUTE DO "&WRITEOREXECUTEPATH" &COMPNAME set AXICTL &tmp2 &tmp3
+return
+
+showprogramming:
+&COMPNAME=dialog.string(val.CompName)
+local &WRITEOREXECUTE &WRITEOREXECUTEPATH
+&WRITEOREXECUTEPATH="&PPF"
+&WRITEOREXECUTE="gosub showprogramming_writeline"
+&FILEOPEN=1.
+open #1 "&PTD/etrprogramming.cmm" /CREATE
+write #1 ";Created by ETR Utility &SCRIPTVERSION"
+write #1 "Onchip.DISable"
+gosub setorshow
+write #1 "Onchip.TraceCONNECT &COMPNAME"
+write #1 "Trace.METHOD Onchip"
+write #1 "Onchip.Init"
+write #1 "Onchip"
+write #1 "ENDDO"
+close #1
+pedit "&PTD/etrprogramming.cmm"
+ENDDO
+
+showprogramming_writeline:
+local &cmd
+entry %line &cmd
+write #1 "&cmd"
+return
+
+dialogset:
+&COMPNAME=dialog.string(val.CompName)
+local &WRITEOREXECUTE &WRITEOREXECUTEPATH
+&WRITEOREXECUTE=""
+&WRITEOREXECUTEPATH="&PPF"
+onchip.disable
+gosub setorshow
+ENDDO
+
+dialogsetinit:
+&COMPNAME=dialog.string(val.CompName)
+local &WRITEOREXECUTE &WRITEOREXECUTEPATH
+&WRITEOREXECUTE=""
+&WRITEOREXECUTEPATH="&PPF"
+onchip.disable
+gosub setorshow
+onchip.traceconnect &COMPNAME
+onchip.init
+trace.method onchip
+onchip
+ENDDO
+
+dialogget:
+&COMPNAME=dialog.string(val.CompName)
+local &DBALO &DBAHI
+gosub readreg 0x118
+entry &DBALO
+gosub readreg 0x11C
+entry &DBAHI
+dialog.set val.AXIBase "0x"+Format.Hex(16.,(&DBAHI<<32|&DBALO))
+local &RSZ
+gosub readreg 0x4
+entry &RSZ
+dialog.set val.Size "0x"+Format.Hex(0.,&RSZ*4)
+local &AXICTL
+gosub readreg 0x110
+entry &AXICTL
+dialog.set val.BurstLen Format.Decimal(0.,((&AXICTL>>8.)&0xF)+1.)
+gosub dialogsetbool ((&AXICTL>>7.)&0x1)==0x1  ScatterGatherMode Disabled Enabled
+gosub dialogsetbool ((&AXICTL>>5.)&0x1)==0x1  CacheAllocateOnWrites Disabled Enabled
+gosub dialogsetbool ((&AXICTL>>4.)&0x1)==0x1  CacheAllocateOnReads Disabled Enabled
+gosub dialogsetbool ((&AXICTL>>3.)&0x1)==0x1  Cacheable No Yes
+gosub dialogsetbool ((&AXICTL>>2.)&0x1)==0x1  Bufferable No Yes
+gosub dialogsetbool ((&AXICTL>>1.)&0x1)==0x1  SecureAccess Yes No
+gosub dialogsetbool ((&AXICTL>>0.)&0x1)==0x1  PrivilegedAccess No Yes
+
+
+
+ENDDO
+
+dialogsetbool:
+local &VAL &NAME &FALSENAME &TRUENAME &VAL2
+entry &VAL &NAME &FALSENAME &TRUENAME
+&VAL2=&VAL
+if &VAL2
+  dialog.set val.&NAME "&TRUENAME"
+else
+  dialog.set val.&NAME "&FALSENAME"
+return

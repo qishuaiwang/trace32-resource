@@ -1,0 +1,202 @@
+LOCAL &mem_tpye
+&mem_tpye="EZAXI"
+LOCAL &set &clr
+&set=0x1000
+&clr=0x2000
+LOCAL &AON_BASE
+
+&AON_BASE=0x40000000
+IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+(
+	IF (CPUFAMILY()=="ARM")
+	(
+		IF (CPU()=="CortexR5")
+			&AON_BASE=0x02000000
+	)
+	ELSE
+	(
+		PRINT %ERROR "Why not ARM Trace32 to do boot?"
+	)
+)
+
+LOCAL &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+ENTRY &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+
+GOSUB &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+LOCAL &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENTRY &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENDDO &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+
+AP_MP_CORE_BOOT:
+	; While(1) @ 0x800
+	D.S &mem_tpye:0x00000800 %LONG 0x14000000
+	; RVBARADDR
+	D.S &mem_tpye:0x40460024 %LONG 0x08
+	D.S &mem_tpye:0x40460028 %LONG 0x08
+	D.S &mem_tpye:0x4046002C %LONG 0x08
+	D.S &mem_tpye:0x40460030 %LONG 0x08
+	D.S &mem_tpye:0x40460034 %LONG 0x08
+	D.S &mem_tpye:0x40460038 %LONG 0x08
+
+	; CA53 TOP force on
+	D.S &mem_tpye:0x402B0000+&clr %LONG (0x3<<24.)
+	; CA53 LIT Cluster force on
+	D.S &mem_tpye:0x402B0400+&clr %LONG (0x3<<24.)
+	; CA53 LIT C0 force on
+	D.S &mem_tpye:0x402B0004+&clr %LONG (0x3<<24.)
+	; CA53 LIT C1 force on
+	D.S &mem_tpye:0x402B0008+&clr %LONG (0x3<<24.)
+	; CA53 BIG Cluster force on
+	D.S &mem_tpye:0x402B0404+&clr %LONG (0x3<<24.)
+	; CA53 BIG C0(T0&T1) force on
+	D.S &mem_tpye:0x402B000C+&clr %LONG (0x3<<24.)|(0x3<<29.)
+	; CA53 BIG C1(T0&T1) force on
+	D.S &mem_tpye:0x402B0010+&clr %LONG (0x3<<24.)|(0x3<<29.)
+	RETURN
+
+CR5_BOOT:
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&set %LE %Long 1<<10. 
+
+	; While(1) @ 0x000
+	D.S &mem_tpye:0x5001D000 %LE %Long 0xEAFFFFFE
+
+	; PUBCP SYS force on
+	D.S &mem_tpye:0x402B0048+&clr %LE %Long 0x3<<24. 
+
+	; PUBCP Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<18.
+
+	; PUBCP SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<1.
+
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&clr %LE %Long 1<<10. 
+	RETURN
+
+ARM7_BOOT:
+	; ARM7 Core soft reset
+	D.S &mem_tpye:0x402E0114+&set %LE %Long (1<<0.)
+
+	; ARM7 SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<8.
+	; ARM7 Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<21.
+
+	; ARM7 SYS soft reset
+	D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<4.)
+
+	; While(1) @ 0x000
+	D.S &mem_tpye:0x50800000 %LE %Long 0xEAFFFFFE
+
+	; ARM7 Core soft reset
+	D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<0.)
+	RETURN
+
+DSP_BOOT:
+	LOCAL &AON_BASE &IRAM_BASE
+	&AON_BASE=0x40000000
+	&IRAM_BASE=0x5001F000
+	IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+	(
+		IF (CPUFAMILY()=="ARM")
+		(
+			IF (CPU()=="CortexR5")
+				&AON_BASE=0x02000000
+				&IRAM_BASE=0x00002000
+		)
+		ELSE
+		(
+			PRINT %ERROR "We can't support use this to boot DSP"
+			RETURN
+		)
+	)
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&set %LE %Long (1<<16.)|(1<<17.)
+	; Select DAP to LDSP and TGDSP
+	D.S &mem_tpye:(&AON_BASE+0x002E0200) %LE %Long 0x3
+
+	; for LDSP
+	; raise up TGDSP Freq. and set boot code
+	LOCAL &OFFSET &CODE_BASE &DSP_BASE
+	&OFFSET=0x00
+	&CODE_BASE=(&IRAM_BASE+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; 0: 26MHz
+	; 1: 256MHz
+	; 2: 384MHz
+	; 3: 512MHz
+	; 4: 614.4MHz
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 3 ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long (0x015D0020/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xFFFFFFFC ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7EE1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	; Disable Reg. Protection
+	D.S &mem_tpye:(&AON_BASE+0x002E006C) %LE %Long 0x00009620
+
+	; WTLCP SYS force on
+	D.S &mem_tpye:&AON_BASE+0x002B0044+&clr %LE %Long 0x3<<24. 
+	; WTLCP LDSP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0034+&clr %LE %Long 0x3<<24. 
+	; WTLCP TDDSP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0038+&clr %LE %Long 0x3<<24. 
+
+	; WTLCP Sleep CTRL
+	D.S &mem_tpye:&AON_BASE+0x002B00CC+&clr %LE %Long 1<<17.
+
+	D.S &mem_tpye:&AON_BASE+0x002E0248 %LE %Long ((&DSP_BASE)/2)
+	D.S &mem_tpye:&AON_BASE+0x002E024C+&set %LE %Long 0x1
+
+	; for TGDSP
+	&OFFSET=0x100
+	&CODE_BASE=(&IRAM_BASE+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xFFFFFFFC ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7EE1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	D.S &mem_tpye:&AON_BASE+0x002E0250 %LE %Long ((&DSP_BASE)/2)
+	D.S &mem_tpye:&AON_BASE+0x002E0254+&set %LE %Long 0x1
+
+	; WTLCP SYS soft reset
+	D.S &mem_tpye:&AON_BASE+0x002B00B0+&clr %LE %Long (1<<0.)|(1<<2.)
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&clr %LE %Long (1<<16.)|(1<<17.)
+	RETURN
+
+

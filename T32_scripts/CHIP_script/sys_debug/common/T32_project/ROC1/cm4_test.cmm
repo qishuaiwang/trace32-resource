@@ -1,0 +1,38 @@
+system.mode down
+system.reset
+
+system.jtagclock 1Mhz
+
+system.cpu cortexm4
+
+;system.multicore jtagaccessport 2
+
+SYStem.CONFIG MEMORYACCESSPORT 3
+SYStem.CONFIG DEBUGACCESSPORT 0
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+system.config swdptargetsel 1
+
+;sys.config corebase 0x80030000
+;sys.config ctibase 0x80038000
+;sys.config etmbase 0x8003c000
+
+sys.config swdp on
+
+sys.option enreset off
+system.mode prepare
+
+d.s eaxi:0x3209008c %le %long 0x0
+d.s eaxi:0x322803b0 %le %long 0x1010101
+d.s eaxi:0x32090228 %le %long 0x0
+
+d.s eaxi:0x3209008c+0x1000 %le %long 0x1<<0.
+d.s eaxi:0x32090544+0x1000 %le %long 0x1<<5.
+wait 10ms
+d.s eaxi:0x32090544+0x2000 %le %long 0x1<<5.
+d.s eaxi:0x3209008c+0x2000 %le %long 0x1<<0.
+
+system.mode up
+ 

@@ -1,0 +1,326 @@
+LOCAL &Core_sel &tag_script_name &tag_exe
+LOCAL &envir_temp_cfg &cur_path_local &target_env_exe &CUR_path
+LOCAL &ID1 &core_id &API_PORT &INTER_PORT &PBI_module
+LOCAL &win_64_path &win_32_path ;binÎÄ¼þpath
+LOCAL &project_sel &debug_driver &debug_module
+LOCAL &is_bare_metal &PRO_TAR_DIR
+LOCAL &debug_cmd
+&debug_cmd="cmd /c"
+
+&win_64_path="bin\windows64"
+&win_32_path="bin\windows"
+
+ENTRY &is_bare_metal &debug_driver &debug_module &project_sel &Core_sel &tag_script_name &tag_exe
+ON ERROR JUMPTO error_handler_envir
+&CUR_path=OS.PPD()
+IF "X&is_bare_metal"=="X"
+(
+	;configure core T32.exe
+	GOSUB read_exe_configue
+)
+&PRO_TAR_DIR="&CUR_path\..\..\..\main.cmm"
+IF ("&project_sel"=="")
+(
+	ENDDO
+)
+
+
+GOSUB auto_start_t32
+QUIT
+ON ERROR inherit
+ENDDO
+
+error_handler_envir:
+	;DIALOG.OK "Connect Target is fail, please check it !!!!"
+	QUIT
+	ENDDO
+
+str_count:
+	LOCAL &cnt &pos &str &s
+	ENTRY &str &s
+	&cnt=0
+	&pos=STRing.SCAN(&str, &s, 0)
+	WHILE (&pos!=-1)
+	(
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&cnt=&cnt+1
+	)
+RETURN &cnt
+
+str_split:
+	LOCAL &r_s &pos &pre_pos &str &s &inx &c_inx &s_len
+	ENTRY &str &s &inx
+	IF &inx<0
+	(
+		PRINT %ERROR "We can't support negative index"
+	)
+	&r_s=""
+	&c_inx=0
+	&pre_pos=0
+	&pos=STRing.SCAN(&str, &s, &pre_pos)
+	&s_len=STRing.LENgth(&s)
+	IF (&pos==-1)&&(&c_inx==&inx)
+	(
+		&r_s=&str
+		RETURN &r_s
+	)
+	WHILE (&pos!=-1)
+	(
+		IF (&c_inx==&inx)
+		(
+			&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+			RETURN &r_s
+		)
+		&pre_pos=&pos+&s_len
+		&pos=STRing.SCAN(&str, &s, &pos+1)
+		&c_inx=&c_inx+1
+	)
+	IF (&c_inx==&inx)
+	(
+		&pos=STRing.LENgth(&str)
+		&r_s=STRing.MID(&str, &pre_pos, &pos-&pre_pos)
+		RETURN &r_s
+	)
+RETURN ""
+
+
+auto_start_t32:
+	IF ("&Core_sel"!="")
+	(
+		LOCAL &envir_temp_cfg &cur_path_local &target_env_exe &ID &i &count &api &inter &tag &sel &tag_script
+		&cur_path_local=OS.PSD()
+		&envir_temp_cfg=VERSION.ENVironment(TMP)
+		
+		GOSUB close_t32
+		
+		&cur_path_local=STRing.Replace("&cur_path_local","\","/",0.)
+		&PBI_module="USB"
+		;&PBI_module="SIM"
+		&Envir_path_local="&cur_path_local"
+		&api=20200.
+		&inter=10200.
+
+		; build 66950 02/2016
+		;&count=STRing.COUNT("&Core_sel",",")
+		GOSUB str_count "&Core_sel" ","
+		ENTRY &count
+		&i=0
+		OPEN #10 "&envir_temp_cfg\s_&(project_sel).bat" /Create
+		WRITE #10 "@echo off"
+		OPEN #11 "&envir_temp_cfg\open_t32.save" /Create
+		WHILE &i<=&count
+		(
+			;&tag=STRing.SPLIT("&tag_exe",",",&i)
+			;&sel=STRing.SPLIT("&Core_sel",",",&i)
+			GOSUB str_split "&tag_exe" "," &i
+			ENTRY &tag
+			GOSUB str_split "&Core_sel" "," &i
+			ENTRY &sel
+			&tag_script="&PRO_TAR_DIR"
+			GOSUB bin_win_exist &cur_path_local &tag
+			ENTRY &target_env_exe
+			&API_PORT=FORMAT.Decimal(1., &api+&i)
+			&INTER_PORT=FORMAT.Decimal(1., &inter+&i)
+			WRITE #11 "&INTER_PORT"
+			&ID="T32_&(project_sel)_&sel.t32"
+			&i=&i+1
+			&core_id=FORMAT.Decimal(1., &i)
+
+			GOSUB gen_t32_config &ID &core_id &API_PORT &INTER_PORT &PBI_module &Envir_path_local &sel
+			WRITE #10 "echo Start &(project_sel) &sel ..."
+			WRITE #10 "start &target_env_exe -c &envir_temp_cfg\&ID -s &tag_script &(project_sel) &sel &is_bare_metal"
+			WRITE #10 "ping 127.0.0.1 -n 4 -w 1000 > nul"
+		)
+		CLOSE #11
+		CLOSE #10
+		OS &debug_cmd "&envir_temp_cfg\s_&(project_sel).bat"
+	)
+RETURN
+;end of auto_start_t32
+
+close_t32:
+	IF OS.FILE("&envir_temp_cfg\open_t32.save")==TRUE()
+	(
+		LOCAL &temp
+		OPEN #20 "&envir_temp_cfg\open_t32.save" /Read
+		WHILE !FILE.EOF(20.)
+		(
+			READ #20 %line &temp
+			IF "X&temp"!="X"
+			(
+				GOSUB check_intercom &temp
+			)
+		)
+		CLOSE #20
+	)
+RETURN
+;end of close_t32
+
+gen_t32_config:
+	LOCAL &ID &core_id &API_PORT &INTER_PORT &PBI_module &envir_path &core_sel &temp &ID_NAME &envir_temp_cfg
+	ENTRY &ID &core_id &API_PORT &INTER_PORT &PBI_module &envir_path &core_sel
+	&temp=OS.PTD()
+	; build 60314 02/2015
+	;&ID_NAME=STRing.SPLIT("&ID",".",0)
+	GOSUB str_split "&ID" "." 0
+	ENTRY &ID_NAME
+	&envir_temp_cfg=VERSION.ENVironment(TMP)
+	OPEN #1 "&envir_temp_cfg\&ID" /Create
+	WRITE #1 ";This configuration file is generated with T32Start2"
+	WRITE #1 ";==================================================="
+	WRITE #1 ""
+	WRITE #1 ";Environment Variables"
+	WRITE #1 "OS="
+	WRITE #1 "ID=&ID_NAME"
+	WRITE #1 "TMP=&temp"
+	WRITE #1 "SYS=&envir_path"
+	WRITE #1 "HELP=&envir_path\pdf"
+	WRITE #1 ""
+	WRITE #1 "; Standard License File used"
+	WRITE #1 ""
+	WRITE #1 ";T32 API Access"
+	WRITE #1 "RCL=NETASSIST"
+	WRITE #1 "PORT=&API_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 Intercom"
+	WRITE #1 "IC=NETASSIST"
+	WRITE #1 "PORT=&INTER_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 GDB"
+	WRITE #1 "; not used"
+	WRITE #1 ""
+	WRITE #1 ""
+	WRITE #1 ";Connection to Host"
+	IF ("&PBI_module"=="SIM")
+	(
+		WRITE #1 "PBI=&PBI_module"
+	)
+	ELSE
+	(
+		WRITE #1 "PBI="
+		WRITE #1 "&PBI_module"
+		WRITE #1 "CORE=&core_id"
+	)
+	WRITE #1 ""
+	WRITE #1 ";Screen Settings"
+	;WRITE #1 "SCREEN=OFF"
+	WRITE #1 "SCREEN="
+	WRITE #1 "FONT=SMALL"
+	WRITE #1 "HEADER=&project_sel &core_sel TRACE32 PowerView &core_id [Power Debug &PBI_module]"
+	WRITE #1 ""
+	WRITE #1 ";Printer Settings:"
+	WRITE #1 "PRINTER=WINDOWS"
+	CLOSE #1
+RETURN
+;end gen_t32_config
+
+bin_win_exist:
+	LOCAL &TEMP_PATH &LOCAL_PATH &PATH &cur
+	ENTRY &TEMP_PATH &LOCAL_PATH
+	&TEMP_PATH=STRing.Replace("&TEMP_PATH","/","\",0.)
+	&cur="&TEMP_PATH\&win_64_path\&LOCAL_PATH"
+	IF (OS.FILE(&cur)==TRUE())
+	(
+		&PATH="&cur"
+	)
+	ELSE
+	(
+		&cur="&TEMP_PATH\&win_32_path\&LOCAL_PATH"
+		IF (OS.FILE(&cur)==TRUE())
+		(
+			&PATH="&cur"
+		)
+		ELSE
+		(
+			PRINT "not exist correct exe"
+			ENDDO
+		)
+	)
+	&PATH=STRing.Replace("&PATH","\","/",0.)
+RETURN &PATH
+
+read_exe_configue:
+	OPEN #1 &CUR_path\exe_configue.txt /Read
+	READ #1 %line &is_bare_metal 
+	READ #1 %line &debug_driver
+	READ #1 %line &debug_module
+	READ #1 %line &project_sel
+	READ #1 %line &Core_sel
+	READ #1 %line &tag_script_name
+	READ #1 %line &tag_exe
+	CLOSE #1
+	;DEL &CUR_path\exe_configue.txt
+RETURN
+
+
+
+t32m_kill_check:
+	LOCAL &task_name &PID &read_tasklist &temp &temp_file
+	ENTRY &PID
+	&temp_file="&CUR_path\tasklist.tmp"
+	OS &debug_cmd tasklist /FI "PID eq &PID" /FO CSV /NH > "&temp_file"
+	WHILE (OS.FILE("&temp_file")==FALSE())
+	(
+		WAIT 10.MS
+	)
+	OPEN #1 "&temp_file" /Read
+	READ #1 %line &read_tasklist
+	CLOSE #1
+	DEL "&temp_file"
+	&temp=STRing.SCAN("&read_tasklist","t32m",0)
+	IF &temp!=-1
+	(
+		;&temp=STRing.SPLIT("&read_tasklist",",",0)
+		GOSUB str_split "&read_tasklist" "," 0
+		ENTRY &temp
+		PRINT "Kill the &temp, PID is &PID"
+		OS &debug_cmd taskkill /F /T /PID &PID
+	)
+	ELSE
+	(
+		PRINT %ERROR "Fail! try to kill the &temp, PID is &PID, It's not T32 task!"
+	)
+RETURN
+; end of t32m_kill_check
+
+check_intercom:
+	LOCAL &read_id &temp &ID &temp_file
+	ENTRY &ID
+	ON ERROR GOTO use_win_cmd
+	IF INTERCOM.PING("localhost:&ID")
+		INTERCOM.executeNoWait localhost:&ID QUIT
+	ON ERROR inherit
+	IF INTERCOM.PING("localhost:&ID")==FALSE()
+		RETURN
+use_win_cmd:
+	ON ERROR inherit
+	&temp_file="&CUR_path\b.tmp"
+	OS &debug_cmd netstat -ano|findstr "0.0.0.0:&ID" > "&temp_file"
+	WHILE (OS.FILE("&temp_file")==FALSE())
+	(
+		WAIT 10.MS
+	)
+	OPEN #1 "&temp_file" /Read
+	READ #1 %line &read_id
+	CLOSE #1
+	DEL "&temp_file"
+	PRINT "&read_id"
+
+	&temp=STRing.SCAN("&read_id","&ID",0)
+	IF &temp!=-1
+	(
+		&read_id=STRing.TRIM("&read_id")
+		WHILE (STRing.LENgth("&read_id")!=0)&&(STRing.SCAN("&read_id","  ",0)!=-1)
+		(
+			&read_id=STRing.Replace("&read_id","  "," ",0.)
+		)
+		;&temp=STRing.SPLIT("&read_id"," ",3)
+		GOSUB str_split "&read_id" " " 3
+		ENTRY &temp
+		GOSUB t32m_kill_check &temp
+		WAIT 1.MS
+	)
+	RETURN
+;end check_intercom

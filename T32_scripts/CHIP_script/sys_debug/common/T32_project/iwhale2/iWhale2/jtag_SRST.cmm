@@ -1,0 +1,9 @@
+LOCAL &CUR_DIR
+
+system.mode down
+system.reset
+
+JTAG.PIN NRESET LOW
+
+JTAG.PIN NRESET HIGH
+

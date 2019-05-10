@@ -1,0 +1,22 @@
+; include all gen per file
+
+include SharkL5_Debug_Bus_Signal_List.AP.per
+
+include SharkL5_Debug_Bus_Signal_List.GPU.per
+
+include SharkL5_Debug_Bus_Signal_List.MM.per
+
+include SharkL5_Debug_Bus_Signal_List.APCPU.per
+
+include SharkL5_Debug_Bus_Signal_List.PUB.per
+
+include SharkL5_Debug_Bus_Signal_List.WTLCP.per
+
+include SharkL5_Debug_Bus_Signal_List.AUDCP.per
+
+include SharkL5_Debug_Bus_Signal_List.PUBCP.per
+
+include SharkL5_Debug_Bus_Signal_List.AON.per
+
+include SharkL5_Debug_Bus_Signal_List.AON_LP.per
+

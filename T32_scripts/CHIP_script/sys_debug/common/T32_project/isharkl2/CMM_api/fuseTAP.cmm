@@ -1,0 +1,72 @@
+LOCAL &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+
+GOSUB &fun &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+ENDDO &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+
+init:
+	IF &FUSE_tap_id==&NOTAPID
+	(
+		LOCAL &after_tap_id
+		&FUSE_tap_id=&cur_tap_cnt
+		&cur_tap_cnt=&cur_tap_cnt+1
+		;DAP TAP
+		Var.ASSIGN \tap_network[&FUSE_tap_id][0..(&tap_info_cnt-1)]=(&NOTAPID, 8, 1)
+		Var.ASSIGN \ops_cmd[&FUSE_tap_id]="fuseTAP"
+	)
+	RETURN
+;end of init
+
+get_id:
+	RETURN &FUSE_tap_id
+;end of get_id
+
+add:
+	LOCAL &id
+	GOSUB get_id
+	ENTRY &id
+	comOPS add_tap &id
+	RETURN
+;end of add
+
+get_b_id:
+	LOCAL &b_id
+	&FUSE_b_ops get_id
+	ENTRY &b_id
+	RETURN &b_id
+;end of get_b_id
+
+is_added:
+	LOCAL &id &ret
+	&ret=0
+	GOSUB get_id
+	ENTRY &id
+	comOPS is_tap_added &id
+	ENTRY &ret
+	RETURN &ret
+;end of is_added
+
+
+read:
+	LOCAL &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	GOSUB get_id
+	ENTRY &id
+	comOPS tap_read &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+;end of read
+
+write:
+	LOCAL &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	GOSUB get_id
+	ENTRY &id
+	comOPS tap_write &id &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+	LOCAL &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	ENTRY &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+	RETURN &rop1 &rop2 &rop3 &rop4 &rop5 &rop6 &rop7 &rop8 &rop9 &rop0
+;end of write

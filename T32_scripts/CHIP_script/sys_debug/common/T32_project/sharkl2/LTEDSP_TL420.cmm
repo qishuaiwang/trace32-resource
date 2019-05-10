@@ -1,0 +1,33 @@
+global &sys_sel
+SYStem.Mode Down
+SYStem.RESet
+SYStem.JtagClock 5.MHz
+SYStem.CPU TL420-RTL201 ;TL420-RTL111
+
+
+
+Break.SELect.Program Onchip
+Break.SELect.Read Onchip
+Break.SELect.Write Onchip
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG JTAGACCESSPORT 2
+;SYStem.CONFIG COREJTAGPORT 3 ;ARM7
+;SYStem.CONFIG COREJTAGPORT 2 ;tgdsp
+SYStem.CONFIG COREJTAGPORT 1 ;ldsp
+
+
+SYStem.MemAccess DAP
+SYStem.CpuAccess Enable
+if ("&sys_sel"=="os_sys")
+(
+	SYStem.Mode prepare ; 
+	print "please use attach"
+)
+else
+(
+	SYStem.Mode attach
+	break
+)
+enddo

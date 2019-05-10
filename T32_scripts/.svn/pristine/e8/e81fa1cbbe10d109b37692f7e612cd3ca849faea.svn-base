@@ -1,0 +1,26 @@
+SVN checkout URL(only for SPREADTRUM users):  http://shexsvn01/svn/SYSSW/development/T32_scripts
+
+*NOTES* please modify ken.kuang to your name
+initial:
+0. change to the work directory
+1. please get the git repo
+	http://review.source.spreadtrum.com/gerrit/#/admin/projects/vendor/sprd/tools/T32_scripts
+	1.1 copy the URL as below
+		git clone ssh://ken.kuang@review.source.spreadtrum.com:29418/vendor/sprd/tools/T32_scripts
+	1.2 check out the branch: sprd
+		git clone ssh://ken.kuang@review.source.spreadtrum.com:29418/vendor/sprd/tools/T32_scripts -b sprd
+2. scp -P 29418 -p ken.kuang@review.source.spreadtrum.com:/hooks/commit-msg .git/hooks/
+
+work flow:
+1. git commit
+	git commit README.txt -s -m "add README.txt"
+2. git push
+	git push origin HEAD:refs/for/sprd
+3. review
+	http://review.source.spreadtrum.com/
+4. add Ken.Kuang to review
+
+
+document
+
+P:\PLD\ChipTest\ken.kuang\share\git\*

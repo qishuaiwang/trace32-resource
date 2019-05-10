@@ -1,0 +1,1719 @@
+LOCAL &dc_fuse_data &DC_WRITE_DATA &DC_LEN &DC_SEL
+LOCAL &fa_fuse_data &WRITE_Method &cur_path
+
+sys.mode.down
+sys.reset
+&cur_path=OS.PPD()
+;GLOBALON CMD menuef do "&DST_DIR/fuse.cmm"
+&DC_SEL=0x1
+&DC_LEN=0x1c
+DO &cur_path/jtag_nTRST.cmm
+DO &cur_path/iWhale2_JTAG.cmm "RST"
+DO &cur_path/butter.cmm DAP
+on.error CONTinue
+&efuse_val=data.long(EAQD:0xE42e0000)
+D.S EAQD:0xE42e0000 %LE %Long (&efuse_val|0x2000)
+D.S EAQD:0xE4240024 %LE %Long 0x00000008 
+DO &cur_path/iWhale2_JTAG.cmm "RST"
+DO &cur_path/iWhale2_JTAG.cmm "FUSE"
+
+comOPS jtag_low_lock
+lowJTAG jtag_reset_tms
+menuef EFUSE_DC_READ &DC_LEN &DC_SEL
+ENTRY &DC_WRITE_DATA
+comOPS jtag_low_unlock
+;get full DC data 
+if ("&DC_WRITE_DATA"=="")
+	&DC_WRITE_DATA="5000000040000000300000002000000010000000702000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000202048c7410d0106a1520206a435ecb07518007"
+	
+GOSUB SUB_DIALOG 
+
+SYB_DIALOG_END:
+
+IF (&WRITE_Method==0x1)
+(
+	IF (CPUFAMILY()!="I386")
+	(
+		PRINT %ERROR "Please open the right Trace32!"
+		ENDDO
+	)
+	;GOSUB RB_envir_end
+
+	OPEN #1 &cur_path\DC_fuse_value.txt /Create
+	WRITE #1 "&DC_WRITE_DATA"
+	CLOSE #1	
+	menurb PRERB
+	DO &cur_path/iWhale2_JTAG.cmm "FUSE"
+	comOPS jtag_low_lock
+	lowJTAG jtag_reset_tms
+	menuef EFUSE_DC_WRITE &DC_LEN &DC_SEL &DC_WRITE_DATA
+	comOPS jtag_low_unlock
+	;GOSUB RB_envir_end
+	menurb POSTRB
+	;print "&DC_WRITE_DATA"
+)
+ELSE IF (&WRITE_Method==0x2)
+(
+	comOPS jtag_low_lock
+	lowJTAG jtag_reset_tms
+	menuef SEL_FA_WRITE &DC_WRITE_DATA 0x26
+	comOPS jtag_low_unlock
+)	
+;&temp="RST"+"&CONFIG_INPUT"
+;DO &cur_path/iWhale2_JTAG.cmm "&temp"
+efuse_recovery:
+
+IF (0x0!=0x0)
+(
+	DO &cur_path/jtag_nTRST.cmm
+	DO &cur_path/butter.cmm DAP
+	on.error CONTinue
+	D.S EAQD:0xE4240024 %LE %Long 0x00000000 
+	D.S EAQD:0xE42e0000 %LE %Long &efuse_val 
+)
+ENDDO
+; STARTING THE DIALOG BOX
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+SUB_DIALOG:
+winpos 5. 1. 100. 25.
+dialog
+(
+    HEADER "iWhale2 E-Fuse Tool(!!!Data In Hex Format!!!)"
+
+	;+++++++++++++++++++++++PUNIT/BIA+++++++++++++++++++++++++++++++++++++++++++++
+    pos 3. 1. 50. 1.
+   	LINE "PUNIT/BIA/CPU Fuses"
+	
+;fuse[0:0]
+	pos 4. 2. 30. 1.
+   	TEXT "FB_PM_Core_PG_Delay_Sel[0:0]" 	
+	
+	pos 40. 2. 15. 1.
+   	FUSE_EDIT_0: EDIT "" ""
+
+;fuse[1:1]
+	pos 4. 3. 30. 1.
+   	TEXT "FB_PM_BIU_PGENB_Delay_Sel[1:1]"
+
+	pos 40. 3. 15. 1.
+   	FUSE_EDIT_1: EDIT "" ""
+
+;fuse[3:2]
+	pos 4. 4. 30. 1.
+   	TEXT "FB_MODULE_ENABLE[3:2]" 
+
+	pos 40. 4. 15. 1.
+   	FUSE_EDIT_2: EDIT "" ""
+
+;fuse[14:4]
+	pos 4. 5. 30. 1.
+   	TEXT "FB_PM_SPARE[14:4]" 
+
+	pos 40. 5. 15. 1.
+   	FUSE_EDIT_3: EDIT "" ""	
+
+;fuse[15:15]
+	pos 4. 6. 30. 1.
+   	TEXT "FB_EXTERNAL_IDCODE_SELECT[15:15]"
+
+	pos 40. 6. 15. 1.
+   	FUSE_EDIT_4: EDIT "" ""
+
+
+;fuse[16:16]
+	pos 4. 7. 30. 1.
+    TEXT "FB_FUSE_PROGRAMMED[16:16]"
+
+	pos 40. 7. 15. 1.
+   	FUSE_EDIT_5: EDIT "" ""
+
+
+;+++++++++++++++++++++++++++++++CPU FUSE+++++++++++++++++++++++++++++++++++++
+	
+;fuse[19:17]
+	pos 4. 8. 25. 1.
+   	TEXT "PLATFORM_ID[19:17]" 
+	pos 40. 8. 15. 1.
+	FUSE_EDIT_6: EDIT "" ""
+
+;fuse[22:20]
+	pos 4. 9. 25. 1.
+   	TEXT "BRAND_ID[22:20]" 
+	pos 40. 9. 15. 1.
+	FUSE_EDIT_7: EDIT "" ""
+
+;fuse[23:23]
+	pos 4. 10. 25. 1.
+   	TEXT "EMRR_FOR_TEE[23:23]" 		
+	pos 40. 10. 15. 1.
+	FUSE_EDIT_8: EDIT "" ""
+	
+	
+;fuse[27:24]
+	pos 4. 11. 30. 1.
+   	TEXT "CPUID_EXTENDED_MODEL_VALUE[27:24]"
+	pos 40. 11. 15. 1.
+	FUSE_EDIT_9: EDIT "" ""
+	
+;fuse[31:28]
+	pos 4. 12. 25. 1.
+   	TEXT "CPUID_STEPPING_VALUE[31:28]"	
+	pos 40. 12. 15. 1.
+	FUSE_EDIT_10: EDIT "" ""
+	
+;fuse[45:32]
+	pos 4. 13. 25. 1.
+   	TEXT "CPUID_MODEL_VALUE[35:32]"		
+	pos 40. 13. 15. 1.
+	FUSE_EDIT_11: EDIT "" ""
+	
+;fuse[39:36]
+	pos 4. 14. 25. 1.
+   	TEXT "CPUID_FAMILY_VALUE[39:36]"	
+	pos 40. 14. 15. 1.
+	FUSE_EDIT_12: EDIT "" ""
+	
+;fuse[46:40]
+	pos 4. 15. 25. 1.
+   	TEXT "CPUID_1ST_ASCII[46:40]"	
+	pos 40. 15. 15. 1.
+	FUSE_EDIT_13: EDIT "" ""
+	
+;fuse[53:47]
+	pos 4. 16. 25. 1.
+   	TEXT "CPUID_2RD_ASCII[53:47]"
+	pos 40. 16. 15. 1.
+	FUSE_EDIT_14: EDIT "" ""	
+	
+	pos 4. 17. 25. 1.
+   	TEXT "CPUID_3RD_ASCII[60:54]"	
+	pos 40. 17. 15. 1.
+	FUSE_EDIT_15: EDIT "" ""	
+	
+	pos 4. 18. 25. 1.
+   	TEXT "CPUID_4TH_ASCII[67:61]"
+	pos 40. 18. 15. 1.
+	FUSE_EDIT_16: EDIT "" ""		
+	
+	pos 4. 19. 25. 1.
+   	TEXT "CPUID_5TH_ASCII[74:68]"	
+	pos 40. 19. 15. 1.
+	FUSE_EDIT_17: EDIT "" ""	
+	
+	pos 4. 20. 25. 1.
+   	TEXT "CPUID_6TH_ASCII[81:75]"
+	pos 40. 20. 15. 1.
+	FUSE_EDIT_18: EDIT "" ""	
+	
+	
+	pos 4. 21. 25. 1.
+   	TEXT "CPUID_7TH_ASCII[88:82]"	
+	pos 40. 21. 15. 1.
+	FUSE_EDIT_19: EDIT "" ""	
+	
+;fuse[89:89]
+	pos 4. 22. 25. 1.
+   	TEXT "SOCID_VENDOR_ID_IS_PCI[89:89]"
+	pos 40. 22. 15. 1.
+	FUSE_EDIT_20: EDIT "" ""		
+	
+	pos 4. 23. 25. 1.
+   	TEXT "SOCID_VENDOR_ID[105:90]"
+	pos 40. 23. 15. 1.
+	FUSE_EDIT_21: EDIT "" ""	
+	
+	pos 4. 24. 25. 1.
+   	TEXT "SOCID_PROJECT_ID[109:106]"
+	pos 40. 24. 15. 1.
+	FUSE_EDIT_22: EDIT "" ""	
+	
+	
+	pos 4. 25. 25. 1.
+   	TEXT "SOCID_STEPPING_ID[113:110]"
+	pos 40. 25. 15. 1.
+	FUSE_EDIT_23: EDIT "" ""	
+	
+	pos 4. 26. 25. 1.
+   	TEXT "METAL_STEPPING[115:114]"
+	pos 40. 26. 15. 1.
+	FUSE_EDIT_24: EDIT "" ""	
+	
+	pos 4. 27. 25. 1.
+   	TEXT "L2_SIZE[119:116]"
+	pos 40. 27. 15. 1.
+	FUSE_EDIT_25: EDIT "" ""	
+	
+	pos 4. 28. 25. 1.
+   	TEXT "CORE0_DISABLE[120:120]"
+	pos 40. 28. 15. 1.
+	FUSE_EDIT_26: EDIT "" ""	
+	
+	pos 4. 29. 25. 1.
+   	TEXT "CORE1_DISABLE[121:121]"
+	pos 40. 29. 15. 1.
+	FUSE_EDIT_27: EDIT "" ""	
+	
+	pos 4. 30. 25. 1.
+   	TEXT "CORE2_DISABLE[122:122]"
+	pos 40. 30. 15. 1.
+	FUSE_EDIT_28: EDIT "" ""	
+	
+	pos 4. 31. 25. 1.
+   	TEXT "CORE3_DISABLE[123:123]"
+	pos 40. 31. 15. 1.
+	FUSE_EDIT_29: EDIT "" ""	
+	
+	pos 4. 32. 30. 1.
+   	TEXT "XCLK_CONFIG_MULTIPLIER[130:124]"
+	pos 40. 32. 15. 1.
+	FUSE_EDIT_30: EDIT "" ""		
+	
+	pos 4. 33. 30. 1.
+   	TEXT "XCLK_CONFIG_DIVIDER[133:131]"	
+	pos 40. 33. 15. 1.
+	FUSE_EDIT_31: EDIT "" ""	
+	
+	pos 4. 34. 30. 1.
+   	TEXT "XCLK_CONFIG_CZCLKDIVBY4[134:134]"
+	pos 40. 34. 15. 1.
+	FUSE_EDIT_32: EDIT "" ""	
+	
+	pos 4. 35. 30. 1.
+   	TEXT "INCREASE_CPU_INS_DLY[135:135]"
+	pos 40. 35. 15. 1.
+	FUSE_EDIT_33: EDIT "" ""	
+	
+	pos 4. 36. 25. 1.
+   	TEXT "M0_FB_GUAR_RATIO[141:136]"
+	pos 40. 36. 15. 1.
+	FUSE_EDIT_34: EDIT "" ""	
+	
+	pos 4. 37. 34. 1.
+   	TEXT "M0_FB_EN_MID_NCLK_GENERATION[142:142]"
+	pos 40. 37. 15. 1.
+	FUSE_EDIT_35: EDIT "" ""	
+	
+	pos 4. 38. 25. 1.
+   	TEXT "M0_FB_EN_LATE_MB1CLK[143:143]"
+	pos 40. 38. 15. 1.
+	FUSE_EDIT_36: EDIT "" ""	
+	
+	pos 4. 39. 30. 1.
+   	TEXT "M1_FB_GUAR_RATIO_FUSE[149:144]"
+	pos 40. 39. 15. 1.
+	FUSE_EDIT_37: EDIT "" ""	
+	
+	pos 4. 40. 35. 1.
+   	TEXT "M1_FB_EN_MID_NCLK_GENERATION[150:150]"
+	pos 40. 40. 15. 1.
+	FUSE_EDIT_38: EDIT "" ""	
+	
+	pos 4. 41. 35. 1.
+   	TEXT "M1_FB_EN_LATE_MB1CLK[151:151]"
+	pos 40. 41. 15. 1.
+	FUSE_EDIT_39: EDIT "" ""
+	
+	
+;+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+    pos 56. 1. 50. 1.
+   	Line "MODULE0 L2 Fuses"
+	
+	pos 57. 2. 40. 1.
+   	TEXT "M0_FB_L2_REDNT[171:152]"
+	
+	pos 57. 3. 40. 1.
+   	TEXT "M0_FB_L2_REDN_ROW[221:172]"
+	
+	pos 57. 4. 40. 1.
+   	TEXT "M0_FB_L2_C6REDN_ROW[239:222]"
+	
+	pos 57. 5. 40. 1.
+   	TEXT "M0_FB_L2DATC6_EN_BL_FLOATC0C2[240:240]"
+	
+	pos 57. 6. 40. 1.
+   	TEXT "M0_FB_L2DATC6_EN_ARRAY_SLPC0C2[241:241]"
+	
+;fuse[248:242]
+	pos 57. 7. 40. 1.
+   	TEXT "M0_FB_L2DATSA[248:242]"
+	
+	pos 57. 8. 40. 1.
+   	TEXT "M0_FB_L2DAT_EN_WLSLP[249:249]"
+	
+	pos 57. 9. 40. 1.
+   	TEXT "M0_FB_L2DAT_WL_BIAS[251:250]"
+	
+	pos 57. 10. 40. 1.
+   	TEXT "M0_FB_L2DAT_SLP_STRENGTH[255:252]"
+	
+	pos 57. 11. 40. 1.
+   	TEXT "M0_FB_EN_DISWAYPWRDN[256:256]"
+	
+	pos 57. 12. 40. 1.
+   	TEXT "M0_FB_L2DAT_EN_BL_FLOAT[257:257]"
+	
+	pos 57. 13. 40. 1.
+   	TEXT "M0_FB_L2DAT_WR_AST_DIS[258:258]"
+	
+	pos 57. 14. 40. 1.
+   	TEXT "M0_FB_L2DAT_WR_AST_PW[262:259]"
+	
+	pos 57. 15. 40. 1.
+   	TEXT "M0_FB_L2DAT_WR_AST_STRENGTH[265:263]"
+	
+;fuse [267:266]
+	pos 57. 16. 40. 1.
+   	TEXT "M0_FB_L2C6_WL_BIAS[267:266]"
+	
+	pos 57. 17. 40. 1.
+   	TEXT "M0_FB_L2C6_SLP_STRENGTH[271:268]"
+	
+	pos 57. 18. 40. 1.
+   	TEXT "M0_FB_L2C6_EN_BL_FLOAT[272:272]"
+	
+	pos 57. 19. 40. 1.
+   	TEXT "M0_FB_L2C6_SA[278:273]"
+	
+	pos 57. 20. 40. 1.
+   	TEXT "M0_FB_L2C6_EN_WLSLP[279:279]"
+	
+	pos 57. 21. 40. 1.
+   	TEXT "M0_FB_L2C6_WR_AST_DIS[280:280]"
+	
+	pos 57. 22. 40. 1.
+   	TEXT "M0_FB_L2C6_WR_AST_PW[284:281]"
+	
+	pos 57. 23. 40. 1.
+   	TEXT "M0_FB_L2C6_WR_AST_STRENGTH[287:285]"
+	
+;fuse[292:288]
+	pos 57. 24. 40. 1.
+   	TEXT "M0_FB_L2TAGSA[292:288]"
+	
+	pos 57. 25. 40. 1.
+   	TEXT "M0_FB_L2TAG_EN_WLSLP[293:293]"
+	
+	pos 57. 26. 40. 1.
+   	TEXT "M0_FB_L2TAG_WR_AST_NSTRENGTH[295:294]"
+	
+	pos 57. 27. 40. 1.
+   	TEXT "M0_FB_L2TAG_WL_BIAS[297:296]"
+	
+	pos 57. 28. 40. 1.
+   	TEXT "M0_FB_L2TAG_EN_BL_FLOAT[298:298]"
+	
+	pos 57. 29. 40. 1.
+   	TEXT "M0_FB_L2TAG_WR_AST_DIS[299:299]"
+	
+	pos 57. 30. 40. 1.
+   	TEXT "M0_FB_L2TAG_WR_AST_PW[303:300]"
+	
+	pos 57. 31. 40. 1.
+   	TEXT "M0_FB_L2TAG_WR_AST_STRENGTH[306:304]"
+	
+	pos 57. 32. 40. 1.
+   	TEXT "M0_FB_L2TAG_WL_KILL[307:307]"
+	
+;fuse[308:308]
+	pos 57. 33. 40. 1.
+   	TEXT "M0_FB_L2C6_SLP_STRENGTH_EN[308:308]"
+	
+	pos 57. 34. 40. 1.
+   	TEXT "M0_FB_L2DAT_SLP_STRENGTH_EN[309:309]"
+	
+	pos 57. 35. 40. 1.
+   	TEXT "M0_FB_L2_CRITICAL_CHUNK_EN_FWD[310:310]"
+	
+	pos 57. 36. 40. 1.
+   	TEXT "M0_FB_L2_TAGREDN_ROW[328:311]"
+	
+	pos 57. 37. 40. 1.
+   	TEXT "M0_FB_L2TAG_WR_AST_PULSEGEN_LCP[330:329]"
+	
+	pos 57. 38. 40. 1.
+   	TEXT "M0_FB_L2C6_WR_AST_PULSEGEN_LCP[332:331]"
+	
+	pos 57. 39. 40. 1.
+   	TEXT "M0_FB_L2DAT_WR_AST_PULSEGEN_LCP[334:333]"
+	
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	pos 115. 1. 50. 1.
+   	Line "MODULE1 L2 Fuses"
+	
+	pos 116. 2. 40. 1.
+   	TEXT "M1_FB_L2_REDNT[354:335]"
+	
+	pos 116. 3. 40. 1.
+   	TEXT "M1_FB_L2_REDN_ROW[404:355]"
+	
+	pos 116. 4. 40. 1.
+   	TEXT "M1_FB_L2_C6REDN_ROW[422:405]"
+	
+	pos 116. 5. 40. 1.
+   	TEXT "M1_FB_L2DATC6_EN_BL_FLOATC0C2[423:423]"
+	
+	pos 116. 6. 40. 1.
+   	TEXT "M1_FB_L2DATC6_EN_ARRAY_SLPC0C2[424:424]"
+	
+;fuse[248:242]
+	pos 116. 7. 40. 1.
+   	TEXT "M1_FB_L2DATSA[431:425]"
+	
+	pos 116. 8. 40. 1.
+   	TEXT "M1_FB_L2DAT_EN_WLSLP[432:432]"
+	
+	pos 116. 9. 40. 1.
+   	TEXT "M1_FB_L2DAT_WL_BIAS[434:433]"
+	
+	pos 116. 10. 40. 1.
+   	TEXT "M1_FB_L2DAT_SLP_STRENGTH[438:435]"
+	
+	pos 116. 11. 40. 1.
+   	TEXT "M1_FB_EN_DISWAYPWRDN[439:439]"
+	
+	pos 116. 12. 40. 1.
+   	TEXT "M1_FB_L2DAT_EN_BL_FLOAT[440:440]"
+	
+	pos 116. 13. 40. 1.
+   	TEXT "M1_FB_L2DAT_WR_AST_DIS[441:441]"
+	
+	pos 116. 14. 40. 1.
+   	TEXT "M1_FB_L2DAT_WR_AST_PW[445:442]"
+	
+	pos 116. 15. 40. 1.
+   	TEXT "M1_FB_L2DAT_WR_AST_STRENGTH[448:446]"
+	
+	pos 116. 16. 40. 1.
+   	TEXT "M1_FB_L2C6_WL_BIAS[450:449]"
+	
+	pos 116. 17. 40. 1.
+   	TEXT "M1_FB_L2C6_SLP_STRENGTH[454:451]"
+	
+	pos 116. 18. 40. 1.
+   	TEXT "M1_FB_L2C6_EN_BL_FLOAT[455:455]"
+	
+	pos 116. 19. 40. 1.
+   	TEXT "M1_FB_L2C6_SA[461:456]"
+	
+	pos 116. 20. 40. 1.
+   	TEXT "M1_FB_L2C6_EN_WLSLP[462:462]"
+	
+	pos 116. 21. 40. 1.
+   	TEXT "M1_FB_L2C6_WR_AST_DIS[463:463]"
+	
+	pos 116. 22. 40. 1.
+   	TEXT "M1_FB_L2C6_WR_AST_PW[467:464]"
+	
+	pos 116. 23. 40. 1.
+   	TEXT "M1_FB_L2C6_WR_AST_STRENGTH[470:468]"
+	
+	pos 116. 24. 40. 1.
+   	TEXT "M1_FB_L2TAGSA[475:471]"
+	
+	pos 116. 25. 40. 1.
+   	TEXT "M1_FB_L2TAG_EN_WLSLP[476:476]"
+	
+	pos 116. 26. 40. 1.
+   	TEXT "M1_FB_L2TAG_WR_AST_NSTRENGTH[478:477]"
+	
+	pos 116. 27. 40. 1.
+   	TEXT "M1_FB_L2TAG_WL_BIAS[480:479]"
+	
+	pos 116. 28. 40. 1.
+   	TEXT "M1_FB_L2TAG_EN_BL_FLOAT[481:481]"
+	
+	pos 116. 29. 40. 1.
+   	TEXT "M1_FB_L2TAG_WR_AST_DIS[482:482]"
+	
+	pos 116. 30. 40. 1.
+   	TEXT "M1_FB_L2TAG_WR_AST_PW[486:483]"
+	
+	pos 116. 31. 40. 1.
+   	TEXT "M1_FB_L2TAG_WR_AST_STRENGTH[489:487]"
+	
+	pos 116. 32. 40. 1.
+   	TEXT "M1_FB_L2TAG_WL_KILL[490:490]"
+	
+	pos 116. 33. 40. 1.
+   	TEXT "M1_FB_L2C6_SLP_STRENGTH_EN[491:491]"
+	
+	pos 116. 34. 40. 1.
+   	TEXT "M1_FB_L2DAT_SLP_STRENGTH_EN[492:492]"
+	
+	pos 116. 35. 40. 1.
+   	TEXT "M1_FB_L2_CRITICAL_CHUNK_EN_FWD[493:493]"
+	
+	pos 116. 36. 40. 1.
+   	TEXT "M1_FB_L2_TAGREDN_ROW[511:494]"
+	
+	pos 116. 37. 40. 1.
+   	TEXT "M1_FB_L2TAG_WR_AST_PULSEGEN_LCP[513:512]"
+	
+	pos 116. 38. 40. 1.
+   	TEXT "M1_FB_L2C6_WR_AST_PULSEGEN_LCP[515:514]"
+	
+	pos 116. 39. 40. 1.
+   	TEXT "M1_FB_L2DAT_WR_AST_PULSEGEN_LCP[517:516]"
+	
+	pos 116. 40. 40. 1.
+   	TEXT "Reserved[526:518]"
+
+;++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+	pos 172. 1. 40. 1.
+   	Line "DVFS"
+	
+	pos 173. 2. 18. 1.
+   	TEXT "CPU0_Vmin3[536:527]"
+  pos 173. 3. 18. 1.
+   	TEXT "CPU0_Vmin2[546:537]"
+  pos 173. 4. 18. 1.
+   	TEXT "CPU0_Vmin1[556:547]"
+  pos 173. 5. 18. 1.
+   	TEXT "Reserved[557]"
+	pos 173. 6. 18. 1.
+   	TEXT "CPU0_Vmin6[567:558]"
+	pos 173. 7. 18. 1.
+   	TEXT "CPU0_Vmin5[577:568]"
+  pos 173. 8. 18. 1.
+   	TEXT "CPU0_Vmin4[587:578]" 	
+  pos 173. 9. 18. 1.
+   	TEXT "Reserved[588]"
+  pos 173. 10. 18. 1.
+   	TEXT "CPU1_Vmin2[598:589]"  
+  pos 173. 11. 18. 1.
+   	TEXT "CPU1_Vmin1[608:599]" 
+  pos 173. 12. 18. 1.
+   	TEXT "CPU0_Vmin7[618:609]" 
+  pos 173. 13. 18. 1.
+   	TEXT "Reserved[619]"
+  pos 173. 14. 18. 1.
+   	TEXT "Reserved[639:620]"
+
+  pos 173. 15. 18. 1.
+   	TEXT "Reserved[650:643]"		  		
+  pos 173. 16. 18. 1.
+   	TEXT "CPU1_Vmin5[660:651]"  
+  pos 173. 17. 18. 1.
+   	TEXT "CPU1_Vmin4[670:661]" 
+  pos 173. 18. 18. 1.
+   	TEXT "CPU1_Vmin3[680:671]"  
+  pos 173. 19. 18. 1.
+   	TEXT "Reserved[681]"	
+  pos 173. 20. 18. 1.
+   	TEXT "CPU1_Vmin7[691:682]" 
+  pos 173. 21. 18. 1.
+   	TEXT "CPU1_Vmin6[701:692]"
+  pos 173. 22. 18. 1.
+   	TEXT "Reserved[712:702]"
+  pos 173. 23. 18. 1.
+   	TEXT "Reserved[743:713]" 
+  pos 173. 24. 18. 1.
+   	TEXT "Reserved[774:744]"   
+  pos 173. 25. 18. 1.
+   	TEXT "Reserved[805:775]" 	 	
+   	
+   	
+  pos 173. 28. 18. 1.
+		TEXT "DFX_SECURITY[642:640]"	
+	pos 98. 2. 15. 1.
+	FUSE_EDIT_40: EDIT "" ""
+	pos 98. 3. 15. 1.
+	FUSE_EDIT_41: EDIT "" ""
+	pos 98. 4. 15. 1.
+	FUSE_EDIT_42: EDIT "" ""
+	pos 98. 5. 15. 1.
+	FUSE_EDIT_43: EDIT "" ""
+	pos 98. 6. 15. 1.
+	FUSE_EDIT_44: EDIT "" ""
+	pos 98. 7. 15. 1.
+	FUSE_EDIT_45: EDIT "" ""
+	pos 98. 8. 15. 1.
+	FUSE_EDIT_46: EDIT "" ""
+	pos 98. 9. 15. 1.
+	FUSE_EDIT_47: EDIT "" ""
+	pos 98. 10. 15. 1.
+	FUSE_EDIT_48: EDIT "" ""
+	pos 98. 11. 15. 1.
+	FUSE_EDIT_49: EDIT "" ""
+	pos 98. 12. 15. 1.
+	FUSE_EDIT_50: EDIT "" ""
+	pos 98. 13. 15. 1.
+	FUSE_EDIT_51: EDIT "" ""
+	pos 98. 14. 15. 1.
+	FUSE_EDIT_52: EDIT "" ""
+	pos 98. 15. 15. 1.
+	FUSE_EDIT_53: EDIT "" ""
+	pos 98. 16. 15. 1.
+	FUSE_EDIT_54: EDIT "" ""
+	pos 98. 17. 15. 1.
+	FUSE_EDIT_55: EDIT "" ""
+	pos 98. 18. 15. 1.
+	FUSE_EDIT_56: EDIT "" ""
+	pos 98. 19. 15. 1.
+	FUSE_EDIT_57: EDIT "" ""
+	pos 98. 20. 15. 1.
+	FUSE_EDIT_58: EDIT "" ""
+	pos 98. 21. 15. 1.
+	FUSE_EDIT_59: EDIT "" ""
+	pos 98. 22. 15. 1.
+	FUSE_EDIT_60: EDIT "" ""
+	pos 98. 23. 15. 1.
+	FUSE_EDIT_61: EDIT "" ""
+	pos 98. 24. 15. 1.
+	FUSE_EDIT_62: EDIT "" ""
+	pos 98. 25. 15. 1.
+	FUSE_EDIT_63: EDIT "" ""
+	pos 98. 26. 15. 1.
+	FUSE_EDIT_64: EDIT "" ""
+	pos 98. 27. 15. 1.
+	FUSE_EDIT_65: EDIT "" ""
+	pos 98. 28. 15. 1.
+	FUSE_EDIT_66: EDIT "" ""
+	pos 98. 29. 15. 1.
+	FUSE_EDIT_67: EDIT "" ""
+	pos 98. 30. 15. 1.
+	FUSE_EDIT_68: EDIT "" ""
+	pos 98. 31. 15. 1.
+	FUSE_EDIT_69: EDIT "" ""
+	pos 98. 32. 15. 1.
+	FUSE_EDIT_70: EDIT "" ""
+	pos 98. 33. 15. 1.
+	FUSE_EDIT_71: EDIT "" ""
+	pos 98. 34. 15. 1.
+	FUSE_EDIT_72: EDIT "" ""
+	pos 98. 35. 15. 1.
+	FUSE_EDIT_73: EDIT "" ""
+	pos 98. 36. 15. 1.
+	FUSE_EDIT_74: EDIT "" ""
+	pos 98. 37. 15. 1.
+	FUSE_EDIT_75: EDIT "" ""
+	pos 98. 38. 15. 1.
+	FUSE_EDIT_76: EDIT "" ""
+	pos 98. 39. 15. 1.
+	FUSE_EDIT_77: EDIT "" ""
+	
+;++++++++++++++++++++++++++++++++++++++++++++++++++
+;module 1 EDIT
+	pos 155. 2. 15. 1.
+	FUSE_EDIT_78: EDIT "" ""
+	pos 155. 3. 15. 1.
+	FUSE_EDIT_79: EDIT "" ""
+	pos 155. 4. 15. 1.
+	FUSE_EDIT_80: EDIT "" ""
+	pos 155. 5. 15. 1.
+	FUSE_EDIT_81: EDIT "" ""
+	pos 155. 6. 15. 1.
+	FUSE_EDIT_82: EDIT "" ""
+	pos 155. 7. 15. 1.
+	FUSE_EDIT_83: EDIT "" ""
+	pos 155. 8. 15. 1.
+	FUSE_EDIT_84: EDIT "" ""
+	pos 155. 9. 15. 1.
+	FUSE_EDIT_85: EDIT "" ""
+	pos 155. 10. 15. 1.
+	FUSE_EDIT_86: EDIT "" ""
+	pos 155. 11. 15. 1.
+	FUSE_EDIT_87: EDIT "" ""
+	pos 155. 12. 15. 1.
+	FUSE_EDIT_88: EDIT "" ""
+	pos 155. 13. 15. 1.
+	FUSE_EDIT_89: EDIT "" ""
+	pos 155. 14. 15. 1.
+	FUSE_EDIT_90: EDIT "" ""
+	pos 155. 15. 15. 1.
+	FUSE_EDIT_91: EDIT "" ""
+	pos 155. 16. 15. 1.
+	FUSE_EDIT_92: EDIT "" ""
+	pos 155. 17. 15. 1.
+	FUSE_EDIT_93: EDIT "" ""
+	pos 155. 18. 15. 1.
+	FUSE_EDIT_94: EDIT "" ""
+	pos 155. 19. 15. 1.
+	FUSE_EDIT_95: EDIT "" ""
+	pos 155. 20. 15. 1.
+	FUSE_EDIT_96: EDIT "" ""
+	pos 155. 21. 15. 1.
+	FUSE_EDIT_97: EDIT "" ""
+	pos 155. 22. 15. 1.
+	FUSE_EDIT_98: EDIT "" ""
+	pos 155. 23. 15. 1.
+	FUSE_EDIT_99: EDIT "" ""
+	pos 155. 24. 15. 1.
+	FUSE_EDIT_100: EDIT "" ""
+	pos 155. 25. 15. 1.
+	FUSE_EDIT_101: EDIT "" ""
+	pos 155. 26. 15. 1.
+	FUSE_EDIT_102: EDIT "" ""
+	pos 155. 27. 15. 1.
+	FUSE_EDIT_103: EDIT "" ""
+	pos 155. 28. 15. 1.
+	FUSE_EDIT_104: EDIT "" ""
+	pos 155. 29. 15. 1.
+	FUSE_EDIT_105: EDIT "" ""
+	pos 155. 30. 15. 1.
+	FUSE_EDIT_106: EDIT "" ""
+	pos 155. 31. 15. 1.
+	FUSE_EDIT_107: EDIT "" ""
+	pos 155. 32. 15. 1.
+	FUSE_EDIT_108: EDIT "" ""
+	pos 155. 33. 15. 1.
+	FUSE_EDIT_109: EDIT "" ""
+	pos 155. 34. 15. 1.
+	FUSE_EDIT_110: EDIT "" ""
+	pos 155. 35. 15. 1.
+	FUSE_EDIT_111: EDIT "" ""
+	pos 155. 36. 15. 1.
+	FUSE_EDIT_112: EDIT "" ""
+	pos 155. 37. 15. 1.
+	FUSE_EDIT_113: EDIT "" ""
+	pos 155. 38. 15. 1.
+	FUSE_EDIT_114: EDIT "" ""
+	pos 155. 39. 15. 1.
+	FUSE_EDIT_115: EDIT "" ""
+	
+	pos 155. 40. 15. 1.
+	FUSE_EDIT_116: EDIT "" ""	
+	
+	
+	pos 192. 2. 15. 1.
+	FUSE_EDIT_117: EDIT "" ""	
+	pos 192. 3. 15. 1.
+	FUSE_EDIT_118: EDIT "" ""	
+	pos 192. 4. 15. 1.
+	FUSE_EDIT_119: EDIT "" ""	
+	pos 192. 5. 15. 1.
+	FUSE_EDIT_120: EDIT "" ""	
+	pos 192. 6. 15. 1.
+	FUSE_EDIT_121: EDIT "" ""	
+	pos 192. 7. 15. 1.
+	FUSE_EDIT_122: EDIT "" ""	
+	pos 192. 8. 15. 1.
+	FUSE_EDIT_123: EDIT "" ""	
+	pos 192. 9. 15. 1.
+	FUSE_EDIT_124: EDIT "" ""	
+	pos 192. 10. 15. 1.
+	FUSE_EDIT_125: EDIT "" ""	
+	
+	pos 192. 11. 15. 1.
+	FUSE_EDIT_126: EDIT "" ""	
+	pos 192. 12. 15. 1.
+	FUSE_EDIT_127: EDIT "" ""	
+	pos 192. 13. 15. 1.
+	FUSE_EDIT_128: EDIT "" ""	
+	pos 192. 14. 15. 1.
+	FUSE_EDIT_129: EDIT "" ""	
+
+	pos 192. 15. 15. 1.
+	FUSE_EDIT_131: EDIT "" ""	
+	pos 192. 16. 15. 1.
+	FUSE_EDIT_132: EDIT "" ""	
+	pos 192. 17. 15. 1.
+	FUSE_EDIT_133: EDIT "" ""	
+	pos 192. 18. 15. 1.
+	FUSE_EDIT_134: EDIT "" ""	
+	pos 192. 19. 15. 1.
+	FUSE_EDIT_135: EDIT "" ""	
+	pos 192. 20. 15. 1.
+	FUSE_EDIT_136: EDIT "" ""	
+	pos 192. 21. 15. 1.
+	FUSE_EDIT_137: EDIT "" ""	
+	pos 192. 22. 15. 1.
+	FUSE_EDIT_138: EDIT "" ""	
+	pos 192. 23. 15. 1.
+	FUSE_EDIT_139: EDIT "" ""	
+	pos 192. 24. 15. 1.
+	FUSE_EDIT_140: EDIT "" ""	
+	pos 192. 25. 15. 1.
+	FUSE_EDIT_141: EDIT "" ""	
+	
+	pos 192. 28. 15. 1.
+	FUSE_EDIT_130: EDIT "" ""	
+	
+	POS 60. 42. 12. 1.
+	Option2: CHECKBOX "FA_Write" ""	
+	
+	POS 25. 43. 10. 2.
+	BUTTON "DC_WRITE" "GOTO DC_WRITE"
+	POS 60. 43. 10. 2.
+	BUTTON "FA_WRITE" "GOTO FA_WRITE"
+	POS 90. 43. 10. 2.
+	BUTTON "LOAD" "GOTO Load_DC"
+	POS 115. 43. 10. 2.
+	DEFBUTTON "Cancel" "GOTO cancel"
+	
+	CLOSE "GOTO cancel"
+) ;SUB_DIALOG
+DIALOG.Disable FUSE_EDIT_116
+DIALOG.Disable FUSE_EDIT_120
+DIALOG.Disable FUSE_EDIT_124
+DIALOG.Disable FUSE_EDIT_128
+DIALOG.Disable FUSE_EDIT_129
+DIALOG.Disable FUSE_EDIT_131
+DIALOG.Disable FUSE_EDIT_135
+DIALOG.Disable FUSE_EDIT_138
+DIALOG.Disable FUSE_EDIT_139
+DIALOG.Disable FUSE_EDIT_140
+DIALOG.Disable FUSE_EDIT_141
+
+LOCAL &MAX_NUM
+&MAX_NUM=142.	
+var.NEWLOCAL char[&MAX_NUM][32.] \v_res
+var.NEWLOCAL unsigned short[&MAX_NUM] \v_bit_start
+var.NEWLOCAL unsigned short[&MAX_NUM] \v_bit_end
+
+DC_show_gui:
+gosub init_var
+gosub DCValue_2_Show &DC_WRITE_DATA	
+	
+stop
+FA_DC_start:
+ENTRY &WRITE_Method
+gosub Show_2_DCValue
+ENTRY &DC_WRITE_DATA
+LOCAL &temp
+IF !DIALOG.BOOLEAN(Option2)
+(
+	&temp=0x1
+)
+ELSE
+	&temp=0x0
+IF &WRITE_Method!=0x1&&&WRITE_Method!=0x2
+	&WRITE_Method=0x0
+;IF DIALOG.BOOLEAN(B.C)
+	;&WRITE_Method=0x1
+;ELSE IF DIALOG.BOOLEAN(B.D)
+	;&WRITE_Method=0x2
+;ELSE
+	;&WRITE_Method=0x0
+winclose:
+dialog.end
+IF &WRITE_Method==0x2
+(
+	IF &temp==0x1
+	(
+		DIALOG.MESSAGE "please select FA_WRITE!!!"
+		GOSUB SUB_DIALOG
+	)
+)
+	GOTO SYB_DIALOG_END
+
+DC_WRITE:
+	LOCAL &temp
+	&temp=0x1
+	GOSUB FA_DC_start &temp
+FA_WRITE:
+	LOCAL &temp
+	&temp=0x2
+	GOSUB FA_DC_start &temp
+Show_2_DCValue:
+	LOCAL &new_data &DCValue
+	LOCAL &i &N &remain &end &j	&name &num_hex
+	&i=0
+	WHILE (&i<&MAX_NUM)
+	(
+		&name=var.string(\v_res[&i])
+		&temp=DIALOG.STRing(&name)
+		&len=STRing.LENgth("&temp")
+		&temp="0x"+string.mid("&temp",2.,&len-2.)
+		&num=(var.value(\v_bit_end[&i])-var.value(\v_bit_start[&i]))+1.
+		&num=STRing.TRIM(format.decimal(2.,&num))		
+		&temp=format.binary(&num.,&temp)
+		IF (&i==0.)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		)
+		&i=&i+1.
+	)	
+	&i=0.
+	&end=str.len("&new_data")-1.
+	&j=str.len("&new_data")/31.
+	WHILE (&i<&j)
+	(
+		&temp=string.mid("&new_data",(&end-31.*&i-30.),31.)
+		gosub convert_binary_2_hex &temp
+		ENTRY &temp
+		IF (&i==0.)
+		(
+			&DCValue="&temp"
+		)
+		ELSE
+		(
+			&DCValue="&temp"+"&DCValue"
+		)
+		&i=&i+1.
+	)
+	print "&DCValue"
+	return &DCValue
+
+Load_DC:
+	OPEN #1 &cur_path\DC_fuse_value.txt /Read
+	READ #1 %line &DC_WRITE_DATA
+	CLOSE #1
+	;&DC_WRITE_DATA="00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001C1C48C7002200010000000000000CB07010004"
+	;default 2module
+	;&DC_WRITE_DATA="0000000000000000000000000000000000000000000000000000000000000000000000000000000010DC305B401CB73C4580000000000000000000000000000106E382DC00E5B9E42C000000000000000000000001C1C48C0000000210000000000000CB0751000C"
+	;&DC_WRITE_DATA="000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000CB0750000C"
+	Gosub DC_show_gui
+DCValue_2_Show:
+	ENTRY &DC_WRITE_DATA 
+	LOCAL &new_data
+	LOCAL &i &N &remain &end &j	&name &num_hex
+	&i=0
+	&j=str.len("&DC_WRITE_DATA")
+	;print "j=&j"
+	&N=str.len("&DC_WRITE_DATA")/8.
+	&end=str.len("&DC_WRITE_DATA")-1.
+
+	While (&i<&N)
+	(
+		&temp="0x"+string.mid("&DC_WRITE_DATA",&end-7.,8.)
+		&temp=format.binary(31.,&temp)
+		IF (&i==0.)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		)
+		&end=&end-8.
+		&i=&i+1
+	)	
+	&i=0.
+	&j=str.len("&new_data")-1.
+	WHILE (&i<&MAX_NUM)
+	(
+		&name=var.string(\v_res[&i])
+		&num=(var.value(\v_bit_end[&i])-var.value(\v_bit_start[&i]))+1.
+		&num=format.decimal(2.,&num)
+		&temp=string.mid("&new_data",&j-var.value(\v_bit_end[&i]),&num.)
+		gosub convert_binary_2_hex &temp
+		ENTRY &temp
+		&temp="0x"+"&temp"
+		DIALOG.Set &name "&temp"
+		&i=&i+1.
+	)	
+return
+
+init_var:
+	LOCAL &i &name 
+	&i=0.
+	WHILE (&i<&MAX_NUM)
+	(
+		&name="FUSE_EDIT_"+string.cut("&i",-1)
+		var.set \v_res[&i]="&name"
+		;Print var.string(\v_res[&i])
+		&i=&i+1.
+	) 	
+	var.set \v_bit_start[0]=0.
+	var.set \v_bit_end[0]=0.
+	var.set \v_bit_start[1]=1.
+	var.set \v_bit_end[1]=1.
+	var.set \v_bit_start[2]=2
+	var.set \v_bit_end[2]=3
+	var.set \v_bit_start[3]=4
+	var.set \v_bit_end[3]=14
+	var.set \v_bit_start[4]=15
+	var.set \v_bit_end[4]=15
+	var.set \v_bit_start[5]=16
+	var.set \v_bit_end[5]=16
+	var.set \v_bit_start[6]=17
+	var.set \v_bit_end[6]=19
+	var.set \v_bit_start[7]=20
+	var.set \v_bit_end[7]=22
+	var.set \v_bit_start[8]=23
+	var.set \v_bit_end[8]=23
+	var.set \v_bit_start[9]=24
+	var.set \v_bit_end[9]=27
+	var.set \v_bit_start[10]=28
+	var.set \v_bit_end[10]=31
+	var.set \v_bit_start[11]=32
+	var.set \v_bit_end[11]=35
+	var.set \v_bit_start[12]=36
+	var.set \v_bit_end[12]=39
+	var.set \v_bit_start[13]=40
+	var.set \v_bit_end[13]=46
+	var.set \v_bit_start[14]=47
+	var.set \v_bit_end[14]=53
+	var.set \v_bit_start[15]=54
+	var.set \v_bit_end[15]=60
+	var.set \v_bit_start[16]=61
+	var.set \v_bit_end[16]=67
+	var.set \v_bit_start[17]=68
+	var.set \v_bit_end[17]=74
+	var.set \v_bit_start[18]=75
+	var.set \v_bit_end[18]=81
+	var.set \v_bit_start[19]=82
+	var.set \v_bit_end[19]=88
+	var.set \v_bit_start[20]=89
+	var.set \v_bit_end[20]=89
+	var.set \v_bit_start[21]=90
+	var.set \v_bit_end[21]=105
+	var.set \v_bit_start[22]=106
+	var.set \v_bit_end[22]=109
+	var.set \v_bit_start[23]=110
+	var.set \v_bit_end[23]=113
+	var.set \v_bit_start[24]=114
+	var.set \v_bit_end[24]=115
+	var.set \v_bit_start[25]=116
+	var.set \v_bit_end[25]=119
+	var.set \v_bit_start[26]=120
+	var.set \v_bit_end[26]=120
+	var.set \v_bit_start[27]=121
+	var.set \v_bit_end[27]=121
+	var.set \v_bit_start[28]=122
+	var.set \v_bit_end[28]=122
+	var.set \v_bit_start[29]=123
+	var.set \v_bit_end[29]=123
+	var.set \v_bit_start[30]=124
+	var.set \v_bit_end[30]=130
+	var.set \v_bit_start[31]=131
+	var.set \v_bit_end[31]=133
+	var.set \v_bit_start[32]=134
+	var.set \v_bit_end[32]=134
+	var.set \v_bit_start[33]=135
+	var.set \v_bit_end[33]=135
+	var.set \v_bit_start[34]=136
+	var.set \v_bit_end[34]=141
+	var.set \v_bit_start[35]=142
+	var.set \v_bit_end[35]=142
+	var.set \v_bit_start[36]=143
+	var.set \v_bit_end[36]=143
+	var.set \v_bit_start[37]=144
+	var.set \v_bit_end[37]=149
+	var.set \v_bit_start[38]=150
+	var.set \v_bit_end[38]=150
+	var.set \v_bit_start[39]=151
+	var.set \v_bit_end[39]=151
+	var.set \v_bit_start[40]=152
+	var.set \v_bit_end[40]=171
+	var.set \v_bit_start[41]=172
+	var.set \v_bit_end[41]=221
+	var.set \v_bit_start[42]=222
+	var.set \v_bit_end[42]=239
+	var.set \v_bit_start[43]=240
+	var.set \v_bit_end[43]=240
+	var.set \v_bit_start[44]=241
+	var.set \v_bit_end[44]=241
+	var.set \v_bit_start[45]=242
+	var.set \v_bit_end[45]=248
+	var.set \v_bit_start[46]=249
+	var.set \v_bit_end[46]=249
+	var.set \v_bit_start[47]=250
+	var.set \v_bit_end[47]=251
+	var.set \v_bit_start[48]=252
+	var.set \v_bit_end[48]=255
+	var.set \v_bit_start[49]=256
+	var.set \v_bit_end[49]=256
+	var.set \v_bit_start[50]=257
+	var.set \v_bit_end[50]=257
+	var.set \v_bit_start[51]=258
+	var.set \v_bit_end[51]=258
+	var.set \v_bit_start[52]=259
+	var.set \v_bit_end[52]=262
+	var.set \v_bit_start[53]=263
+	var.set \v_bit_end[53]=265
+	var.set \v_bit_start[54]=266
+	var.set \v_bit_end[54]=267
+	var.set \v_bit_start[55]=268
+	var.set \v_bit_end[55]=271
+	var.set \v_bit_start[56]=272
+	var.set \v_bit_end[56]=272
+	var.set \v_bit_start[57]=273
+	var.set \v_bit_end[57]=278
+	var.set \v_bit_start[58]=279
+	var.set \v_bit_end[58]=279
+	var.set \v_bit_start[59]=280
+	var.set \v_bit_end[59]=280
+	var.set \v_bit_start[60]=281
+	var.set \v_bit_end[60]=284
+	var.set \v_bit_start[61]=285
+	var.set \v_bit_end[61]=287
+	var.set \v_bit_start[62]=288
+	var.set \v_bit_end[62]=292
+	var.set \v_bit_start[63]=293
+	var.set \v_bit_end[63]=293
+	var.set \v_bit_start[64]=294
+	var.set \v_bit_end[64]=295
+	var.set \v_bit_start[65]=296
+	var.set \v_bit_end[65]=297
+	var.set \v_bit_start[66]=298
+	var.set \v_bit_end[66]=298
+	var.set \v_bit_start[67]=299
+	var.set \v_bit_end[67]=299
+	var.set \v_bit_start[68]=300
+	var.set \v_bit_end[68]=303
+	var.set \v_bit_start[69]=304
+	var.set \v_bit_end[69]=306
+	var.set \v_bit_start[70]=307
+	var.set \v_bit_end[70]=307
+	var.set \v_bit_start[71]=308
+	var.set \v_bit_end[71]=308
+	var.set \v_bit_start[72]=309
+	var.set \v_bit_end[72]=309
+	var.set \v_bit_start[73]=310
+	var.set \v_bit_end[73]=310
+	var.set \v_bit_start[74]=311
+	var.set \v_bit_end[74]=328
+	var.set \v_bit_start[75]=329
+	var.set \v_bit_end[75]=330
+	var.set \v_bit_start[76]=331
+	var.set \v_bit_end[76]=332
+	var.set \v_bit_start[77]=333
+	var.set \v_bit_end[77]=334
+	var.set \v_bit_start[78]=335
+	var.set \v_bit_end[78]=354
+	var.set \v_bit_start[79]=355
+	var.set \v_bit_end[79]=404
+	var.set \v_bit_start[80]=405
+	var.set \v_bit_end[80]=422
+	var.set \v_bit_start[81]=423
+	var.set \v_bit_end[81]=423
+	var.set \v_bit_start[82]=424
+	var.set \v_bit_end[82]=424
+	var.set \v_bit_start[83]=425
+	var.set \v_bit_end[83]=431
+	var.set \v_bit_start[84]=432
+	var.set \v_bit_end[84]=432
+	var.set \v_bit_start[85]=433
+	var.set \v_bit_end[85]=434
+	var.set \v_bit_start[86]=435
+	var.set \v_bit_end[86]=438
+	var.set \v_bit_start[87]=439
+	var.set \v_bit_end[87]=439
+	var.set \v_bit_start[88]=440
+	var.set \v_bit_end[88]=440
+	var.set \v_bit_start[89]=441
+	var.set \v_bit_end[89]=441
+  var.set \v_bit_start[90]=442
+	var.set \v_bit_end[90]=445
+	var.set \v_bit_start[91]=446
+	var.set \v_bit_end[91]=448
+	var.set \v_bit_start[92]=449
+	var.set \v_bit_end[92]=450
+	var.set \v_bit_start[93]=451
+	var.set \v_bit_end[93]=454
+	var.set \v_bit_start[94]=455
+	var.set \v_bit_end[94]=455
+	var.set \v_bit_start[95]=456
+	var.set \v_bit_end[95]=461
+	var.set \v_bit_start[96]=462
+	var.set \v_bit_end[96]=462
+	var.set \v_bit_start[97]=463
+	var.set \v_bit_end[97]=463
+	var.set \v_bit_start[98]=464
+	var.set \v_bit_end[98]=467
+	var.set \v_bit_start[99]=468
+	var.set \v_bit_end[99]=470
+	var.set \v_bit_start[100]=471
+	var.set \v_bit_end[100]=475
+	var.set \v_bit_start[101]=476
+	var.set \v_bit_end[101]=476
+	var.set \v_bit_start[102]=477
+	var.set \v_bit_end[102]=478
+	var.set \v_bit_start[103]=479
+	var.set \v_bit_end[103]=480
+	var.set \v_bit_start[104]=481
+	var.set \v_bit_end[104]=481
+	var.set \v_bit_start[105]=482
+	var.set \v_bit_end[105]=482
+	var.set \v_bit_start[106]=483
+	var.set \v_bit_end[106]=486
+	var.set \v_bit_start[107]=487
+	var.set \v_bit_end[107]=489
+	var.set \v_bit_start[108]=490
+	var.set \v_bit_end[108]=490
+	var.set \v_bit_start[109]=491
+	var.set \v_bit_end[109]=491
+	var.set \v_bit_start[110]=492
+	var.set \v_bit_end[110]=492
+	var.set \v_bit_start[111]=493
+	var.set \v_bit_end[111]=493
+	var.set \v_bit_start[112]=494
+	var.set \v_bit_end[112]=511
+	var.set \v_bit_start[113]=512
+	var.set \v_bit_end[113]=513
+	var.set \v_bit_start[114]=514
+	var.set \v_bit_end[114]=515
+	var.set \v_bit_start[115]=516
+	var.set \v_bit_end[115]=517
+	var.set \v_bit_start[116]=518
+	var.set \v_bit_end[116]=526
+	
+	var.set \v_bit_start[117]=527
+	var.set \v_bit_end[117]=536	
+	var.set \v_bit_start[118]=537
+	var.set \v_bit_end[118]=546
+	var.set \v_bit_start[119]=547
+	var.set \v_bit_end[119]=556
+	var.set \v_bit_start[120]=557
+	var.set \v_bit_end[120]=557
+	
+	var.set \v_bit_start[121]=558
+	var.set \v_bit_end[121]=567
+	var.set \v_bit_start[122]=568
+	var.set \v_bit_end[122]=577
+	var.set \v_bit_start[123]=578
+	var.set \v_bit_end[123]=587
+	var.set \v_bit_start[124]=588
+	var.set \v_bit_end[124]=588
+	
+	var.set \v_bit_start[125]=589
+	var.set \v_bit_end[125]=598
+	var.set \v_bit_start[126]=599
+	var.set \v_bit_end[126]=608
+	var.set \v_bit_start[127]=609
+	var.set \v_bit_end[127]=618
+	var.set \v_bit_start[128]=619
+	var.set \v_bit_end[128]=619
+	
+	var.set \v_bit_start[129]=620
+	var.set \v_bit_end[129]=639
+	var.set \v_bit_start[130]=640
+	var.set \v_bit_end[130]=642
+	var.set \v_bit_start[131]=643
+	var.set \v_bit_end[131]=650
+	
+	var.set \v_bit_start[132]=651
+	var.set \v_bit_end[132]=660
+	var.set \v_bit_start[133]=661
+	var.set \v_bit_end[133]=670
+	var.set \v_bit_start[134]=671
+	var.set \v_bit_end[134]=680
+	var.set \v_bit_start[135]=681
+	var.set \v_bit_end[135]=681
+	
+	var.set \v_bit_start[136]=682
+	var.set \v_bit_end[136]=691
+	var.set \v_bit_start[137]=692
+	var.set \v_bit_end[137]=701
+	var.set \v_bit_start[138]=702
+	var.set \v_bit_end[138]=712
+	
+	var.set \v_bit_start[139]=713
+	var.set \v_bit_end[139]=743
+	var.set \v_bit_start[140]=744
+	var.set \v_bit_end[140]=774
+	var.set \v_bit_start[141]=775
+	var.set \v_bit_end[141]=805	
+return 
+
+
+
+get_data:
+	ENTRY &raw_data &start &end
+	LOCAL &N &temp &new_data
+
+	&N=str.len("&raw_data")-1
+	&temp=string.mid("&raw_data",&N-&end,&end-&start+1)
+	;print "raw_data=&raw_data"
+	;print "start=&start"
+	;print "end=&end"
+	;print "temp=&temp"
+	;tranlate the binary string to hex format
+	;LOCAL &i &bit
+	
+	;&new_data=0.
+	;&bit=string.mid("&temp",0,1)  ; get 1bit
+	;&new_data=&bit;
+	
+	;&i=1;
+	;WHILE (&i<&end-&start+1)
+	;(
+	
+	;	&bit=string.mid("&temp",&i,1)  ; get 1bit
+	;	&new_data= &new_data*2.+&bit
+	;	&i=&i+1
+	;)
+	;IF (&temp!=0)
+	;(
+		&new_data="0y"+"&temp"
+	;)	
+	;print "new_data=&new_data"
+return &new_data
+
+
+;used to convert raw DC data from hex string format to 832 bit binary format
+convert_hex_2_binary:
+	ENTRY &raw_data 
+	LOCAL &new_data
+	LOCAL &i &N &remain &end &j
+
+	&i=0
+	&j=str.len("&raw_data")
+	;print "j=&j"
+	&N=str.len("&raw_data")/8.
+	&end=str.len("&raw_data")-1.
+	While (&i<&N)
+	(
+		&temp="0x"+string.mid("&raw_data",&end-7.,8.)
+		&temp=format.binary(32.,&temp)
+		IF (&i==0.)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		)
+		&end=&end-8.
+		&i=&i+1
+	)
+
+	&remain=str.len("&raw_data")%8.
+	IF (&remain!=0)
+	(
+		&temp="0x"+string.mid("&raw_data",0,&remain)
+		&temp=format.binary(&remain*4.,&temp)
+		&new_data="&temp"+"&new_data"
+	)
+
+return &new_data 
+
+get_data:
+	ENTRY &raw_data &start &end
+	LOCAL &N &temp &new_data
+
+	&N=str.len("&raw_data")-1
+	&temp=string.mid("&raw_data",&N-&end,&end-&start+1)
+	;print "raw_data=&raw_data"
+	;print "start=&start"
+	;print "end=&end"
+	;print "temp=&temp"
+	;tranlate the binary string to hex format
+	;LOCAL &i &bit
+	
+	;&new_data=0.
+	;&bit=string.mid("&temp",0,1)  ; get 1bit
+	;&new_data=&bit;
+	
+	;&i=1;
+	;WHILE (&i<&end-&start+1)
+	;(
+	
+	;	&bit=string.mid("&temp",&i,1)  ; get 1bit
+	;	&new_data= &new_data*2.+&bit
+	;	&i=&i+1
+	;)
+	;IF (&temp!=0)
+	;(
+		&new_data="0y"+"&temp"
+	;)	
+	;print "new_data=&new_data"
+return &new_data
+
+convert_binary_2_hex:
+	ENTRY &in_data 
+	LOCAL &new_data &N &start &bits &len &i
+	
+	&N=str.len("&in_data")/4.;
+	&start=str.len("&in_data")-4.
+	&len=str.len("&in_data")
+	&i=0.
+	WHILE (&i<&N)
+	(
+		;print "i=&i"
+		&bits=string.mid("&in_data",&start,4.)
+		&bits="0y"+"&bits"
+		&temp=format.hex(1.,&bits)
+		IF (&i==0.)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		)
+		&i=&i+1.
+		&start=&start-4.
+	)
+	
+;if not 4bit alignment	
+
+	LOCAL &remain
+	&remain=str.len("&in_data")%4.
+	IF (&remain!=0)
+	(
+		&bits=string.mid("&in_data",0,&remain)
+		&bits="0y"+"&bits"
+		&temp=format.hex(1.,&bits)
+		IF (&i==0)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		)
+	)
+	ELSE
+	(
+	
+	)
+return &new_data
+
+;input : binary data,every 32bit,remove 1 bit 
+remove_dummy_bit:
+	LOCAL &old_data &new_data
+	ENTRY &old_data
+	LOCAL &i &N &temp &index &remain
+	&i=0
+	&N=string.len("&old_data")/32.
+	&index=string.len("&old_data")-32.+1.
+	WHILE &i<&N
+	(
+        	;PRINT "I=&i"
+		;PRINT "&new_data"
+		&temp=string.mid("&old_data",&index,31.)				 		 						 	 			
+		IF (&i==0)
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(			
+			&new_data="&temp"+"&new_data"
+		)
+		&index=&index-32.
+		&i=&i+1.
+	)
+	&remain=&N%32.
+	IF &remain!=0
+	(
+		&temp=string.mid("&old_data",0,&remain)
+		&new_data="&temp"+"&new_data"
+	)
+	
+return &new_data
+
+
+do_read:
+	ENTRY &cmd
+	LOCAL &CUR_DIR
+	LOCAL &width &hex_data &bi_data
+	
+	&CUR_DIR=OS.PPD()
+	do &CUR_DIR/fuse.cmm &cmd 
+	ENTRY &hex_data
+	 
+	gosub convert_hex_2_binary &hex_data
+	ENTRY &bi_data 
+	
+	
+	;&temp=str.len("&bi_data");
+	;print "Read DC data Len:&temp"
+	;print "Read DC data:&data"
+	gosub remove_dummy_bit &bi_data
+	ENTRY &bi_data
+	
+	LOCAL &i &bits &edit_id &start &end
+	&i=0.
+	WHILE &i<&MAX_NUM
+	(
+		&start=var.value(\v_bit_start[&i])
+		&end=var.value(\v_bit_end[&i])
+		&width=(&end-&start+1.)/4.
+		IF ((&end-&start+1)%4!=0.)
+		(
+			&width=&width+1.;
+		)
+		gosub get_data &bi_data &start &end
+		ENTRY &bits
+		&edit_id=var.string(\v_res[&i])
+		dialog.set &edit_id format.hex(&width,&bits)
+		&i=&i+1
+	)
+	IF ("&cmd"=="FA_READ")
+		&dc_fuse_data="&hex_data"
+	ELSE IF ("&cmd"=="DC_READ")
+		&dc_fuse_data="&hex_data"
+	
+return
+
+update_data:
+        LOCAL &data &input &start &end
+	ENTRY &data &input &start &end
+	LOCAL &temp
+		
+	&temp=format.binary(&end-&start+1.,&input)
+	IF (&start==0.)
+	(
+		&data="&temp"
+	)
+	ELSE
+	(
+		&data="&temp"+"&data"
+	)	
+return &data
+
+
+;every 31bit ,insert 1 dummy bit
+insert_dummy_bit:
+	LOCAL &old_data &new_data
+	ENTRY &old_data
+	LOCAL &N &i &index &temp &remain &dummy_bit
+	&dummy_bit="0"    ; assume dummy bit is 0 
+	&i=0.
+	&index=string.len("&old_data")-31.
+	&N=string.len("&old_data")/31.
+	WHILE &i<&N
+	(
+		
+		&temp=string.mid("&old_data",&index,31.)
+		&temp="&dummy_bit"+"&temp"
+		IF &i==0.
+		(
+			&new_data="&temp"
+		)
+		ELSE
+		(
+			&new_data="&temp"+"&new_data"
+		
+		)
+		&i=&i+1.	
+		&index=&index-31.
+		
+	)
+	&remain=string.len("&old_data")%31.
+	IF &remain!=0.
+	(
+		&temp=string.mid("&old_data",0,&remain)
+		&new_data="&temp"+"&new_data"	
+	)
+
+	
+return &new_data
+
+
+
+do_write:
+	ENTRY &cmd
+	LOCAL &CUR_DIR &i &new_data &input &data
+	LOCAL &start &end &width &max_input &edit_id
+	
+	;create the new binary data to be updated 
+
+	&i=0.
+	&new_data=0
+	WHILE &i<&MAX_NUM
+	(
+		&start=var.value(\v_bit_start[&i])
+		&end=var.value(\v_bit_end[&i])
+
+		&edit_id=var.string(\v_res[&i])
+		&input="0x"+dialog.string(&edit_id)
+		
+		;check if input valid
+		&width=&end-&start+1.
+		&max_input=1.<<&width
+		IF (&input>=&max_input)
+		(
+			&start=format.decimal(1.,&start)
+			&end=format.decimal(1.,&end)
+			print "input data invalid!! start=&start end=&end"
+			Dialog.message "BITS:[&start:&end] out of range,fix it !!!"
+			goto DATA_INVLID_ERR
+		)
+		gosub update_data &new_data &input &start &end
+		ENTRY &data
+		&new_data="&data"
+		&i=&i+1.
+	)	
+	
+	gosub insert_dummy_bit &new_data
+	ENTRY &new_data
+	
+	;raw_data is the binary format of the old fuse data
+	;data is the binary format fo the new fuse data
+	;do the combination
+	
+	LOCAL &raw_data &temp
+	IF ("&cmd"=="DC_WRITE")
+	(
+		gosub convert_hex_2_binary &dc_fuse_data
+		ENTRY &raw_data 
+	)
+	ELSE
+	(
+		
+	)
+
+	IF (str.len("&raw_data")>str.len("&new_data"))
+	(
+		;append the data
+		&temp=string.mid("&raw_data",0,str.len("&raw_data")-str.len("&new_data"))
+		&temp="&temp"+"&new_data"
+	)
+	ELSE
+	(
+		&temp="&new_data"
+	
+	)
+	;from binary to hex
+	gosub convert_binary_2_hex &temp
+	ENTRY &dc_fuse_data
+	PRINT "dc_fuset_data is:"
+	PRINT "&dc_fuse_data"
+		
+	&CUR_DIR=OS.PPD()
+	do &CUR_DIR/fuse.cmm &cmd &dc_fuse_data
+
+DATA_INVLID_ERR:
+return 
+enddo
+RB_envir_start:
+	SYStem.Mode Down
+	SYStem.CPU BUTTER3
+	SYStem.JtagClock 1.MHZ
+	SYStem.Option.IGnoreSOC ON
+	CORE.NUMBER 1
+	ON ERROR CONTinue
+	TrOnchip.Set BootStall ON
+	SYStem.Option.STandBYAttach ON
+	SYStem.Mode.StandBy
+	;DIAG 0x3888 1   ; open diag cmd
+	;DIAG 0x38b2 3 1 ; force bootstall on (HOOK 3 enable)
+	DIALOG.OK "Please make sure the device reset or power down!"
+	Return
+RB_envir_end:
+	SYStem.Mode Down
+	SYStem.CPU BUTTER3
+	SYStem.JtagClock 1.MHZ
+	DO &cur_path/iWhale2_JTAG.cmm "&CONFIG_INPUT"
+	SYStem.Option.IGnoreSOC ON
+	CORE.NUMBER 1
+	SYStem.Option.CLTAPOnly ON
+	SYStem.Option.JTAGOnly ON
+	SYStem.Option.JTAGDirectCPU OFF
+	SYStem.Option.InstrSUBmitTimeout 500.
+	;DIAG 0x3045 1. ;force BIA p_reset
+	TrOnchip.Set RESet ON ;force BIA reset_break
+	SYStem.Mode.Attach
+	ON ERROR
+	; Release the cpu_powergood_i
+	DO &cur_path/iWhale2_JTAG.cmm "RB" 1
+	SYStem.Mode Down
+	WAIT 1.MS
+	SYStem.Mode.Attach
+	;LOCAL &rip
+	;&rip=REGISTER(EIP)
+	;PRINT "the IP at: &rip"
+	;DIAG 0x3045 0. ;release BIA p_reset
+	TrOnchip.Set RESet OFF ;release BIA reset_break
+	DO &cur_path/iWhale2_JTAG.cmm "RB" 0
+	DIAG 0x3888 1   ; open diag cmd
+	DIAG 0x38b2 3 0 ; force bootstall off (HOOK 3 disable)
+	wait 100.ms
+	Return	
+cancel:
+	dialog.end
+	goto efuse_recovery
+	;enddo
+
+	

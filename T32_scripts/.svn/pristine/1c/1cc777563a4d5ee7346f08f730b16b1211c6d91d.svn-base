@@ -1,0 +1,23 @@
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+TREE "A55A75 CoreDebug"
+
+TEXTLINE ""
+TEXTLINE "----- A55 Core0 -----"
+include A55_CoreDebug.per 0x83010000
+
+TEXTLINE ""
+TEXTLINE "----- A55 Core1 -----"
+include A55_CoreDebug.per 0x83110000
+
+TEXTLINE ""
+TEXTLINE "----- A55 Core2 -----"
+include A55_CoreDebug.per 0x83210000
+
+TEXTLINE ""
+TEXTLINE "----- A55 Core3 -----"
+include A55_CoreDebug.per 0x83310000
+
+TREE.END

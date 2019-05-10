@@ -1,0 +1,166 @@
+; by Ken.Kuang
+LOCAL &trace_output
+
+ENTRY &trace_output
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC ETB"
+	;&trace_output="ETR"
+	;&trace_output="TPIU"
+)
+
+IF "X&target"=="X"
+(
+	&target="CHIP"
+	;&target="FPGA"
+	;&target="PXP"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+SYStem.CPU CORTEXR5
+;SYStem.CONFIG CoreNumber 1
+;CORE.ASSIGN 1
+
+ON ERROR CONTinue
+IF "&target"=="FPGA"
+	SYStem.JtagClock 5MHz
+ELSE IF "&target"=="PXP"
+(
+	SYStem.JtagClock 150KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+)
+ELSE IF "&target"=="Protium"
+(
+	SYStem.JtagClock 500KHz
+	SYStem.Option PALLADIUM ON
+	SYStem.Option MemStatusCheck ON
+)
+ELSE
+	SYStem.JtagClock 20MHz
+ON ERROR
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+
+TrOnchip.Set RESET OFF
+TrOnchip.Set UNDEF OFF
+TrOnchip.Set DABORT OFF
+TrOnchip.Set PABORT OFF
+
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+SYStem.CONFIG.TPIU.Base 0x80004000
+SYStem.CONFIG.ETR1.Base 0x80005000
+
+; R5
+SYStem.CONFIG.COREDEBUG.Base 0x80030000
+;SYStem.CONFIG.BMC.Base 0x80032000
+SYStem.CONFIG.CTI.Base 0x80038000
+SYStem.CONFIG.ETM.Base 0x8003C000
+
+SYStem.CONFIG.FUNNEL1.ATBSource ETM 1
+
+
+IF ("&trace_output"=="SoC ETB")
+(
+	; ETB
+	SYStem.CONFIG.ETB1.Base 0x80003000
+	SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+	Onchip.TraceCONNECT ETB1
+)
+ELSE
+(
+	; ETF
+	SYStem.CONFIG.ETF1.Base 0x80003000
+	SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+	SYStem.CONFIG.TPIU.ATBSource ETF1 
+	IF ("&trace_output"=="ETR")
+	(
+		Onchip.TraceCONNECT ETR1
+		; Port0 PASS
+		D.S EDAP:0x80004000 %LE %Long 0
+		D.S EDAP:0x80004004 %LE %Long 0xFFFFFFFF
+	)
+	ELSE
+	(
+		; Port1 PASS
+		D.S EDAP:0x80004000 %LE %Long 0xFFFFFFFF
+		D.S EDAP:0x80004004 %LE %Long 0
+	)
+)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 3
+SYStem.CONFIG APBACCESSPORT 1
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+
+ON ERROR CONTinue
+SYStem.CONFIG SWDP ON
+ON ERROR
+SYStem.CONFIG SWDPTargetSel ((0x0<<28.)|0x1)
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+ON ERROR CONTinue
+SYStem.CONFIG SWDP OFF
+ON ERROR
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+	DO "&CUR_DIR\cr5_mpu.cmm"   ;MPU INIT
+	PRINT "CR5 MPU INIT OK"
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" CR5_BOOT 1
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO
+

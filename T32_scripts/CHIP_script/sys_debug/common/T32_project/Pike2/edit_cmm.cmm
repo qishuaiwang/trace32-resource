@@ -1,0 +1,6 @@
+LOCAL &script_name
+entry &script_name
+&cur_path=os.ppd()
+&script_name="&cur_path\&script_name.cmm"
+pedit &script_name
+

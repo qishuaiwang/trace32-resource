@@ -1,0 +1,193 @@
+; UNISoC dump by ken.kuang
+
+LOCAL &core_debug_base &pmu_base &offset &core_number &idx &rt &edpsr
+
+&core_debug_base=0x83010000
+&pmu_base=0x83030000
+&offset=0x00100000
+&core_number=4
+
+ON ERROR GOSUB error_print
+
+AREA.CREATE &(project_sel) 100. 1024.
+AREA.SELECT &(project_sel)
+WinPOS 1 1 100. 40. 0. 0. W002
+AREA.VIEW &(project_sel)
+PRinTer.Area
+
+; Capture all 
+PRINT "------------ Core RUN INFO ------------"
+&idx=0
+WHILE (&idx)<(&core_number)
+(
+	&b=((&core_debug_base)+((&idx)*(&offset)))
+	&edpsr=DATA.LONG(EDAP:((&b)+0x0314))
+	PRINT "C" FORMAT.DecimalU(1, &idx) "  : 0x" FORMAT.HEX(8, &edpsr) " " 
+	GOSUB check_core_state (&b) (&edpsr)
+	ENTRY &rt
+	PRINT %CONTinue "&rt"
+	&idx=&idx+1
+)
+
+PRINT ""
+PRINT "------------ Core PC Sample INFO ------------"
+&idx=0
+WHILE (&idx)<(&core_number)
+(
+	&b=((&core_debug_base)+((&idx)*(&offset)))
+	&p=((&pmu_base)+((&idx)*(&offset)))
+	PRINT %ERROR "C" FORMAT.DecimalU(1, &idx) "  : "
+	GOSUB check_core_is_off (&b)
+	ENTRY &rt
+	IF (&rt)
+		PRINT %CONTinue "????????"
+	ELSE
+	(
+		LOCAL &hi &lo &el &ns &sy
+		&lo=DATA.LONG(EDAP:((&p)+0x0200))
+		&hi=DATA.LONG(EDAP:((&p)+0x0204))
+		&el=((&hi)>>29.)&0x3
+		&ns=((&hi)>>31.)&0x1
+		IF (((&hi)>>23.)&0x1)==1
+			&hi=((&hi)|0xFF000000)
+		ELSE
+			&hi=((&hi)&0x00FFFFFF)
+		&lo=((&hi)<<32.)|(&lo)
+		GOSUB get_symbol_info_from_addr &lo
+		ENTRY &sy
+		PRINT %CONTinue "0x" FORMAT.HEX(16, &lo) " EL(" FORMAT.DecimalU(1, &el) ") NS(" FORMAT.DecimalU(1, &ns) ") &sy" 
+		GOSUB data_list_addr &lo &el
+		ENTRY &hi
+		IF ((&hi)!=0)
+		(
+			SYStem.Option DisMode AARCH64
+			WinPrint.List.Asm EZAXI:((&hi-0x10)++0x1F)
+			SYStem.Option DisMode AUTO 
+		)
+		ELSE
+		(
+			PRINT "No Need List"
+		)
+		PRINT ""
+	)
+	&idx=&idx+1
+)
+
+
+
+AREA.SELECT A000
+AREA.CLOSE &(project_sel)
+
+ON ERROR
+ENDDO
+
+error_print:
+	PRINT %ERROR %CONTinue " error!"
+RETURN
+
+; function
+check_pipeadv:
+	LOCAL &base
+	ENTRY &base
+	&val=DATA.LONG(EDAP:((&base)+0x0088))
+RETURN (((&val)&(1<<25.))==(1<<25.))
+
+check_non_debug:
+	LOCAL &base
+	ENTRY &base
+	&val=DATA.LONG(EDAP:((&base)+0x0088))
+RETURN (((&val)&(0x3F<<0.))==(2<<0.))
+
+
+check_core_state:
+	LOCAL &base &v &r &rt
+	ENTRY &base &v
+	
+	IF "X&v"=="X"
+		&v=DATA.LONG(EDAP:((&base)+0x0314))
+
+	&rt="OFF"
+	IF (((&v)&(1<<0.))==(1<<0.))
+	(
+		IF (((&v)&(1<<5.))==(1<<5.))
+			D.S EDAP:((&base)+0x0300) %LE %Long 0
+		&rt="STOP??"
+		GOSUB check_non_debug &base
+		ENTRY &r
+		IF (&r)
+		(
+			GOSUB check_pipeadv &base
+			ENTRY &r
+			IF (&r)
+			(
+				D.S EDAP:((&base)+0x0090) %LE %Long (1<<3.)
+				WAIT 1.S
+				//WAIT 10.MS
+				GOSUB check_pipeadv &base
+				ENTRY &r
+				IF (&r)
+					&rt="RUN"
+			)
+		)
+		ELSE
+		(
+			&rt="DEBUG"
+		)
+	)
+RETURN &rt
+
+
+check_core_is_off:
+	LOCAL &base &r
+	ENTRY &base
+
+	GOSUB check_core_state &base
+	ENTRY &r
+	IF "&r"=="OFF"
+		&r=TRUE()
+	ELSE
+		&r=FALSE()
+RETURN &r
+
+data_list_addr:
+	LOCAL &addr &el &raddr
+	ENTRY &addr &el
+
+	IF (&el==3)&&(((&addr)&0xFFFFFFFF94000000)==0x94000000)
+	(
+		&raddr=&addr
+	)
+	ELSE IF ((&addr)==0xFFFFFFFF)||(((&addr)>>55.)==0.)
+	(
+		&raddr=0
+	)
+	ELSE
+	(
+		&raddr=(&addr)-0xFFFFFF8008000000+0x80000000
+	)
+
+RETURN &raddr
+
+get_symbol_info_from_addr:
+	LOCAL &addr &rstr
+	ENTRY &addr
+	&rstr=""
+	IF (((&addr)>>55.)==0.)
+	(
+		IF sYmbol.EXIST(bl31_entrypoint)
+		(
+			&rstr=sYmbol.NAME(P:&addr)
+		)
+	)
+	ELSE
+	(
+		IF sYmbol.EXIST(linux_banner)
+		(
+			&rstr=sYmbol.NAME(P:&addr)
+		)
+	)
+RETURN &rstr
+
+
+
+

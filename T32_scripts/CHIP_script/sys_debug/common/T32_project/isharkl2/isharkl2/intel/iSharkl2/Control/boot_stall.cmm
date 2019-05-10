@@ -1,0 +1,25 @@
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+IF (SYStem.CPU()!="IWHALE2")
+(
+	PRINT %ERROR "Need CPU Select iWhale2!"
+	ENDDO
+)
+sys.o.jtagdirectcpu off
+
+PRINT "DO ~~/Lauterbach_Configuration/iWhale2/Control/boot_stall.cmm"
+system.mode down
+ON ERROR CONTinue
+tronchip.set bootstall on
+sys.o.standbyattach on
+sys.mode.standby
+DIALOG.OK "Please make sure the device reset or power down!"
+enddo
+
+
+
+
+

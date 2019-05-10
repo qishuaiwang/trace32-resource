@@ -1,0 +1,305 @@
+LOCAL &mem_tpye
+&mem_tpye="EAXI"
+LOCAL &set &clr
+&set=0x1000
+&clr=0x2000
+LOCAL &AON_BASE
+&AON_BASE=0x40000000
+ON ERROR CONTinue
+IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+(
+	IF (CPUFAMILY()=="ARM")
+	(
+		IF (CPU()=="CortexR5")
+			&AON_BASE=0x02000000
+	)
+	ELSE
+	(
+		PRINT %ERROR "Why not ARM Trace32 to do boot?"
+	)
+)
+ON ERROR
+
+LOCAL &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+ENTRY &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+
+GOSUB &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+LOCAL &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENTRY &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENDDO &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+
+AP_MP_CORE_BOOT:
+	LOCAL &boot_vect
+	&boot_vect=0x800
+	; While(1) @ &boot_vect
+	D.S &mem_tpye:&boot_vect %LONG 0x14000000
+	; RVBARADDR
+	D.S &mem_tpye:0x402E0528 %LONG (&boot_vect>>2)
+	D.S &mem_tpye:0x402E052C %LONG (&boot_vect>>2)
+	D.S &mem_tpye:0x402E0530 %LONG (&boot_vect>>2)
+	D.S &mem_tpye:0x402E0534 %LONG (&boot_vect>>2)
+
+	; CA53 TOP force on
+	D.S &mem_tpye:0x402B0000+&clr %LONG (0x3<<24.)
+	; CA53 LIT C0 force on
+	D.S &mem_tpye:0x402B0004+&clr %LONG (0x3<<24.)
+	; CA53 LIT C1 force on
+	D.S &mem_tpye:0x402B0008+&clr %LONG (0x3<<24.)
+	; CA53 LIT C2 force on
+	D.S &mem_tpye:0x402B000C+&clr %LONG (0x3<<24.)
+	; CA53 LIT C3 force on
+	D.S &mem_tpye:0x402B0010+&clr %LONG (0x3<<24.)
+	RETURN
+
+CR5_BOOT:
+	GOSUB DISABLE_FIREWALL
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&set %LE %Long 1<<10. 
+
+	; While(1) @ 0x000
+	D.S &mem_tpye:0x00010000 %LE %Long 0xEAFFFFFE
+
+	; PUBCP SYS force on
+	D.S &mem_tpye:0x402B0048+&clr %LE %Long 0x3<<24. 
+
+	; PUBCP Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<18.
+
+	; PUBCP SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<1.
+
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&clr %LE %Long 1<<10. 
+	RETURN
+
+CM4_BOOT:
+	; 3: AON CM4
+	; 4: GNSS CM4
+	; 5: WIFI CM4
+	LOCAL &AHB_PORT
+	ENTRY &AHB_PORT
+	IF (&AHB_PORT==3)
+	(; 3: AON CM4
+		; CM4 Core soft reset
+		D.S &mem_tpye:0x402E0114+&set %LE %Long (1<<0.)
+
+		; CM4 SYS soft reset
+		D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<8.
+		; CM4 Sleep CTRL
+		D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<21.
+
+		; CM4 SYS soft reset
+		D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<4.)
+
+		; While(1) @ 0x000
+		;D.S &mem_tpye:0x50800000 %LE %Long 0xE7FEE7FE
+		;D.S &mem_tpye:0x50800004 %LE %Long 0x00000001
+		D.S &mem_tpye:0x50800004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x50800100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x50800104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x50800110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x50800114 %LE %Long 0x120
+		D.S &mem_tpye:0x50800120 %LE %Long 0x0
+
+		; CM4 Core soft reset
+		D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<0.)
+	)
+	ELSE
+	(
+		GOSUB WCN_BOOT
+	)
+	RETURN
+
+DSP_BOOT:
+	IF ((DATA.LONG(&mem_tpye:(&AON_BASE+0x002B00C4))&(0x1F))==0)
+	(
+		PRINT "DSP Already booted!"
+		RETURN
+	)
+	GOSUB DISABLE_FIREWALL
+	LOCAL &AON_BASE &IRAM_BASE
+	&AON_BASE=0x40000000
+	&IRAM_BASE=0x00011000
+	ON ERROR CONTinue
+	IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+	(
+		IF (CPUFAMILY()=="ARM")
+		(
+			IF (CPU()=="CortexR5")
+				&AON_BASE=0xA1000000
+				&IRAM_BASE=0x00001000
+		)
+		ELSE
+		(
+			PRINT %ERROR "We can't support use this to boot DSP"
+			ON ERROR
+			RETURN
+		)
+	)
+	ON ERROR
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&set %LE %Long (1<<16.)|(1<<17.)
+	; Select DAP to LDSP and TGDSP
+	D.S &mem_tpye:(&AON_BASE+0x002E0200) %LE %Long 0x3
+
+	; for LDSP
+	; raise up TGDSP Freq. and set boot code
+	LOCAL &OFFSET &CODE_BASE &DSP_BASE
+	&OFFSET=0x00
+	&CODE_BASE=(&IRAM_BASE+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; 0: 26MHz
+	; 1: 256MHz
+	; 2: 384MHz
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 2 ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xd7e67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long (0x015D0020/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xd7e6db00 
+	&CODE_BASE=(&CODE_BASE+4)
+
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xFFFFFFFC ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7EE1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	; Disable Reg. Protection
+	D.S &mem_tpye:(&AON_BASE+0x002E006C) %LE %Long 0x00009620
+
+	; WTLCP SYS force on
+	D.S &mem_tpye:&AON_BASE+0x002B0044+&clr %LE %Long 0x3<<24. 
+	; WTLCP LDSP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0034+&clr %LE %Long 0x3<<24. 
+	; WTLCP TDDSP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0038+&clr %LE %Long 0x3<<24. 
+
+	; WTLCP Sleep CTRL
+	D.S &mem_tpye:&AON_BASE+0x002B00CC+&clr %LE %Long 1<<17.
+
+	D.S &mem_tpye:&AON_BASE+0x002E0248 %LE %Long ((&DSP_BASE)/2)
+	D.S &mem_tpye:&AON_BASE+0x002E024C+&set %LE %Long 0x1
+
+	; for TGDSP
+	&OFFSET=0x100
+	&CODE_BASE=(&IRAM_BASE+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xFFFFFFFC ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7EE1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	D.S &mem_tpye:&AON_BASE+0x002E0250 %LE %Long ((&DSP_BASE)/2)
+	D.S &mem_tpye:&AON_BASE+0x002E0254+&set %LE %Long 0x1
+
+	; WTLCP SYS soft reset
+	D.S &mem_tpye:&AON_BASE+0x002B00B0+&clr %LE %Long (1<<0.)|(1<<2.)
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&clr %LE %Long (1<<16.)|(1<<17.)
+	RETURN
+
+WCN_BOOT:
+
+	IF ((DATA.LONG(&mem_tpye:0x402E057C)&(0x3<<6.))==(0x3<<6.))
+	(
+		PRINT "WCN Already booted!"
+		RETURN
+	)
+
+	; WCN CM4 SYS disable
+	D.S &mem_tpye:0x402E057C+&clr %LE %Long (0x3<<6.)
+
+	; WCN SYS force on
+	D.S &mem_tpye:0x402B0100+&clr %LE %Long 0x3<<24.
+	; WCN SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long (1<<9.)|(1<<10.)
+	; WCN SYS Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<19.
+
+	IF (FALSE())
+	(
+		; IRAM BOOT
+		; WCN CM4 Remap to IRAM boot
+		D.S &mem_tpye:0x402E0578+&set %LE %Long (2<<24.)
+
+		; ANLG_APB_EN & ANLG_EN
+		D.S &mem_tpye:0x402E00B0+&set %LE %Long (1<<11.)|(1<<13.)
+		PLIST
+		STOP
+
+		; While(1) @ 0x000
+		; WIFI
+		D.S &mem_tpye:0x40440FF8 %LE %Long 0x10000000
+		D.S &mem_tpye:0x40440FFC %LE %Long 0xE7FEE7FE
+		D.S &mem_tpye:0x40440FF8 %LE %Long 0x10000004
+		D.S &mem_tpye:0x40440FFC %LE %Long 0x00000001
+		; GNSS
+		D.S &mem_tpye:0x40440FF8 %LE %Long 0x18000000
+		D.S &mem_tpye:0x40440FFC %LE %Long 0xE7FEE7FE
+		D.S &mem_tpye:0x40440FF8 %LE %Long 0x18000004
+		D.S &mem_tpye:0x40440FFC %LE %Long 0x00000001
+	)
+	ELSE
+	(
+		IF (DATA.LONG(&mem_tpye:0x402B0250)==0.)
+		(
+			PRINT %ERROR "WCN boot from DDR, but DDR not ready?"
+			END
+		)
+		ON ERROR GOSUB DDR_ERROR
+		D.S &mem_tpye:0x300E30A0 %LE %Long 0x1010
+		D.S &mem_tpye:0x90000004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x90000100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x90000104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x90000110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x90000114 %LE %Long 0x120
+		D.S &mem_tpye:0x90000120 %LE %Long 0x0
+		D.S &mem_tpye:0x402E0578+&set %LE %Long (0x1000)
+		D.S &mem_tpye:0x90001004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x90001100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x90001104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x90001110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x90001114 %LE %Long 0x120
+		D.S &mem_tpye:0x90001120 %LE %Long 0x0
+		ON ERROR
+	)
+
+	; WCN CM4 SYS en
+	D.S &mem_tpye:0x402E057C+&set %LE %Long (0x3<<6.)
+
+	RETURN
+
+DDR_ERROR:
+	ON ERROR
+	PRINT %ERROR "Maybe your board's DDR is unstable! Please Make sure it! Thanks!"
+	ENDDO
+
+DISABLE_FIREWALL:
+	D.S EZAXI:0x32011024 %LE %Long 0xFFFFFFFF 
+	D.S EZAXI:0x32011028 %LE %Long 0x00000000
+RETURN

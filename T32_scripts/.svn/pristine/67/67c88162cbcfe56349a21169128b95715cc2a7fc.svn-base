@@ -1,0 +1,23 @@
+
+;CONFIG 16. 8.
+WIDTH 23.
+
+TREE "A53 CoreDebug"
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core0 -----"
+include A53_CoreDebug.per 0x80C10000
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core1 -----"
+include A53_CoreDebug.per 0x80D10000
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core2 -----"
+include A53_CoreDebug.per 0x80E10000
+
+TEXTLINE ""
+TEXTLINE "----- A53 Core3 -----"
+include A53_CoreDebug.per 0x80F10000
+
+TREE.END

@@ -1,0 +1,89 @@
+GLOBAL &CONFIG_INPUT &RESET_INPUT &SIGNAL_INPUT &PROBE_MODE_INPUT &RTIT_INPUT &DST_DIR &os_sel
+LOCAL &core_flags &temp &jtag_clk &wka_flag &sys_sel
+ENTRY &core_flags &sys_sel
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+IF "X&sys_sel"=="X"
+(
+	&sys_sel="&os_sel"
+)
+IF "X&CONFIG_INPUT"=="X"
+(
+	&CONFIG_INPUT="DAP"
+)
+
+IF ((CPUFAMILY()!="TEAKLITE4")&&(CPUFAMILY()!="OAK"))
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+LOCAL &slave_flag
+&slave_flag=SYStem.CONFIG.Slave()
+SYStem.Mode Down
+;SYStem.RESet
+SYStem.JtagClock 3.MHz
+SYStem.CPU TL420-RTL201 ;TL420-RTL111
+;SYStem.CONFIG CoreNumber 1
+;CORE.ASSIGN 1 ;2 3 4
+;SYStem.CONFIG.COREDEBUG.Base	0x81410000; 0x80032000 0x80034000 0x80036000
+;SYStem.CONFIG.COREBase	0x81410000; 0x80032000 0x80034000 0x80036000
+;SYStem.CONFIG.CTI.Base	0x81420000
+
+IF ICD()
+(
+CD.DO ~~\T32.cmm
+
+Break.SELect.Program Onchip
+Break.SELect.Read Onchip
+Break.SELect.Write Onchip
+
+;IF (&slave_flag==False())
+;(
+	;SYStem.CONFIG.Slave ON
+	jtag.pin.ntrst 1
+;)
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG JTAGACCESSPORT 2
+SYStem.CONFIG COREJTAGPORT 1 
+
+
+system.config AXIACCESSPORT   0.
+system.config APBACCESSPORT   1.
+system.config AHBACCESSPORT   3.
+SYStem.MemAccess DAP
+
+&CUR_DIR=OS.PPD()
+DO &CUR_DIR/iWhale2_JTAG.cmm "DAP"
+
+;IF (&slave_flag==False())
+;(
+	;SYStem.CONFIG.Slave OFF
+;)
+on error CONTINUE 
+&temp=STRing.SCAN("&core_flags", "DAP", 0)
+IF &temp!=-1
+(
+	ENDDO
+)
+if ("&sys_sel"=="small_sys")
+(
+	;sys.mode.prepare
+	;DO &CUR_DIR\dap_release_r5_cm4.cmm DSP
+	sys.Mode.attach
+	Break
+	print "LTEDSP UP"
+)
+ELSE if ("&sys_sel"=="os_sys")
+(
+	;sys.Mode.attach
+	;Break
+	print "LTEDSP Prepare"
+)
+ENDDO
+)
+
+

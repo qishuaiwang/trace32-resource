@@ -1,0 +1,53 @@
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+
+system.mode down
+system.reset
+
+system.jtagclock 5mhz
+system.cpu ARM926EJ
+
+SYStem.MultiCore JTAGACCESSPORT 2
+SYStem.MultiCore MEMORYACCESSPORT 0
+system.MultiCore DEBUGACCESSPORT 1
+
+SYStem.Multicore COREJTAGPORT 0
+system.multicore SWDP ON
+SYS.CONFIG.DRPOST 0. 
+SYS.CONFIG.DRPRE 0. 
+SYS.CONFIG.IRPOST 0. 
+SYS.CONFIG.IRPRE 0. 
+
+system.mode up
+
+local &tmp	;define a temp variable
+
+;Shut down dsp core
+&tmp=data.long(SD:0x20100050)
+&tmp=&tmp&0xFFFFFFFE
+d.s SD:0x20100050 %LE %LONG &tmp
+
+&tmp=data.long(SD:0x20100058)
+&tmp=&tmp&0xFFFFFFFE
+d.s SD:0x20100058 %LE %LONG &tmp	;<end> Shut down dsp core
+
+;Set dsp PC. When dsp is started, it will run from here. 
+d.s SD:0x20100054 %LE %LONG 0xC0200000
+
+;Wait some time for shut down dsp
+wait 0.5s
+
+;Start CP0 DSP0 core(DSP BOOT EN)
+&tmp=data.long(SD:0x20100050)
+&tmp=&tmp|0x00000001
+d.s SD:0x20100050 %LE %LONG &tmp
+
+;Release CP0 DSP0 reset
+&tmp=data.long(SD:0x20100058)
+&tmp=&tmp|0x00000001
+d.s SD:0x20100058 %LE %LONG &tmp	;<end> Start dsp core
+
+enddo

@@ -1,0 +1,18 @@
+; include all gen per file
+
+include Orca_Debug_Bus_Signal_List.AP.per
+
+include Orca_Debug_Bus_Signal_List.APCPU.per
+
+include Orca_Debug_Bus_Signal_List.AUDCP.per
+
+include Orca_Debug_Bus_Signal_List.NRCP.per
+
+include Orca_Debug_Bus_Signal_List.PSCP.per
+
+include Orca_Debug_Bus_Signal_List.PUB.per
+
+include Orca_Debug_Bus_Signal_List.AON.per
+
+include Orca_Debug_Bus_Signal_List.V3modem.per
+

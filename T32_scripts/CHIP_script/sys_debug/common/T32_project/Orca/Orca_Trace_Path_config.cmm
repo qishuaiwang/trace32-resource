@@ -1,0 +1,100 @@
+;--------PSCP core0 data->PSCP ETF0->PSCP funnel
+;--------PSCP core1 data->PSCP ETF1->PSCP funnel
+;--------PSCP core0 instruction->PSCP ETF2->PSCP funnel
+;--------PSCP core1 instruction->PSCP ETF3->PSCP funnel
+
+;--------NRCP core0 data->NRCP ETF0->NRCP funnel
+;--------NRCP core1 data->NRCP ETF1->NRCP funnel
+;--------NRCP core0 instruction->NRCP ETF2->NRCP funnel
+;--------NRCP core1 instruction->NRCP ETF3->NRCP funnel
+
+;--------V3 PHY ETM->V3 PHY ETF->V3 funnel
+;--------V3 PS ETM->V3 PS ETF->V3 funnel
+
+;--------APCPU core0 ETM->Corinth funnel->APCPU ETF->Corinth to Soc funnel
+;--------APCPU core1 ETM->Corinth funnel->APCPU ETF->Corinth to Soc funnel
+
+;--------Corinth to Soc funnel->Soc funnel->Soc ETF
+;--------PSCP funnel->Soc funnel->Soc ETF
+;--------NRCP funnel->Soc funnel->Soc ETF
+;--------V3 funnel->Soc funnel->Soc ETF
+;--------...
+
+GLOBAL &pscp_etf0 &pscp_etf1 &pscp_etf2 &pscp_etf3 &pscp_funnel
+GLOBAL &nrcp_etf0 &nrcp_etf1 &nrcp_etf2 &nrcp_etf3 &nrcp_funnel
+GLOBAL &v3phy_etf &v3ps_etf &v3_funnel
+GLOBAL &corinth_funnel &corinth_etf &corinth_soc_funnel &corinth_etr
+GLOBAL &soc_stm &soc_funnel &soc_etf &soc_etr &soc_tpiu
+GLOBAL &nrcp_cs_rom &pscp_cs_rom &apcpu_cs_rom &v3phy_cs_rom &v3ps_cs_rom &nrcp_cr8_rom &pscp_cr8_rom
+GLOBAL &nrcp_coredebug_base &nrcp_pmu_base &nrcp_cti_base &nrcp_etm_base &pscp_coredebug_base &pscp_pmu_base &pscp_cti_base &pscp_etm_base
+GLOBAL &v3phy_coredebug_base &v3phy_pmu_base &v3phy_cti_base &v3phy_etm_base &v3ps_coredebug_base &v3ps_pmu_base &v3ps_cti_base &v3ps_etm_base
+GLOBAL &apcpu_coredebug_base &apcpu_pmu_base &apcpu_cti_base &apcpu_etm_base 
+
+&pscp_cs_rom=0x80100000
+&nrcp_cs_rom=0x80300000
+
+&pscp_etf0=0x80101000		;PSCP core0 instruction
+&pscp_etf1=0x80102000		;PSCP core1 instruction
+&pscp_etf2=0x80103000		;PSCP core0 data
+&pscp_etf3=0x80104000		;PSCP core1 data
+&pscp_funnel=0x80106000
+
+&nrcp_etf0=0x80301000		;NRCP core0 instruction
+&nrcp_etf1=0x80302000		;NRCP core1 instruction
+&nrcp_etf2=0x80303000		;NRCP core0 data
+&nrcp_etf3=0x80304000		;NRCP core1 data
+&nrcp_funnel=0x80306000
+
+&v3phy_etf=0x80201000
+&v3ps_etf=0x80202000
+&v3_funnel=0x80206000
+
+&corinth_funnel=0x82001000
+&corinth_etf=0x82002000
+&corinth_soc_funnel=0x82004000
+&corinth_etr=0x82006000
+
+&soc_stm=0x80001000
+&soc_funnel=0x80002000
+&soc_etf=0x80003000
+&soc_etr=0x80005000
+&soc_tpiu=0x80006000
+
+&pscp_cr8_rom=0x80120000
+&nrcp_cr8_rom=0x80320000
+&v3phy_cs_rom=0x80220000
+&v3ps_cs_rom=0x80240000
+&apcpu_cs_rom=0x83000000
+
+DO "&CUR_DIR/cr8_config.cmm"
+DO "&CUR_DIR/cr5_config.cmm"
+DO "&CUR_DIR/a55_config.cmm"
+
+&nrcp_coredebug_base=&nrcp_cr8_rom+&cr8_coredebug_base
+&nrcp_pmu_base=&nrcp_cr8_rom+&cr8_pmu_base
+&nrcp_cti_base=&nrcp_cr8_rom+&cr8_cti_base
+&nrcp_etm_base=&nrcp_cr8_rom+&cr8_etm_base
+
+&pscp_coredebug_base=&pscp_cr8_rom+&cr8_coredebug_base
+&pscp_pmu_base=&pscp_cr8_rom+&cr8_pmu_base
+&pscp_cti_base=&pscp_cr8_rom+&cr8_cti_base
+&pscp_etm_base=&pscp_cr8_rom+&cr8_etm_base
+
+&apcpu_coredebug_base=&apcpu_cs_rom+&a55_coredebug_base
+&apcpu_pmu_base=&apcpu_cs_rom+&a55_pmu_base
+&apcpu_cti_base=&apcpu_cs_rom+&a55_cti_base
+&apcpu_etm_base=&apcpu_cs_rom+&a55_etm_base
+
+&v3phy_coredebug_base=&v3phy_cs_rom+&cr5_coredebug_base
+&v3phy_pmu_base=&v3phy_cs_rom+&cr5_pmu_base
+&v3phy_cti_base=&v3phy_cs_rom+&cr5_cti_base
+&v3phy_etm_base=&v3phy_cs_rom+&cr5_etm_base
+
+&v3ps_coredebug_base=&v3ps_cs_rom+&cr5_coredebug_base
+&v3ps_pmu_base=&v3ps_cs_rom+&cr5_pmu_base
+&v3ps_cti_base=&v3ps_cs_rom+&cr5_cti_base
+&v3ps_etm_base=&v3ps_cs_rom+&cr5_etm_base
+
+
+ENDDO
+

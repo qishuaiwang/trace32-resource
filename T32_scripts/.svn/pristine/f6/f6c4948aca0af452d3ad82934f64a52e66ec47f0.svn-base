@@ -1,0 +1,233 @@
+;please add cmm script brfore ENDDO
+GLOBAL &CONFIG_INPUT &RESET_INPUT &SIGNAL_INPUT &PROBE_MODE_INPUT &RTIT_INPUT &DST_DIR &os_sel
+LOCAL &core_flags &temp &jtag_clk &wka_flag &sys_sel &core_number &attach_flag
+ENTRY &core_flags &attach_flag &sys_sel 
+&core_number=8.
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+IF "X&sys_sel"=="X"
+(
+	&sys_sel="&os_sel"
+)
+IF "X&attach_flag"=="X"
+(
+	&attach_flag="attach"
+)
+ELSE
+(
+	&temp=STRing.SCAN("&attach_flag", "BIADAPno_attach", 0)
+	IF &temp!=-1
+	(
+		&CONFIG_INPUT="BIADAP"
+	)
+		&temp=STRing.SCAN("&attach_flag", "BIAno_attach", 0)
+	IF &temp!=-1
+	(
+		&CONFIG_INPUT="BIA"
+	)
+)
+IF "X&core_flags"=="X"
+(
+	&core_flags="BIA"
+	;&core_flags="RSTDAP"
+	; for ResetBreak , BOOTSTALL
+	;&core_flags="RB"
+;	&core_flags="DAPWKA"
+)
+IF "X&CONFIG_INPUT"=="X"
+(
+	&CONFIG_INPUT="BIADAP"
+)
+IF (CPUFAMILY()!="I386")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+
+&jtag_clk="3.MHz"
+&CUR_DIR=OS.PPD()
+&temp=STRing.SCAN("&core_flags", "PRERB", 0)
+SYStem.Mode Prepare
+SYStem.Mode Down
+SYStem.CONFIG.TAPState 7.
+IF &temp!=-1
+(
+	DIALOG.OK "Please make sure the device reset or power down!"
+	;SYStem.RESet
+	JTAG.PIN NRESET LOW
+	SYStem.CPU BUTTER3
+	SYStem.JtagClock &jtag_clk
+	;SYStem.Option.IGnoreSOC ON
+	;SYStem.Option.cltapSOC ON
+	CORE.NUMBER &core_number
+	ON ERROR CONTinue
+	TrOnchip.Set BootStall ON
+	SYStem.Option.STandBYAttach ON
+	SYStem.Mode.StandBy
+	DIAG 0x3888 1   ; open diag cmd
+	DIAG 0x38b2 3 1 ; force bootstall on (HOOK 3 enable)
+	DIALOG.OK "Please make sure power UP!"
+	;DIALOG.OK "Please make sure the device reset or power down!"
+	JTAG.PIN NRESET LOW
+	wait 1.s
+	JTAG.PIN NRESET HIGH
+	wait 100.ms
+	
+	ENDDO
+)	
+&temp=STRing.SCAN("&core_flags", "POSTRB", 0)
+IF &temp!=-1
+(
+	;DIALOG.OK "release resetbreak!"
+	DO &CUR_DIR/jtag_nTRST.cmm
+	GOSUB butter3_init_config
+	;DIAG 0x3045 1. ;force BIA p_reset
+	TrOnchip.Set RESet ON ;force BIA reset_break
+	SYStem.Mode.Attach
+	ON ERROR
+	; Release the cpu_powergood_i
+	DO &CUR_DIR/iSharkl2_JTAG.cmm "RB" 1
+	SYStem.Mode Down
+	SYStem.CONFIG.TAPState 7.
+	WAIT 1.MS
+	
+	SYStem.Mode.Attach
+	;LOCAL &rip
+	;&rip=REGISTER(EIP)
+	;PRINT "the IP at: &rip"
+	;DIAG 0x3045 0. ;release BIA p_reset
+	TrOnchip.Set RESet OFF ;release BIA reset_break
+	DO &CUR_DIR/iSharkl2_JTAG.cmm "RB" 0
+	DIAG 0x3888 1   ; open diag cmd
+	DIAG 0x38b2 3 0 ; force bootstall off (HOOK 3 disable)
+	;go 
+	;wait 1.ms
+	;break
+	ENDDO
+)
+&temp=STRing.SCAN("&core_flags", "RB", 0)
+IF &temp==0x0
+(
+	;SYStem.RESet
+	JTAG.PIN NRESET LOW
+	SYStem.CPU BUTTER3
+	SYStem.JtagClock &jtag_clk
+	SYStem.Option.IGnoreSOC ON
+	;SYStem.Option.cltapSOC ON
+	CORE.NUMBER &core_number
+	ON ERROR CONTinue
+	TrOnchip.Set BootStall ON
+	SYStem.Option.STandBYAttach ON
+	SYStem.Mode.StandBy
+	;DIAG 0x3888 1   ; open diag cmd
+	;DIAG 0x38b2 3 1 ; force bootstall on (HOOK 3 enable)
+	DIALOG.OK "Please make sure the device reset or power down!"
+	JTAG.PIN NRESET LOW
+	wait 1.s
+	JTAG.PIN NRESET HIGH
+	wait 100.ms
+	GOSUB butter3_init_config
+	;DIAG 0x3045 1. ;force BIA p_reset
+	TrOnchip.Set RESet ON ;force BIA reset_break
+	SYStem.Mode.Attach
+	ON ERROR
+	DIALOG.OK "Do Debug!"
+	; Release the cpu_powergood_i
+	DO &CUR_DIR/iSharkl2_JTAG.cmm "RB" 1
+	SYStem.Mode Down
+	SYStem.CONFIG.TAPState 7.
+	WAIT 1.MS
+	
+	SYStem.Mode.Attach
+	;LOCAL &rip
+	;&rip=REGISTER(EIP)
+	;PRINT "the IP at: &rip"
+	;DIAG 0x3045 0. ;release BIA p_reset
+	TrOnchip.Set RESet OFF ;release BIA reset_break
+	DO &CUR_DIR/iSharkl2_JTAG.cmm "RB" 0
+	DIAG 0x3888 1   ; open diag cmd
+	DIAG 0x38b2 3 0 ; force bootstall off (HOOK 3 disable)
+	ENDDO
+)
+&temp=STRing.SCAN("&core_flags", "DAP", 0)
+IF &temp!=-1
+(
+	GOSUB butter3_init_config DAP
+	SYStem.MemAccess DAP
+	; 0xFF to invalid port
+	;SYStem.CONFIG.APBACCESSPORT 1.
+	;SYStem.CONFIG.AHBACCESSPORT 3.
+	SYStem.CONFIG.AXIACCESSPORT 0.
+	IF SYStem.CPU()=="BUTTER3"
+	(
+		DO &CUR_DIR/iSharkl2_JTAG.cmm "IAP"
+	)
+	&temp=STRing.SCAN("&core_flags", "WKA", 0)
+	IF &temp!=-1
+	(
+		biaTAP is_added
+		ENTRY &temp
+		IF &temp!=0x1
+		(
+			SYStem.Mode.Prepare	
+			DO &CUR_DIR/work_around.cmm EA
+		)
+	)
+	ELSE
+	(
+		SYStem.Mode.Prepare	
+		ENDDO
+	)
+)
+&temp=STRing.SCAN("&CONFIG_INPUT", "BIA", 0)
+IF &temp!=-1
+(
+	IF 0==0
+	(
+		GOSUB butter3_init_config &CONFIG_INPUT
+		SYStem.CONFIG.TAPState 7.
+		if ("&sys_sel"=="small_sys")
+		(
+			sys.Mode.Attach
+			Break
+			;DO &CUR_DIR/ap_release_r5_cm4.cmm 
+		)
+		else
+		(
+			if ("&attach_flag"=="attach")
+			(
+				sys.Mode.Attach
+				Break
+			)
+		)
+	)
+	else
+	(
+			DO &CUR_DIR/butter_fuse.cmm
+	)
+)
+
+ENDDO
+
+butter3_init_config:
+	LOCAL &config
+	ENTRY &config
+	IF "X&config"=="X"
+		&config="BIA"
+	;SYStem.RESet
+	SYStem.CPU BUTTER3
+	SYStem.JtagClock &jtag_clk
+	DO &CUR_DIR/iSharkl2_JTAG.cmm "&config"
+	;SYStem.Option.IGnoreSOC ON
+	;SYStem.Option.cltapSOC ON
+	CORE.NUMBER &core_number
+	SYStem.Option.CLTAPOnly ON
+	SYStem.Option.JTAGOnly ON
+	SYStem.Option.JTAGDirectCPU OFF
+	SYStem.Option.InstrSUBmitTimeout 200.
+	AREA
+	DIAG 0x3020 1                       ; verbose messages: for testing only
+	RETURN
+;end of butter3_init_config

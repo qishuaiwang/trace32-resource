@@ -1,0 +1,8 @@
+&i=1.
+&j=1.
+while (&i>0)
+(
+	D.S ND:0x18:0xC1000000 %LE %Long (0x12345678+&j)
+	D.S ND:0x18:0xC1000000 %LE %Long 0xaaaa5555
+	&j=&j+0x1
+)

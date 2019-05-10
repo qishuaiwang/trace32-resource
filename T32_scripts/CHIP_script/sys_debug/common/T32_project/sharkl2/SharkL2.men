@@ -1,0 +1,55 @@
+
+;add mode is required, as we want to add new items to the existing menu
+ADD
+;&CUR_DIR=OS.PPD()
+;definition of the main pulldown menu bar
+MENU
+(
+    separator
+    POPUP "Sharkl2"
+    (    
+ 
+		popup    "EDIT_CMM"
+		(
+			MENUITEM "edit AP"				"menuedit A7"
+			MENUITEM "edit CP"				"menuedit R5"
+			MENUITEM "edit SP"				"menuedit ARM7"
+			MENUITEM "edit dsp_boot"	"menuedit boot_dsp"
+			MENUITEM "edit DDR"				"menuedit ddr"
+			MENUITEM "edit DJTAG"		"menuedit DEBUG\Busmon_djtag_main"
+			MENUITEM "edit checker"		"menuedit DEBUG\Check_Power"
+		)      
+		IF (CPUFAMILY()=="ARM")
+		(
+			separator
+			MENUITEM "AP"			"menuap"
+			separator
+			MENUITEM "PCP"		"menupcp"
+			separator
+			MENUITEM "SP"			"menusp"
+			separator
+      MENUITEM "DAP"			"menudap"
+      separator
+      MENUITEM "EXTRSTB"		"menusrst"
+      separator
+      MENUITEM "Cheaker"		"menucheck"
+      separator
+      MENUITEM "INITDDR"		"menuddr"  
+      separator
+      MENUITEM "BOOTDSP"		"menudsp"     
+			SEPARATOR
+			MENUITEM "CHECK EAXI" "menuchk EAXI"
+			MENUITEM "CHECK EAHB" "menuchk EAHB"
+		)
+		IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")	
+		(
+				MENUITEM "AGDSP"		"menuag"
+				MENUITEM "TGDSP"		"menutg"
+				MENUITEM "LTEDSP"		"menulte"
+				separator
+				MENUITEM "EXTRSTB"		"menusrst"
+		)
+		separator
+		MENUITEM "ReConfig"		"menure"
+    )
+)

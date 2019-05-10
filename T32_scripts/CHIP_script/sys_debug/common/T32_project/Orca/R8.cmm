@@ -1,0 +1,116 @@
+; by Bin.Ji
+LOCAL &trace_output
+ENTRY &sub_sys &core_num
+
+;plist
+;stop
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC_ETB"
+	;&trace_output="SoC_ETR"
+	;&trace_output="CPU_ETB"
+	;&trace_output="CPU_ETR"
+	;&trace_output="TPIU"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+;SYStem.CPU CORTEXR8MPCore
+
+IF (&core_num==2)
+(
+	SYStem.CPU CORTEXR8MPCore
+	SYStem.CONFIG CoreNumber 2
+	
+;	SYStem.CONFIG.CORE 1 2
+	CORE.ASSIGN 1 2
+)
+ELSE
+	SYStem.CPU CORTEXR8
+
+DO "&CUR_DIR/GLB_CONFIG.cmm"
+LOCAL &jtag_clock_str
+&jtag_clock_str="&(jtag_clock)KHz"
+
+IF ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset off
+)
+
+TrOnchip.Set RESET OFF
+TrOnchip.Set UNDEF OFF
+TrOnchip.Set DABORT OFF
+TrOnchip.Set PABORT OFF
+
+;used for no trace path
+;SYStem.CONFIG corebase 0x80230000
+;;SYStem.CONFIG.BMC.Base 0x83030000
+;SYStem.CONFIG.CTI.Base 0x80238000
+;SYStem.CONFIG.ETM.Base 0x8023C000
+DO "&CUR_DIR/Orca_Trace_Path_&sub_sys.cmm" &core_num &trace_output
+
+SYStem.CONFIG MEMORYACCESSPORT 0
+SYStem.CONFIG DEBUGACCESSPORT 1
+SYStem.CONFIG AXIACCESSPORT 0
+SYStem.CONFIG AHBACCESSPORT 0
+;SYSTEM.CONFIG SWDPTARGETSEL (0<<28.)|0x01000001	;Instance_ID is 0x0 using DP ,Orca's Target_ID is 0x01000001
+
+;SYSTEM.CONFIG SWDP ON
+
+SYStem.CpuAccess Enable
+SYStem.MemAccess DAP
+
+DO "&CUR_DIR/Prepare.cmm"
+
+DO "&CUR_DIR/Orca_Trace_Path_replicator.cmm" &trace_output
+
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+	IF (&core_num==1)
+		GOSUB STOP_CORE1
+	&mpu_name="&CUR_DIR\&sub_sys"+"_MPU.cmm"
+	DO &mpu_name   ;MPU INIT
+	PRINT "CR8 MPU INIT OK"
+)
+
+ENDDO
+
+BOOT:
+	&boot_name="&sub_sys"+"_BOOT"
+	DO "&CUR_DIR\boot_all.cmm" &boot_name 0
+	RETURN
+; end of BOOT
+
+STOP_CORE1:
+;	plist
+;	stop
+	;enable CTI3
+	per.set.simple (EDAP:0x8000C000+0) %L 1
+	;enable net3
+	per.set.simple (EDAP:0x8000C000+0x140) %L 1<<3.
+	;connect PSCP CR8_1 edbgrq
+	per.set.simple (EDAP:0x8000C000+0x0A4) %L 1<<3.	
+	;connect NRCP CR8_1 edbgrq
+	per.set.simple (EDAP:0x8000C000+0x0AC) %L 1<<3.
+	;pulse net3
+	per.set.simple (EDAP:0x8000C000+0x01C) %L 1<<3.
+	RETURN

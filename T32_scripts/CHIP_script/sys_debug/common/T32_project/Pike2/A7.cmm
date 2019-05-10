@@ -1,0 +1,167 @@
+;by qingwen.fang
+LOCAL &core_num &core_id &mem_tpye &trace_output
+ENTRY &core_num &core_id &trace_output
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+IF "X&core_num"=="X"
+(
+	IF ("&os_sel"=="os_sys")
+		&core_num=4
+	ELSE
+		&core_num=1
+)
+
+IF "X&core_id"=="X"
+(
+	&core_id=0
+)
+
+IF "X&trace_output"=="X"
+(
+	&trace_output="SoC_ETB"
+	;&trace_output="TPUI"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+SYStem.Mode Down
+SYStem.RESet
+
+SYStem.CPU CortexA7MPCore
+SYStem.CONFIG CoreNumber &core_num
+SYStem.JtagClock 20MHz
+
+&mem_tpye="EAXI"
+
+if ("&os_sel"=="os_sys")
+(
+	SYStem.Option EnReset OFF
+	SYStem.Option TRST OFF
+)
+else
+(
+	SYStem.reset
+	SYStem.Option EnReset on
+	SYStem.Option ResBreak OFF
+	SYStem.option waitReset on
+)
+
+TrOnchip.Set RESET OFF
+TrOnchip.Set UNDEF OFF
+TrOnchip.Set DABORT OFF
+TrOnchip.Set PABORT OFF
+
+; SOC
+SYStem.CONFIG.FUNNEL1.Base 0x80001000
+;SYStem.CONFIG.CTI.Base 0x80002000
+SYStem.CONFIG.TPIU.Base 0x80004000
+;SYStem.CONFIG.CTI.Base 0x80005000
+; A7
+SYStem.CONFIG.FUNNEL2.Base 0x80220000
+
+;PTM 4
+SYStem.CONFIG.FUNNEL1.ATBSource FUNNEL2 0
+
+if &core_num==4
+(
+	CORE.ASSIGN 1 2 3 4
+	SYStem.CONFIG.COREDEBUG.Base 0x80250000 0x80252000 0x80254000 0x80256000
+	SYStem.CONFIG.BMC.Base 0x80251000 0x80253000 0x80255000 0x80256000
+	SYStem.CONFIG.CTI.Base 0x80258000 0x80259000 0x8025A000 0x8025B000
+	SYStem.CONFIG.ETM.Base 0x8025C000 0x8025D000 0x8025E000 0x8025F000
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM.0 0 ETM.1 1 ETM.2 2 ETM.3 3
+)
+else
+(
+	CORE.ASSIGN 1
+	SYStem.CONFIG.COREDEBUG.Base 0x80250000+0x2000*&core_id 
+	SYStem.CONFIG.BMC.Base 0x80251000+0x2000*&core_id 
+	SYStem.CONFIG.CTI.Base 0x80258000+0x1000*&core_id 
+	SYStem.CONFIG.ETM.Base 0x8025C000+0x1000*&core_id
+	SYStem.CONFIG.FUNNEL2.ATBSource ETM 0
+)
+
+IF ("&trace_output"=="SoC_ETB")
+(
+	; ETB
+	SYStem.CONFIG.ETB1.Base 0x80003000
+	SYStem.CONFIG.ETB1.ATBSource FUNNEL1
+)
+ELSE
+(
+	; ETF
+	SYStem.CONFIG.ETF1.Base 0x80003000
+	SYStem.CONFIG.ETF1.ATBSource FUNNEL1
+	SYStem.CONFIG.TPIU.ATBSource ETF1 
+)
+
+SYStem.MultiCore MEMORYACCESSPORT 0
+SYStem.MultiCore DEBUGACCESSPORT 1
+SYStem.MultiCore AXIACCESSPORT 0
+SYStem.MultiCore AHBACCESSPORT 3
+SYStem.MultiCore APBACCESSPORT 1
+
+SYStem.CPUACCESS Enable
+SYStem.MEMACCESS DAP
+SYStem.CONFIG SWDP ON
+;SYStem.CONFIG SWDPTargetSel 0x0
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+SYStem.CONFIG SWDP OFF
+SYStem.JtagClock 3MHz
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+IF ("&os_sel"=="os_sys")
+(
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	IF &core_num!=1||&core_id!=0
+	(
+		GOSUB BOOT
+		WAIT 500.MS
+	)
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" A7_4CORE_BOOT
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO
+	
+
+
+
+
+
+
+
+

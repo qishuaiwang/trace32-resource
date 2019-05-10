@@ -1,0 +1,288 @@
+LOCAL &mem_tpye
+&mem_tpye="EZAXI"
+LOCAL &set &clr
+&set=0x1000
+&clr=0x2000
+LOCAL &AON_BASE
+&AON_BASE=0x40000000
+ON ERROR CONTinue
+IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+(
+	IF (CPUFAMILY()=="ARM")
+	(
+		IF (CPU()=="CortexR5")
+			&AON_BASE=0x02000000
+	)
+	ELSE
+	(
+		PRINT %ERROR "Why not ARM Trace32 to do boot?"
+	)
+)
+ON ERROR
+
+LOCAL &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+ENTRY &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+
+GOSUB &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+LOCAL &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENTRY &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENDDO &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+
+A7_4CORE_BOOT:
+	D.S &mem_tpye:0x402B0000+&clr %LE %LONG 0x3<<24.
+	D.S &mem_tpye:0x402B00CC+&clr %LE %LONG 1<<16.
+	D.S &mem_tpye:0x402B00B0+&clr %LE %LONG 1<<5.
+	
+	;enable power registers for other cores
+	Data.Set &mem_tpye:0x402B0018+&clr %LE %Long 0x3<<24.  ;clear AP auto shutdown
+	
+	Data.Set &mem_tpye:0x402B0004+&clr %LE %Long (0x3<<24.)  ;clear c0 auto shutdown
+	Data.Set &mem_tpye:0x402B0008+&clr %LE %Long (0x3<<24.)  ;clear c1
+	Data.Set &mem_tpye:0x402B000C+&clr %LE %Long (0x3<<24.)  ;clear c2
+	Data.Set &mem_tpye:0x402B0010+&clr %LE %Long (0x3<<24.)	;clear c3
+	return
+	
+CR5_BOOT:
+	GOSUB DISABLE_FIREWALL
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&set %LE %Long 1<<10. 
+
+	; While(1) @ 0x5000D000
+	D.S &mem_tpye:0x5000D000 %LE %Long 0xEAFFFFFE
+
+	; PUBCP SYS force on
+	D.S &mem_tpye:0x402B0048+&clr %LE %Long 0x3<<24. 
+
+	; PUBCP Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<18.
+
+	; PUBCP SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<1.
+
+	; PUBCP Core soft reset
+	D.S &mem_tpye:0x402E0284+&clr %LE %Long 1<<10. 
+	RETURN
+	
+CM4_BOOT:
+	; 3: AON CM4
+	; 4: GNSS CM4
+	; 5: WIFI CM4
+	LOCAL &AHB_PORT
+	ENTRY &AHB_PORT
+	IF (&AHB_PORT==3)
+	(; 3: AON CM4
+		; CM4 Core soft reset
+		D.S &mem_tpye:0x402E0114+&set %LE %Long (1<<0.)
+
+		; CM4 SYS soft reset
+		D.S &mem_tpye:0x402B00B0+&clr %LE %Long 1<<8.
+		; CM4 Sleep CTRL
+		D.S &mem_tpye:0x402B00CC+&clr %LE %Long 1<<21.
+
+		; CM4 SYS soft reset
+		D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<4.)
+
+		; While(1) @ 0x000
+		;D.S &mem_tpye:0x50800000 %LE %Long 0xE7FEE7FE
+		;D.S &mem_tpye:0x50800004 %LE %Long 0x00000001
+		D.S &mem_tpye:0x50800004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x50800100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x50800104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x50800110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x50800114 %LE %Long 0x120
+		D.S &mem_tpye:0x50800120 %LE %Long 0x0
+
+		; CM4 Core soft reset
+		D.S &mem_tpye:0x402E0114+&clr %LE %Long (1<<0.)
+	)
+	ELSE
+	(
+		SYStem.CONFIG MEMORYACCESSPORT 3
+		GOSUB WCN_BOOT
+		SYStem.CONFIG MEMORYACCESSPORT &AHB_PORT
+	)
+	RETURN	
+
+	
+WCN_BOOT:
+	IF ((DATA.LONG(&mem_tpye:0x402B0338)&0x3)==0x3)
+	(
+		LOCAL &yes
+		DIALOG.YESNO "WCN Already booted! Do you want to BOOT anyway?"
+		ENTRY &yes
+		IF (!&yes)
+		(
+			RETURN
+		)
+	)
+
+	; WCN CM4 SYS disable
+	D.S &mem_tpye:0x402B0338+&clr %LE %Long 0x3
+
+	; WCN SYS force on
+	D.S &mem_tpye:0x402B0050+&clr %LE %Long 0x3<<24.
+	; WCN SYS soft reset
+	D.S &mem_tpye:0x402B00B0+&clr %LE %Long (1<<7.)
+	; WCN SYS Sleep CTRL
+	D.S &mem_tpye:0x402B00CC+&clr %LE %Long (0x3<<7.)
+	
+	WAIT 100.MS
+	
+	; WCN CM4 Core Reset
+	D.S &mem_tpye:0x33100020 %LE %Long 0xC
+	D.S &mem_tpye:0x33100024 %LE %Long 0xC
+
+	; WCN CM4 SYS en
+	D.S &mem_tpye:0x402B0338+&set %LE %Long 0x3
+
+	LOCAL &IRAM_BOOT
+	DIALOG.YESNO "Do you want boot WCN from IRAM? or boot from DDR."
+	ENTRY &IRAM_BOOT
+
+	;IF (FALSE())
+	;IF (TRUE())
+	IF (&IRAM_BOOT)
+	(
+
+		; ANLG_APB_EN & ANLG_EN
+		; D.S &mem_tpye:0x402E00B0+&set %LE %Long (1<<11.)|(1<<13.)
+		;PLIST
+		;STOP
+		
+		; While(1) @ 0x000
+		; WIFI
+		D.S &mem_tpye:0x33100FF8 %LE %Long 0x10000000
+		D.S &mem_tpye:0x33100FFC %LE %Long 0xE7FEE7FE
+		D.S &mem_tpye:0x33100FF8 %LE %Long 0x10000004
+		D.S &mem_tpye:0x33100FFC %LE %Long 0x00000001
+		; GNSS
+		D.S &mem_tpye:0x33100FF8 %LE %Long 0x18000000
+		D.S &mem_tpye:0x33100FFC %LE %Long 0xE7FEE7FE
+		D.S &mem_tpye:0x33100FF8 %LE %Long 0x18000004
+		D.S &mem_tpye:0x33100FFC %LE %Long 0x00000001
+
+		; IRAM BOOT
+		; WCN CM4 Remap to IRAM boot
+		D.S &mem_tpye:0x402E00d8 %LE %Long 0x2
+	)
+	ELSE
+	(
+		IF (DATA.LONG(&mem_tpye:0x402B0250)==0.)
+		(
+			PRINT %ERROR "WCN boot from DDR, but DDR not ready?"
+			END
+		)
+		ON ERROR GOSUB DDR_ERROR
+		D.S &mem_tpye:0x402E00CC %LE %Long 0x10<<8.
+		D.S &mem_tpye:0x90000004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x90000100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x90000104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x90000110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x90000114 %LE %Long 0x120
+		D.S &mem_tpye:0x90000120 %LE %Long 0x0
+		D.S &mem_tpye:0x402E00D8 %LE %Long (0x1000<<8.)
+		D.S &mem_tpye:0x90001004 %LE %Long 0x00000101
+		D.S &mem_tpye:0x90001100 %LE %Long 0x48044903
+		D.S &mem_tpye:0x90001104 %LE %Long 0xE7FE6001
+		D.S &mem_tpye:0x90001110 %LE %Long 0xA5A5A5A5
+		D.S &mem_tpye:0x90001114 %LE %Long 0x120
+		D.S &mem_tpye:0x90001120 %LE %Long 0x0	
+		ON ERROR
+	)
+
+	; WCN CM4 Core Reset
+	D.S &mem_tpye:0x33100020 %LE %Long 0x0
+	D.S &mem_tpye:0x33100024 %LE %Long 0x0
+
+	RETURN
+	
+DSP_BOOT:
+	GOSUB DISABLE_FIREWALL
+	LOCAL &AON_BASE &IRAM_BASE
+	&AON_BASE=0x40000000
+	&IRAM_BASE=0x5000F000
+	ON ERROR CONTinue
+	IF (FALSE()==STRing.ComPare(STRing.LoWeR("&mem_tpye"),"*axi*"))
+	(
+		IF (CPUFAMILY()=="ARM")
+		(
+			IF (CPU()=="CortexR5")
+			(
+				&AON_BASE=0x02000000
+				&IRAM_BASE=0x00002000
+			)
+		)
+		ELSE
+		(
+			PRINT %ERROR "We can't support use this to boot DSP"
+			ON ERROR
+			RETURN
+		)
+	)
+	ON ERROR
+	; PUBCP SYS force on
+	D.S &mem_tpye:&AON_BASE+0x002B0048+&clr %LE %Long 0x3<<24. 
+
+	; PUBCP Sleep CTRL
+	D.S &mem_tpye:&AON_BASE+0x002B00CC+&clr %LE %Long 1<<18.
+
+	; PUBCP SYS soft reset
+	D.S &mem_tpye:&AON_BASE+0x002B00B0+&clr %LE %Long 1<<1.
+	
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&set %LE %Long (1<<17.)
+
+	; Disable Reg. Protection
+	D.S &mem_tpye:(&AON_BASE+0x002E006C) %LE %Long 0x00009620
+ 
+	; WTLCP TDDSP force on
+	D.S &mem_tpye:&AON_BASE+0x002B0038+&clr %LE %Long 0x3<<24. 
+	
+	&OFFSET=0x0
+	&CODE_BASE=(&IRAM_BASE+&OFFSET)
+	&DSP_BASE=(0x30000000+&OFFSET)
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0x3 ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long (0x015D0020/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+
+	; mov ##data, r0
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xAAAAAAAA ;data value
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E67300
+	&CODE_BASE=(&CODE_BASE+4)
+	; st r0, [##reg].dw
+	D.S &mem_tpye:&CODE_BASE %LE %Long ((&DSP_BASE+0x80)/2) ; register address
+	&CODE_BASE=(&CODE_BASE+4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7E6DB00 
+	&CODE_BASE=(&CODE_BASE+4)
+	; L2: brr L2
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xFFFFFFFC ; 0xd7ee1320
+	&CODE_BASE=(&CODE_BASE+0x4)
+	D.S &mem_tpye:&CODE_BASE %LE %Long 0xD7EE1320 ; 0xfffffffc while(1)
+	&CODE_BASE=(&CODE_BASE+0x4)
+
+	D.S &mem_tpye:&AON_BASE+0x002E0250 %LE %Long ((&DSP_BASE)/2)
+	D.S &mem_tpye:&AON_BASE+0x002E0254+&set %LE %Long 0x1
+
+	; WTLCP SYS soft reset
+	D.S &mem_tpye:&AON_BASE+0x002B00B0+&clr %LE %Long (1<<0.)|(1<<2.)
+	; WTLCP Core soft reset
+	D.S &mem_tpye:&AON_BASE+0x002E0130+&clr %LE %Long (1<<17.)
+	RETURN
+	
+DDR_ERROR:
+	ON ERROR
+	PRINT %ERROR "Maybe your board's DDR is unstable! Please Make sure it! Thanks!"
+	ENDDO
+
+DISABLE_FIREWALL:
+	D.S EZAXI:0x4042092C %LE %Long DATA.LONG(EZAXI:0x4042092C)|0xF0
+	D.S EZAXI:0x4042093C %LE %Long DATA.LONG(EZAXI:0x4042093C)|0xF0
+RETURN	

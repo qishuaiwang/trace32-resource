@@ -1,0 +1,128 @@
+LOCAL &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &win_64_path &win_32_path
+LOCAL &debug_cmd
+&debug_cmd="cmd /c"
+LOCAL &ID_NAME &ID &API_PORT &INTER_PORT &PBI_module &core_id
+&ID_NAME="T32_SPRD_SWD"
+&ID="&project_sel.&ID_NAME.t32"
+&API_PORT="25964"
+&INTER_PORT="15964"
+&PBI_module="USB"
+&core_id=20.
+&win_64_path="bin\windows64"
+&win_32_path="bin\windows"
+
+IF INTERCOM.PING("localhost:&INTER_PORT")==FALSE()
+(
+	GOSUB auto_start_t32
+)
+ELSE
+(
+	PRINT "SWD Already opened!"
+)
+
+ENDDO
+
+auto_start_t32:
+	LOCAL &envir_temp_cfg &cur_path_local &target_env_exe &temp
+	&cur_path_local=OS.PSD()
+	&envir_temp_cfg=VERSION.ENVironment(TMP)
+	
+	&target_env_exe=STRing.Replace("&cur_path_local","\","/",0.)
+	&temp="t32marm64.exe"
+	GOSUB bin_win_exist &target_env_exe &temp
+	ENTRY &target_env_exe
+	&target_env_exe=STRing.Replace("&target_env_exe","/","\",0.)
+
+	GOSUB gen_t32_config &cur_path_local
+
+	OS "&target_env_exe" -c "&envir_temp_cfg\&ID", &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+RETURN
+;end of auto_start_t32
+
+gen_t32_config:
+	LOCAL &envir_path &temp &envir_temp_cfg
+	ENTRY &envir_path
+	&temp=OS.PTD()
+	&envir_temp_cfg=VERSION.ENVironment(TMP)
+	OPEN #1 "&envir_temp_cfg\&ID" /Create
+	WRITE #1 ";This configuration file is generated with T32Start2"
+	WRITE #1 ";==================================================="
+	WRITE #1 ""
+	WRITE #1 ";Environment Variables"
+	WRITE #1 "OS="
+	WRITE #1 "ID=&ID_NAME"
+	WRITE #1 "TMP=&temp"
+	WRITE #1 "SYS=&envir_path"
+	WRITE #1 "HELP=&envir_path\pdf"
+	WRITE #1 ""
+	WRITE #1 "; Standard License File used"
+	WRITE #1 ""
+	WRITE #1 ";T32 API Access"
+	WRITE #1 "RCL=NETASSIST"
+	WRITE #1 "PORT=&API_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 Intercom"
+	WRITE #1 "IC=NETASSIST"
+	WRITE #1 "PORT=&INTER_PORT"
+	WRITE #1 "PACKLEN=1024"
+	WRITE #1 ""
+	WRITE #1 ";T32 GDB"
+	WRITE #1 "; not used"
+	WRITE #1 ""
+	WRITE #1 ""
+	WRITE #1 ";Connection to Host"
+	IF ("&PBI_module"=="SIM")
+	(
+		WRITE #1 "PBI=&PBI_module"
+	)
+	ELSE
+	(
+		WRITE #1 "PBI="
+		WRITE #1 "&PBI_module"
+		WRITE #1 "CORE=&core_id"
+	)
+	WRITE #1 ""
+	WRITE #1 ";Screen Settings"
+	;WRITE #1 "SCREEN=OFF"
+	WRITE #1 "SCREEN="
+	WRITE #1 "FONT=SMALL"
+	WRITE #1 "HEADER=&project_sel SPRD SWD TRACE32 PowerView &core_id [Power Debug &PBI_module]"
+	WRITE #1 ""
+	WRITE #1 ";Printer Settings:"
+	WRITE #1 "PRINTER=WINDOWS"
+	CLOSE #1
+RETURN
+;end gen_t32_config
+
+bin_win_exist:
+	LOCAL &TEMP_PATH &LOCAL_PATH &PATH &cur
+	ENTRY &TEMP_PATH &LOCAL_PATH
+	&TEMP_PATH=STRing.Replace("&TEMP_PATH","/","\",0.)
+	&cur="&TEMP_PATH\&win_64_path\&LOCAL_PATH"
+	IF (OS.FILE(&cur)==TRUE())
+	(
+		&PATH="&cur"
+	)
+	ELSE
+	(
+		&cur="&TEMP_PATH\&win_32_path\&LOCAL_PATH"
+		IF (OS.FILE(&cur)==TRUE())
+		(
+			&PATH="&cur"
+		)
+		ELSE
+		(
+			PRINT %ERROR "not exist correct exe"
+			ENDDO
+		)
+	)
+	&PATH=STRing.Replace("&PATH","\","/",0.)
+RETURN &PATH
+
+check_intercom:
+	LOCAL &ID
+	ENTRY &ID
+RETURN 

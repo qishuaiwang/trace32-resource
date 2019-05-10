@@ -1,0 +1,82 @@
+; by qingwen.fang
+LOCAL &AHB_PORT
+ENTRY &AHB_PORT
+
+IF "X&AHB_PORT"=="X"
+(
+	&AHB_PORT=3.
+)
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+
+LOCAL &CUR_DIR
+&CUR_DIR=OS.PPD()
+
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+SYStem.Mode Down
+SYStem.RESet
+SYStem.JtagClock 20MHz
+
+SYStem.CPU CORTEXM4
+
+SYStem.CONFIG MEMORYACCESSPORT &AHB_PORT
+SYStem.CONFIG DEBUGACCESSPORT 1.
+
+SYStem.CONFIG AXIACCESSPORT   0.
+SYStem.CONFIG APBACCESSPORT   1.
+SYStem.CONFIG AHBACCESSPORT   3.
+SYStem.MemAccess.DAP
+SYStem.CONFIG SWDP ON
+;SYStem.CONFIG SWDPTargetSel 0x0
+ON ERROR GOTO JTAG_Config
+SYStem.Mode.Prepare
+ON ERROR
+GOTO SWD_Config
+JTAG_Config:
+SYStem.CONFIG SWDP OFF
+SYStem.JtagClock 3MHz
+ON ERROR GOTO ERROR_Handle
+SYStem.DETECT DaisyChain
+SYStem.Mode.Prepare
+ON ERROR
+SWD_Config:
+
+IF ("&os_sel"=="os_sys")
+(
+	WAIT 1.MS
+	PRINT "Trace32 Prepared!"
+	;SYStem.Mode.Attach
+)
+ELSE
+(
+	GOSUB BOOT
+	WAIT 500.MS
+	SYStem.Mode Attach
+	Break
+)
+
+ENDDO
+
+BOOT:
+	DO "&CUR_DIR\boot_all.cmm" CM4_BOOT &AHB_PORT
+	RETURN
+; end of BOOT
+
+ERROR_Handle:
+	ON ERROR
+	IF STATE.POWER()==FALSE()
+	(
+		PRINT %ERROR "Please Power up device, and then, try it again!"
+	)
+	ELSE
+	(
+		PRINT %ERROR "Maybe Hardware Error!"
+	)
+	ENDDO

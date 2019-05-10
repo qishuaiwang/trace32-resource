@@ -1,0 +1,41 @@
+LOCAL &mem_tpye
+&mem_tpye="EAXI"
+
+LOCAL &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+ENTRY &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+
+GOSUB &cmd &p1 &p2 &p3 &p4 &p5 &p6 &p7 &p8 &p9
+LOCAL &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENTRY &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+ENDDO &rp1 &rp2 &rp3 &rp4 &rp5 &rp6 &rp7 &rp8 &rp9
+
+A7_4CORE_BOOT:
+	D.S &mem_tpye:0x402b00cc %LONG 0x08020002
+	D.S &mem_tpye:0x402b00b0 %LONG 0x00000005
+	;enable power registers for other cores
+	Data.Set &mem_tpye:0x402B0008 %LE %Long 0x0820A002
+	Data.Set &mem_tpye:0x402B000C %LE %Long 0x08209802
+	Data.Set &mem_tpye:0x402B0010 %LE %Long 0x08209002
+	return
+CR5_BOOT:
+	D.S &mem_tpye:0x402B2048 %LE %Long 1<<25. 
+	D.S &mem_tpye:0x402B2048 %LE %Long 1<<24. 
+	D.S &mem_tpye:0x402B20cc %LE %Long 1<<18. 
+	D.S &mem_tpye:0x402B10b0 %LE %Long 1<<1. 
+	D.S &mem_tpye:0x402e1284 %LE %Long 1<<10. 
+	wait 50ms
+	D.S &mem_tpye:0x402B20b0 %LE %Long 1<<1. 
+	D.S &mem_tpye:0x402e2284 %LE %Long 1<<10. 
+	RETURN
+ARM7_BOOT:
+	D.S 0x402b00b0 %LONG 0x00000005
+	D.S 0x402b00cc %LONG 0x08020002
+	D.S 0x402b00b0 %LONG 0x00000005
+	D.S 0x402E0114 %LONG 0x00000011		;hold on ARM7 reset
+	D.S 0x50800000 %LONG 0xeafffffe
+	D.S 0x50800004 %LONG 0xeafffffe
+	D.S 0x50800008 %LONG 0xeafffffe
+	D.S 0x402E0114 %LONG 0x00000000
+	RETURN	
+
+	

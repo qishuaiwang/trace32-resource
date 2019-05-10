@@ -1,0 +1,45 @@
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+
+system.mode down
+system.reset
+
+system.jtagclock 5mhz
+
+system.cpu CORTEXA5
+
+SYStem.MultiCore MEMORYACCESSPORT 0
+system.MultiCore DEBUGACCESSPORT 3
+;SYStem.MultiCore JTAGACCESSPORT 2
+;SYStem.Multicore COREJTAGPORT x
+
+
+system.config corebase   0x80008000 
+system.config CTIBASE    0x80002000 
+system.config FUNNELBASE 0x80004000 
+system.config TPIUBASE   0x80003000 
+system.config ETBBASE    0x80001000 
+
+&CUR_DIR=OS.PPD()
+CD.DO "&CUR_DIR/jtagv0.cmm"
+
+system.cpuaccess enable
+system.memaccess dap
+;system.multicore SWDP ON
+
+system.mode up
+PRINT "CP1 Up"
+
+;release ARM7
+;D.S ZSD:0x022B00B0 %LE %LONG 0x2 
+;wait 1ms 
+;D.S ZSD:0x022E0114 %LE %LONG 0x1
+;wait 1ms
+;D.S ZSD:0x022E0114 %LE %LONG 0x0
+;wait 1ms
+ 
+
+

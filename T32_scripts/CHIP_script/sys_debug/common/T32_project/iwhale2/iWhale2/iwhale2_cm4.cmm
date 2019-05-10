@@ -1,0 +1,73 @@
+;please add cmm script brfore ENDDO
+GLOBAL &CONFIG_INPUT &RESET_INPUT &SIGNAL_INPUT &PROBE_MODE_INPUT &RTIT_INPUT &DST_DIR &os_sel
+LOCAL &core_flags &temp &jtag_clk &wka_flag &sys_sel
+ENTRY &core_flags &sys_sel
+
+IF "X&os_sel"=="X"
+(
+	&os_sel="small_sys"
+)
+IF "X&sys_sel"=="X"
+(
+	&sys_sel="&os_sel"
+)
+
+IF "X&CONFIG_INPUT"=="X"
+(
+	&CONFIG_INPUT="DAP"
+)
+IF (CPUFAMILY()!="ARM")
+(
+	PRINT %ERROR "Please open the right Trace32!"
+	ENDDO
+)
+LOCAL &slave_flag
+&slave_flag=SYStem.CONFIG.Slave()
+system.mode down
+sys.Option EnReset OFF
+sys.Option TRST OFF
+
+system.jtagclock 20.0Mhz
+
+system.cpu CORTEXM4 
+;IF (&slave_flag==False())
+;(
+	;SYStem.CONFIG.Slave ON
+	jtag.pin.ntrst 1
+;)
+system.config MEMORYACCESSPORT 3
+system.config DEBUGACCESSPORT 0
+
+system.config AXIACCESSPORT   0.
+system.config APBACCESSPORT   1.
+system.config AHBACCESSPORT   3.
+sys.MemAccess.dap
+
+&CUR_DIR=OS.PPD()
+;DO &CUR_DIR/iWhale2_JTAG.cmm "&CONFIG_INPUT"
+DO &CUR_DIR/iWhale2_JTAG.cmm "DAP"
+
+;IF (&slave_flag==False())
+;(
+	;SYStem.CONFIG.Slave OFF
+;)
+on error CONTINUE 
+SYStem.Mode.Prepare	
+&temp=STRing.SCAN("&core_flags", "DAP", 0)
+IF &temp!=-1
+(
+	ENDDO
+)
+if ("&sys_sel"=="small_sys")
+(
+	DO &CUR_DIR\dap_release_r5_cm4.cmm CM4
+	sys.Mode.attach
+	Break
+)
+ELSE if ("&sys_sel"=="os_sys")
+(
+	sys.Mode.attach
+	;Break
+)
+print "CM4 UP"
+ENDDO

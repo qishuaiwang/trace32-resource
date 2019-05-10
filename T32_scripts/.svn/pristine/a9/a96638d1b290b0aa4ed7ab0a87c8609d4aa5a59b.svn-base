@@ -1,0 +1,137 @@
+
+;add mode is required, as we want to add new items to the existing menu
+ADD
+;&CUR_DIR=OS.PPD()
+;definition of the main pulldown menu bar
+MENU
+(
+    separator
+    POPUP "iSharkl2"
+    (
+		IF (CPUFAMILY()=="I386")
+		(
+			popup    "EDIT_BIA_CMM"
+			(
+				MENUITEM "edit BIA"				"menuedit butter"
+				MENUITEM "edit DDR"				"menuedit ddr_init"
+			)
+			separator
+			popup    "BIA_CONNECT"
+			(
+				MENUITEM "BIA"				"menubia"
+				MENUITEM "BIA_DAP"				"menubia DAP"
+				MENUITEM "RESET JTAG"		"menutrst"
+				MENUITEM "RESET AP_SYS"		"menusrst"
+				MENUITEM "BIA no DAP"				"menubia BIA"
+			)
+			separator
+			popup    "reset_fuse"
+			(
+				MENUITEM "RESET BREAK"	"menubia RB"
+				MENUITEM "FUSE Block"		"menufgi"
+				MENUITEM "BIA FUSE"		"menudfgi"
+			)
+			separator
+			MENUITEM "AP_Release_cp_sp_dsp" "menuarcs"
+			separator
+			MENUITEM "No_Fuse_Connect" "menubf"
+			separator
+			popup    "Signal_sel"
+			(
+				MENUITEM "BOOT SIGNAL"		"menusig 0x10"
+				;MENUITEM "VISA SIGNAL"	"menusig 0x1"
+				MENUITEM "lowpower_module0 SIGNAL"		"menusig 0x2"
+				MENUITEM "lowpower_module1 SIGNAL"	"menusig 0x3"
+				MENUITEM "lowpower_module0_1 SIGNAL"		"menusig 0x4"
+			)
+			separator
+			popup    "RTIT"
+			(
+				MENUITEM "RTIT_DRAM"	"menurti 0x1"
+				MENUITEM "RTIT_PTI MODE"		"menurti 0x2"
+			)
+			separator
+			popup    "Reset_Break"
+			(
+				MENUITEM "boot stall" "menubia PRERB"
+				separator
+				MENUITEM "release stall" "menubia POSTRB"
+			)
+			separator
+			MENUITEM "EXIT PROBE MODE"		"menuprb"
+			separator
+			MENUITEM "RTIT Reg" "menurper per_rtit_msr"
+			separator
+			MENUITEM "check_boot_flag" "menuckbt"
+			separator
+			MENUITEM "IOAPIC Per" "menulod per iWhale2_IOAPIC.per"
+			popup    "LAPIC Per"
+			(
+				MENUITEM "Core 0"		"menulod per iWhale2_LAPIC.per /Core 0"
+				MENUITEM "Core 1"		"menulod per iWhale2_LAPIC.per /Core 1"
+				MENUITEM "Core 2"		"menulod per iWhale2_LAPIC.per /Core 2"
+				MENUITEM "Core 3"		"menulod per iWhale2_LAPIC.per /Core 3"
+				MENUITEM "Core 4"		"menulod per iWhale2_LAPIC.per /Core 4"
+				MENUITEM "Core 5"		"menulod per iWhale2_LAPIC.per /Core 5"
+				MENUITEM "Core 6"		"menulod per iWhale2_LAPIC.per /Core 6"
+				MENUITEM "Core 7"		"menulod per iWhale2_LAPIC.per /Core 7"
+			)
+			;separator
+			;MENUITEM "ReConfig"		"menure"
+		)
+        
+		IF (CPUFAMILY()=="ARM")
+		(
+			popup    "EDIT_CMM"
+			(
+				MENUITEM "edit R5"				"menuedit r5"
+				MENUITEM "edit cm4"				"menuedit cm4"
+			)
+
+			MENUITEM "R5"		"menur5"
+			separator
+			MENUITEM "SP_CM4"			"menucm4"
+			
+			separator
+			MENUITEM "DAP"			"menur5 DAP"
+			separator
+			MENUITEM "RESET JTAG"		"menurst"
+			MENUITEM "RESET AP_SYS"		"menusrst"
+			separator
+			;MENUITEM "FUSE Block"		"menufgi"
+			MENUITEM "Release DSP"		"menurrd"
+			separator
+			MENUITEM "CHECK AON"		"menuchk EAXI:4"
+			MENUITEM "CHECK EAXI"		"menuchk EAXI"
+			MENUITEM "CHECK EAHB"		"menuchk EAHB"
+			separator
+			MENUITEM "STM Start to ETB"		"menustm"
+			MENUITEM "STM Start to ETR"		"menustm Start ddr"
+			MENUITEM "STM Stop"		"menustm Stop"
+			separator
+			MENUITEM "STM Save from ETB"		"menusbrd"
+			MENUITEM "STM Save from ETR"		"menusrrd"
+			separator
+			POPUP "BUSMON"
+			(
+				MENUITEM "Busmon All En"    "menubma 1"
+				MENUITEM "Busmon All Dis"   "menubma 0"
+				MENUITEM "Busmon Addr Cfg"  "menubmb"
+				MENUITEM "Busmon Addr Scan" "menubmc"
+				MENUITEM "Busmon Reg Read" "menubmd"
+			)
+		)
+		IF (CPUFAMILY()=="TEAKLITE4"||CPUFAMILY()=="OAK")	
+		(
+			;MENUITEM "AGDSP"		"menuagd"
+			MENUITEM "TGDSP"		"menutgd"
+			MENUITEM "LTEDSP"		"menulte"
+			separator
+			MENUITEM "RESET JTAG"		"menurst"
+			MENUITEM "RESET AP_SYS"		"menusrst"
+		)
+		separator
+		MENUITEM "ReConfig"		"menure"
+    )
+)
+

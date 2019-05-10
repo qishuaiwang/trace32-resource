@@ -1,0 +1,7 @@
+sel      subsys        dap_start           dap_end             rd_wt        addr_min         addr_max
+1        WCN           N/A                 N/A                 Read                          
+0        AP            N/A                 N/A                 Read                          
+0        AP            N/A                 N/A                 Read                          
+0        AP            N/A                 N/A                 Read                          
+0        AP            N/A                 N/A                 Read                          
+0        AP            N/A                 N/A                 Read                          

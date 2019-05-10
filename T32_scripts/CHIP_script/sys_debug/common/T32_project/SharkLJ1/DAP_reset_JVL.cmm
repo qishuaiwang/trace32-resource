@@ -1,0 +1,50 @@
+LOCAL &mem_tpye &AON_BASE &JVL_L2 &JVL_C0 &JVL_C1
+
+&JVL_L2=0
+&JVL_C0=0
+&JVL_C1=1
+
+&mem_tpye="EZAXI"
+LOCAL &set &clr
+&set=0x1000
+&clr=0x2000
+&AON_BASE=0x40000000
+IF CPU()=="CortexR5"
+	&AON_BASE=0x02000000
+
+GOSUB DAP_RESET_JVL
+
+ENDDO
+
+DAP_RESET_JVL:
+	LOCAL &boot_addr &code_boot_addr
+	; 801A8804 77BEFEBE 27E50131 BFCBEFEB
+	&boot_addr=0x50000000
+;	&boot_addr=0x90000000
+	&code_boot_addr=&boot_addr
+	IF CPU()=="CortexR5"
+		&code_boot_addr=0x00007000
+	; While(1) @ 
+	D.S &mem_tpye:&code_boot_addr %LONG 0x14000000
+	; RVBARADDR
+	D.S &mem_tpye:&AON_BASE+0x00460024 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460028 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x0046002C %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460030 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460034 %LONG (&boot_addr>>8.)
+	D.S &mem_tpye:&AON_BASE+0x00460038 %LONG (&boot_addr>>8.)
+
+	; DBGL1RSTDISABLE_BIG
+	D.S &mem_tpye:&AON_BASE+0x002E021C+&set %LONG (0x1<<25.)
+	; L2RSTDISABLE_BIG
+	D.S &mem_tpye:&AON_BASE+0x002E021C+&set %LONG (0x1<<24.)
+	; L2 SOFT RST
+	D.S &mem_tpye:&AON_BASE+0x00460010+&set %LONG (&JVL_L2<<24.)|(&JVL_C0<<16.)|(&JVL_C1<<17.)
+	WAIT 100.MS
+	D.S &mem_tpye:&AON_BASE+0x00460010+&clr %LONG (&JVL_L2<<24.)
+	D.S &mem_tpye:&AON_BASE+0x00460010+&clr %LONG (&JVL_C0<<16.)
+	D.S &mem_tpye:&AON_BASE+0x00460010+&clr %LONG (&JVL_C1<<17.)
+
+
+
+	RETURN

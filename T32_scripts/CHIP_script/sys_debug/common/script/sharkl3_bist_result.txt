@@ -1,0 +1,2 @@
+--------CHN 0  bist start-----------
+bist chn0 bist is fail
