@@ -109,6 +109,6 @@ ELSE
 ENDDO
 
 BOOT:
-	DO "&CUR_DIR\boot_all.cmm" CR5_BOOT 0
+	DO "&CUR_DIR\boot_all.cmm" CR5_BOOT 1
 	RETURN
 ; end of BOOT

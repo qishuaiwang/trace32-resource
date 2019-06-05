@@ -5,12 +5,12 @@
 "BuildNumber"
 "BuildNumber"
 "~"
-value "4"
+value "3"
 ]
 [
 "Configuration Container"
 "ConfVersion2"
-"Please upgrade to T32Start version >= 2.4.8 to load this .ts2 file!"
+"Please upgrade to T32Start version >= 2.3.17 to load this .ts2 file!"
 ]
 [
 "SubContainer"
@@ -52,13 +52,7 @@ value "File"
 "String"
 "File"
 "~"
-<<<<<<< .mine
-value "C:\T32_iWhale2\cmm\T32_scripts\CHIP_script\T32Start.ts2"
-||||||| .r37891
-value "E:\Projects\T32_scripts\20180912\T32_scripts\CHIP_script\T32Start.ts2"
-=======
 value "D:\T32_scripts-svn-new\CHIP_script\T32Start.ts2"
->>>>>>> .r41745
 ]
 ]
 ]
@@ -74,13 +68,13 @@ value "D:\T32_scripts-svn-new\CHIP_script\T32Start.ts2"
 "String"
 "WorkingPath"
 "~"
-value "D:\tools\T32_20180919\"
+value "C:\T32"
 ]
 [
 "String"
 "SystemPath"
 "~"
-value "D:\tools\T32_20180919\"
+value "%///Settings/CoreAdvancedOptions/Directories/WorkingPath%"
 ]
 [
 "String"
@@ -92,7 +86,7 @@ value "C:\Temp"
 "String"
 "HelpPath"
 "~"
-value "C:\T32_iWhale2\\licensedocuments\pdf"
+value "%///Settings/CoreAdvancedOptions/Directories/WorkingPath%\pdf"
 ]
 [
 "String"
@@ -105,29 +99,6 @@ value ""
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "5055"
-]
-[
-"String"
-"RLMServer"
-"~"
-value ""
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -245,41 +216,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -290,16 +226,10 @@ value "1534"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -457,8 +387,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -468,20 +398,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -523,12 +453,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -627,27 +551,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -764,41 +667,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -809,16 +677,10 @@ value "1534"
 value "Orca CA55 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -996,29 +858,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -1134,41 +973,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -1179,16 +983,10 @@ value "1535"
 value "Orca PSCP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -1366,27 +1164,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -1502,41 +1279,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -1547,16 +1289,10 @@ value "1536"
 value "Orca NRCP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -1734,27 +1470,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -1870,41 +1585,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -1915,16 +1595,10 @@ value "1537"
 value "Orca V3_PHY TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -2102,29 +1776,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -2240,41 +1891,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -2285,16 +1901,10 @@ value "1538"
 value "Orca V3_PS TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -2472,27 +2082,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -2608,41 +2197,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -2653,16 +2207,10 @@ value "1539"
 value "Orca SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -2840,27 +2388,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -2976,41 +2503,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -3021,16 +2513,10 @@ value "1540"
 value "Orca AGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -3155,1363 +2641,7 @@ value "T32_1000025"
 ]
 [
 "Core"
-<<<<<<< .mine
-"Core5"
-"LDSP"
-[
-"T32Executable"
-"Target"
-"~"
-value "OAK"
-]
-[
-"CoreAdvancedOptions"
-"CoreAdvancedOptions"
-"Advanced Settings"
-[
-"DirectorySettings"
-"Directories"
-"Paths"
-[
-"String"
-"WorkingPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
-]
-[
-"String"
-"SystemPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
-]
-[
-"String"
-"TempPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
-]
-[
-"String"
-"HelpPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
-]
-[
-"String"
-"LicenseFile"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
-]
-[
-"Boolean"
-"Force32"
-"Use only 32-bit executable"
-value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
-"InterfaceSettings"
-"Interfaces"
-"~"
-[
-"Port"
-"APIPort"
-"API Port"
-[
-"Boolean"
-"APIPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"APIPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"APIPort.PortStartValue"
-"Port Start Value"
-value "20000"
-]
-[
-"Int"
-"APIPort.PortValue"
-"Port Value"
-value "20007"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"IntercomPort"
-"Intercom Port"
-[
-"Boolean"
-"IntercomPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"IntercomPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"IntercomPort.PortStartValue"
-"Port Start Value"
-value "10000"
-]
-[
-"Int"
-"IntercomPort.PortValue"
-"Port Value"
-value "10007"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"GDBPort"
-"GDB Port"
-[
-"Boolean"
-"GDBPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"GDBPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"GDBPort.PortStartValue"
-"Port Start Value"
-value "30000"
-]
-[
-"Int"
-"GDBPort.PortValue"
-"Port Value"
-value "30007"
-]
-[
-"Protocol"
-"Protocol"
-"~"
-value "UDP"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1541"
-]
-]
-[
-"DisplaySettings"
-"Display"
-"~"
-[
-"String"
-"Title"
-"~"
-value "Orca LDSP TRACE32 PowerView for %T %O [%D @ %N]"
-]
-[
-"FontSize"
-"FontSize"
-"~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
-]
-[
-"Boolean"
-"FullScreen"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Iconic"
-"~"
-value "no"
-]
-[
-"WindowMode"
-"WindowMode"
-"~"
-value "MDI"
-]
-[
-"Language"
-"Language"
-"~"
-value "EN"
-]
-]
-[
-"InternalSettings"
-"InternalSettings"
-"Internal"
-[
-"Boolean"
-"Debug"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Attach"
-"~"
-value "no"
-]
-[
-"Boolean"
-"MultiCore"
-"~"
-value "no"
-]
-[
-"Boolean"
-"NoSelfTest"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Passive"
-"~"
-value "no"
-]
-[
-"String"
-"T32Executable"
-"~"
-value ""
-]
-[
-"String"
-"SysFCC"
-"~"
-value ""
-]
-[
-"String"
-"SysFCCCPU"
-"~"
-value ""
-]
-[
-"Boolean"
-"Win"
-"WineUseWindowsExecutable"
-value "no"
-]
-]
-[
-"StartupScript"
-"StartupScript"
-"~"
-[
-"ListBasedCombo"
-"Source"
-"~"
-value "Built-in Script"
-]
-[
-"String"
-"File"
-"~"
-value "%/../../../../Core6/CoreAdvancedOptions/StartupScript/File%"
-]
-[
-"BuiltinScript"
-"BuiltinScript"
-"Built-in Script"
-value "%///Settings/CoreAdvancedOptions/StartupScript/BuiltinScript%"
-]
-[
-"String"
-"Parameters"
-"~"
-value "%/../../../../Start Arbitrary Program/Parameters% LTE 0"
-]
-]
-]
-[
-"String"
-"T32ID"
-"~"
-value "T32_1000031"
-]
-]
-[
-"Core"
-"Core7"
-"TGDSP"
-[
-"T32Executable"
-"Target"
-"~"
-value "OAK"
-]
-[
-"CoreAdvancedOptions"
-"CoreAdvancedOptions"
-"Advanced Settings"
-[
-"DirectorySettings"
-"Directories"
-"Paths"
-[
-"String"
-"WorkingPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
-]
-[
-"String"
-"SystemPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
-]
-[
-"String"
-"TempPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
-]
-[
-"String"
-"HelpPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
-]
-[
-"String"
-"LicenseFile"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
-]
-[
-"Boolean"
-"Force32"
-"Use only 32-bit executable"
-value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-"InterfaceSettings"
-"Interfaces"
-"~"
-[
-"Port"
-"APIPort"
-"API Port"
-[
-"Boolean"
-"APIPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"APIPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"APIPort.PortStartValue"
-"Port Start Value"
-value "20000"
-]
-[
-"Int"
-"APIPort.PortValue"
-"Port Value"
-value "20008"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"IntercomPort"
-"Intercom Port"
-[
-"Boolean"
-"IntercomPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"IntercomPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"IntercomPort.PortStartValue"
-"Port Start Value"
-value "10000"
-]
-[
-"Int"
-"IntercomPort.PortValue"
-"Port Value"
-value "10008"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"GDBPort"
-"GDB Port"
-[
-"Boolean"
-"GDBPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"GDBPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"GDBPort.PortStartValue"
-"Port Start Value"
-value "30000"
-]
-[
-"Int"
-"GDBPort.PortValue"
-"Port Value"
-value "30008"
-]
-[
-"Protocol"
-"Protocol"
-"~"
-value "UDP"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1542"
-]
-]
-[
-"DisplaySettings"
-"Display"
-"~"
-[
-"String"
-"Title"
-"~"
-value "Orca TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
-]
-[
-"FontSize"
-"FontSize"
-"~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
-]
-[
-"Boolean"
-"FullScreen"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Iconic"
-"~"
-value "no"
-]
-[
-"WindowMode"
-"WindowMode"
-"~"
-value "MDI"
-]
-[
-"Language"
-"Language"
-"~"
-value "EN"
-]
-]
-[
-"InternalSettings"
-"InternalSettings"
-"Internal"
-[
-"Boolean"
-"Debug"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Attach"
-"~"
-value "no"
-]
-[
-"Boolean"
-"MultiCore"
-"~"
-value "no"
-]
-[
-"Boolean"
-"NoSelfTest"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Passive"
-"~"
-value "no"
-]
-[
-"String"
-"T32Executable"
-"~"
-value ""
-]
-[
-"String"
-"SysFCC"
-"~"
-value ""
-]
-[
-"String"
-"SysFCCCPU"
-"~"
-value ""
-]
-[
-"Boolean"
-"Win"
-"WineUseWindowsExecutable"
-value "no"
-]
-]
-[
-"StartupScript"
-"StartupScript"
-"~"
-[
-"ListBasedCombo"
-"Source"
-"~"
-value "Built-in Script"
-]
-[
-"String"
-"File"
-"~"
-value "%/../../../../Core6/CoreAdvancedOptions/StartupScript/File%"
-]
-[
-"BuiltinScript"
-"BuiltinScript"
-"Built-in Script"
-value "%///Settings/CoreAdvancedOptions/StartupScript/BuiltinScript%"
-]
-[
-"String"
-"Parameters"
-"~"
-value "%/../../../../Start Arbitrary Program/Parameters% TG 0"
-]
-]
-]
-[
-"String"
-"T32ID"
-"~"
-value "T32_1000037"
-]
-]
-[
-"Core"
-"Core"
-||||||| .r37891
-"Core5"
-"LDSP"
-[
-"T32Executable"
-"Target"
-"~"
-value "OAK"
-]
-[
-"CoreAdvancedOptions"
-"CoreAdvancedOptions"
-"Advanced Settings"
-[
-"DirectorySettings"
-"Directories"
-"Paths"
-[
-"String"
-"WorkingPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
-]
-[
-"String"
-"SystemPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
-]
-[
-"String"
-"TempPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
-]
-[
-"String"
-"HelpPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
-]
-[
-"String"
-"LicenseFile"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
-]
-[
-"Boolean"
-"Force32"
-"Use only 32-bit executable"
-value "no"
-]
-]
-"InterfaceSettings"
-"Interfaces"
-"~"
-[
-"Port"
-"APIPort"
-"API Port"
-[
-"Boolean"
-"APIPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"APIPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"APIPort.PortStartValue"
-"Port Start Value"
-value "20000"
-]
-[
-"Int"
-"APIPort.PortValue"
-"Port Value"
-value "20007"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"IntercomPort"
-"Intercom Port"
-[
-"Boolean"
-"IntercomPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"IntercomPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"IntercomPort.PortStartValue"
-"Port Start Value"
-value "10000"
-]
-[
-"Int"
-"IntercomPort.PortValue"
-"Port Value"
-value "10007"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"GDBPort"
-"GDB Port"
-[
-"Boolean"
-"GDBPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"GDBPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"GDBPort.PortStartValue"
-"Port Start Value"
-value "30000"
-]
-[
-"Int"
-"GDBPort.PortValue"
-"Port Value"
-value "30007"
-]
-[
-"Protocol"
-"Protocol"
-"~"
-value "UDP"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"DisplaySettings"
-"Display"
-"~"
-[
-"String"
-"Title"
-"~"
-value "Orca LDSP TRACE32 PowerView for %T %O [%D @ %N]"
-]
-[
-"Boolean"
-"SmallFontSize"
-"~"
-value "yes"
-]
-[
-"Boolean"
-"FullScreen"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Iconic"
-"~"
-value "no"
-]
-[
-"WindowMode"
-"WindowMode"
-"~"
-value "MDI"
-]
-[
-"Language"
-"Language"
-"~"
-value "EN"
-]
-]
-[
-"InternalSettings"
-"InternalSettings"
-"Internal"
-[
-"Boolean"
-"Debug"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Attach"
-"~"
-value "no"
-]
-[
-"Boolean"
-"MultiCore"
-"~"
-value "no"
-]
-[
-"Boolean"
-"NoSelfTest"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Passive"
-"~"
-value "no"
-]
-[
-"String"
-"T32Executable"
-"~"
-value ""
-]
-[
-"String"
-"SysFCC"
-"~"
-value ""
-]
-[
-"String"
-"SysFCCCPU"
-"~"
-value ""
-]
-[
-"Boolean"
-"Win"
-"WineUseWindowsExecutable"
-value "no"
-]
-]
-[
-"StartupScript"
-"StartupScript"
-"~"
-[
-"ListBasedCombo"
-"Source"
-"~"
-value "Built-in Script"
-]
-[
-"String"
-"File"
-"~"
-value "%/../../../../Core6/CoreAdvancedOptions/StartupScript/File%"
-]
-[
-"BuiltinScript"
-"BuiltinScript"
-"Built-in Script"
-value "%///Settings/CoreAdvancedOptions/StartupScript/BuiltinScript%"
-]
-[
-"String"
-"Parameters"
-"~"
-value "%/../../../../Start Arbitrary Program/Parameters% LTE 0"
-]
-]
-]
-[
-"String"
-"T32ID"
-"~"
-value "T32_1000031"
-]
-]
-[
-"Core"
-"Core7"
-"TGDSP"
-[
-"T32Executable"
-"Target"
-"~"
-value "OAK"
-]
-[
-"CoreAdvancedOptions"
-"CoreAdvancedOptions"
-"Advanced Settings"
-[
-"DirectorySettings"
-"Directories"
-"Paths"
-[
-"String"
-"WorkingPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
-]
-[
-"String"
-"SystemPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
-]
-[
-"String"
-"TempPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
-]
-[
-"String"
-"HelpPath"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
-]
-[
-"String"
-"LicenseFile"
-"~"
-value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
-]
-[
-"Boolean"
-"Force32"
-"Use only 32-bit executable"
-value "no"
-]
-]
-"InterfaceSettings"
-"Interfaces"
-"~"
-[
-"Port"
-"APIPort"
-"API Port"
-[
-"Boolean"
-"APIPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"APIPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"APIPort.PortStartValue"
-"Port Start Value"
-value "20000"
-]
-[
-"Int"
-"APIPort.PortValue"
-"Port Value"
-value "20008"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"IntercomPort"
-"Intercom Port"
-[
-"Boolean"
-"IntercomPort.UsePort"
-"Use Port"
-value "yes"
-]
-[
-"Boolean"
-"IntercomPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"IntercomPort.PortStartValue"
-"Port Start Value"
-value "10000"
-]
-[
-"Int"
-"IntercomPort.PortValue"
-"Port Value"
-value "10008"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"Port"
-"GDBPort"
-"GDB Port"
-[
-"Boolean"
-"GDBPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"GDBPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"GDBPort.PortStartValue"
-"Port Start Value"
-value "30000"
-]
-[
-"Int"
-"GDBPort.PortValue"
-"Port Value"
-value "30008"
-]
-[
-"Protocol"
-"Protocol"
-"~"
-value "UDP"
-]
-[
-"PACKLEN"
-"PACKLEN"
-"Max UDP Packet Size"
-value "1024"
-]
-]
-[
-"DisplaySettings"
-"Display"
-"~"
-[
-"String"
-"Title"
-"~"
-value "Orca TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
-]
-[
-"Boolean"
-"SmallFontSize"
-"~"
-value "yes"
-]
-[
-"Boolean"
-"FullScreen"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Iconic"
-"~"
-value "no"
-]
-[
-"WindowMode"
-"WindowMode"
-"~"
-value "MDI"
-]
-[
-"Language"
-"Language"
-"~"
-value "EN"
-]
-]
-[
-"InternalSettings"
-"InternalSettings"
-"Internal"
-[
-"Boolean"
-"Debug"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Attach"
-"~"
-value "no"
-]
-[
-"Boolean"
-"MultiCore"
-"~"
-value "no"
-]
-[
-"Boolean"
-"NoSelfTest"
-"~"
-value "no"
-]
-[
-"Boolean"
-"Passive"
-"~"
-value "no"
-]
-[
-"String"
-"T32Executable"
-"~"
-value ""
-]
-[
-"String"
-"SysFCC"
-"~"
-value ""
-]
-[
-"String"
-"SysFCCCPU"
-"~"
-value ""
-]
-[
-"Boolean"
-"Win"
-"WineUseWindowsExecutable"
-value "no"
-]
-]
-[
-"StartupScript"
-"StartupScript"
-"~"
-[
-"ListBasedCombo"
-"Source"
-"~"
-value "Built-in Script"
-]
-[
-"String"
-"File"
-"~"
-value "%/../../../../Core6/CoreAdvancedOptions/StartupScript/File%"
-]
-[
-"BuiltinScript"
-"BuiltinScript"
-"Built-in Script"
-value "%///Settings/CoreAdvancedOptions/StartupScript/BuiltinScript%"
-]
-[
-"String"
-"Parameters"
-"~"
-value "%/../../../../Start Arbitrary Program/Parameters% TG 0"
-]
-]
-]
-[
-"String"
-"T32ID"
-"~"
-value "T32_1000037"
-]
-]
-[
-"Core"
-"Core7"
-=======
 "Core7 2"
->>>>>>> .r41745
 "XC4500"
 [
 "T32Executable"
@@ -4562,29 +2692,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -4702,41 +2809,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1543"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -4747,16 +2819,10 @@ value "1543"
 value "Orca XC4500 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -4934,27 +3000,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -5070,41 +3115,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1544"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -5115,16 +3125,10 @@ value "1544"
 value "Orca SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -5320,8 +3324,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -5331,20 +3335,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -5386,12 +3390,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -5489,29 +3487,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -5629,41 +3604,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -5674,16 +3614,10 @@ value "1534"
 value "SharkL5 CA55&A75 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -5861,27 +3795,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -5997,41 +3910,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -6042,16 +3920,10 @@ value "1535"
 value "SharkL5 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -6229,29 +4101,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -6367,41 +4216,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -6412,16 +4226,10 @@ value "1536"
 value "SharkL5 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -6599,29 +4407,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -6737,41 +4522,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -6782,16 +4532,10 @@ value "1537"
 value "SharkL5 AGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -6969,27 +4713,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -7105,41 +4828,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -7150,16 +4838,10 @@ value "1538"
 value "SharkL5 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -7337,29 +5019,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -7475,41 +5134,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -7520,16 +5144,10 @@ value "1539"
 value "SharkL5 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -7654,13 +5272,7 @@ value "T32_1000037"
 ]
 [
 "Core"
-<<<<<<< .mine
-"Core"
-||||||| .r37891
-"Core7"
-=======
 "Core7 2"
->>>>>>> .r41745
 "CDMADSP"
 [
 "T32Executable"
@@ -7711,29 +5323,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -7851,41 +5440,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -7896,16 +5450,10 @@ value "1540"
 value "SharkL5 CDMADSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -8083,27 +5631,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -8219,41 +5746,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1541"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -8264,16 +5756,10 @@ value "1541"
 value "SharkL5 SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -8469,8 +5955,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -8480,20 +5966,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -8535,12 +6021,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -8639,27 +6119,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -8776,41 +6235,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -8821,16 +6245,10 @@ value "1534"
 value "SharkL5Pro CA55&A75 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -9008,29 +6426,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -9146,41 +6541,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -9191,16 +6551,10 @@ value "1535"
 value "SharkL5Pro CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -9378,29 +6732,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -9516,41 +6847,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -9561,16 +6857,10 @@ value "1536"
 value "SharkL5Pro SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -9748,27 +7038,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -9884,41 +7153,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -9929,16 +7163,10 @@ value "1537"
 value "SharkL5Pro AGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -10116,29 +7344,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -10254,41 +7459,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -10299,16 +7469,10 @@ value "1538"
 value "SharkL5Pro LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -10486,27 +7650,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -10622,41 +7765,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -10667,16 +7775,10 @@ value "1539"
 value "SharkL5Pro TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -10801,6 +7903,312 @@ value "T32_1000037"
 ]
 [
 "Core"
+"Core7"
+"VDSP"
+[
+"T32Executable"
+"Target"
+"~"
+value "XTENSA"
+]
+[
+"CoreAdvancedOptions"
+"CoreAdvancedOptions"
+"Advanced Settings"
+[
+"DirectorySettings"
+"Directories"
+"Paths"
+[
+"String"
+"WorkingPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
+]
+[
+"String"
+"SystemPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
+]
+[
+"String"
+"TempPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
+]
+[
+"String"
+"HelpPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
+]
+[
+"String"
+"LicenseFile"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
+[
+"Boolean"
+"Force32"
+"Use only 32-bit executable"
+value "no"
+]
+]
+"InterfaceSettings"
+"Interfaces"
+"~"
+[
+"Port"
+"APIPort"
+"API Port"
+[
+"Boolean"
+"APIPort.UsePort"
+"Use Port"
+value "yes"
+]
+[
+"Boolean"
+"APIPort.AutoIncrementPort"
+"Use Auto Increment Port"
+value "yes"
+]
+[
+"Int"
+"APIPort.PortStartValue"
+"Port Start Value"
+value "20000"
+]
+[
+"Int"
+"APIPort.PortValue"
+"Port Value"
+value "20005"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
+]
+]
+[
+"Port"
+"IntercomPort"
+"Intercom Port"
+[
+"Boolean"
+"IntercomPort.UsePort"
+"Use Port"
+value "yes"
+]
+[
+"Boolean"
+"IntercomPort.AutoIncrementPort"
+"Use Auto Increment Port"
+value "yes"
+]
+[
+"Int"
+"IntercomPort.PortStartValue"
+"Port Start Value"
+value "10000"
+]
+[
+"Int"
+"IntercomPort.PortValue"
+"Port Value"
+value "10005"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
+]
+]
+[
+"Port"
+"GDBPort"
+"GDB Port"
+[
+"Boolean"
+"GDBPort.UsePort"
+"Use Port"
+value "no"
+]
+[
+"Boolean"
+"GDBPort.AutoIncrementPort"
+"Use Auto Increment Port"
+value "yes"
+]
+[
+"Int"
+"GDBPort.PortStartValue"
+"Port Start Value"
+value "30000"
+]
+[
+"Int"
+"GDBPort.PortValue"
+"Port Value"
+value "30005"
+]
+[
+"Protocol"
+"Protocol"
+"~"
+value "UDP"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
+]
+]
+[
+"DisplaySettings"
+"Display"
+"~"
+[
+"String"
+"Title"
+"~"
+value "SharkL5Pro VDSP TRACE32 PowerView for %T %O [%D @ %N]"
+]
+[
+"Boolean"
+"SmallFontSize"
+"~"
+value "yes"
+]
+[
+"Boolean"
+"FullScreen"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Iconic"
+"~"
+value "no"
+]
+[
+"WindowMode"
+"WindowMode"
+"~"
+value "MDI"
+]
+[
+"Language"
+"Language"
+"~"
+value "EN"
+]
+]
+[
+"InternalSettings"
+"InternalSettings"
+"Internal"
+[
+"Boolean"
+"Debug"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Attach"
+"~"
+value "no"
+]
+[
+"Boolean"
+"MultiCore"
+"~"
+value "no"
+]
+[
+"Boolean"
+"NoSelfTest"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Passive"
+"~"
+value "no"
+]
+[
+"String"
+"T32Executable"
+"~"
+value ""
+]
+[
+"String"
+"SysFCC"
+"~"
+value ""
+]
+[
+"String"
+"SysFCCCPU"
+"~"
+value ""
+]
+[
+"Boolean"
+"Win"
+"WineUseWindowsExecutable"
+value "no"
+]
+]
+[
+"StartupScript"
+"StartupScript"
+"~"
+[
+"ListBasedCombo"
+"Source"
+"~"
+value "Built-in Script"
+]
+[
+"String"
+"File"
+"~"
+value "%/../../../../Core6/CoreAdvancedOptions/StartupScript/File%"
+]
+[
+"BuiltinScript"
+"BuiltinScript"
+"Built-in Script"
+value "%///Settings/CoreAdvancedOptions/StartupScript/BuiltinScript%"
+]
+[
+"String"
+"Parameters"
+"~"
+value "%/../../../../Start Arbitrary Program/Parameters% VDSP 0"
+]
+]
+]
+[
+"String"
+"T32ID"
+"~"
+value "T32_1000037"
+]
+]
+[
+"Core"
 "Core6 2"
 "SWD"
 [
@@ -10853,27 +8261,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -10990,41 +8377,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -11035,16 +8387,10 @@ value "1540"
 value "SharkL5Pro SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -11240,8 +8586,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -11251,20 +8597,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -11306,12 +8652,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -11410,27 +8750,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -11547,41 +8866,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -11592,16 +8876,10 @@ value "1534"
 value "ROC1 CA55&A75 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -11779,27 +9057,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -11915,41 +9172,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -11960,16 +9182,10 @@ value "1535"
 value "ROC1 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -12147,29 +9363,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -12285,41 +9478,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -12330,16 +9488,10 @@ value "1536"
 value "ROC1 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -12517,27 +9669,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -12653,41 +9784,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -12698,16 +9794,10 @@ value "1537"
 value "ROC1 AGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -12885,23 +9975,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -13017,41 +10090,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -13062,16 +10100,10 @@ value "1538"
 value "ROC1 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -13249,25 +10281,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -13383,41 +10396,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -13428,16 +10406,10 @@ value "1539"
 value "ROC1 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -13921,27 +10893,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -14057,41 +11008,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -14102,16 +11018,10 @@ value "1540"
 value "ROC1 eSE TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -14289,23 +11199,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -14421,41 +11314,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1541"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -14466,16 +11324,10 @@ value "1541"
 value "ROC1 IPA TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -14653,25 +11505,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -14787,41 +11620,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1542"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -14832,16 +11630,10 @@ value "1542"
 value "ROC1 SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -15343,8 +12135,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -15354,20 +12146,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -15409,12 +12201,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -15513,23 +12299,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -15646,41 +12415,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -15691,16 +12425,10 @@ value "1534"
 value "SharkL3 CA55 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -15878,25 +12606,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -16012,41 +12721,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -16057,16 +12731,10 @@ value "1535"
 value "SharkL3 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -16244,23 +12912,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -16376,41 +13027,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -16421,16 +13037,10 @@ value "1536"
 value "SharkL3 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -16608,25 +13218,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -16742,41 +13333,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -16787,16 +13343,10 @@ value "1537"
 value "SharkL3 GNSS TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -16974,23 +13524,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -17106,41 +13639,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -17151,16 +13649,10 @@ value "1538"
 value "SharkL3 WIFI TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -17338,23 +13830,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -17470,41 +13945,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -17515,16 +13955,10 @@ value "1539"
 value "SharkL3 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -17702,23 +14136,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -17834,41 +14251,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -17879,16 +14261,10 @@ value "1540"
 value "SharkL3 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -18066,23 +14442,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -18198,41 +14557,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1541"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -18243,16 +14567,10 @@ value "1541"
 value "SharkL3 SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -18448,8 +14766,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -18459,20 +14777,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -18514,12 +14832,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -18617,25 +14929,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -18753,41 +15046,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -18798,16 +15056,10 @@ value "1534"
 value "Pike2  A7 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -18985,23 +15237,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -19117,41 +15352,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -19162,16 +15362,10 @@ value "1535"
 value "Pike2 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -19349,25 +15543,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -19483,41 +15658,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -19528,16 +15668,10 @@ value "1536"
 value "Pike2 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -19715,23 +15849,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -19847,41 +15964,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -19892,16 +15974,10 @@ value "1537"
 value "Pike2 GNSS TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -20079,23 +16155,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -20211,41 +16270,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -20256,16 +16280,10 @@ value "1538"
 value "Pike2 WIFI TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -20443,25 +16461,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -20577,41 +16576,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -20622,16 +16586,10 @@ value "1539"
 value "Pike2 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -20827,8 +16785,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -20838,20 +16796,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -20893,12 +16851,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -20997,23 +16949,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -21130,41 +17065,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -21175,16 +17075,10 @@ value "1534"
 value "SharkLE CA53 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -21362,25 +17256,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -21496,41 +17371,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -21541,16 +17381,10 @@ value "1535"
 value "SharkLE CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -21728,23 +17562,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -21860,41 +17677,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -21905,16 +17687,10 @@ value "1536"
 value "SharkLE SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -22092,25 +17868,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -22226,41 +17983,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -22271,16 +17993,10 @@ value "1537"
 value "SharkLE GNSS TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -22458,25 +18174,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -22592,41 +18289,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -22637,16 +18299,10 @@ value "1538"
 value "SharkLE WIFI TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -22824,23 +18480,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -22956,41 +18595,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -23001,16 +18605,10 @@ value "1539"
 value "SharkLE LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -23188,23 +18786,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -23320,41 +18901,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1540"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -23365,16 +18911,10 @@ value "1540"
 value "SharkLE TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -23552,23 +19092,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -23684,41 +19207,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1541"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -23729,16 +19217,10 @@ value "1541"
 value "SharkLE SPRD SWD TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -23934,8 +19416,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -23945,20 +19427,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -24000,12 +19482,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -24103,25 +19579,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -24239,41 +19696,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -24284,16 +19706,10 @@ value "1534"
 value "SharkLJ1 CA53&JVL TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -24471,23 +19887,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -24603,41 +20002,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -24648,16 +20012,10 @@ value "1535"
 value "SharkLJ1 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -24835,25 +20193,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -24969,41 +20308,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -25014,16 +20318,10 @@ value "1536"
 value "SharkLJ1 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -25201,23 +20499,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -25333,41 +20614,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -25378,16 +20624,10 @@ value "1537"
 value "SharkLJ1 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -25565,25 +20805,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -25699,41 +20920,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -25744,16 +20930,10 @@ value "1538"
 value "SharkLJ1 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -25949,8 +21129,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -25960,20 +21140,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -26015,12 +21195,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -26119,23 +21293,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -26252,41 +21409,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -26297,16 +21419,10 @@ value "1534"
 value "SharkL2 A7 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -26484,25 +21600,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -26618,41 +21715,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -26663,16 +21725,10 @@ value "1535"
 value "SharkL2 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -26850,25 +21906,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -26984,41 +22021,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -27029,16 +22031,10 @@ value "1536"
 value "SharkL2 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -27216,23 +22212,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -27348,41 +22327,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -27393,16 +22337,10 @@ value "1537"
 value "SharkL2 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -27580,25 +22518,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -27714,41 +22633,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -27759,16 +22643,10 @@ value "1538"
 value "SharkL2 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -27964,8 +22842,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -27975,20 +22853,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -28030,12 +22908,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -28134,23 +23006,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Use only 32-bit executable"
 value "no"
 ]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 "InterfaceSettings"
 "Interfaces"
@@ -28267,41 +23122,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -28312,16 +23132,10 @@ value "1534"
 value "iSharkL2 BIA TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -28499,25 +23313,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -28633,41 +23428,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -28678,16 +23438,10 @@ value "1535"
 value "iSharkL2 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -28865,23 +23619,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -28997,41 +23734,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -29042,16 +23744,10 @@ value "1536"
 value "iSharkL2 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -29229,25 +23925,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -29363,41 +24040,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -29408,16 +24050,10 @@ value "1537"
 value "iSharkL2 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -29595,25 +24231,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -29729,41 +24346,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -29774,16 +24356,10 @@ value "1538"
 value "iSharkL2 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -29979,8 +24555,8 @@ value ""
 "Citrix Settings"
 [
 "CitrixNodeName"
+"CitrixNodeName"
 "Node Name"
-"~"
 value ""
 ]
 ]
@@ -29990,20 +24566,20 @@ value ""
 "USB Proxy Settings"
 [
 "USBProxyDeviceName"
+"USBProxyDeviceName"
 "Device Name"
-"~"
 value ""
 ]
 [
 "USBProxyNodeName"
+"USBProxyNodeName"
 "Node Name"
-"~"
 value ""
 ]
 [
 "USBProxyPort"
+"USBProxyPort"
 "Port"
-"~"
 value "0"
 ]
 ]
@@ -30045,12 +24621,6 @@ value ""
 "EthPort"
 "Port"
 value "20000"
-]
-[
-"EthHostPort"
-"EthHostPort"
-"Host Port"
-value "0"
 ]
 [
 "ETHINCRPORT"
@@ -30148,25 +24718,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -30284,41 +24835,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -30329,16 +24845,10 @@ value "1534"
 value "iWhale2 BIA TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -30516,25 +25026,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -30650,41 +25141,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -30695,16 +25151,10 @@ value "1535"
 value "iWhale2 CR5 TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -30882,23 +25332,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -31014,41 +25447,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -31059,16 +25457,10 @@ value "1536"
 value "iWhale2 SP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -31246,25 +25638,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -31380,41 +25753,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -31425,16 +25763,10 @@ value "1537"
 value "iWhale2 AGCP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -31612,23 +25944,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -31744,41 +26059,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -31789,16 +26069,10 @@ value "1538"
 value "iWhale2 LDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -31976,25 +26250,6 @@ value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
 value "no"
 ]
 ]
-[
-"LMSettings"
-"LMSettings"
-"License"
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
-]
-]
 "InterfaceSettings"
 "Interfaces"
 "~"
@@ -32110,41 +26365,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1539"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -32155,16 +26375,10 @@ value "1539"
 value "iWhale2 TGDSP TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -32371,38 +26585,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -32520,41 +26713,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1534"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -32565,16 +26723,10 @@ value "1534"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -32745,38 +26897,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -32894,41 +27025,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1535"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -32939,16 +27035,10 @@ value "1535"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -33119,38 +27209,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -33268,41 +27337,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1536"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -33313,16 +27347,10 @@ value "1536"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -33493,38 +27521,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -33642,41 +27649,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1537"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -33687,16 +27659,10 @@ value "1537"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -33867,38 +27833,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -34016,41 +27961,6 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
-[
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
-]
-[
-"Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
-value "yes"
-]
-[
-"Boolean"
-"TCFPort.AutoIncrementPort"
-"Use Auto Increment Port"
-value "yes"
-]
-[
-"Int"
-"TCFPort.PortStartValue"
-"Port Start Value"
-value "1534"
-]
-[
-"Int"
-"TCFPort.PortValue"
-"Port Value"
-value "1538"
-]
-]
-[
 "DisplaySettings"
 "Display"
 "~"
@@ -34061,16 +27971,10 @@ value "1538"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"
@@ -34247,38 +28151,17 @@ value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
 ]
+[
 "String"
 "LicenseFile"
 "~"
 value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
 [
 "Boolean"
 "Force32"
 "Use only 32-bit executable"
 value "no"
-]
-]
-[
-"LMSettings"
-"LMSettings"
-"License"
-[
-"String"
-"RLMPort"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMPort%"
-]
-[
-"String"
-"RLMServer"
-"~"
-value "%//Settings/CoreAdvancedOptions/LMSettings/RLMServer%"
-]
-[
-"CFGItemPath"
-"LicensePodBusDevice"
-"PodBusDevice"
-value ""
 ]
 ]
 "InterfaceSettings"
@@ -34396,38 +28279,321 @@ value "1024"
 ]
 ]
 [
-"Port"
-"TCFPort"
-"TCF Port"
+"DisplaySettings"
+"Display"
+"~"
 [
-"Boolean"
-"TCFPort.UsePort"
-"Use Port"
-value "no"
+"String"
+"Title"
+"~"
+value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
 "Boolean"
-"TCFPort.TCFAutoDiscovery"
-"Auto Discovery"
+"SmallFontSize"
+"~"
 value "yes"
 ]
 [
 "Boolean"
-"TCFPort.AutoIncrementPort"
+"FullScreen"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Iconic"
+"~"
+value "no"
+]
+[
+"WindowMode"
+"WindowMode"
+"~"
+value "MDI"
+]
+[
+"Language"
+"Language"
+"~"
+value "EN"
+]
+]
+[
+"InternalSettings"
+"InternalSettings"
+"Internal"
+[
+"Boolean"
+"Debug"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Attach"
+"~"
+value "no"
+]
+[
+"Boolean"
+"MultiCore"
+"~"
+value "no"
+]
+[
+"Boolean"
+"NoSelfTest"
+"~"
+value "no"
+]
+[
+"Boolean"
+"Passive"
+"~"
+value "no"
+]
+[
+"String"
+"T32Executable"
+"~"
+value ""
+]
+[
+"String"
+"SysFCC"
+"~"
+value ""
+]
+[
+"String"
+"SysFCCCPU"
+"~"
+value ""
+]
+[
+"Boolean"
+"Win"
+"WineUseWindowsExecutable"
+value "no"
+]
+]
+[
+"StartupScript"
+"StartupScript"
+"~"
+[
+"ListBasedCombo"
+"Source"
+"~"
+value "File"
+]
+[
+"String"
+"File"
+"~"
+value ""
+]
+[
+"BuiltinScript"
+"BuiltinScript"
+"Built-in Script"
+value "LOCAL &param &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENTRY &param &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+LOCAL &pos &path
+&pos=STRing.SCAN(""&param"",  ""\T32Start.ts2"", 0)
+&path=STRing.MID(""&param"", 0, &pos)
+DO ""&path/main.cmm"" &op1 &op2 &op3 &op4 &op5 &op6 &op7 &op8 &op9 &op0
+ENDDO"
+]
+[
+"String"
+"Parameters"
+"~"
+value ""
+]
+]
+]
+[
+"String"
+"T32ID"
+"~"
+value "T32_1001034"
+]
+[
+"String"
+"Interface"
+"~"
+value "SIM"
+]
+]
+[
+"Simulator"
+"Simulator6"
+"Xtensa"
+[
+"T32Executable"
+"Target"
+"~"
+value "XTENSA"
+]
+[
+"CoreAdvancedOptions"
+"CoreAdvancedOptions"
+"Advanced Settings"
+[
+"DirectorySettings"
+"Directories"
+"Paths"
+[
+"String"
+"WorkingPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/WorkingPath%"
+]
+[
+"String"
+"SystemPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/SystemPath%"
+]
+[
+"String"
+"TempPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/TempPath%"
+]
+[
+"String"
+"HelpPath"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/HelpPath%"
+]
+[
+"String"
+"LicenseFile"
+"~"
+value "%//Settings/CoreAdvancedOptions/Directories/LicenseFile%"
+]
+[
+"Boolean"
+"Force32"
+"Use only 32-bit executable"
+value "no"
+]
+]
+"InterfaceSettings"
+"Interfaces"
+"~"
+[
+"Port"
+"APIPort"
+"API Port"
+[
+"Boolean"
+"APIPort.UsePort"
+"Use Port"
+value "yes"
+]
+[
+"Boolean"
+"APIPort.AutoIncrementPort"
 "Use Auto Increment Port"
 value "yes"
 ]
 [
 "Int"
-"TCFPort.PortStartValue"
+"APIPort.PortStartValue"
 "Port Start Value"
-value "1534"
+value "20000"
 ]
 [
 "Int"
-"TCFPort.PortValue"
+"APIPort.PortValue"
 "Port Value"
-value "1539"
+value "20005"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
+]
+]
+[
+"Port"
+"IntercomPort"
+"Intercom Port"
+[
+"Boolean"
+"IntercomPort.UsePort"
+"Use Port"
+value "yes"
+]
+[
+"Boolean"
+"IntercomPort.AutoIncrementPort"
+"Use Auto Increment Port"
+value "yes"
+]
+[
+"Int"
+"IntercomPort.PortStartValue"
+"Port Start Value"
+value "10000"
+]
+[
+"Int"
+"IntercomPort.PortValue"
+"Port Value"
+value "10005"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
+]
+]
+[
+"Port"
+"GDBPort"
+"GDB Port"
+[
+"Boolean"
+"GDBPort.UsePort"
+"Use Port"
+value "no"
+]
+[
+"Boolean"
+"GDBPort.AutoIncrementPort"
+"Use Auto Increment Port"
+value "yes"
+]
+[
+"Int"
+"GDBPort.PortStartValue"
+"Port Start Value"
+value "30000"
+]
+[
+"Int"
+"GDBPort.PortValue"
+"Port Value"
+value "30005"
+]
+[
+"Protocol"
+"Protocol"
+"~"
+value "UDP"
+]
+[
+"PACKLEN"
+"PACKLEN"
+"Max UDP Packet Size"
+value "1024"
 ]
 ]
 [
@@ -34441,16 +28607,10 @@ value "1539"
 value "TRACE32 PowerView for %T %O [%D @ %N]"
 ]
 [
-"FontSize"
-"FontSize"
+"Boolean"
+"SmallFontSize"
 "~"
-value "SMALL"
-]
-[
-"ClearType"
-"ClearType"
-"~"
-value "DEFAULT"
+value "yes"
 ]
 [
 "Boolean"

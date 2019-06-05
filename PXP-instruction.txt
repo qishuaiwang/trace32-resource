@@ -1,0 +1,188 @@
+plinux5:73		666666
+
+sshnew vlinux4
+
+cd /space/proj/
+source uxe.csh
+test_server
+
+
+pxp 管理员：eric.memg
+
+实验室分机：2970
+
+
+cd whale
+cd pxpdrv
+cd whale_pxp_ca53_du
+xeDebug -gui &
+
+
+source run.qel&		(run_emc)whale2
+jtag clk 100k
+
+clock.qel文件中配置系统的RTC时钟
+
+chip_top
+
+xeDebug.key		保存history指令，probe为抓波形的指令。将这些指令保存，下次抓波形时，source XXX 即可。
+trigger expression 设置trigger信号 	支持多条指令逻辑真值关系
+
+trace memory size 设置buffer大小
+
+trigger position 设置触发点的位置。
+
+source force_clk.qel
+source debug.qel
+
+
+
+
+
+
+
+
+
+fe
+\verdi
+new waveware
+
+
+
+get signel //拉信号
+addr、data、valid
+
+
+
+
+
+
+
+如何更改VDI（即内网AD 帐号）密码？ 
+按快捷键“ctrl+alt+Insert” 
+登录后退出时不要进行logoff、restart 或者shutdown 等操作，直接关闭页面即可 
+ID:qishuai.wang PASSWD:ASIC#sciuser 
+Vnc：plinux_pld1:10 vnc-passwd：sprd4259 
+Vnc：clinux18:42 vnc-passwd： sciuser 
+请尽快使用vncpasswd修改vnc密码，yppasswd修改unix网密码，使用vnc登录时，请不要点击系统里面的logout。 
+具体登录和使用请参考如下，谢谢 
+ http://eip.spreadtrum.com/itsite/ITExperienceLibrary/SitePages/ASIC%E7%A0%94%E5%8F%91%E5%9F%9F%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%A7%A3%E7%AD%94.aspx
+JC PXP常用指令
+JC平台使用说明如下： 
+ssh cnjcemu02 PXP运行服务器，类似北京这边的blinux5/6 
+mkdir /p/sprd/?USER?/XXX 创建个人账号 
+cd /p/sprd/?USER?/XXX 
+cp /nfs/site/proj/sprd/jimli/iSharkL2/iSharkL2_init/isharkl2.csh ./ isharkl2.csh可以创建运行目录到编译目录的链接 
+./runtime.csh 
+source setup_uxe_141_iex_141 source pxp环境变量 
+make hwrun 运行pxp 
+Wait for xeDebug to come up. The sim will run and then stop waiting for Trace32: 
+Eg:proj_top_th.u_uart_xtor_0.uart_dpi_layer: UART Tx log opened: uart_xtor_0.out 
+ncsim: "W.RMEMAR: $readmem...... 
+scope: (*Name Protected*) ... 等待直到弹出uart窗口 
+
+Open another xterm 桌面单击左键打开另一xterm 
+cd /p/sprd/?USER?/XXX 
+source setup_uxe_141_iex_141 
+make runt32 运行trace脚本 
+In trace32, type sys.m.a LTB will post a message about target fail. Ignore it. 忽略一开始的错误 
+In trace32, type sys.m.a a second time. The Palladium sim will now progress. 
+Waiting for following information show in xeDebug GUI 
+XErun> puts “Chip Init done!! please source jtagv0.cmm from Trace32 window!!” 
+Chip Init done!! please source jtagv0.cmm from Trace32 window!!” 等待pxp刷新chip init done 信息。 
+
+Execute jtagv0.cmm at trace32: 
+File->run script->select jtagv0.cmm 运行新的trace脚本，脚本可自己编辑 
+
+test_server 查询PXP服务器使用状态 
+lmstat -a | grep Pall 查询license 
+anjcemu01 服务器，需要使用vncviewer来登陆，否则图形界面起来后，会很卡。 
+在anjcemu01上开VNCserver： 
+ssh anjcemu01 
+/usr/intel/bin/vncserver -depth 16 -geometry 1840x1040 
+等待： vncserver:New 'Xvnc:qiswang1 on anjcemu01:13' desktop is anjcemu01:13 
+在cnjclxc04～06上起vncviewer 
+ssh cnjclxc04 
+vncviewer -shared & 
+anjc 和cnjc直接倒文件，使用scp指令 
+但只能在cnjc上使用 scp ， anjc不支持 
+local PXP 使用
+xeDebug -gui run.qel & 运行PXP环境 
+xeDebug -fsdb.fsdb.tcl
+
+Trace 服务器：172.16.15.70 PXP : SHZVN-PLD01 
+Account：pxplab02 sciuser 
+password：Eric.meng 666666 
+波形查看： \verdi 
+whalek pxp: 
+登录vlinux305 ：ssh -X pxppld@vlinux305 密码： ASIC#sciuser 
+PXP版本：/proj/proj121/WhaleK/liyuan/pxp/release/PXP_RTL_pre0.9_DV_00_00_8core_0930_vlinux305/PXP_RTL_pre0.9_DV_00_00_8core_0930_vlinux305 
+运行时复制到自己的工作路径目录下。 
+/proj/proj121/WhaleK/ 可新建自己的工作目录。 
+最新工作目录： 
+/proj/emu/pxp/user/<user_name>/<project_name>/<database_version> 
+PXP配置： vim run_hw.tcl 
+host vlinux305 
+trace32 内网机器： rdsh00120tmp95 
+PXP domain资源配置： vim proj_top_th.bp 一般需要8个domain，填第一个domain的号码。 
+查看PXP domain资源是否空闲： 
+在vlinux305 服务器， PXP版本路径下，执行 两条指令： 
+fe 
+test_server。 
+PXP 资源分配：  http://eip.spreadtrum.com/sites/ASIC/SoC/Methodology/EmulationManagement/PXP%20Resource%20Reservation%20Notice/Forms/AllItems.aspx 
+cd /proj/proj121/WhaleK/qishuaiwang/WhaleK/PXP_RTL_pre0.9_DV_00_00_8core_0930_vlinux305 
+touch proj_top_th.bp 
+xeDebug -gui run_hw.tcl & 
+pxp cmdline: 
+source debug.tcl 执行debug.tcl脚本，load code，执行DDR初始化。 
+stop 
+查看波形： 
+xeDebug -gui & 
+pxp cmdline: 
+debug /proj/proj121/WhaleK/qishuaiwang/WhaleK/PXP_RTL_pre0.9_DV_00_00_8core_0930_vlinux305 
+host -offline XXX.phy (setup->Emulator: offline, Setup->Offline Debugging: Probe Phy File, Setup->Select the Phy Data File: XXX.phy， Setup->open offline) 
+DUV Design Browser , Display=1 AutoUpload?=1. 选择信号后，probe。 
+鼠标中键选择 baseline； 鼠标左键选择 timeA ； 
+查看clock frequency，对比PAD_CLK26MSINE0_1P8分析，如果26M不准确，需找PXP 版本的人修改。 
+PXP工作目录下： 
+xeDebug.key 保存history指令，probe为抓波形的指令。将这些指令保存，下次抓波形时，source XXX 即可。 需要copy 需要的指令到新文件，否则，该文件会被新的操作覆盖。 
+/porj/proj121 目录不能查看，执行下面命令： sshnew top 
+data transmission : 
+shextnas4\exchange\to_shunix /exchange/from_shext/ 
+ http://eip.spreadtrum.com/itsite/ITExperienceLibrary/SitePages/ASIC跨站点、跨网域数据交互通道.aspx 
+ROC1： 
+db包括如下内容： 
+X32 A/vlinux303 16domain/1borad 
+注意vlinux303 board0不支持2线jtag，需要修改将cmm脚本的SWAP ON改为OFF, jtag可以连接在80khz 
+包括ap（vdsp_top_wrap empty）+apcpu 8core+ese+ipa+pub+adie(3 adie)+upf 
+用法： 
+为保证环境变量的正确，新开一个terminal 
+不需要拷贝整个DB的release目录，只需要拷贝release目录下同名子文件夹到工作目录，这个子文件夹很小，会自动link到DB（不需要publish.csh文件），以减少PXP DB的磁盘占用 
+设置Emulation运行的环境： source emu_env.csh。 
+可以通过编辑proj_top_th.bp文件指定PXP DB download的目标domain 
+通过xeDebug –gui run_hw.tcl或者source emu_run启动PXP debug 界面 
+启动verdi 请使用make run_verdi 
+cmm文件参考内网： http://shsvn03/svn/CHIP/Interface/ROC1/FPGA/Emulation/scripts/*.cmm 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+先在手机/simulater上验证code 的正确性。
+udelay,mdelay在pxp上需disable掉

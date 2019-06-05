@@ -1,0 +1,18 @@
+
+
+
+B::B::D.LOAD D:\VDK\Whale2\other\software\test64_jump2ddr.elf
+B::B::D.LOAD D:\VDK\Whale2\other\software\linux-system.axf
+B::task.config *
+B::task.config C:\T32USB\demo\arm64\kernel\linux\linux-3.x\linux3.t32
+B::menu.REPROGRAM *
+B::menu.REPROGRAM_C:\T32USB\demo\arm64\kernel\linux\linux-3.x\linux.men
+B::task.test
+B::task.check
+B::data.load.elf * /nocode /noclear /gnu
+B::data.load.elf D:\VDK\Whale2\other\software\linux-system.axf /nocode /noclear
+B::y.list.map
+B::mmu.dump PAGETABLE 0xc0000000
+B::sys.config
+B::y.list.map
+B::history

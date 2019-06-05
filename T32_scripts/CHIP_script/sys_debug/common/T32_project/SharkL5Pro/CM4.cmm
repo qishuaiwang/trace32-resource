@@ -62,6 +62,6 @@ ELSE
 ENDDO
 
 BOOT:
-	DO "&CUR_DIR\boot_all.cmm" CM4_BOOT &AHB_PORT 0
+	DO "&CUR_DIR\boot_all.cmm" CM4_BOOT &AHB_PORT 1
 	RETURN
 ; end of BOOT

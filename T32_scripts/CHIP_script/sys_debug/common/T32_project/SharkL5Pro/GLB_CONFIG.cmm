@@ -3,8 +3,8 @@
 ;---------------------------------------------------------------------------------------
 GLOBAL &target &jtag_clock &is_swd &delay_times &target_id
 &target="CHIP"
-&target="PXP"
-&target="HAPS"
+;&target="PXP"
+;&target="HAPS"
 ;&target="FPGA"
 
 &is_swd=(1==1)

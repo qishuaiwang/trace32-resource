@@ -1,5 +1,5 @@
 LOCAL &CUR_DIR
 &CUR_DIR=OS.PPD()
-DO "&CUR_DIR\boot_all.cmm" DSP_BOOT 0
+DO "&CUR_DIR\boot_all.cmm" DSP_BOOT 1
 PRINT "BOOT DSP Done!"
 ENDDO

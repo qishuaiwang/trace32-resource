@@ -1,0 +1,128 @@
+IF sYmbol.EXIST(linux_banner)
+(
+	(
+		LOCAL &yes
+		DIALOG.YESNO "Is DDR READ OK?"
+		ENTRY &yes
+		IF (&yes)
+		(
+			&ddr_ready=1
+		)
+		ELSE
+		(
+			ENDDO
+		)
+	)
+
+	LOCAL &mem_type &log_buf_addr &log_first_idx &log_next_idx &log_buf_len &addr &is_64 &sym_offset
+	&mem_type="EZAXI"
+	&addr=ADDRESS.OFFSET(linux_banner)
+	&is_64=format.du(0,&addr)>format.du(0,0x100000000)
+	IF &is_64
+	(
+		&sym_offset=0xFFFFFF8008000000-0x80000000
+	)
+	ELSE
+	(
+		&sym_offset=0x08000000-0x80000000
+	)
+	GOSUB get_addr \printk\log_buf
+	ENTRY &addr
+	&log_buf_addr=DATA.Quad(&mem_type:&addr)-&sym_offset
+	GOSUB get_addr log_first_idx
+	ENTRY &addr
+	&log_first_idx=DATA.Long(&mem_type:&addr)
+	GOSUB get_addr log_next_idx
+	ENTRY &addr
+	&log_next_idx=DATA.Long(&mem_type:&addr)
+	GOSUB get_addr log_buf_len
+	ENTRY &addr
+	&log_buf_len=DATA.Long(&mem_type:&addr)
+	LOCAL  &start &log_buf_2nd_half &length &log_buf
+	&start=&log_buf_addr+&log_first_idx
+	IF (&log_first_idx<&log_next_idx)
+	(
+		&log_buf_2nd_half=-1
+		&length=&log_next_idx-&log_first_idx
+		&log_buf=&start
+	)
+	ELSE
+	(
+		&log_buf_2nd_half=&log_buf_len-&log_first_idx
+		&length=&log_buf_2nd_half+&log_next_idx
+		GOSUB copy_log_to_avm &start &log_buf_2nd_half &log_buf_addr &log_next_idx
+		ENTRY &log_buf
+		&mem_type="AVM"
+	)
+	GOSUB parse_log_buf 1 &mem_type &length &log_buf_2nd_half &log_buf
+	GOSUB parse_log_buf 0 &mem_type &length &log_buf_2nd_half &log_buf
+	AREA.SELECT A000
+)
+ELSE
+(
+	PRINT %ERROR "Please load the vmlinux firstly!"
+)
+
+ENDDO
+
+parse_log_buf:
+	LOCAL &get_size &mem_type &length &log_buf_2nd_half &log_buf
+	ENTRY &get_size &mem_type &length &log_buf_2nd_half &log_buf
+	LOCAL &pos &l &tl &text &time_stamp &cpu &buf_view &line_col &line_size &col_size &flag
+	&pos=0
+	&line_size=0
+	&col_size=0
+	WHILE (&pos<&length)
+	(
+		&l=DATA.SHORT(&mem_type:(&log_buf+&pos+8.))
+		IF (&l==0)
+		(
+			IF (&log_buf_2nd_half==-1)
+			(
+				PRINT %ERROR "Corrupted log buffer!"
+				ENDDO
+			)
+			&pos=&log_buf_2nd_half
+		)
+		ELSE
+		(
+			&tl=DATA.SHORT(&mem_type:(&log_buf+&pos+10.))
+			&flag=DATA.Byte(&mem_type:(&log_buf+&pos+15.))
+			&cpu=DATA.LONG(&mem_type:(&log_buf+&pos+16.))
+			&text=DATA.STRingN(&mem_type:(&log_buf+&pos+16.+4.),&tl)
+			&time_stamp=DATA.Quad(&mem_type:(&log_buf+&pos))
+			&line_str="<"+FORMAT.Decimal(1,&flag&0x7)+">["+FORMAT.FLOAT(12.,6.,&time_stamp/1000000000.0)+"]"+" C"+FORMAT.Decimal(1, &cpu)+" &text"
+			&line_col=STRing.LENgth("&line_str")
+			IF (&col_size<&line_col)
+			(
+				&col_size=&line_col
+			)
+			IF (&get_size==0)
+				PRINT "&line_str"
+			&line_size=&line_size+1
+			&pos=&pos+&l
+		)
+	)
+	IF (&get_size==0)
+		RETURN
+	AREA.CREATE DMESG &col_size &line_size
+	AREA.SELECT DMESG
+	AREA.VIEW DMESG
+	RETURN
+
+
+copy_log_to_avm:
+	LOCAL &s1 &l1 &s2 &l2 &avm_start
+	ENTRY &s1 &l1 &s2 &l2
+	&avm_start=0
+	DATA.COPY &mem_type:&s1++(&l1-1) AVM:&avm_start
+	DATA.COPY &mem_type:&s2++(&l2-1) AVM:(&avm_start+&l1)
+	RETURN &avm_start
+
+get_addr:
+	LOCAL &sym &addr 
+	ENTRY &sym
+	&addr=ADDRESS.OFFSET(&sym)
+	&addr=&addr-&sym_offset
+	RETURN &addr
+	
