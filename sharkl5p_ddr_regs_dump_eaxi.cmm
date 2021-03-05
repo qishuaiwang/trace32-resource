@@ -1,0 +1,196 @@
+
+local &reg_data_dir
+&reg_data_dir="D:"
+
+OPEN #1 &reg_data_dir\sharkl5pro_regs_dump-1866-0702.txt /Create
+
+local &start
+local &end
+local &curr
+local &val
+
+WRITE #1 "-----------------------CTL REGS---------------------------------"
+&start=0x31000000
+&end=0x31000628
+&curr=&start
+while &curr<&end
+(
+	if &curr==0x31000180
+	(
+	WRITE #1 "-------CTL F0 256M REGS-------"
+	)
+	if &curr==0x310001E0
+	(
+	WRITE #1 "-------CTL F1 384M REGS-------"
+	)
+	if &curr==0x31000240
+	(
+	WRITE #1 "-------CTL F2 512M REGS-------"
+	)
+	if &curr==0x310002A0
+	(
+	WRITE #1 "-------CTL F3 768M REGS-------"
+	)
+	if &curr==0x31000300
+	(
+	WRITE #1 "-------CTL F4 1024M REGS-------"
+	)
+	if &curr==0x31000360
+	(
+	WRITE #1 "-------CTL F5 1333M REGS-------"
+	)
+	if &curr==0x310003C0
+	(
+	WRITE #1 "-------CTL F6 1536M REGS-------"
+	)
+	if &curr==0x31000420
+	(
+	WRITE #1 "-------CTL F7 1866 REGS-------"
+	)
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+
+WRITE #1 "-----------------------PHY REGS---------------------------------"
+&start=0x31001000
+&end=0x310018C0
+&curr=&start
+while &curr<&end
+(
+	if &curr==0x31001040
+	(
+	WRITE #1 "-------PHY F0 256M REGS-------"
+	)
+	if &curr==0x31001100
+	(
+	WRITE #1 "-------PHY F1 384M REGS-------"
+	)
+	if &curr==0x310011C0
+	(
+	WRITE #1 "-------PHY F2 512M REGS-------"
+	)
+	if &curr==0x31001280
+	(
+	WRITE #1 "-------PHY F3 768M REGS-------"
+	)
+	if &curr==0x31001340
+	(
+	WRITE #1 "-------PHY F4 1024M REGS-------"
+	)
+	if &curr==0x31001400
+	(
+	WRITE #1 "-------PHY F5 1333M REGS-------"
+	)
+	if &curr==0x310014C0
+	(
+	WRITE #1 "-------PHY F6 1536M REGS-------"
+	)
+	if &curr==0x31001580
+	(
+	WRITE #1 "-------PHY F7 1866M REGS-------"
+	)
+	if &curr==0x31001640
+	(
+	WRITE #1 "-------AC MASTER DLL LOCK Value-------"
+	)
+	if &curr==0x310016C0
+	(
+	WRITE #1 "-------DQ MASTER DLL LOCK Value-------"
+	)
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+
+WRITE #1 "-----------------------PUB CTL REGS---------------------------------"
+&start=0x310531A0
+&end=0x31053420
+&curr=&start
+while &curr<&end
+(
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+
+
+WRITE #1 "-----------------------PMU PARA---------------------------------"
+&start=0x327e0000
+&end=0x327e07d4
+&curr=&start
+while &curr<&end
+(
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+WRITE #1 "-----------------------BIST0 PARA---------------------------------"
+&start=0x31070000
+&end=0x310700f4
+&curr=&start
+while &curr<&end
+(
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+WRITE #1 "-----------------------BIST1 PARA0---------------------------------"
+&start=0x31074000
+&end=0x310740f4
+&curr=&start
+while &curr<&end
+(
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+WRITE #1 "-----------------------BIST2 PARA0---------------------------------"
+&start=0x31078000
+&end=0x310780f4
+&curr=&start
+while &curr<&end
+(
+	&val=data.long(eaxi:&curr)
+	WRITE #1 "0x" FORMAT.HEX(8.,&curr)  ":0x"  FORMAT.HEX(8.,&val)
+	&curr=&curr+4
+)
+
+CLOSE #1
+enddo
+
+local &mr_ctl_addr=0x31000104
+local &mr_ch0_valid_addr=0x310000a0
+local &mr_ch1_valid_addr=0x310000a4
+local &mr_value_addr=0x310000b0
+local &cs_num=0
+
+
+
+WRITE #1 "-----------------------MR READ---------------------------------"
+&mr_num=1
+&val=data.long(eaxi:&mr_ctl_addr)
+&val=(&val|((&cs_num<<28)&0x1)|&mr_num)
+data.set &mr_ctl_addr %long &val
+data.set &mr_ctl_addr %long (&val|0x1<<25)
+
+wait ((data.long(eaxi:&mr_ctl_addr)>>19)&0x1ff)==0
+
+&val=data.long(eaxi:&mr_chn0_valid_addr)
+if (&val>>12)&0x1==0x1
+(
+	&mr_value=data.long(eaxi:&mr_ctl_addr)&0xff
+)
+
+&val=data.long(eaxi:&mr_chn1_valid_addr)
+if (&val>>12)&0x1==0x1
+(
+	&mr_value=(&mr_value|((data.long(eaxi:&mr_ctl_addr)>>16)&0xff)<<8)
+)
+
+WRITE #1 "MR" FORMAT.DECIMAL(8.,&mr_num)  ":0x" FORMAT.HEX(8.,&mr_value)
+
+
+
+
+
